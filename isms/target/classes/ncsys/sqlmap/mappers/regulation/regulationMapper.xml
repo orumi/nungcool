@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="ncsys.com.isms.hierarchy.service.mapper.RegulationMapper">
+ 	
+ 	<select id="selectRegulationDetailList" parameterType="ncsys.com.isms.hierarchy.service.model.RegulationList" 
+ 		resultType="ncsys.com.isms.hierarchy.service.model.RegulationList">
+	    
+		SELECT ROWNUM ROWIDX, VERID, RGLDTLID, 
+		       FLDID, FLDNM, FSORT,
+		       FCNT,
+		       FNUM,  
+		       RGLID, RGLNM, RSORT,
+		       RCNT,
+		       RNUM,
+		       DSORT, 
+		       RGLDTLNM, MGRGOAL,
+		       ADJUSTYN, ADJUSTCNT
+		FROM 
+		(       
+		    SELECT V.VERID, RGLDTLID, 
+		           D.FLDID,F.FLDNM,F.SORTBY FSORT,
+		           COUNT(D.FLDID) OVER (PARTITION BY D.FLDID) FCNT,
+		           ROW_NUMBER() OVER (PARTITION BY D.FLDID ORDER BY F.SORTBY,R.SORTBY,D.SORTBY) FNUM,  
+		           D.RGLID, R.RGLNM, R.SORTBY RSORT,
+		           COUNT(D.RGLID) OVER (PARTITION BY D.FLDID, D.RGLID) RCNT,
+		           ROW_NUMBER() OVER (PARTITION BY D.FLDID, D.RGLID ORDER BY F.SORTBY,R.SORTBY,D.SORTBY) RNUM,
+		           D.SORTBY DSORT, 
+		           D.RGLDTLNM, MGRGOAL,
+           		   D.ADJUSTYN, D.ADJUSTCNT
+		    FROM TBLREGULATIONDETAIL D, 
+		         TBLVERSION V,
+		         TBLFIELD F,
+		         TBLREGULATION R 
+		    WHERE D.VERID=V.VERID
+		          AND V.VERID = #{versionId,jdbcType=NUMERIC}
+		          AND D.FLDID = F.FLDID
+		          AND D.RGLID = R.RGLID
+		          <if test="fieldId !=null and fieldId != 0">
+		          AND D.FLDID = #{fieldId,jdbcType=NUMERIC}
+		          </if>
+		    ORDER BY VERID,FSORT,RSORT,DSORT      
+		) D
+		
+ 	</select>
+ 	
+ 	<select id="selectVersion" resultType="ncsys.com.isms.hierarchy.service.model.Version">
+	 	SELECT VERID,VERNM,SORTBY
+		FROM TBLVERSION WHERE USEYN='Y'
+		ORDER BY SORTBY
+ 	</select>
+ 	
+ 	
+ 	<select id="selectFiled" resultType="ncsys.com.isms.hierarchy.service.model.Field">
+		SELECT FLDID, FLDNM,SORTBY
+		FROM TBLFIELD WHERE USEYN='Y'
+		ORDER BY SORTBY
+ 	</select>
+ 	
+ 	<select id="selectRegulation" resultType="ncsys.com.isms.hierarchy.service.model.Regulation">
+		SELECT RGLID,RGLNM,SORTBY
+		FROM TBLREGULATION WHERE USEYN='Y'
+		ORDER BY SORTBY
+ 	</select>
+ 	
+ 	<insert id="insertRegulationDetail" parameterType="ncsys.com.isms.hierarchy.service.model.RegulationDetail" >
+		INSERT INTO TBLREGULATIONDETAIL 
+            (RGLDTLID,VERID,FLDID,RGLID,RGLDTLNM,MGRGOAL,ADJUSTYN,ADJUSTCNT,SORTBY,ISMSSTD,REFERDOC,REFERPDS, INPUTID,INPUTDT,UPDATEID,UPDATEDT) 
+        VALUES (
+            SQ_REGULATIONDETAIL.NEXTVAL
+            ,#{verid}
+            ,#{fldid}
+            ,#{rglid}
+            ,#{rgldtlnm,jdbcType=VARCHAR}
+            ,#{mgrgoal,jdbcType=VARCHAR}
+            ,#{adjustyn,jdbcType=VARCHAR}
+            ,#{adjustcnt,jdbcType=VARCHAR}
+            ,#{sortby,jdbcType=NUMERIC}
+            ,#{ismsstd,jdbcType=VARCHAR}
+            ,#{referdoc,jdbcType=VARCHAR}
+            ,#{referpds,jdbcType=VARCHAR}
+            ,#{userId}
+            ,SYSDATE
+            ,#{userId}
+            ,SYSDATE
+            )
+ 	</insert>
+ 	
+  	<update id="updateRegulationDetail" parameterType="ncsys.com.isms.hierarchy.service.model.RegulationDetail" >
+		UPDATE TBLREGULATIONDETAIL SET 
+            FLDID    = #{fldid},
+            RGLID    = #{rglid},
+            RGLDTLNM = #{rgldtlnm},
+            MGRGOAL  = #{mgrgoal, jdbcType=VARCHAR},
+            ADJUSTYN = #{adjustyn},
+            ADJUSTCNT = #{adjustcnt, jdbcType=VARCHAR},
+            SORTBY   = #{sortby, jdbcType=NUMERIC},
+            ISMSSTD  = #{ismsstd, jdbcType=VARCHAR},
+            REFERDOC = #{referdoc, jdbcType=VARCHAR},
+            REFERPDS = #{referpds, jdbcType=VARCHAR}, 
+            UPDATEID = #{userId},
+            UPDATEDT = SYSDATE
+        WHERE 
+        RGLDTLID = #{rgldtlid}     
+ 	</update>
+  	
+  	<delete id="deleteRegulationDetail" parameterType="ncsys.com.isms.hierarchy.service.model.RegulationDetail" >
+		DELETE FROM TBLREGULATIONDETAIL WHERE 
+        RGLDTLID = #{rgldtlid}     
+ 	</delete>
+ 	 
+  	<select id="selectRegulationDetail" parameterType="ncsys.com.isms.hierarchy.service.model.RegulationDetail" 
+  		resultType="ncsys.com.isms.hierarchy.service.model.RegulationDetail">
+  		
+		SELECT  
+            RGLDTLID,VERID,FLDID,RGLID,RGLDTLNM,MGRGOAL,ADJUSTYN,ADJUSTCNT,SORTBY,ISMSSTD,REFERDOC,REFERPDS, INPUTID, INPUTDT, UPDATEID, UPDATEDT
+        FROM TBLREGULATIONDETAIL WHERE RGLDTLID=#{rgldtlid}     
+        
+ 	</select>
+ 	
+
+  	<select id="selectRegulationDetailByName" parameterType="ncsys.com.isms.hierarchy.service.model.RegulationDetail" 
+  		resultType="ncsys.com.isms.hierarchy.service.model.RegulationDetail">
+  		
+		SELECT  
+            RGLDTLID,VERID,FLDID,RGLID,RGLDTLNM,MGRGOAL,ADJUSTYN,ADJUSTCNT,SORTBY,ISMSSTD,REFERDOC,REFERPDS, INPUTID, INPUTDT, UPDATEID, UPDATEDT
+        FROM TBLREGULATIONDETAIL WHERE VERID=#{verid} AND FLDID=#{fldid} AND RGLID=#{rglid} AND RGLDTLNM=#{rgldtlnm}  
+        
+ 	</select> 	
+ 	
+	<select id="selectRegulationDetailByFullname" parameterType="ncsys.com.isms.hierarchy.service.model.RglDetail" 
+  		resultType="ncsys.com.isms.hierarchy.service.model.RegulationDetail">
+		SELECT RGLDTLID,VERID,FLDID,RGLID,RGLDTLNM,MGRGOAL,ADJUSTYN,ADJUSTCNT FROM VIEWREGULATIONDETAIL
+		WHERE VERNM= #{vernm} AND FLDNM = #{fldnm} AND RGLNM=#{rglnm} AND RGLDTLNM = #{rgldtlnm}
+	</select>
+ 	
+ 	
+ 	
+ 	
+ 	<!-- field  -->
+ 	<insert id="insertRegulationField" parameterType="ncsys.com.isms.hierarchy.service.model.Field" >
+		<selectKey resultType="string" keyProperty="fldid" order="BEFORE">
+	        SELECT SQ_FIELD.NEXTVAL FROM DUAL        
+	    </selectKey>
+		
+		INSERT INTO TBLFIELD 
+            (FLDID, FLDNM, USEYN, SORTBY, INPUTID,INPUTDT,UPDATEID,UPDATEDT) 
+        VALUES 
+        	(
+            SQ_FIELD.NEXTVAL
+            ,#{fldnm}
+            ,'Y'
+            ,#{sortby}
+            ,#{userId}
+            ,SYSDATE
+            ,#{userId}
+            ,SYSDATE
+            )
+ 	</insert>
+  	<update id="updateRegulationField" parameterType="ncsys.com.isms.hierarchy.service.model.Field" >
+		UPDATE TBLFIELD SET 
+            FLDNM    = #{fldnm},
+            SORTBY   = #{sortby},
+            UPDATEID = #{userId},
+            UPDATEDT = SYSDATE
+        WHERE 
+        	FLDID    = #{fldid}
+ 	</update>
+  	
+  	<update id="deleteRegulationField" parameterType="ncsys.com.isms.hierarchy.service.model.Field" >
+		UPDATE TBLFIELD SET 
+            USEYN   = 'N',
+            UPDATEID = #{userId},
+            UPDATEDT = SYSDATE
+        WHERE 
+        	FLDID    = #{fldid}     
+ 	</update>
+ 	
+ 	<select id="selectRegulationFieldByName" parameterType="ncsys.com.isms.hierarchy.service.model.Field" resultType="ncsys.com.isms.hierarchy.service.model.Field" >
+		SELECT 
+			 FLDID
+			,FLDNM
+			,USEYN
+			,SORTBY
+		FROM TBLFIELD 
+        WHERE 
+        	FLDNM    = #{fldnm}     
+ 	</select>
+ 	
+ 	
+ 	<!-- regulation  -->
+ 	<insert id="insertRegulation" parameterType="ncsys.com.isms.hierarchy.service.model.Regulation" >
+		<selectKey resultType="string" keyProperty="rglid" order="BEFORE">
+	        SELECT SQ_REGULATION.NEXTVAL FROM DUAL        
+	    </selectKey>		
+		
+		INSERT INTO	TBLREGULATION 
+            (RGLID, RGLNM, USEYN, SORTBY, INPUTID,INPUTDT,UPDATEID,UPDATEDT) 
+        VALUES 
+        	(
+            SQ_REGULATION.NEXTVAL
+            ,#{rglnm}
+            ,'Y'
+            ,#{sortby}
+            ,#{userId}
+            ,SYSDATE
+            ,#{userId}
+            ,SYSDATE
+            )
+ 	</insert>
+  	<update id="updateRegulation" parameterType="ncsys.com.isms.hierarchy.service.model.Regulation" >
+		UPDATE TBLREGULATION SET 
+            RGLNM    = #{rglnm},
+            SORTBY   = #{sortby},
+            UPDATEID = #{userId},
+            UPDATEDT = SYSDATE
+        WHERE 
+        	RGLID    = #{rglid}
+ 	</update>
+  	
+  	<update id="deleteRegulation" parameterType="ncsys.com.isms.hierarchy.service.model.Regulation" >
+		UPDATE TBLREGULATION SET 
+            USEYN   = 'N',
+            UPDATEID = #{userId},
+            UPDATEDT = SYSDATE
+        WHERE 
+        	RGLID    = #{rglid}     
+ 	</update>
+ 	
+ 	<select id="selectRegulationByName" parameterType="ncsys.com.isms.hierarchy.service.model.Regulation" resultType="ncsys.com.isms.hierarchy.service.model.Regulation" >
+		SELECT 
+			 RGLID
+			,RGLNM
+			,USEYN
+			,SORTBY
+		FROM TBLREGULATION 
+        WHERE 
+        	RGLNM    = #{rglnm}     
+ 	</select>
+ 	
+ 	
+	<!-- vision  -->
+ 	<insert id="insertVersion" parameterType="ncsys.com.isms.hierarchy.service.model.Version" >
+		<selectKey resultType="string" keyProperty="verid" order="BEFORE">
+	        SELECT SQ_VERSION.NEXTVAL FROM DUAL        
+	    </selectKey>
+		
+		INSERT INTO	TBLVERSION 
+            (VERID, VERNM, USEYN, SORTBY, INPUTID, INPUTDT, UPDATEID, UPDATEDT) 
+        VALUES 
+        	(
+             #{verid}
+            ,#{vernm}
+            ,'Y'
+            ,#{sortby}
+            ,#{userId}
+            ,SYSDATE
+            ,#{userId}
+            ,SYSDATE
+            )
+ 	</insert>
+  	<update id="updateVersion" parameterType="ncsys.com.isms.hierarchy.service.model.Version" >
+		UPDATE TBLVERSION SET 
+            VERNM    = #{vernm},
+            SORTBY   = #{sortby},
+            UPDATEID = #{userId},
+            UPDATEDT = SYSDATE
+        WHERE 
+        	VERID    = #{verid}
+ 	</update>
+  	
+  	<update id="deleteVersion" parameterType="ncsys.com.isms.hierarchy.service.model.Version" >
+		UPDATE TBLVERSION SET 
+            USEYN   = 'N',
+            UPDATEID = #{userId},
+            UPDATEDT = SYSDATE
+        WHERE 
+        	VERID    = #{verid}     
+ 	</update>
+ 	
+ 	<select id="selectVersionByName" parameterType="ncsys.com.isms.hierarchy.service.model.Version" resultType="ncsys.com.isms.hierarchy.service.model.Version" >
+		SELECT 
+			 VERID
+			,VERNM
+			,USEYN
+			,SORTBY
+		FROM TBLVERSION 
+        WHERE 
+        	VERNM    = #{vernm}     
+ 	</select>
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+</mapper>

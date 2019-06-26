@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="ncsys.com.isms.actual.service.mapper.ActualPimesMapper">
+ 	
+ 	 <select id="selectDignosisByYear" parameterType="String" 
+ 		resultType="ncsys.com.isms.measure.service.model.Diagnosis">
+		SELECT YEAR,DGSID,PIVERSIONID,DGSNAME,SORTBY
+			FROM TBLPIDIAGNOSIS
+			WHERE YEAR=#{value, jdbcType=VARCHAR }
+			ORDER BY SORTBY
+ 	</select>
+ 	
+ 	<select id="selectActualPimesList" parameterType="ncsys.com.isms.actual.service.model.ActualPimesList" 
+ 		resultType="ncsys.com.isms.actual.service.model.ActualPimesList">
+	    
+	    
+		SELECT ROWNUM ROWIDX, 
+	           DGSID,   MSRDTLID, 
+	           PIFLDID, PIFLDNM, FSORT,
+	           FCNT,
+	           FNUM,  
+	           MSRID, MSRNAME, RSORT,
+	           RCNT,
+	           RNUM,
+	           DSORT,
+	           MSRDTLNM, 
+	           WEIGHT, ACTUAL,
+	           CNTPLN,
+	           CNTACT,
+	           CNTAGG
+		FROM 
+		(       
+		    SELECT G.DGSID, D.MSRDTLID, 
+		           D.PIFLDID,F.PIFLDNM,F.SORTBY FSORT,
+		           COUNT(D.PIFLDID) OVER (PARTITION BY D.PIFLDID) FCNT,
+		           ROW_NUMBER() OVER (PARTITION BY D.PIFLDID ORDER BY F.SORTBY,R.SORTBY,D.SORTBY,D.MSRDTLID ) FNUM,  
+		           D.MSRID, R.MSRNAME, R.SORTBY RSORT,
+		           COUNT(D.MSRID) OVER (PARTITION BY D.PIFLDID, D.MSRID) RCNT,
+		           ROW_NUMBER() OVER (PARTITION BY D.PIFLDID, D.MSRID ORDER BY F.SORTBY,R.SORTBY,D.SORTBY,D.MSRDTLID) RNUM,
+		           D.SORTBY DSORT, 
+		           D.MSRDTLNM, D.MSRDTL,
+		           D.CERTIACT, D.CALMTD,
+		           G.WEIGHT, G.ACTUAL
+		    FROM TBLPIMEASUREDETAIL D, 
+		         TBLPIDIAGNOSISDETAIL G,
+		         TBLPIFIELD F,
+		         TBLPIMEASURE R 
+		    WHERE D.MSRDTLID=G.MSRDTLID
+		          AND G.DGSID = #{dgsid, jdbcType=NUMERIC }
+		          AND D.PIFLDID = F.PIFLDID
+		          AND D.MSRID = R.MSRID
+		    ORDER BY FSORT,RSORT,DSORT,MSRDTLID
+		 ) L  
+		LEFT JOIN
+		(
+		    SELECT DGSID ADID,MSRDTLID ADTLID,SUM(PLN) CNTPLN, SUM(ACT) CNTACT, SUM(AGG) CNTAGG
+		    FROM (
+		        SELECT DGSID,MSRDTLID,DECODE(ATTACHTYPE,'PLN',1,0) PLN,
+		               DECODE(ATTACHTYPE,'ACT',1,0) ACT,DECODE(ATTACHTYPE,'AGG',1,0) AGG
+		        FROM TBLPIDIAGNOSISATTACH WHERE DGSID = #{dgsid, jdbcType=NUMERIC } 
+		    )
+		    GROUP BY DGSID,MSRDTLID
+		) A    
+		ON L.MSRDTLID=A.ADTLID
+		ORDER BY FSORT,RSORT,DSORT,MSRDTLID
+ 	</select>
+ 	
+ 	
+ 	<update id="updateActualDetail" parameterType="ncsys.com.isms.actual.service.model.ActualPimesDetail" >
+		UPDATE TBLPIDIAGNOSISDETAIL SET 
+            ACTUAL = #{actual, jdbcType=NUMERIC},
+            UPDATEID = #{userId},
+            UPDATEDT = SYSDATE
+        WHERE 
+        	DGSID = #{dgsid}     
+        	AND MSRDTLID = #{msrdtlid}
+ 	</update>
+  	
+ 	 	<update id="deleteActualDetail" parameterType="ncsys.com.isms.actual.service.model.ActualPimesDetail" >
+		UPDATE TBLPIDIAGNOSISDETAIL SET 
+            ACTUAL = NULL,
+            UPDATEID = #{userId},
+            UPDATEDT = SYSDATE
+        WHERE 
+        	DGSID = #{dgsid}     
+        	AND MSRDTLID = #{msrdtlid}
+ 	</update>
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	<select id="selectActualDetail" parameterType="ncsys.com.isms.actual.service.model.ActualPimesDetail" 
+ 		resultType="ncsys.com.isms.actual.service.model.ActualPimesDetail">
+	    
+		    SELECT G.DGSID, D.MSRDTLID, 
+		           D.PIFLDID,F.PIFLDNM,F.SORTBY FSORT,  
+		           D.MSRID, R.MSRNAME, R.SORTBY RSORT,
+		           D.SORTBY DSORT, 
+		           D.MSRDTLNM, D.MSRDTL,
+		           D.CERTIACT, D.CALMTD,
+		           G.WEIGHT, G.ACTUAL, G.DETAIL,
+                   S.YEAR
+		    FROM TBLPIMEASUREDETAIL D, 
+		         TBLPIDIAGNOSISDETAIL G,
+		         TBLPIFIELD F,
+		         TBLPIMEASURE R,
+                 TBLPIDIAGNOSIS S  
+		    WHERE D.MSRDTLID=G.MSRDTLID
+		          AND S.DGSID = G.DGSID
+		          AND G.DGSID    = #{dgsid}
+		          AND D.MSRDTLID = #{msrdtlid}
+		          AND D.PIFLDID  = F.PIFLDID
+		          AND D.MSRID = R.MSRID
+		    ORDER BY PIVERID,FSORT,RSORT,DSORT
+		    
+ 	</select>
+ 	
+ 	
+ 	
+ 	
+ 	<insert id="insertActualFile" parameterType="ncsys.com.isms.actual.service.model.ActualPimesFile" >
+		INSERT INTO TBLPIDIAGNOSISATTACH 
+            (ATTACHSEQ,DGSID,MSRDTLID,ATTACHTYPE, ORGINFILENAME,NEWNAME,STOREDFILEPATH,FILEEXT,INPUTID,INPUTDT) 
+        VALUES (
+        	 SQ_FILEATTACH.NEXTVAL
+        	,#{dgsid}
+        	,#{msrdtlid}
+        	,#{attachtype}
+        	,#{orginFileName}
+            ,#{newName}
+            ,#{storedFilePath}
+            ,#{fileExt}
+            ,#{userId}
+            ,SYSDATE
+        )
+ 	</insert>
+ 	
+ 	<delete id="deleteActualFile" parameterType="ncsys.com.isms.actual.service.model.ActualPimesFile" >
+		DELETE FROM TBLPIDIAGNOSISATTACH 
+		WHERE 
+			DGSID = #{dgsid}
+        	AND MSRDTLID = #{msrdtlid}
+        	AND ATTACHSEQ = #{attachseq}    
+ 	</delete>
+ 	
+ 	
+ 	<select id="selectActualFiles" parameterType="ncsys.com.isms.actual.service.model.ActualPimesFile" 
+ 		resultType="ncsys.com.isms.actual.service.model.ActualPimesFile">
+		SELECT MSRDTLID,DGSID,ATTACHTYPE, ATTACHSEQ, ORGINFILENAME, NEWNAME, STOREDFILEPATH, 
+		       FILEEXT,INPUTID,INPUTDT
+		FROM TBLPIDIAGNOSISATTACH 
+		WHERE DGSID = #{dgsid}
+		    AND MSRDTLID = #{msrdtlid} 
+			AND ATTACHTYPE = #{attachtype}
+		ORDER BY ATTACHSEQ    
+ 	</select>
+</mapper>

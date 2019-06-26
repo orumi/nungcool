@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="ncsys.com.isms.concern.service.mapper.ConcernItemMapper">
+ 	
+ 	<!-- Asset Version  -->
+ 	<select id="selectConcernItemList" parameterType="ncsys.com.isms.concern.service.model.ConcernItem"
+ 	 resultType="ncsys.com.isms.concern.service.model.ConcernItem">
+	    
+		SELECT ROWNUM ROWIDX
+		    ,A.*
+		FROM (    
+			SELECT 
+			     ASTGRPID
+			    ,CCNITEMCD
+			    ,CCNITEMNM
+			    ,CCNVALUE
+			    ,ACTIONPLAN
+			    ,ACTIONPERIOD
+			    ,USEYN
+			    ,SORTBY
+			    ,INPUTID
+			    ,INPUTDT
+			    ,UPDATEID
+			    ,UPDATEDT
+			FROM TBLWEEKCONCERNITEM I
+		    WHERE DELYN='N' 
+		    <if test="astgrpid !=null and astgrpid != 0">
+		    	AND ASTGRPID=#{astgrpid}
+		    </if>
+		    ORDER BY TO_NUMBER(ASTGRPID), TO_NUMBER(SORTBY)
+		) A
+		
+ 	</select>
+ 	
+ 	<select id="selectConcernItem" parameterType="ncsys.com.isms.concern.service.model.ConcernItem" 
+ 		resultType="ncsys.com.isms.concern.service.model.ConcernItem">
+			SELECT 
+			     ASTGRPID
+			    ,CCNITEMCD
+			    ,CCNITEMNM
+			    ,CCNVALUE
+			    ,ACTIONPLAN
+			    ,ACTIONPERIOD
+			    ,USEYN
+			    ,SORTBY
+			    ,INPUTID
+			    ,INPUTDT
+			    ,UPDATEID
+			    ,UPDATEDT
+			FROM TBLWEEKCONCERNITEM I
+		    WHERE ASTGRPID= #{astgrpid} AND CCNITEMCD = #{ccnitemcd}
+ 	</select>
+ 	
+ 	<insert id="insertConcernItem" parameterType="ncsys.com.isms.concern.service.model.ConcernItem" >
+		INSERT INTO TBLWEEKCONCERNITEM
+		(
+		     ASTGRPID
+		    ,CCNITEMCD
+		    ,CCNITEMNM
+		    ,CCNVALUE
+		    ,ACTIONPLAN
+		    ,ACTIONPERIOD
+		    ,USEYN
+		    ,SORTBY
+		    ,INPUTID
+		    ,INPUTDT
+		    ,UPDATEID
+		    ,UPDATEDT
+		)
+		VALUES 
+		(
+		     #{astgrpid, jdbcType=VARCHAR}
+			,#{ccnitemcd, jdbcType=VARCHAR}
+			,#{ccnitemnm, jdbcType=VARCHAR}
+			,#{ccnvalue, jdbcType=VARCHAR}
+			,#{actionplan, jdbcType=VARCHAR}
+			,#{actionperiod, jdbcType=VARCHAR}
+			,#{useyn, jdbcType=VARCHAR}
+			,#{sortby}
+			,#{userId, jdbcType=VARCHAR}
+			,SYSDATE
+			,#{userId, jdbcType=VARCHAR}
+			,SYSDATE
+		)  
+ 	</insert>
+  	<update id="updateConcernItem" parameterType="ncsys.com.isms.concern.service.model.ConcernItem" >
+		UPDATE TBLWEEKCONCERNITEM
+		SET
+		     ASTGRPID       = #{astgrpid}
+		    ,CCNITEMCD      = #{ccnitemcd, jdbcType=VARCHAR}
+		    ,CCNITEMNM      = #{ccnitemnm, jdbcType=VARCHAR}
+			,CCNVALUE       = #{ccnvalue, jdbcType=VARCHAR}
+			,ACTIONPLAN     = #{actionplan, jdbcType=VARCHAR}
+			,ACTIONPERIOD   = #{actionperiod, jdbcType=VARCHAR}
+			,USEYN        = #{useyn}
+			,SORTBY       = #{sortby}
+			,UPDATEID     = #{userId}
+			,UPDATEDT     = SYSDATE
+		WHERE ASTGRPID = #{oldAstgrpid}
+		 AND CCNITEMCD = #{oldCcnitemcd}
+ 	</update>
+  	
+  	<update id="deleteConcernItem" parameterType="ncsys.com.isms.concern.service.model.ConcernItem" >
+		UPDATE TBLWEEKCONCERNITEM
+		SET
+		     DELYN = 'Y'
+		    ,UPDATEID = #{userId}
+		    ,UPDATEDT = SYSDATE
+		WHERE ASTGRPID = #{oldAstgrpid}
+		 AND CCNITEMCD = #{oldCcnitemcd} 
+ 	</update>
+ 	
+ 	
+ 	
+ 	 
+</mapper>

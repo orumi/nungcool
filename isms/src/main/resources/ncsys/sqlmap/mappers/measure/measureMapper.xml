@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="ncsys.com.isms.measure.service.mapper.MeasureMapper">
+ 	
+ 	
+ 	<select id="selectMeasureDetailList" parameterType="ncsys.com.isms.measure.service.model.MeasureList" 
+ 		resultType="ncsys.com.isms.measure.service.model.MeasureList">
+	    
+	        SELECT ROWNUM ROWIDX, 
+	                   PIVERID, MSRDTLID, 
+	                   PIFLDID, PIFLDNM, FSORT,
+	                   FCNT,
+	                   FNUM,  
+	                   MSRID, MSRNAME, RSORT,
+	                   RCNT,
+	                   RNUM,
+	                   DSORT,
+	                   MSRDTLNM, 
+	                   MSRDTL,
+	                   CERTIACT, 
+	                   CALMTD
+	        FROM 
+	        (       
+	            SELECT V.PIVERID, MSRDTLID, 
+	                   D.PIFLDID,F.PIFLDNM,F.SORTBY FSORT,
+	                   COUNT(D.PIFLDID) OVER (PARTITION BY D.PIFLDID) FCNT,
+	                   ROW_NUMBER() OVER (PARTITION BY D.PIFLDID ORDER BY F.SORTBY,R.SORTBY,D.SORTBY) FNUM,  
+	                   D.MSRID, R.MSRNAME, R.SORTBY RSORT,
+	                   COUNT(D.MSRID) OVER (PARTITION BY D.PIFLDID, D.MSRID) RCNT,
+	                   ROW_NUMBER() OVER (PARTITION BY D.PIFLDID, D.MSRID ORDER BY F.SORTBY,R.SORTBY,D.SORTBY) RNUM,
+	                   D.SORTBY DSORT, 
+	                   D.MSRDTLNM, D.MSRDTL,
+	                   D.CERTIACT, D.CALMTD
+	            FROM TBLPIMEASUREDETAIL D, 
+	                 TBLPIVERSION V,
+	                 TBLPIFIELD F,
+	                 TBLPIMEASURE R 
+	            WHERE D.PIVERID=V.PIVERID
+	                  AND V.PIVERID = #{versionId,jdbcType=NUMERIC}
+	                  AND D.PIFLDID = F.PIFLDID
+	                  AND D.MSRID = R.MSRID
+	                   <if test="fieldId !=null and fieldId != 0">
+	                  AND D.PIFLDID = #{fieldId,jdbcType=NUMERIC}
+	                  </if>
+	            ORDER BY PIVERID,FSORT,RSORT,DSORT  
+	         ) L  
+         
+         
+ 	</select>
+ 	
+
+ 	
+ 	
+ 	<insert id="insertMeasureDetail" parameterType="ncsys.com.isms.measure.service.model.MeasureDetail" >
+		
+		INSERT INTO TBLPIMEASUREDETAIL 
+            (MSRDTLID,PIVERID,PIFLDID,MSRID,MSRDTLNM,MSRDTL,CERTIACT,PROOFPDS,CALMTD,SORTBY, INPUTID,INPUTDT,UPDATEID,UPDATEDT) 
+        VALUES (
+            SQ_MEASUREDETAIL.NEXTVAL
+            ,#{piverid}
+            ,#{pifldid}
+            ,#{msrid}
+            ,#{msrdtlnm,jdbcType=VARCHAR}
+            ,#{msrdtl,jdbcType=VARCHAR}
+            ,#{certiact,jdbcType=VARCHAR}
+            ,#{proofpds,jdbcType=VARCHAR}
+            ,#{calmtd,jdbcType=VARCHAR}
+            ,#{sortby,jdbcType=NUMERIC}
+            ,#{userId}
+            ,SYSDATE
+            ,#{userId}
+            ,SYSDATE
+            )
+ 	</insert>
+  	<update id="updateMeasureDetail" parameterType="ncsys.com.isms.measure.service.model.MeasureDetail" >
+		UPDATE TBLPIMEASUREDETAIL SET 
+            PIVERID    = #{piverid},
+            PIFLDID    = #{pifldid},
+            MSRID      = #{msrid},
+            MSRDTLNM   = #{msrdtlnm,jdbcType=VARCHAR},
+            MSRDTL     = #{msrdtl,jdbcType=VARCHAR},
+            CERTIACT   = #{certiact,jdbcType=VARCHAR},
+            PROOFPDS   = #{proofpds,jdbcType=VARCHAR},
+            CALMTD     = #{calmtd,jdbcType=VARCHAR},
+            SORTBY     = #{sortby},
+            UPDATEID = #{userId},
+            UPDATEDT = SYSDATE
+        WHERE 
+        MSRDTLID = #{msrdtlid}     
+ 	</update>
+  	
+  	<delete id="deleteMeasureDetail" parameterType="ncsys.com.isms.measure.service.model.MeasureDetail" >
+		DELETE FROM TBLPIMEASUREDETAIL WHERE 
+        MSRDTLID = #{msrdtlid}     
+ 	</delete>
+ 	 
+  	<select id="selectMeasureDetail" parameterType="ncsys.com.isms.measure.service.model.MeasureDetail" 
+  		resultType="ncsys.com.isms.measure.service.model.MeasureDetail">
+  		
+		SELECT MSRDTLID,PIVERID,PIFLDID,MSRID,MSRDTLNM,MSRDTL,CERTIACT,PROOFPDS,CALMTD,SORTBY FROM TBLPIMEASUREDETAIL
+        WHERE MSRDTLID = #{msrdtlid}     
+        
+ 	</select>
+ 	
+ 	
+ 	<!-- select init infor  -->
+ 	<select id="selectVersion" resultType="ncsys.com.isms.measure.service.model.Version">
+	 	SELECT PIVERID, PIVERNM, SORTBY
+		FROM TBLPIVERSION WHERE USEYN='Y'
+		ORDER BY SORTBY
+ 	</select>
+ 	
+ 	
+ 	<select id="selectFiled" resultType="ncsys.com.isms.measure.service.model.Field">
+		SELECT PIFLDID, PIFLDNM, SORTBY
+		FROM TBLPIFIELD WHERE USEYN='Y'
+		ORDER BY SORTBY
+ 	</select>
+ 	
+ 	<select id="selectMeasure" resultType="ncsys.com.isms.measure.service.model.Measure">
+		SELECT MSRID,MSRNAME,SORTBY
+		FROM TBLPIMEASURE WHERE USEYN='Y'
+		ORDER BY SORTBY
+ 	</select> 	
+ 	
+ 	
+ 	<!-- field  -->
+ 	<insert id="insertMeasureField" parameterType="ncsys.com.isms.measure.service.model.Field" >
+		INSERT INTO TBLPIFIELD 
+            (PIFLDID, PIFLDNM, USEYN,SORTBY, INPUTID,INPUTDT,UPDATEID,UPDATEDT) 
+        VALUES 
+        	(
+            SQ_FIELD.NEXTVAL
+            ,#{pifldnm}
+            ,'Y'
+            ,#{sortby}
+            ,#{userId}
+            ,SYSDATE
+            ,#{userId}
+            ,SYSDATE
+            )
+ 	</insert>
+  	<update id="updateMeasureField" parameterType="ncsys.com.isms.measure.service.model.Field" >
+		UPDATE TBLPIFIELD SET 
+            PIFLDNM    = #{pifldnm},
+            SORTBY   = #{sortby},
+            UPDATEID = #{userId},
+            UPDATEDT = SYSDATE
+        WHERE 
+        	PIFLDID    = #{pifldid}
+ 	</update>
+  	
+  	<update id="deleteMeasureField" parameterType="ncsys.com.isms.measure.service.model.Field" >
+		UPDATE TBLPIFIELD SET 
+            USEYN   = 'N',
+            UPDATEID = #{userId},
+            UPDATEDT = SYSDATE
+        WHERE 
+        	PIFLDID    = #{pifldid}     
+ 	</update>
+ 	
+ 	
+ 	
+ 	<!-- measure  -->
+ 	<insert id="insertMeasure" parameterType="ncsys.com.isms.measure.service.model.Measure" >
+		INSERT INTO	TBLPIMEASURE 
+            (MSRID, MSRNAME, USEYN, SORTBY, INPUTID,INPUTDT,UPDATEID,UPDATEDT) 
+        VALUES 
+        	(
+            SQ_MEASURE.NEXTVAL
+            ,#{msrname}
+            ,'Y'
+            ,#{sortby}
+            ,#{userId}
+            ,SYSDATE
+            ,#{userId}
+            ,SYSDATE
+            )
+ 	</insert>
+  	<update id="updateMeasure" parameterType="ncsys.com.isms.measure.service.model.Measure" >
+		UPDATE TBLPIMEASURE SET 
+            MSRNAME    = #{msrname},
+            SORTBY   = #{sortby},
+            UPDATEID = #{userId},
+            UPDATEDT = SYSDATE
+        WHERE 
+        	MSRID    = #{msrid}
+ 	</update>
+  	
+  	<update id="deleteMeasure" parameterType="ncsys.com.isms.measure.service.model.Measure" >
+		UPDATE TBLPIMEASURE SET 
+            USEYN   = 'N',
+            UPDATEID = #{userId},
+            UPDATEDT = SYSDATE
+        WHERE 
+        	MSRID    = #{msrid}     
+ 	</update>
+ 	
+ 	
+	<!-- vision  -->
+ 	<insert id="insertVersion" parameterType="ncsys.com.isms.measure.service.model.Version" >
+		INSERT INTO	TBLPIVERSION 
+            (PIVERID, PIVERNM, USEYN, SORTBY, INPUTID, INPUTDT, UPDATEID, UPDATEDT) 
+        VALUES 
+        	(
+            SQ_VERSION.NEXTVAL
+            ,#{pivernm}
+            ,'Y'
+            ,#{sortby}
+            ,#{userId}
+            ,SYSDATE
+            ,#{userId}
+            ,SYSDATE
+            )
+ 	</insert>
+  	<update id="updateVersion" parameterType="ncsys.com.isms.measure.service.model.Version" >
+		UPDATE TBLPIVERSION SET 
+            PIVERNM    = #{pivernm},
+            SORTBY   = #{sortby},
+            UPDATEID = #{userId},
+            UPDATEDT = SYSDATE
+        WHERE 
+        	PIVERID    = #{piverid}
+ 	</update>
+  	
+  	<update id="deleteVersion" parameterType="ncsys.com.isms.measure.service.model.Version" >
+		UPDATE TBLPIVERSION SET 
+            USEYN   = 'N',
+            UPDATEID = #{userId},
+            UPDATEDT = SYSDATE
+        WHERE 
+        	PIVERID    = #{piverid}     
+ 	</update>
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+</mapper>

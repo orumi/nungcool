@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="ncsys.com.isms.analysisConcern.service.mapper.AnalysisVerMapper">
+ 	
+ 	<!-- Asset Version  -->
+ 	<select id="selectAnalysisVerList" 
+ 	 resultType="ncsys.com.isms.analysisConcern.service.model.AnalysisVer">
+	    
+		SELECT 
+		     ANALYSISID
+		    ,ANALYSISNM
+		    ,VERSIONID
+		    ,(SELECT VERNM FROM TBLVERSION V WHERE V.VERID=A.VERSIONID) VERNM 
+		    ,ASSETVERID
+		    ,(SELECT ASTVERNM FROM TBLASSETVERSION V WHERE V.ASTVERID=A.ASSETVERID) ASTVERNM
+		    ,CRITERIAVERID
+		    ,(SELECT CTRVERNM FROM TBLCRITERIAVERSION V WHERE V.CTRVERID=A.CRITERIAVERID) CTRVERNM
+		    ,SORTBY
+		FROM
+		TBLRISKANALYSIS A
+		ORDER BY SORTBY
+		
+ 	</select>
+ 	
+ 	<select id="selectAnalysisVer" parameterType="ncsys.com.isms.analysisConcern.service.model.AnalysisVer" 
+ 		resultType="ncsys.com.isms.analysisConcern.service.model.AnalysisVer">
+		SELECT 
+		     ANALYSISID
+		    ,ANALYSISNM
+		    ,VERSIONID
+		    ,ASSETVERID
+		    ,CRITERIAVERID
+		    ,SORTBY
+		    ,INPUTID
+		    ,INPUTDT
+		    ,UPDATEID
+		    ,UPDATEDT    
+		FROM TBLRISKANALYSIS
+		WHERE ANALYSISID= #{analysisid}  
+ 	</select>
+ 	
+ 	<insert id="insertAnalysisVer" parameterType="ncsys.com.isms.analysisConcern.service.model.AnalysisVer" >
+		INSERT INTO TBLRISKANALYSIS
+		(
+		     ANALYSISID
+		    ,ANALYSISNM
+		    ,VERSIONID
+		    ,ASSETVERID
+		    ,CRITERIAVERID
+		    ,INPUTID
+		    ,INPUTDT
+		    ,UPDATEID
+		    ,UPDATEDT
+		    ,SORTBY 
+		)
+		VALUES
+		(
+		    SQ_ANALYVERSION.NEXTVAL
+			,#{analysisnm, jdbcType=VARCHAR}
+			,#{versionid, jdbcType=VARCHAR}
+			,#{assetverid, jdbcType=VARCHAR}
+			,#{criteriaverid, jdbcType=VARCHAR}
+
+			,#{userId, jdbcType=VARCHAR}
+			,SYSDATE
+			,#{userId, jdbcType=VARCHAR}
+			,SYSDATE
+			,#{sortby}
+		)  
+ 	</insert>
+  	<update id="updateAnalysisVer" parameterType="ncsys.com.isms.analysisConcern.service.model.AnalysisVer" >
+		UPDATE TBLRISKANALYSIS
+		SET
+		     ANALYSISNM     = #{analysisnm, jdbcType=VARCHAR}
+		    ,VERSIONID      = #{versionid, jdbcType=VARCHAR}
+			,ASSETVERID     = #{assetverid, jdbcType=VARCHAR}
+			,CRITERIAVERID  = #{criteriaverid, jdbcType=VARCHAR}
+			,SORTBY         = #{sortby}
+			,UPDATEID       = #{userId}
+			,UPDATEDT       = SYSDATE
+		WHERE ANALYSISID = #{analysisid}
+ 	</update>
+  	
+  	<delete id="deleteAnalysisVer" parameterType="ncsys.com.isms.analysisConcern.service.model.AnalysisVer" >
+		DELETE FROM TBLRISKANALYSIS
+		WHERE ANALYSISID = #{analysisid}
+ 	</delete>
+ 	
+ 	
+ 	
+ 	
+ 	 
+</mapper>

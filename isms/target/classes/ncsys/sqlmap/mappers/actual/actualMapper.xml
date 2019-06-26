@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="ncsys.com.isms.actual.service.mapper.ActualMngMapper">
+ 	
+ 	<select id="selectActualList" parameterType="ncsys.com.isms.actual.service.model.ActualList" 
+ 		resultType="ncsys.com.isms.actual.service.model.ActualList">
+	    
+	    
+		SELECT * FROM
+		(
+		    SELECT ROWNUM ROWIDX, 
+		    	   #{year, jdbcType=VARCHAR} YEAR,
+		    	   VERID, RGLDTLID, 
+		           FLDID, FLDNM, FSORT,
+		           COUNT(FLDID) OVER (PARTITION BY FLDID) FCNT,
+		           ROW_NUMBER() OVER (PARTITION BY FLDID ORDER BY FSORT,RSORT,DSORT,PROOFID) FNUM,   
+		           RGLID, RGLNM, RSORT,
+		           COUNT(RGLID) OVER (PARTITION BY FLDID, RGLID) RCNT,
+		           ROW_NUMBER() OVER (PARTITION BY FLDID, RGLID ORDER BY FSORT,RSORT,DSORT,PROOFID) RNUM,
+		           RGLDTLNM,
+		           ISMSSTD,
+		           DSORT,
+		           COUNT(RGLDTLID) OVER (PARTITION BY FLDID, RGLID, RGLDTLID) DCNT,
+		           ROW_NUMBER() OVER (PARTITION BY FLDID, RGLID, RGLDTLID ORDER BY FSORT,RSORT,DSORT,PROOFID) DNUM,
+		           PROOFID,
+		           PROOFITEM, 
+		           FREQUENCY,
+		           OWNERTYPE,
+		           OWNER,
+		           PROE
+		    FROM 
+		    (       
+		        SELECT V.VERID, D.RGLDTLID, 
+		               D.FLDID, F.FLDNM, F.SORTBY FSORT,
+		               D.RGLID, R.RGLNM, R.SORTBY RSORT,
+		               D.SORTBY DSORT,
+		               D.RGLDTLNM, MGRGOAL,
+		               D.ISMSSTD,
+		               D.ADJUSTYN, D.ADJUSTCNT,
+		               P.PROOFID,
+		               P.PROOFITEM, 
+		               P.FREQUENCY,
+		               P.OWNERTYPE,
+		               P.OWNER,
+		               P.PROE
+		        FROM TBLREGULATIONDETAIL D, 
+		             TBLVERSION V,
+		             TBLFIELD F,
+		             TBLREGULATION R,
+		             TBLPROOF P 
+		        WHERE D.VERID=V.VERID
+		              AND V.VERID = #{versionId,jdbcType=NUMERIC}
+			          <if test="fieldId !=null and fieldId != 0">
+			          AND D.FLDID = #{fieldId,jdbcType=NUMERIC}
+			          </if>
+		              AND D.FLDID = F.FLDID
+		              AND D.RGLID = R.RGLID
+		              AND D.RGLDTLID = P.RGLDTLID  
+		              ORDER BY VERID,FSORT,RSORT,DSORT,RGLDTLID,PROOFID 
+		    ) D
+		        ORDER BY VERID,FSORT,RSORT,DSORT,RGLDTLID,PROOFID  
+		) P
+		LEFT JOIN
+		(
+		    SELECT PROOFID PFID, YEAR, 
+		        SUM(ACT01) A01,
+		        SUM(ACT02) A02,
+		        SUM(ACT03) A03,
+		        SUM(ACT04) A04,
+		        SUM(ACT05) A05,
+		        SUM(ACT06) A06,
+		        SUM(ACT07) A07,
+		        SUM(ACT08) A08,
+		        SUM(ACT09) A09,
+		        SUM(ACT10) A10,
+		        SUM(ACT11) A11,
+		        SUM(ACT12) A12
+		    FROM
+		    (
+		        SELECT PROOFID,YEAR,MONTH,ACTUAL,
+		            DECODE(MONTH,'01',ACTUAL, NULL) ACT01,
+		            DECODE(MONTH,'02',ACTUAL, NULL) ACT02,
+		            DECODE(MONTH,'03',ACTUAL, NULL) ACT03,
+		            DECODE(MONTH,'04',ACTUAL, NULL) ACT04,
+		            DECODE(MONTH,'05',ACTUAL, NULL) ACT05,
+		            DECODE(MONTH,'06',ACTUAL, NULL) ACT06,
+		            DECODE(MONTH,'07',ACTUAL, NULL) ACT07,
+		            DECODE(MONTH,'08',ACTUAL, NULL) ACT08,
+		            DECODE(MONTH,'09',ACTUAL, NULL) ACT09,
+		            DECODE(MONTH,'10',ACTUAL, NULL) ACT10,
+		            DECODE(MONTH,'11',ACTUAL, NULL) ACT11,
+		            DECODE(MONTH,'12',ACTUAL, NULL) ACT12
+		        FROM TBLPROOFACTUAL WHERE YEAR=#{year}
+		    ) GROUP BY PROOFID, YEAR  
+		) A
+		ON P.PROOFID=A.PFID 	    
+		ORDER BY VERID,FSORT,RSORT,DSORT,RGLDTLID,PROOFID  
+ 	</select>
+ 	
+ 	<select id="selectActualDetail" parameterType="ncsys.com.isms.actual.service.model.ActualDetail" 
+ 		resultType="ncsys.com.isms.actual.service.model.ActualDetail">
+	    
+	    
+		SELECT         
+			   VERID, RGLDTLID, 
+               FLDID, FLDNM,
+               RGLID, RGLNM,
+               RGLDTLNM,
+               ISMSSTD,
+               PROOFID,
+               PROOFITEM, 
+               FREQUENCY,
+               OWNERTYPE,
+               (SELECT CODE_NM FROM COMTCCMMNDETAILCODE C WHERE C.CODE_ID='COM077' AND C.CODE=OWNERTYPE ) OWNERTYPENM,
+               OWNER,
+               PROE,
+               #{year,jdbcType=VARCHAR} YEAR,
+               #{month,jdbcType=VARCHAR} MONTH,
+               ACTUAL,
+               ACTUALDETAIL
+        FROM 
+        (       
+            SELECT V.VERID, D.RGLDTLID, 
+                   D.FLDID, F.FLDNM, 
+                   D.RGLID, R.RGLNM, 
+                   D.RGLDTLNM, MGRGOAL,
+                   D.ISMSSTD,
+                   P.PROOFID,
+                   P.PROOFITEM, 
+                   P.FREQUENCY,
+                   P.OWNERTYPE,
+                   P.OWNER,
+                   P.PROE,
+                   A.ACTUAL,A.ACTUALDETAIL
+            FROM TBLREGULATIONDETAIL D, 
+                 TBLVERSION V,
+                 TBLFIELD F,
+                 TBLREGULATION R,
+                 TBLPROOF P,
+                 (SELECT PROOFID APID,YEAR,MONTH,ACTUAL,ACTUALDETAIL
+                    FROM TBLPROOFACTUAL WHERE PROOFID=#{proofid, jdbcType=NUMERIC} AND YEAR=#{year,jdbcType=VARCHAR} AND MONTH=#{month,jdbcType=VARCHAR}) A  
+            WHERE D.VERID=V.VERID
+                  AND P.PROOFID=#{proofid, jdbcType=NUMERIC}
+                  AND D.FLDID = F.FLDID
+                  AND D.RGLID = R.RGLID
+                  AND D.RGLDTLID = P.RGLDTLID
+                  AND P.PROOFID=A.APID(+)    
+        ) D
+		    
+ 	</select>
+ 	
+ 	
+ 	
+ 	<insert id="insertActualDetail" parameterType="ncsys.com.isms.actual.service.model.ActualDetail" >
+		INSERT INTO TBLPROOFACTUAL 
+            (PROOFID, YEAR, MONTH, ACTUAL, ACTUALDETAIL, INPUTID, INPUTDT, UPDATEID, UPDATEDT) 
+        VALUES (
+        	#{proofid}
+        	,#{year,jdbcType=VARCHAR}
+            ,#{month,jdbcType=VARCHAR}
+            ,#{actual}
+            ,#{actualdetail}
+            ,#{userId}
+            ,SYSDATE
+            ,#{userId,jdbcType=VARCHAR}
+            ,SYSDATE
+            )
+ 	</insert>
+  	<update id="updateActualDetail" parameterType="ncsys.com.isms.actual.service.model.ActualDetail" >
+		UPDATE TBLPROOFACTUAL SET 
+            ACTUAL = #{actual},
+            ACTUALDETAIL = #{actualdetail}, 
+            UPDATEID = #{userId},
+            UPDATEDT = SYSDATE
+        WHERE 
+        	PROOFID = #{proofid}     
+        	AND YEAR = #{year}
+        	AND MONTH = #{month}     
+ 	</update>
+  	
+  	<delete id="deleteActualDetail" parameterType="ncsys.com.isms.actual.service.model.ActualDetail" >
+		DELETE FROM TBLPROOFACTUAL 
+		WHERE 
+        	PROOFID = #{proofid}     
+        	AND YEAR = #{year}
+        	AND MONTH = #{month}    
+ 	</delete>
+ 	
+ 	
+ 	<insert id="insertActualFile" parameterType="ncsys.com.isms.actual.service.model.ActualFile" >
+		INSERT INTO TBLPROOFATTACH 
+            (PROOFID, YEAR, MONTH, ATTACHSEQ, ORGINFILENAME,NEWNAME,STOREDFILEPATH,FILEEXT,INPUTID,INPUTDT) 
+        VALUES (
+        	#{proofid}
+        	,#{year}
+        	,#{month}
+        	,SQ_FILEATTACH.NEXTVAL
+        	,#{orginFileName}
+            ,#{newName}
+            ,#{storedFilePath}
+            ,#{fileExt}
+            ,#{userId}
+            ,SYSDATE
+        )
+ 	</insert>
+ 	
+ 	<delete id="deleteActualFile" parameterType="ncsys.com.isms.actual.service.model.ActualFile" >
+		DELETE FROM TBLPROOFATTACH 
+		WHERE 
+        	PROOFID = #{proofid}
+        	AND ATTACHSEQ = #{attachseq}    
+ 	</delete>
+ 	
+ 	
+ 	<select id="selectActualFiles" parameterType="ncsys.com.isms.actual.service.model.ActualFile" 
+ 		resultType="ncsys.com.isms.actual.service.model.ActualFile">
+		SELECT PROOFID, YEAR, MONTH, ATTACHSEQ, ORGINFILENAME, NEWNAME, STOREDFILEPATH, 
+		       FILEEXT,INPUTID,INPUTDT
+		FROM TBLPROOFATTACH 
+		WHERE PROOFID = #{proofid}
+			AND YEAR = #{year, jdbcType=VARCHAR }
+			AND MONTH = #{month, jdbcType=VARCHAR}
+		ORDER BY ATTACHSEQ    
+ 	</select>
+</mapper>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="ncsys.com.isms.weekTest.service.mapper.WeekTestMapper">
+ 	
+ 	<!-- Asset Version  -->
+ 	<select id="selectWeekTestItemList" parameterType="ncsys.com.isms.weekTest.service.model.WeekTestItem"
+ 	 resultType="ncsys.com.isms.weekTest.service.model.WeekTestItemList">
+	    
+		SELECT ROWNUM ROWIDX
+		    ,A.*
+		FROM (    
+		    SELECT 
+		         ASTGRPID
+		        ,(SELECT ASTGRPNM FROM TBLASSETGROUP G WHERE G.ASTGRPID=I.ASTGRPID ) ASTGRPNM 
+		        ,WKTSTFIELDID
+		        ,(SELECT CODE_NM FROM COMTCCMMNDETAILCODE C WHERE C.CODE_ID='COM079' AND C.CODE=I.WKTSTFIELDID) WKTSTFIELDNM
+		        ,(SELECT CODE FROM COMTCCMMNDETAILCODE C WHERE C.CODE_ID='COM079' AND C.CODE=I.WKTSTFIELDID) ORDERBY
+		        ,TSTITEMCD
+		        ,TSTITEMNM
+		        ,IMPORTANCE
+		        ,TSTSCR
+		        ,USEYN
+		        ,DELYN
+		        ,SORTBY
+		        ,INPUTID
+		        ,TO_CHAR(INPUTDT,'') INPUTDT
+		        ,UPDATEID
+		        ,TO_CHAR(UPDATEDT,'') UPDATEDT
+		    FROM 
+		    TBLWEEKTESTITEM I
+		    WHERE DELYN='N' 
+		    <if test="astgrpid !=null and astgrpid != 0">
+		    	AND ASTGRPID=#{astgrpid}
+		    </if>
+		    ORDER BY TO_NUMBER(ASTGRPID), TO_NUMBER(ORDERBY), TO_NUMBER(SORTBY)
+		) A
+		
+ 	</select>
+ 	
+ 	<select id="selectWeekTestItem" parameterType="ncsys.com.isms.weekTest.service.model.WeekTestItem" 
+ 		resultType="ncsys.com.isms.weekTest.service.model.WeekTestItem">
+		    SELECT 
+		         ASTGRPID
+		        ,(SELECT ASTGRPNM FROM TBLASSETGROUP G WHERE G.ASTGRPID= I.ASTGRPID) ASTGRPNM
+		        ,TSTITEMCD
+		        ,WKTSTFIELDID
+		        ,(SELECT CODE_NM FROM COMTCCMMNDETAILCODE C WHERE C.CODE_ID='COM079' AND C.CODE=I.WKTSTFIELDID) WDTSTFIELDNM
+		        ,TSTITEMNM
+		        ,IMPORTANCE
+		        ,TSTSCR
+		        ,USEYN
+		        ,DELYN
+		        ,SORTBY
+		        ,INPUTID
+		        ,TO_CHAR(INPUTDT,'') INPUTDT
+		        ,UPDATEID
+		        ,TO_CHAR(UPDATEDT,'') UPDATEDT
+		    FROM 
+		    TBLWEEKTESTITEM I
+		    WHERE ASTGRPID= #{astgrpid} AND TSTITEMCD = #{tstitemcd}
+ 	</select>
+ 	
+ 	<insert id="insertWeekTestItem" parameterType="ncsys.com.isms.weekTest.service.model.WeekTestItem" >
+		INSERT INTO TBLWEEKTESTITEM
+		(
+		     ASTGRPID
+		    ,WKTSTFIELDID
+		    ,TSTITEMCD
+		    ,TSTITEMNM
+		    ,IMPORTANCE
+		    ,TSTSCR
+		    ,USEYN
+		    ,SORTBY
+		    ,INPUTID
+		    ,INPUTDT
+		    ,UPDATEID
+		    ,UPDATEDT
+		)
+		VALUES 
+		(
+		     #{astgrpid, jdbcType=VARCHAR}
+			,#{wktstfieldid, jdbcType=VARCHAR}
+			,#{tstitemcd, jdbcType=VARCHAR}
+			,#{tstitemnm, jdbcType=VARCHAR}
+			,#{importance, jdbcType=VARCHAR}
+			,#{tstscr, jdbcType=VARCHAR}
+			,#{useyn, jdbcType=VARCHAR}
+			,#{sortby}
+			,#{userId, jdbcType=VARCHAR}
+			,SYSDATE
+			,#{userId, jdbcType=VARCHAR}
+			,SYSDATE
+		)  
+ 	</insert>
+  	<update id="updateWeekTestItem" parameterType="ncsys.com.isms.weekTest.service.model.WeekTestItem" >
+		UPDATE TBLWEEKTESTITEM
+		SET
+		     ASTGRPID     = #{astgrpid}
+		    ,WKTSTFIELDID = #{wktstfieldid}
+			,TSTITEMCD    = #{tstitemcd}
+			,TSTITEMNM    = #{tstitemnm}
+			,IMPORTANCE   = #{importance}
+			,TSTSCR       = #{tstscr}
+			,USEYN        = #{useyn}
+			,SORTBY       = #{sortby}
+			,UPDATEID     = #{userId}
+			,UPDATEDT     = SYSDATE
+		WHERE ASTGRPID = #{oldAstgrpid}
+		 AND TSTITEMCD = #{oldTstitemcd}
+ 	</update>
+  	
+  	<update id="deleteWeekTestItem" parameterType="ncsys.com.isms.weekTest.service.model.WeekTestItem" >
+		UPDATE TBLWEEKTESTITEM
+		SET
+		     DELYN = 'Y'
+		    ,UPDATEID = #{userId}
+		    ,UPDATEDT = SYSDATE
+		WHERE ASTGRPID = #{oldAstgrpid}
+		 AND TSTITEMCD = #{oldTstitemcd} 
+ 	</update>
+ 	
+ 	
+ 	
+ 	<!-- WEEKTEST FIELD   --> 
+ 	 
+ 	<select id="selectWeekTestFieldList" resultType="ncsys.com.isms.weekTest.service.model.WeekTestField">
+	    
+		SELECT 
+		     CODE WKTSTFIELDID 
+		    ,CODE_NM WKTSTFIELDNM 
+		FROM COMTCCMMNDETAILCODE WHERE CODE_ID='COM079' 
+		AND USE_AT = 'Y'
+		ORDER BY TO_NUMBER(CODE)
+		
+ 	</select>
+ 	
+ 	 
+</mapper>

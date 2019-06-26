@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="ncsys.com.isms.analysisConcern.service.mapper.AnalysisResultMapper">
+ 	
+ 	<!-- REGULATION RESULT  -->
+ 	<select id="selectRegulationResult" parameterType="ncsys.com.isms.analysisConcern.service.model.AnalysisVer" 
+ 	resultType="ncsys.com.isms.analysisConcern.service.model.AnalysisResult">
+ 	 
+			SELECT 
+			    'REGUALTION' TYPENM
+			    ,VERID, '관리체계' VERNM 
+			    ,COUNT(VERID) CNTT
+			    ,SUM(RS2) CNTRS2
+			    ,SUM(RS3) CNTRS3
+			    ,SUM(RS4) CNTRS4
+			    ,SUM(RS5) CNTRS5
+			    ,SUM(RS6) CNTRS6
+			    ,SUM(RS7) CNTRS7
+			    ,SUM(RS8) CNTRS8
+			    ,SUM(RS9) CNTRS9
+			    ,SUM(RS0) CNTRS0
+			FROM (    
+			SELECT 
+			    VERID
+			    ,DECODE(RISKSCR,2,1) RS2
+			    ,DECODE(RISKSCR,3,1) RS3
+			    ,DECODE(RISKSCR,4,1) RS4
+			    ,DECODE(RISKSCR,5,1) RS5
+			    ,DECODE(RISKSCR,6,1) RS6
+			    ,DECODE(RISKSCR,7,1) RS7
+			    ,DECODE(RISKSCR,8,1) RS8
+			    ,CASE WHEN (RISKSCR > 8) THEN 1 ELSE 0 END RS9
+			    ,DECODE(RISKSCR,0,1) RS0
+			FROM
+			(
+			WITH ASETAVG AS
+			(
+			    SELECT 
+			         ROUND(AVG(IMPTC),1) AVGC
+			        ,ROUND(AVG(IMPTI),1) AVGI
+			        ,ROUND(AVG(IMPTA),1) AVGA
+			        ,ROUND(AVG(IMPTC),1) + ROUND(AVG(IMPTI),1)+ ROUND(AVG(IMPTA),1) SUMAVG
+			        ,ROUND((ROUND(AVG(IMPTC),1) + ROUND(AVG(IMPTI),1)+ ROUND(AVG(IMPTA),1))/3) AVGGRD
+			    FROM (    
+			    SELECT 
+			         ASTVERID
+			        ,ASSETID
+			        ,IMPTC
+			        ,IMPTI
+			        ,IMPTA
+			    FROM TBLASSET WHERE ASTVERID=(SELECT ASSETVERID FROM TBLRISKANALYSIS WHERE ANALYSISID=#{analysisid, jdbcType=VARCHAR})  AND CERTIYN='Y' 
+			    ) GROUP BY ASTVERID
+			)
+			SELECT VERID, RGLDTLID, 
+			       CONCERNLEVEL,
+			       CONCERNLVLSCR,
+			       PLANYN,
+			       PLANSCR,
+			       CONCERNLVLSCR*PLANSCR RISKLVL,
+			       (SELECT AVGGRD FROM ASETAVG) AVGGRD,
+			       CASE WHEN CONCERNLVLSCR*PLANSCR=0 THEN 0 ELSE (CONCERNLVLSCR*PLANSCR)+(SELECT AVGGRD FROM ASETAVG) END RISKSCR
+			FROM 
+			(       
+			    SELECT V.VERID, RGLDTLID 
+			    FROM TBLREGULATIONDETAIL D, 
+			         TBLVERSION V,
+			         TBLFIELD F,
+			         TBLREGULATION R 
+			    WHERE D.VERID=V.VERID
+			          AND D.VERID = (SELECT VERSIONID FROM TBLRISKANALYSIS WHERE ANALYSISID=#{analysisid, jdbcType=VARCHAR}) 
+			          AND D.FLDID = F.FLDID
+			          AND D.RGLID = R.RGLID
+			    ORDER BY VERID
+			)D 
+			LEFT JOIN
+			(
+			SELECT 
+			     RGLDTLID RDTLID
+			    ,CONCERNLEVEL
+			    ,CASE WHEN CONCERNLEVEL='H' THEN 3
+			        WHEN CONCERNLEVEL='M' THEN 2
+			        WHEN CONCERNLEVEL='L' THEN 1
+			        ELSE 0 END CONCERNLVLSCR
+			    ,PLANYN
+			    ,CASE WHEN PLANYN='Y' THEN 1
+			        WHEN PLANYN='P' THEN 2
+			        WHEN PLANYN='N' THEN 3
+			        ELSE 0 END PLANSCR
+			FROM TBLREGULATIONCONCERN
+			) C
+			ON D.RGLDTLID = C.RDTLID
+			)
+			) GROUP BY VERID
+		
+ 	</select>
+ 	
+ 	 	<!-- CRITERIA RESULT  -->
+ 	<select id="selectCriteriaResult" parameterType="ncsys.com.isms.analysisConcern.service.model.AnalysisVer" 
+ 	resultType="ncsys.com.isms.analysisConcern.service.model.AnalysisResult">
+ 	 
+		SELECT 
+		    'CRITERIAL' TYPENM
+		    ,CTRVERID VERID, '법적준거성' VERNM 
+		    ,COUNT(CTRVERID) CNTT
+		    ,SUM(RS2) CNTRS2
+		    ,SUM(RS3) CNTRS3
+		    ,SUM(RS4) CNTRS4
+		    ,SUM(RS5) CNTRS5
+		    ,SUM(RS6) CNTRS6
+		    ,SUM(RS7) CNTRS7
+		    ,SUM(RS8) CNTRS8
+		    ,SUM(RS9) CNTRS9
+		    ,SUM(RS0) CNTRS0
+		FROM (    
+		SELECT 
+		     CTRVERID
+		    ,DECODE(RISKSCR,2,1) RS2
+		    ,DECODE(RISKSCR,3,1) RS3
+		    ,DECODE(RISKSCR,4,1) RS4
+		    ,DECODE(RISKSCR,5,1) RS5
+		    ,DECODE(RISKSCR,6,1) RS6
+		    ,DECODE(RISKSCR,7,1) RS7
+		    ,DECODE(RISKSCR,8,1) RS8
+		    ,CASE WHEN (RISKSCR > 8) THEN 1 ELSE 0 END RS9
+		    ,DECODE(RISKSCR,0,1) RS0
+		FROM
+		(
+		    WITH ASETAVG AS
+		    (
+		        SELECT 
+		             ROUND(AVG(IMPTC),1) AVGC
+		            ,ROUND(AVG(IMPTI),1) AVGI
+		            ,ROUND(AVG(IMPTA),1) AVGA
+		            ,ROUND(AVG(IMPTC),1) + ROUND(AVG(IMPTI),1)+ ROUND(AVG(IMPTA),1) SUMAVG
+		            ,ROUND((ROUND(AVG(IMPTC),1) + ROUND(AVG(IMPTI),1)+ ROUND(AVG(IMPTA),1))/3) AVGGRD
+		        FROM (    
+		        SELECT 
+		             ASTVERID
+		            ,ASSETID
+		            ,IMPTC
+		            ,IMPTI
+		            ,IMPTA
+		        FROM TBLASSET WHERE ASTVERID=(SELECT ASSETVERID FROM TBLRISKANALYSIS WHERE ANALYSISID=#{analysisid, jdbcType=VARCHAR}) AND CERTIYN='Y' 
+		        ) GROUP BY ASTVERID
+		    )
+		    SELECT 
+		         CTRVERID
+		        ,CTRITEMID
+		        ,CURRENTSTATE
+		        ,GUIDELINE
+		        ,ARTICLE
+		        ,CTRCNT
+		        ,CTRCCN
+		        ,LEGAL
+		        ,PROTECT
+		        ,ACTIONPLAN
+		        ,RMK
+		        ,SORTBY
+		        ,LEGALSCR
+		        ,PROTECTSCR
+		        ,(LEGALSCR * PROTECTSCR) RISKLVL
+		        ,(SELECT AVGGRD FROM ASETAVG) AVGGRD
+		        ,CASE WHEN (LEGALSCR * PROTECTSCR)=0 THEN 0 ELSE (LEGALSCR * PROTECTSCR)+(SELECT AVGGRD FROM ASETAVG) END RISKSCR
+		    FROM            
+		    (
+		        SELECT 
+		             CTRVERID
+		            ,CTRITEMID
+		            ,CURRENTSTATE
+		            ,GUIDELINE
+		            ,ARTICLE
+		            ,CTRCNT
+		            ,CTRCCN
+		            ,LEGAL
+		            ,PROTECT
+		            ,ACTIONPLAN
+		            ,RMK
+		            ,SORTBY
+		            ,CASE WHEN LEGAL='H' THEN 3
+		                WHEN LEGAL='M' THEN 2
+		                WHEN LEGAL='L' THEN 1
+		                ELSE 0 END LEGALSCR
+		            ,CASE WHEN PROTECT='Y' THEN 1
+		                WHEN PROTECT='P' THEN 2
+		                WHEN PROTECT='N' THEN 3
+		                ELSE 0 END PROTECTSCR
+		        FROM TBLCRITERIAITEM
+		        WHERE CTRVERID=(SELECT CRITERIAVERID FROM TBLRISKANALYSIS WHERE ANALYSISID=#{analysisid, jdbcType=VARCHAR})
+		        ORDER BY SORTBY
+		    )
+		)
+		)   GROUP BY CTRVERID
+ 	</select>
+ 	
+ 	<!-- CONCERN RESULT  -->
+ 	<select id="selectConcernResult" parameterType="ncsys.com.isms.analysisConcern.service.model.AnalysisVer" 
+ 	resultType="ncsys.com.isms.analysisConcern.service.model.AnalysisResult">
+ 	 
+		SELECT 
+		    'CONCERN' TYPENM
+		    ,ASTGRPID VERID, ASTGRPNM VERNM, ASTGRPSORTBY SORTBY
+		    ,COUNT(ASTVERID) CNTT
+		    ,SUM(RS2) CNTRS2
+		    ,SUM(RS3) CNTRS3
+		    ,SUM(RS4) CNTRS4
+		    ,SUM(RS5) CNTRS5
+		    ,SUM(RS6) CNTRS6
+		    ,SUM(RS7) CNTRS7
+		    ,SUM(RS8) CNTRS8
+		    ,SUM(RS9) CNTRS9
+		    ,SUM(RS0) CNTRS0
+		FROM (    
+		    SELECT ASTVERID, ASTVERNM,ASTGRPID,ASTGRPNM,ASTGRPSORTBY
+		        ,DECODE(RISKSCR,2,1) RS2
+		        ,DECODE(RISKSCR,3,1) RS3
+		        ,DECODE(RISKSCR,4,1) RS4
+		        ,DECODE(RISKSCR,5,1) RS5
+		        ,DECODE(RISKSCR,6,1) RS6
+		        ,DECODE(RISKSCR,7,1) RS7
+		        ,DECODE(RISKSCR,8,1) RS8
+		        ,CASE WHEN (RISKSCR > 8 ) THEN 1 ELSE 0 END RS9
+		        ,DECODE(RISKSCR,0,1) RS0
+		    FROM (    
+		        SELECT
+		             X.ASTGRPID
+		            ,X.ASTGRPNM    
+		            ,X.ASTVERID
+		            ,X.ASTVERNM
+		            ,X.ASTGRPSORTBY
+		            ,X.ASSETID
+		            ,MGNNO
+		            ,ASSETNM
+		            ,ASSETDFN
+		            ,IMPTC
+		            ,IMPTI
+		            ,IMPTA
+		            ,IMPT
+		            ,IMPGRD
+		            ,AVGGRD
+		            ,WKTSTYN
+		            ,CERTIYN
+		            ,SORTBY
+		            ,I.CCNITEMCD,CCNVALUE
+		            ,ACTIONPERIOD, SBY
+		            ,D.CCNRST
+		            ,D.ACTIONDT
+		            ,D.COMPLETEYN
+		            ,DECODE(CCNRST,'Y',1,0) YCNT
+		            ,DECODE(CCNRST,'N',1,0) NCNT
+		            ,CASE WHEN CCNRST='N' AND COMPLETEYN='A' THEN AVGGRD+CCNVALUE ELSE 0 END RISKSCR
+		        FROM (
+		            SELECT 
+		                 G.ASTGRPNM
+		                ,G.SORTBY ASTGRPSORTBY
+		                ,A.ASTVERID
+		                ,(SELECT ASTVERNM FROM TBLASSETVERSION V WHERE V.ASTVERID=A.ASTVERID) ASTVERNM     
+		                ,G.ASTGRPID  
+		                ,ASSETID     
+		                ,MGNNO           
+		                ,ASSETNM     
+		                ,ASSETDFN    
+		                ,IMPTC       
+		                ,IMPTI       
+		                ,IMPTA 
+		                ,(IMPTC+IMPTI+IMPTA) IMPT
+		                ,CASE WHEN (IMPTC+IMPTI+IMPTA)>6 THEN '1등급'
+		                      WHEN (IMPTC+IMPTI+IMPTA)>4 THEN '2등급'
+		                      ELSE '3등급'
+		                 END IMPGRD  
+		                ,ROUND((ROUND((IMPTC),1) + ROUND((IMPTI),1)+ ROUND((IMPTA),1))/3) AVGGRD          
+		                ,WKTSTYN
+		                ,CERTIYN         
+		                ,A.SORTBY      
+		            FROM 
+		            (SELECT * FROM TBLASSET WHERE CERTIYN = 'Y' AND ASTVERID = (SELECT ASSETVERID FROM TBLRISKANALYSIS WHERE ANALYSISID=#{analysisid, jdbcType=VARCHAR})) A, 
+		            TBLASSETGROUP G
+		            WHERE 
+		                A.ASTGRPID(+)=G.ASTGRPID
+		                AND G.DELYN='N' AND G.USEYN='Y'
+		            ORDER BY SORTBY
+		        ) X
+		        LEFT JOIN
+		        (    
+		            SELECT CCNITEMCD,CCNVALUE,ACTIONPERIOD, SORTBY SBY FROM
+		            TBLWEEKCONCERNITEM
+		            WHERE DELYN='N' AND USEYN='Y'    
+		        ) I
+		        ON 1=1
+		        LEFT JOIN
+		        (
+		            SELECT 
+		                 D.ASTVERID
+		                ,D.ASTGRPID
+		                ,D.ASSETID
+		                ,D.CCNITEMCD
+		                ,D.CCNRST
+		                ,D.ACTIONDT
+		                ,D.COMPLETEYN
+		            FROM 
+		                 TBLWEEKCONCERNDETAIL D
+		            WHERE 
+		                    D.ASTVERID = (SELECT ASSETVERID FROM TBLRISKANALYSIS WHERE ANALYSISID=#{analysisid, jdbcType=VARCHAR})
+		        ) D
+		        ON X.ASSETID=D.ASSETID AND I.CCNITEMCD=D.CCNITEMCD
+		    )
+		)
+		GROUP BY ASTVERID, ASTVERNM,ASTGRPID,ASTGRPNM,ASTGRPSORTBY    
+		ORDER BY ASTGRPSORTBY
+		
+ 	</select>
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	 
+</mapper>

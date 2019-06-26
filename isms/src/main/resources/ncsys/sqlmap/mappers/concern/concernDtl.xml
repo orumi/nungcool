@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="ncsys.com.isms.concern.service.mapper.ConcernDtlMapper">
+ 	
+ 	<!-- Asset Version  -->
+ 	<select id="selectConcernDtlAsset" parameterType="ncsys.com.isms.concern.service.model.ConcernDtlAsset"
+ 	 resultType="ncsys.com.isms.concern.service.model.ConcernDtlAsset">
+		SELECT 
+		     ROWNUM ROWIDX
+		    ,A.*
+		FROM    
+		(    
+		SELECT
+		    ASTVERID
+		   ,ASTVERNM
+		   ,ASTGRPID
+		   ,ASTGRPNM
+		   ,ASTGRPSORTBY
+		   ,ASSETID
+		   ,MGNNO
+		   ,ASSETNM
+		   ,ASSETDFN
+		   ,IMPTC
+		   ,IMPTI
+		   ,IMPTA
+		   ,IMPT
+		   ,IMPGRD
+		   ,WKTSTYN
+		   ,CERTIYN
+		   ,SORTBY
+		   ,COUNT(CCNITEMCD) CNTITEM
+		   ,SUM(YCNT) CNTY
+		   ,SUM(NCNT) CNTN
+		   ,SUM(SHORTTERM) CNTSHORT
+		   ,SUM(MIDDLETERM) CNTMIDDLE
+		   ,SUM(LONGTERM) CNTLONG
+		   ,SUM(COMPLETEY) CNTOK
+		   ,SUM(ACCEPTCNT) CNTACP
+		   ,SUM(NCNT)-SUM(COMPLETEY) CNTNOTYET
+		   ,CASE WHEN SUM(NCNT)!=0 THEN TO_CHAR(ROUND(SUM(COMPLETEY)/SUM(NCNT)*100,0)) ELSE '-' END COMPETERT
+		FROM
+		(    
+		    SELECT
+		         X.ASTVERID
+		        ,X.ASTVERNM
+		        ,X.ASTGRPID
+		        ,X.ASTGRPNM
+		        ,X.ASTGRPSORTBY
+		        ,X.ASSETID
+		        ,MGNNO
+		        ,ASSETNM
+		        ,ASSETDFN
+		        ,IMPTC
+		        ,IMPTI
+		        ,IMPTA
+		        ,IMPT
+		        ,IMPGRD
+		        ,WKTSTYN
+		        ,CERTIYN
+		        ,SORTBY
+		        ,I.CCNITEMCD,CCNVALUE,ACTIONPERIOD, SBY
+		        ,D.CCNRST
+		        ,D.ACTIONDT
+		        ,D.COMPLETEYN
+		        ,DECODE(CCNRST,'Y',1,0) YCNT
+		        ,DECODE(CCNRST,'N',1,0) NCNT
+		        ,DECODE(ACTIONPERIOD,'단기',1,0) SHORTTERM
+		        ,DECODE(ACTIONPERIOD,'중기',1,0) MIDDLETERM
+		        ,DECODE(ACTIONPERIOD,'장기',1,0) LONGTERM
+		        ,CASE WHEN CCNRST='N' AND COMPLETEYN='Y' THEN 1 ELSE 0 END COMPLETEY
+		        ,CASE WHEN CCNRST='N' AND COMPLETEYN='A' THEN 1 ELSE 0 END ACCEPTCNT
+		    FROM (
+		        SELECT 
+		             ASTVERID
+		            ,(SELECT ASTVERNM FROM TBLASSETVERSION V WHERE V.ASTVERID=A.ASTVERID) ASTVERNM     
+		            ,ASTGRPID
+		            ,(SELECT ASTGRPNM FROM TBLASSETGROUP G WHERE G.ASTGRPID=A.ASTGRPID) ASTGRPNM
+		            ,(SELECT SORTBY FROM TBLASSETGROUP G WHERE G.ASTGRPID=A.ASTGRPID) ASTGRPSORTBY    
+		            ,ASSETID     
+		            ,MGNNO           
+		            ,ASSETNM     
+		            ,ASSETDFN    
+		            ,IMPTC       
+		            ,IMPTI       
+		            ,IMPTA 
+		            ,(IMPTC+IMPTI+IMPTA) IMPT
+		            ,CASE WHEN (IMPTC+IMPTI+IMPTA)>6 THEN '1등급'
+		                  WHEN (IMPTC+IMPTI+IMPTA)>4 THEN '2등급'
+		                  ELSE '3등급'
+		             END IMPGRD           
+		            ,WKTSTYN
+		            ,CERTIYN         
+		            ,SORTBY      
+		        FROM TBLASSET A
+		        WHERE 
+		            CERTIYN = 'Y'
+		            AND ASTVERID = #{astverid}
+		            AND ASTGRPID = #{astgrpid}
+		        ORDER BY SORTBY
+		    ) X
+		    LEFT JOIN
+		    (    
+		        SELECT CCNITEMCD,CCNVALUE,ACTIONPERIOD, SORTBY SBY FROM
+		        TBLWEEKCONCERNITEM
+		        WHERE ASTGRPID = #{astgrpid} AND DELYN='N' AND USEYN='Y'    
+		    ) I
+		    ON 1=1
+		    LEFT JOIN
+		    (
+		        SELECT 
+		             D.ASTVERID
+		            ,D.ASTGRPID
+		            ,D.ASSETID
+		            ,D.CCNITEMCD
+		            ,D.CCNRST
+		            ,D.ACTIONDT
+		            ,D.COMPLETEYN
+		        FROM 
+		             TBLWEEKCONCERNDETAIL D
+		        WHERE 
+		                D.ASTVERID = #{astverid} 
+		            AND D.ASTGRPID = #{astgrpid}
+		    ) D
+		    ON X.ASSETID=D.ASSETID AND I.CCNITEMCD=D.CCNITEMCD
+		) GROUP BY
+		    ASTVERID
+		   ,ASTVERNM
+		   ,ASTGRPID
+		   ,ASTGRPNM
+		   ,ASTGRPSORTBY
+		   ,ASSETID
+		   ,MGNNO
+		   ,ASSETNM
+		   ,ASSETDFN
+		   ,IMPTC
+		   ,IMPTI
+		   ,IMPTA
+		   ,IMPT
+		   ,IMPGRD
+		   ,WKTSTYN
+		   ,CERTIYN
+		   ,SORTBY
+		ORDER BY SORTBY
+		) A
+		
+ 	</select>
+ 	
+ 	<select id="selectConcernDtlDetail" parameterType="ncsys.com.isms.concern.service.model.ConcernDtlDetail" 
+ 		resultType="ncsys.com.isms.concern.service.model.ConcernDtlDetail">
+			
+			SELECT 
+			     ASTGRPID
+			    ,ASTGRPNM
+			    ,CCNITEMCD
+			    ,CCNITEMNM
+			    ,CCNVALUE
+			    ,IMP
+			    ,CCNVALUE+IMP RISKVALUE
+			    ,ACTIONPLAN
+			    ,ACTIONPERIOD
+			    ,USEYN
+			    ,DELYN
+			    ,SORTBY
+			    ,ASTVERID
+			    ,GRPID
+			    ,ASSETID
+			    ,ITEMCD
+			    ,CCNRST
+			    ,ACTIONDT
+			    ,COMPLETEYN
+			    ,ACCEPTCNT			    
+			    ,CASE WHEN ITEMCD IS NOT NULL THEN
+			        CASE WHEN CCNRST = 'N' AND 6 > (CCNVALUE+IMP) THEN 
+			        '위험수용'
+			        WHEN CCNRST = 'N' AND (CCNVALUE+IMP) >= 6 THEN
+			        '위험조치'
+			        ELSE '' END
+			     ELSE '-' END RISKTXT
+			FROM
+			(
+			SELECT 
+			     ASTGRPID
+			    ,(SELECT ASTGRPNM FROM TBLASSETGROUP G WHERE G.ASTGRPID=I.ASTGRPID) ASTGRPNM 
+			    ,CCNITEMCD
+			    ,CCNITEMNM
+			    ,CCNVALUE
+			    ,(SELECT CASE WHEN IMPTC+IMPTI+IMPTA>7 THEN 3 WHEN IMPTC+IMPTI+IMPTA>4 THEN 2 ELSE 1 END IMP  FROM TBLASSET WHERE ASSETID=#{assetid}) IMP
+			    ,ACTIONPLAN
+			    ,ACTIONPERIOD
+			    ,USEYN
+			    ,DELYN
+			    ,SORTBY
+			FROM TBLWEEKCONCERNITEM I
+			WHERE ASTGRPID= #{astgrpid} AND DELYN='N' AND USEYN='Y'
+			ORDER BY SORTBY
+			) I
+			LEFT JOIN
+			(
+			    SELECT 
+			         ASTVERID 
+			        ,ASTGRPID GRPID
+			        ,ASSETID
+			        ,CCNITEMCD ITEMCD
+			        ,CCNRST
+			        ,TO_CHAR(ACTIONDT,'YYYY/MM/DD') ACTIONDT
+			        ,COMPLETEYN
+                    ,ACCEPTCNT
+			    FROM 
+			    TBLWEEKCONCERNDETAIL
+			    WHERE ASTVERID=#{astverid} AND ASTGRPID=#{astgrpid} AND ASSETID=#{assetid}
+			) D
+			ON I.CCNITEMCD=D.ITEMCD
+			
+ 	</select>
+ 	
+ 	<delete id="deleteConcernDtl" parameterType="ncsys.com.isms.concern.service.model.ConcernDtlDetail">
+ 	
+ 		DELETE FROM TBLWEEKCONCERNDETAIL WHERE ASTVERID=#{astverid} AND ASTGRPID=#{astgrpid} AND ASSETID=#{assetid}
+ 	
+ 	</delete>
+ 	
+ 	<insert id="insertConcernDtl" parameterType="ncsys.com.isms.concern.service.model.ConcernDtlDetail">
+ 	
+	 	INSERT INTO TBLWEEKCONCERNDETAIL
+		(
+		     ASTVERID
+		    ,ASTGRPID
+		    ,ASSETID
+		    ,CCNITEMCD
+		    ,CCNRST
+		    ,ACTIONDT
+		    ,COMPLETEYN
+		    ,ACCEPTCNT
+		    ,INPUTID
+		    ,INPUTDT
+		    ,UPDATEID
+		    ,UPDATEDT
+		)
+		VALUES
+		(
+			 #{astverid}
+			,#{astgrpid}
+			,#{assetid}
+			,#{ccnitemcd, jdbcType=VARCHAR}
+			,#{ccnrst,    jdbcType=VARCHAR}
+			,#{actiondt,  jdbcType=VARCHAR}
+			,#{completeyn, jdbcType=VARCHAR}
+			,#{acceptcnt, jdbcType=VARCHAR}
+			,#{userId, jdbcType=VARCHAR}
+			,sysdate
+			,#{userId, jdbcType=VARCHAR}
+			,sysdate
+		)
+ 	</insert>
+ 	
+ 	<update id="updateConcernDtlDetail" parameterType="ncsys.com.isms.concern.service.model.ConcernDtlDetail">
+ 		UPDATE TBLWEEKCONCERNDETAIL SET 
+ 			 CCNRST     =#{ccnrst}
+ 			,ACTIONDT   = #{actiondt}
+ 			,COMPLETEYN =#{completeyn}
+ 			,ACCEPTCNT  =#{acceptcnt}
+ 			,UPDATEID  =#{userId}
+ 			,UPDATEDT  =sysdate
+ 		WHERE 	
+ 			ASTVERID   =#{astverid}
+		    AND ASTGRPID=#{astgrpid}
+		    AND ASSETID =#{assetid}
+		    AND CCNITEMCD=#{ccnitemcd}
+ 	</update> 
+ 	 
+ 	<select id="selectConcernDetail" parameterType="ncsys.com.isms.concern.service.model.ConcernDtlDetail"
+ 		resultType="ncsys.com.isms.concern.service.model.ConcernDtlDetail">
+				SELECT 
+			         ASTVERID 
+			        ,ASTGRPID
+			        ,ASSETID
+			        ,CCNITEMCD ITEMCD
+			        ,CCNRST
+			        ,ACTIONDT
+			        ,COMPLETEYN
+			        ,ACCEPTCNT
+			    FROM 
+			    TBLWEEKCONCERNDETAIL
+			    WHERE ASTVERID=#{astverid} AND ASTGRPID=#{astgrpid} AND ASSETID=#{assetid}
+			    AND CCNITEMCD=#{ccnitemcd}
+ 	</select> 
+ 	
+ 	 	 
+</mapper>

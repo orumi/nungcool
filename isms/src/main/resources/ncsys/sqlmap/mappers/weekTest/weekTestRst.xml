@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="ncsys.com.isms.weekTest.service.mapper.WeekTestRstMapper">
+ 	
+ 	<!-- Asset Version  -->
+ 	<select id="selectWeekTestAstRst" parameterType="String"
+ 	 resultType="ncsys.com.isms.weekTest.service.model.WeekTestAstRst">
+ 	 
+		SELECT * FROM
+		(
+		    SELECT ASTGRPID,ASTGRPNM,ASTGRPKIND,SORTBY
+		    FROM TBLASSETGROUP
+		    WHERE 
+		        DELYN='N' AND USEYN='Y'
+		    ORDER BY ASTGRPKIND, TO_NUMBER(SORTBY)
+		) G
+		LEFT JOIN
+		(
+		    SELECT ASTGRPID IGRPID, COUNT(TSTITEMCD) CNTITEM
+		    FROM
+		    (
+		        SELECT 
+		            ASTGRPID,TSTITEMCD 
+		        FROM TBLWEEKTESTITEM
+		        WHERE 
+		            DELYN='N' AND USEYN='Y'
+		    )        
+		    GROUP BY ASTGRPID    
+		) I
+		ON G.ASTGRPID=I.IGRPID
+		LEFT JOIN
+		-- 장비
+		(
+		    SELECT ASTGRPID AGRPID, COUNT(ASSETID) ASTCNT
+		    FROM
+		    (     
+		        SELECT 
+		             ASTGRPID
+		            ,ASSETID           
+		        FROM TBLASSET A
+		        WHERE 
+		            WKTSTYN = 'Y'
+		            AND ASTVERID = #{astverid}
+		    ) GROUP BY ASTGRPID 
+		) A
+		ON G.ASTGRPID=A.AGRPID
+		LEFT JOIN
+		(
+		-- 점검 결과
+		    SELECT 
+		         ASTGRPID RGRPID
+		        ,ROUND(AVG(TSTAVG),2) TSTAVG  
+		        ,SUM(NACNT) NACNT
+		        ,SUM(GCNT) GCNT
+		        ,SUM(PCNT) PCNT
+		        ,SUM(WCNT) WCNT
+		        ,SUM(TCNT) TCNT
+		    FROM
+		    (    
+		        SELECT 
+		             ASTGRPID
+		            ,ASSETID ASTID
+		            ,ROUND(AVG(TSTAVG),2) TSTAVG  
+		            ,SUM(NACNT) NACNT
+		            ,SUM(GCNT) GCNT
+		            ,SUM(PCNT) PCNT
+		            ,SUM(WCNT) WCNT
+		            ,SUM(TCNT) TCNT
+		        FROM
+		        (
+		            SELECT 
+		                 ASTGRPID
+		                ,ASSETID
+		                ,WKTSTFIELDID
+		                ,SUM(TTSTRST) TTSTSCR
+		                ,SUM(TSTRESULT) RST
+		                ,CASE WHEN SUM(TTSTRST)!=0 THEN 
+		                    ROUND(SUM(TSTRESULT)/SUM(TTSTRST)*100,2) 
+		                 ELSE 0 END   TSTAVG  
+		                ,SUM(NACNT) NACNT
+		                ,SUM(GCNT) GCNT
+		                ,SUM(PCNT) PCNT
+		                ,SUM(WCNT) WCNT
+		                ,COUNT(TSTITEMCD) TCNT
+		            FROM
+		            (            
+		                SELECT 
+		                     I.ASTGRPID
+		                    ,I.WKTSTFIELDID
+		                    ,I.TSTITEMCD
+		                    ,I.TSTITEMNM
+		                    ,I.IMPORTANCE
+		                    ,I.TSTSCR
+		                    ,D.ASSETID
+		                    ,D.TSTRST
+		                    ,D.SETTINGENV
+		                    ,D.TSTRSTSCR
+		                    ,CASE WHEN D.TSTRSTSCR='N' THEN 0
+		                         ELSE TO_NUMBER(D.TSTRSTSCR)*TO_NUMBER(I.TSTSCR)
+		                     END TSTRESULT
+		                     ,CASE WHEN D.TSTRSTSCR='N' THEN 0
+		                         ELSE TO_NUMBER(I.TSTSCR)
+		                     END TTSTRST
+		                     ,DECODE(TSTRSTSCR,'N',1,0) NACNT
+		                     ,DECODE(   TSTRSTSCR, '1',1,0) GCNT
+		                     ,DECODE(  TSTRSTSCR, '0.5',1,0) PCNT
+		                     ,DECODE(  TSTRSTSCR, '0',1,0) WCNT  
+		                FROM 
+		                 TBLWEEKTESTITEM I
+		                ,TBLWEEKTESTDETAIL D 
+		                WHERE 
+		                    I.TSTITEMCD=D.TSTITEMCD
+		                    AND D.ASTVERID=#{astverid} 
+		            ) GROUP BY  
+		                 ASTGRPID
+		                ,WKTSTFIELDID  
+		                ,ASSETID 
+		        ) GROUP BY ASTGRPID,ASSETID         
+		    ) GROUP BY ASTGRPID        
+		) R
+		ON G.ASTGRPID=R.RGRPID
+		
+ 	</select>
+ 	
+ 	<select id="selectWeekTestFieldRst" parameterType="String" 
+ 		resultType="ncsys.com.isms.weekTest.service.model.WeekTestFieldRst">
+			
+		SELECT * FROM
+		(
+		    SELECT * FROM
+		    (
+		        SELECT ASTGRPID,ASTGRPNM,SORTBY
+		            ,ASTGRPKIND
+		            ,(SELECT CODE_NM FROM COMTCCMMNDETAILCODE C WHERE C.CODE_ID='COM078' AND C.CODE=ASTGRPKIND) ASTGRPKINDNM
+		        FROM TBLASSETGROUP
+		        WHERE 
+		            DELYN='N' AND USEYN='Y'
+		    ) G, 
+		    (SELECT CODE FIELDCD,CODE_NM FIELDNM
+		    FROM COMTCCMMNDETAILCODE C WHERE C.CODE_ID='COM079' AND USE_AT='Y' ORDER BY CODE
+		    ) C
+		) G   
+		LEFT JOIN
+		(
+		-- 점검 결과
+		    SELECT 
+		         ASTGRPID DGRPID
+		        ,WKTSTFIELDID
+		        ,ROUND(AVG(TSTAVG),2) TSTAVG
+		    FROM 
+		    (    
+		        SELECT 
+		             ASTGRPID
+		            ,ASSETID
+		            ,WKTSTFIELDID
+		            ,SUM(TTSTRST) TTSTSCR
+		            ,SUM(TSTRESULT) RST
+		            ,CASE WHEN SUM(TTSTRST)!=0 THEN 
+		                ROUND(SUM(TSTRESULT)/SUM(TTSTRST)*100,2) 
+		             ELSE 0 END   TSTAVG  
+		        FROM
+		        (            
+		            SELECT 
+		                 I.ASTGRPID
+		                ,I.WKTSTFIELDID
+		                ,I.TSTITEMCD
+		                ,I.TSTITEMNM
+		                ,I.IMPORTANCE
+		                ,I.TSTSCR
+		                ,D.ASSETID
+		                ,D.TSTRST
+		                ,D.SETTINGENV
+		                ,D.TSTRSTSCR
+		                ,CASE WHEN D.TSTRSTSCR='N' THEN 0
+		                     ELSE TO_NUMBER(D.TSTRSTSCR)*TO_NUMBER(I.TSTSCR)
+		                 END TSTRESULT
+		                 ,CASE WHEN D.TSTRSTSCR='N' THEN 0
+		                     ELSE TO_NUMBER(I.TSTSCR)
+		                 END TTSTRST 
+		            FROM 
+		             TBLWEEKTESTITEM I
+		            ,TBLWEEKTESTDETAIL D 
+		            WHERE 
+		                I.TSTITEMCD=D.TSTITEMCD
+		                AND D.ASTVERID=#{astverid} 
+		        ) GROUP BY  
+		             ASTGRPID
+		            ,WKTSTFIELDID  
+		            ,ASSETID 
+		    ) GROUP BY ASTGRPID,WKTSTFIELDID              
+		) D
+		ON G.ASTGRPID = D.DGRPID AND G.FIELDCD=D.WKTSTFIELDID    
+		ORDER BY ASTGRPKIND, TO_NUMBER(SORTBY), TO_NUMBER(FIELDCD)
+			
+ 	</select>
+ 	
+ 	
+ 	<select id="selectWeekTestFieldSumRst" parameterType="String" 
+ 		resultType="ncsys.com.isms.weekTest.service.model.WeekTestFieldRst">
+ 	
+		SELECT FIELDCD,FIELDNM,ROUND(AVG(TSTAVG),2) TSTAVG FROM
+		(
+		SELECT * FROM
+		(
+		    SELECT * FROM
+		    (
+		        SELECT ASTGRPID,ASTGRPNM,SORTBY
+		            ,ASTGRPKIND
+		            ,(SELECT CODE_NM FROM COMTCCMMNDETAILCODE C WHERE C.CODE_ID='COM078' AND C.CODE=ASTGRPKIND) ASTGRPKINDNM
+		        FROM TBLASSETGROUP
+		        WHERE 
+		            DELYN='N' AND USEYN='Y'
+		    ) G, 
+		    (SELECT CODE FIELDCD,CODE_NM FIELDNM
+		    FROM COMTCCMMNDETAILCODE C WHERE C.CODE_ID='COM079' AND USE_AT='Y' ORDER BY CODE
+		    ) C
+		) G   
+		LEFT JOIN
+		(
+		    SELECT 
+		         ASTGRPID DGRPID
+		        ,WKTSTFIELDID
+		        ,ROUND(AVG(TSTAVG),2) TSTAVG
+		    FROM 
+		    (    
+		        SELECT 
+		             ASTGRPID
+		            ,ASSETID
+		            ,WKTSTFIELDID
+		            ,SUM(TTSTRST) TTSTSCR
+		            ,SUM(TSTRESULT) RST
+		            ,CASE WHEN SUM(TTSTRST)!=0 THEN 
+		                ROUND(SUM(TSTRESULT)/SUM(TTSTRST)*100,2) 
+		             ELSE 0 END   TSTAVG  
+		        FROM
+		        (            
+		            SELECT 
+		                 I.ASTGRPID
+		                ,I.WKTSTFIELDID
+		                ,I.TSTITEMCD
+		                ,I.TSTITEMNM
+		                ,I.IMPORTANCE
+		                ,I.TSTSCR
+		                ,D.ASSETID
+		                ,D.TSTRST
+		                ,D.SETTINGENV
+		                ,D.TSTRSTSCR
+		                ,CASE WHEN D.TSTRSTSCR='N' THEN 0
+		                     ELSE TO_NUMBER(D.TSTRSTSCR)*TO_NUMBER(I.TSTSCR)
+		                 END TSTRESULT
+		                 ,CASE WHEN D.TSTRSTSCR='N' THEN 0
+		                     ELSE TO_NUMBER(I.TSTSCR)
+		                 END TTSTRST 
+		            FROM 
+		             TBLWEEKTESTITEM I
+		            ,TBLWEEKTESTDETAIL D 
+		            WHERE 
+		                I.TSTITEMCD=D.TSTITEMCD
+		                AND D.ASTVERID=#{astverid} 
+		        ) GROUP BY  
+		             ASTGRPID
+		            ,WKTSTFIELDID  
+		            ,ASSETID 
+		    ) GROUP BY ASTGRPID,WKTSTFIELDID              
+		) D
+		ON G.ASTGRPID = D.DGRPID AND G.FIELDCD=D.WKTSTFIELDID 
+		)   
+		GROUP BY FIELDCD, FIELDNM
+		ORDER BY TO_NUMBER(FIELDCD) 	
+ 	
+ 	
+ 	</select> 
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	 
+</mapper>

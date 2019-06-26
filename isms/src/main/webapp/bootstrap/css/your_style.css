@@ -1,0 +1,91 @@
+/*
+ * It is advised not to edit the smartadmin_production.css
+ * as this will override any changes you make in the 
+ * later versions of this theme. 
+ * 
+ * We advise that you use use this CSS to override 
+ * SmartAdmin styles. 
+ * 
+ * Rename the stylesheet to whatever your liking so it will stay
+ * unique to you with each update of SmartAdmin.
+ */
+
+/*
+ * INDEX
+ * 
+ * - HTML
+ * - BODY
+ * - CUSTOM STYLES
+ */
+ 
+i {
+	padding-top:3px;
+} 
+
+article header i {
+	padding-top:9px;
+}
+
+#main {
+    margin-left: 0px !important;
+    padding: 0;
+    padding-bottom: 52px;
+    min-height: 500px;
+    position: relative;
+}
+
+#ribbon {
+    float: right;
+    width: 100%;
+    margin-top: -4px;
+}
+#content{
+	float:right !important;
+	width: 100%;
+}
+
+#pjqgrid table {
+    white-space: nowrap;
+    line-height: 1.42857143;
+    font-weight: normal;
+    font-size: 12px;
+    font-style: normal;
+    color: #333;
+    text-align: start;
+    font-variant: normal normal;
+    height:31px !important;
+}
+
+.form-button {
+	margin: 6px 0;
+	border:1px solid #D3D3D3;
+}
+
+
+
+.score_green {
+	color:#fff;
+	background-color: #00c100;
+	padding: 1px 7px;
+    border: 1px solid #008000;
+    display:block;
+    text-align: right;
+}
+
+.score_yellow {
+	color:#333;
+	background-color: #ffff00;
+	padding: 1px 6px;
+    border: 1px solid #b7b721;
+    display:block;
+    text-align: right;
+}
+
+.score_red {
+	color:#fff;
+	background-color: #ff0000;
+	padding: 1px 6px;
+    border: 1px solid #af0000;
+    display:block;
+    text-align: right;
+}

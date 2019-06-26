@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="ncsys.com.isms.certification.service.mapper.CertiMapper">
+ 	
+ 	<select id="selectCertiList" parameterType="ncsys.com.isms.certification.service.model.CertiList" 
+ 		resultType="ncsys.com.isms.certification.service.model.CertiList">
+	    
+	    
+		SELECT ROWNUM ROWIDX, VERID, RGLDTLID, 
+		       FLDID, FLDNM, FSORT,
+		       COUNT(FLDID) OVER (PARTITION BY FLDID) FCNT,
+		       ROW_NUMBER() OVER (PARTITION BY FLDID ORDER BY FSORT,RSORT,DSORT,PROOFID) FNUM,   
+		       RGLID, RGLNM, RSORT,
+		       COUNT(RGLID) OVER (PARTITION BY FLDID, RGLID) RCNT,
+		       ROW_NUMBER() OVER (PARTITION BY FLDID, RGLID ORDER BY FSORT,RSORT,DSORT,PROOFID) RNUM,
+		       RGLDTLNM,
+		       ISMSSTD,
+		       DSORT,
+		       COUNT(RGLDTLID) OVER (PARTITION BY FLDID, RGLID, RGLDTLID) DCNT,
+		       ROW_NUMBER() OVER (PARTITION BY FLDID, RGLID, RGLDTLID ORDER BY FSORT,RSORT,DSORT,PROOFID) DNUM,
+		       PROOFID,
+		       PROOFITEM, 
+		       FREQUENCY,
+		       OWNERTYPE,
+		       OWNER,
+		       PROE
+		FROM 
+		(       
+		    SELECT V.VERID, D.RGLDTLID, 
+		           D.FLDID, F.FLDNM, F.SORTBY FSORT,
+		           D.RGLID, R.RGLNM, R.SORTBY RSORT,
+		           D.SORTBY DSORT,
+		           D.RGLDTLNM, MGRGOAL,
+		           D.ISMSSTD,
+		           D.ADJUSTYN, D.ADJUSTCNT,
+		           P.PROOFID,
+		           P.PROOFITEM, 
+		           P.FREQUENCY,
+		           P.OWNERTYPE,
+		           P.OWNER,
+		           P.PROE
+		    FROM TBLREGULATIONDETAIL D, 
+		         TBLVERSION V,
+		         TBLFIELD F,
+		         TBLREGULATION R,
+		         TBLPROOF P 
+		    WHERE D.VERID=V.VERID
+		          AND V.VERID = #{versionId,jdbcType=NUMERIC}
+		          <if test="fieldId !=null and fieldId != 0">
+		          AND D.FLDID = #{fieldId,jdbcType=NUMERIC}
+		          </if>
+		          AND D.FLDID = F.FLDID
+		          AND D.RGLID = R.RGLID
+		          AND D.RGLDTLID = P.RGLDTLID(+)   
+		          ORDER BY VERID,FSORT,RSORT,DSORT,RGLDTLID,PROOFID 
+		) D
+		    ORDER BY VERID,FSORT,RSORT,DSORT,RGLDTLID,PROOFID 	    
+		
+ 	</select>
+ 	
+ 	<select id="selectCertiDetail" parameterType="ncsys.com.isms.certification.service.model.CertiDetail" 
+ 		resultType="ncsys.com.isms.certification.service.model.CertiDetail">
+	    
+	    
+	    SELECT ROWNUM ROWIDX, VERID, RGLDTLID, 
+		       FLDID, FLDNM, FSORT,
+		       RGLID, RGLNM, RSORT,
+		       RGLDTLNM,
+		       ISMSSTD,
+		       DSORT,
+		       PROOFID,
+		       PROOFITEM, 
+		       FREQUENCY,
+		       OWNERTYPE,
+		       OWNER,
+		       PROE
+		FROM 
+		(       
+		    SELECT V.VERID, D.RGLDTLID, 
+		           D.FLDID, F.FLDNM, F.SORTBY FSORT,
+		           D.RGLID, R.RGLNM, R.SORTBY RSORT,
+		           D.SORTBY DSORT,
+		           D.RGLDTLNM, MGRGOAL,
+		           D.ISMSSTD,
+		           D.ADJUSTYN, D.ADJUSTCNT,
+		           P.PROOFID,
+		           P.PROOFITEM, 
+		           P.FREQUENCY,
+		           P.OWNERTYPE,
+		           P.OWNER,
+		           P.PROE
+		    FROM TBLREGULATIONDETAIL D, 
+		         TBLVERSION V,
+		         TBLFIELD F,
+		         TBLREGULATION R,
+		         (SELECT * FROM TBLPROOF WHERE PROOFID = #{proofid, jdbcType=NUMERIC} ) P  
+		    WHERE D.VERID=V.VERID
+		          AND D.RGLDTLID = #{rgldtlid, jdbcType=NUMERIC}
+		          AND D.FLDID = F.FLDID
+		          AND D.RGLID = R.RGLID
+		          AND D.RGLDTLID = P.RGLDTLID(+)   
+		          ORDER BY VERID,FSORT,RSORT,DSORT,RGLDTLID,PROOFID 
+		) D
+		    ORDER BY VERID,FSORT,RSORT,DSORT,RGLDTLID,PROOFID 
+		    
+ 	</select>
+ 	
+ 	
+ 	<select id="selectCertiDetailByName" parameterType="ncsys.com.isms.certification.service.model.CertiDetail" 
+ 		resultType="ncsys.com.isms.certification.service.model.CertiDetail">
+ 		SELECT P.PROOFID,
+		       P.PROOFITEM, 
+		       P.FREQUENCY,
+		       P.OWNERTYPE,
+		       P.OWNER,
+		       P.PROE
+		FROM TBLPROOF P WHERE RGLDTLID=#{rgldtlid}
+		AND PROOFITEM = #{proofitem}		           
+ 	</select>
+ 	
+ 	
+ 	<insert id="insertCertiDetail" parameterType="ncsys.com.isms.certification.service.model.CertiDetail" >
+		INSERT INTO TBLPROOF 
+            (PROOFID, RGLDTLID,PROOFITEM, FREQUENCY, OWNERTYPE, PROE, INPUTID,INPUTDT,UPDATEID,UPDATEDT) 
+        VALUES (
+        	SQ_PROOF.NEXTVAL
+        	,#{rgldtlid}
+            ,#{proofitem}
+            ,#{frequency}
+            ,#{ownertype}
+            ,#{proe}
+            ,#{userId}
+            ,SYSDATE
+            ,#{userId}
+            ,SYSDATE
+            )
+ 	</insert>
+  	<update id="updateCertiDetail" parameterType="ncsys.com.isms.certification.service.model.CertiDetail" >
+		UPDATE TBLPROOF SET 
+            PROOFITEM = #{proofitem},
+            FREQUENCY = #{frequency}, 
+            OWNERTYPE = #{ownertype},
+            PROE      = #{proe},
+            UPDATEID = #{userId},
+            UPDATEDT = SYSDATE
+        WHERE 
+        	RGLDTLID = #{rgldtlid}
+        	AND PROOFID = #{proofid}     
+ 	</update>
+  	
+  	<delete id="deleteCertiDetail" parameterType="ncsys.com.isms.certification.service.model.CertiDetail" >
+		DELETE FROM TBLPROOF 
+		WHERE 
+        	RGLDTLID = #{rgldtlid}
+        	AND PROOFID = #{proofid}    
+ 	</delete>
+ 	
+ 	
+</mapper>

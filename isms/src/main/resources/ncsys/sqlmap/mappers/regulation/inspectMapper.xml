@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="ncsys.com.isms.hierarchy.service.mapper.InspectMapper">
+ 	
+ 	<select id="selectInspectList" parameterType="ncsys.com.isms.hierarchy.service.model.InspectList" 
+ 		resultType="ncsys.com.isms.hierarchy.service.model.InspectList">
+	    
+		SELECT ROWNUM ROWIDX, VERID, RGLDTLID, 
+		       FLDID, FLDNM, FSORT,
+		       COUNT(FLDID) OVER (PARTITION BY FLDID) FCNT,
+		       ROW_NUMBER() OVER (PARTITION BY FLDID ORDER BY FSORT,RSORT,DSORT,ITEMSEQ) FNUM,   
+		       RGLID, RGLNM, 
+		       RSORT,
+		       COUNT(RGLID) OVER (PARTITION BY FLDID, RGLID) RCNT,
+		       ROW_NUMBER() OVER (PARTITION BY FLDID, RGLID ORDER BY FSORT,RSORT,DSORT,ITEMSEQ) RNUM,
+		       RGLDTLNM,
+		       DSORT,
+		       COUNT(RGLDTLID) OVER (PARTITION BY FLDID, RGLID, RGLDTLID) DCNT,
+		       ROW_NUMBER() OVER (PARTITION BY FLDID, RGLID, RGLDTLID ORDER BY FSORT,RSORT,DSORT,ITEMSEQ) DNUM,
+		       ITEMSEQ,
+		       INSPECTITEM, 
+		       INSPECTDETAIL
+		FROM 
+		(       
+		    SELECT V.VERID, D.RGLDTLID, 
+		           D.FLDID,F.FLDNM,F.SORTBY FSORT,
+		           D.RGLID, R.RGLNM, R.SORTBY RSORT,
+		           D.SORTBY DSORT,
+		           D.RGLDTLNM, MGRGOAL,
+		           D.ADJUSTYN, D.ADJUSTCNT,
+		           I.ITEMSEQ,
+		           I.INSPECTITEM, I.INSPECTDETAIL
+		    FROM TBLREGULATIONDETAIL D, 
+		         TBLVERSION V,
+		         TBLFIELD F,
+		         TBLREGULATION R,
+		         TBLINSPECT I 
+		    WHERE D.VERID=V.VERID
+		          AND V.VERID = #{versionId,jdbcType=NUMERIC}
+		          <if test="fieldId !=null and fieldId != 0">
+		          AND D.FLDID = #{fieldId,jdbcType=NUMERIC}
+		          </if>
+		          AND D.FLDID = F.FLDID
+		          AND D.RGLID = R.RGLID
+		          AND D.RGLDTLID = I.RGLDTLID(+)
+		    ORDER BY VERID,FSORT,RSORT,DSORT, ITEMSEQ         
+		) D
+		ORDER BY VERID,FSORT,RSORT,DSORT, ITEMSEQ 	    
+		
+ 	</select>
+ 	
+ 	<select id="selectInspectDetail" parameterType="ncsys.com.isms.hierarchy.service.model.InspectDetail" 
+ 		resultType="ncsys.com.isms.hierarchy.service.model.InspectDetail">
+	    
+		SELECT ROWNUM ROWIDX, VERID, RGLDTLID, 
+		       FLDID, FLDNM, FSORT,
+		       RGLID, RGLNM, RSORT,
+		       DSORT, 
+		       RGLDTLNM,
+		       ISMSSTD,
+		       ITEMSEQ,
+		       INSPECTITEM, 
+		       INSPECTDETAIL
+		FROM 
+		(       
+		    SELECT V.VERID, D.RGLDTLID, 
+		           D.FLDID,F.FLDNM,F.SORTBY FSORT,
+		           D.RGLID, R.RGLNM, R.SORTBY RSORT,
+		           D.SORTBY DSORT, 
+		           D.RGLDTLNM, MGRGOAL,
+		           D.ADJUSTYN, D.ADJUSTCNT,
+		           D.ISMSSTD,
+		           I.ITEMSEQ,
+		           I.INSPECTITEM, I.INSPECTDETAIL
+		    FROM TBLREGULATIONDETAIL D, 
+		         TBLVERSION V,
+		         TBLFIELD F,
+		         TBLREGULATION R,
+		         (SELECT * FROM TBLINSPECT WHERE ITEMSEQ = #{itemseq, jdbcType=NUMERIC}) I 
+		    WHERE D.VERID = V.VERID
+		          AND D.RGLDTLID = #{rgldtlid, jdbcType=NUMERIC}
+		          AND D.FLDID = F.FLDID
+		          AND D.RGLID = R.RGLID
+		          AND D.RGLDTLID = I.RGLDTLID(+)  
+		) D
+		ORDER BY VERID,FSORT,RSORT,DSORT, ITEMSEQ 	    
+		
+ 	</select>
+ 	
+ 	<select id="selectInspectDetailByName" parameterType="ncsys.com.isms.hierarchy.service.model.InspectDetail" 
+ 		resultType="ncsys.com.isms.hierarchy.service.model.InspectDetail">
+ 		SELECT RGLDTLID, ITEMSEQ, INSPECTITEM, INSPECTDETAIL FROM TBLINSPECT 
+ 		WHERE RGLDTLID=#{rgldtlid} AND INSPECTITEM=#{inspectitem} 
+ 	</select>
+ 	
+ 	
+ 	<insert id="insertInspectDetail" parameterType="ncsys.com.isms.hierarchy.service.model.InspectDetail" >
+		INSERT INTO TBLINSPECT 
+            (RGLDTLID,ITEMSEQ,INSPECTITEM,INSPECTDETAIL, INPUTID,INPUTDT,UPDATEID,UPDATEDT) 
+        VALUES (
+        	#{rgldtlid}
+            ,SQ_INSPECT.NEXTVAL
+            ,#{inspectitem}
+            ,#{inspectdetail}
+            ,#{userId}
+            ,SYSDATE
+            ,#{userId}
+            ,SYSDATE
+            )
+ 	</insert>
+  	<update id="updateInspectDetail" parameterType="ncsys.com.isms.hierarchy.service.model.InspectDetail" >
+		UPDATE TBLINSPECT SET 
+            inspectitem = #{inspectitem},
+            inspectdetail = #{inspectdetail}, 
+            UPDATEID = #{userId},
+            UPDATEDT = SYSDATE
+        WHERE 
+        	RGLDTLID = #{rgldtlid}
+        	AND ITEMSEQ = #{itemseq}     
+ 	</update>
+  	
+  	<delete id="deleteInspectDetail" parameterType="ncsys.com.isms.hierarchy.service.model.InspectDetail" >
+		DELETE FROM TBLINSPECT 
+		WHERE 
+        	RGLDTLID = #{rgldtlid}
+        	AND ITEMSEQ = #{itemseq}    
+ 	</delete>
+ 	
+ 	
+</mapper>

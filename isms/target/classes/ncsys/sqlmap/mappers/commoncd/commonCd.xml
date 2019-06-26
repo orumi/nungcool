@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="ncsys.com.util.commoncd.service.mapper.CommonCdMapper">
+ 	
+ 	<select id="selectCommonCdList" parameterType="ncsys.com.util.commoncd.service.model.CommonCd" 
+ 		resultType="ncsys.com.util.commoncd.service.model.CommonCd">
+	    
+		SELECT CODE,CODE_NM CODENM FROM COMTCCMMNDETAILCODE 
+		WHERE CODE_ID=#{codeid} AND USE_AT='Y'
+		ORDER BY CODE 	    
+		
+ 	</select>
+ 	
+ 	
+</mapper>
