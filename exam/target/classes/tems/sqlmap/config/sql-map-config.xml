@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+        "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+    <sqlMap resource="tems/sqlmap/sql/testSample/userMaster/UserMaster_SQL.xml"/>
+    <sqlMap resource="tems/sqlmap/sql/testSample/testItem/TestItem_SQL.xml"/>
+    <sqlMap resource="tems/sqlmap/sql/loginUser/LoginUser_SQL.xml"/>
+    <sqlMap resource="tems/sqlmap/sql/system/AuthorGrp_SQL.xml"/>
+    <sqlMap resource="tems/sqlmap/sql/system/UserInfo_SQL.xml"/>
+    <sqlMap resource="tems/sqlmap/sql/exam/req/RequestDetail_SQL.xml"/>
+    <sqlMap resource="tems/sqlmap/sql/testBaseManagement/testMethodManagement/TestMethodManagement_SQL.xml"/>
+    <sqlMap resource="tems/sqlmap/sql/testBaseManagement/oilTypeProductManagement/OilTypeProductManagement_SQL.xml"/>
+    <sqlMap resource="tems/sqlmap/sql/testBaseManagement/oilTypeProductManagement/ElementaryItem_SQL.xml"/>
+    <sqlMap resource="tems/sqlmap/sql/testBaseManagement/testItemManagement/GenReqTestItem_SQL.xml"/>
+    <sqlMap resource="tems/sqlmap/sql/testBaseManagement/testItemManagement/GenReqTestProp_SQL.xml"/>
+    <sqlMap resource="tems/sqlmap/sql/testBaseManagement/oilTypeProductManagement/QualStandManagement_SQL.xml"/>
+    <sqlMap resource="tems/sqlmap/sql/enotice/Board_SQL.xml"/>
+    <sqlMap resource="tems/sqlmap/sql/attchFile/AttachFile_SQL.xml"/>
+    <sqlMap resource="tems/sqlmap/sql/system/CommonCode_SQL.xml"/>
+    <sqlMap resource="tems/sqlmap/sql/common/Combo_SQL.xml"/>
+    <sqlMap resource="tems/sqlmap/sql/exam/req/Request_SQL.xml"/>
+</sqlMapConfig>

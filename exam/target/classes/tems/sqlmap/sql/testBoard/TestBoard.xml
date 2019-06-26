@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="testBoardDAO">
+	
+	<select id="testBoardDAO.findAllList"
+		resultClass="tems.com.testBoard.model.TestBoardVO">
+		<![CDATA[
+			
+			SELECT 	TITLE,
+					CONTENT,
+					B_DATE
+			FROM TEST_BOARD	
+		
+		]]>
+	</select>
+	
+</sqlMap>

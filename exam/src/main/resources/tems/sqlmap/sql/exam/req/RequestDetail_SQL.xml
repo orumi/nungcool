@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="RequestDAO">
+
+	<select id="RequestDAO.selReqDetail" resultClass="tems.com.exam.req.model.RequestItemDetailVO">
+		SELECT substr(sys_connect_by_path(itemid,'.'),2) as treefield
+		           ,ITEMID itemid
+		           ,ITEMPID itempid
+		           ,ITEMNAME itemnm
+		           ,UNITNAME unitnm
+		           ,orderby
+		           ,methodid
+		           ,methodnm
+		           ,itemprice
+		           ,remark
+		           ,tempercond
+		           ,timecond
+		           ,itemterm
+		           ,assign           
+		FROM (           
+		       SELECT A.ITEMID, A.ITEMPID, A.ITEMNAME, C.NAME UNITNAME, A.ORDERBY, A.methodid, A.METHODNM,  ITEMPRICE, REMARK, TEMPERCOND, TIMECOND, ITEMTERM,  '' assign
+		        FROM 
+		             TNE_RESULT A            
+		            ,TCT_UNIT C
+		        WHERE 
+		                   A.UNITID = C.UNITID       
+		            AND A.reqid = '254'
+		            AND smpid = '1'
+		) TA                   
+		start with (ITEMPID = 0)
+		connect by prior ITEMID = ITEMPID
+		ORDER SIBLINGS BY orderby
+	</select>
+
+</sqlMap>

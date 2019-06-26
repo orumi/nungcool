@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="UserInfoDAO">
+
+
+    <select id="UserInfoDAO.selLOfficeist" resultClass="tems.com.system.model.OfficeListVO">
+        <![CDATA[
+			select officeid
+			        , name
+			        , uppofficeid
+			        , uppname 
+			        ,substr(sys_connect_by_path(officeid,'.'),2) as treeview 
+			from  tct_office
+			start with (uppofficeid = 0)
+			connect by prior officeid = uppofficeid
+		]]>
+    </select>
+    
+    <select id="UserInfoDAO.getOfficeUserList" resultClass="tems.com.system.model.OfficeUserListVO">
+        <![CDATA[
+			select adminid
+					,officeid
+					,author_gpcode authorgpcode
+					,name
+					,adminpw
+					,uppofficeid
+					,empid
+					,ename
+					,cellphone
+					,telno
+					,extension
+					,email
+					,umjpname
+					,umjdname
+					,umpgname
+					,birthday
+					,skin 
+					,useflag
+			from tct_admin
+			where officeid = #officeid#
+			and useflag = '1'
+			order by name
+		]]>
+    </select>
+    
+    <update id="UserInfoDAO.upOfficeUser">
+    	<![CDATA[
+    		update tct_admin set 
+    			author_gpcode = #authorgpcode#
+    		   ,modifyid = #modifyid#
+    		   ,modifydate = sysdate
+    		where adminid = #adminid#   
+    	]]>
+    </update>
+    
+    
+
+
+</sqlMap>

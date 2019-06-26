@@ -1,0 +1,1841 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+
+<sqlMap namespace="estimate_DAO">
+
+
+<select id="estimate_DAO.selectRequestInfo" resultClass="exam.com.req.model.RequestVO" parameterClass="exam.com.req.model.RequestVO">
+	<![CDATA[
+		SELECT 
+		    C.BIZNO,
+            C.NAME CNAME,
+            C.TYPE BIZTYPE,
+            C.CEONAME,
+            C.ZIPCODE,
+            C.ADDR1,
+            C.ADDR2,
+		    Q.REQID,
+		    Q.COMID,
+		    Q.ORDINAL,
+		    Q.MEMID,
+		    Q.MNGNAME,
+		    Q.MNGDEPT,
+		    Q.MNGEMAIL,
+		    Q.MNGHP,
+		    Q.MNGPHONE,
+		    Q.FAX,
+		    Q.SMPCNT,
+		    Q.REQSTATE,
+		    Q.ITEMAFTER,
+		    Q.ITEMDESC,
+		    Q.TOTALPRICETEMP,
+		    Q.DCRATE,
+		    Q.DCPRICE,
+		    Q.ETCPRICE,
+		    Q.TOTALPRICE,
+		    Q.PRICEDESC,
+		    Q.CONFIRMID,
+		    Q.CHECKID,
+		    Q.AGENTID,
+		    Q.COMNAME,
+		    Q.ISSUEAPPR,
+		    Q.SIGNAPPR,
+		    Q.REMARK,
+		    P.REQID PQID,
+		    P.REPORTID,
+		    P.USAGE,
+		    P.TYPE,
+		    P.ORGCNT,
+		    P.COPYCNT,
+		    P.REPORTPRICE,
+		    P.REPORTSTATE,
+		    P.PRICESTATE,
+		    P.REQUESTCDATE,
+		    P.RECEIPTDATE,
+		    P.ACCEPTNO,
+		    P.REPORTNO,
+		    P.RCVCOMPANY,
+		    P.RCVCEO,
+		    P.RCVZIPCODE,
+		    P.RCVADDR1,
+		    P.RCVADDR2,
+		    P.RCVDEPT,
+		    P.RCVEMAIL,
+		    P.RCVHP,
+		    P.RCVPHONE,
+		    P.RCVFAX,
+		    P.RCVTYPE,
+		    P.TAXCOMPANY,
+		    P.TAXCEO,
+		    P.TAXZIPCODE,
+		    P.TAXADDR1,
+		    P.TAXADDR2,
+		    P.TAXDEPT,
+		    P.TAXEMAIL,
+		    P.TAXHP,
+		    P.TAXPHONE,
+		    P.TAXFAX,
+		    P.ISSUEDATEPLAN,
+		    P.ISSUEDATECMPL,
+		    P.CARDBILLNO,
+		    P.CARDPRICE,
+		    P.CARDTYPE,
+		    P.LANGTYPE,
+		    P.ENTAXCEO,
+		    P.ENTAXCOMPANY,
+		    P.ENTAXADDR1,
+		    P.ENRCVCEO,
+		    P.ENRCVADDR1,
+		    P.ENRCVCOMPANY,
+		    P.PRICETYPE,
+		    P.PRICEDATE,
+		    P.PRICECHARGETYPE,
+		    P.TAXISSUEDATE,
+		    P.TAXBIZNO,
+		    P.TAXMNGNAME,
+		    P.TAXBIZTYPE,
+		    P.KOLASYN,
+		    P.RCVMNGNAME    
+		FROM 
+		    TNE_REQUEST_estimate Q,
+		    TNE_REPORT_estimate P,
+		    THT_COMPANY C
+		WHERE Q.REQID=P.REQID
+		   AND Q.COMID = C.COMID(+)
+		   AND Q.ORDINAL = C.ORDINAL(+)     
+		   AND Q.REQID=#reqid#
+	]]>
+</select>
+
+
+<insert id="estimate_DAO.insertRequest" parameterClass="exam.com.req.model.RequestVO">
+	<![CDATA[
+
+            INSERT INTO 
+            tne_request_estimate
+            (
+                REQID,
+                ORDINAL,
+                MEMID,
+                ITEMAFTER,
+                REQSTATE,
+                REGID,
+                REGDATE
+            ) VALUES
+            (
+                #reqid#,
+                #ordinal#,
+                #memid#,
+                 #itemafter#,
+                #reqstate#,
+                #regid#,
+                sysdate
+            )
+	]]>
+
+</insert>
+
+
+
+<insert id="estimate_DAO.insertReport" parameterClass="exam.com.req.model.RequestVO">
+
+	<![CDATA[
+
+        INSERT INTO 
+        tne_report_estimate
+        (
+            REQID,
+            REPORTID,   
+            USAGE,
+            TYPE,  
+            TAXBIZTYPE,     
+            ORGCNT,
+            COPYCNT,
+            REPORTSTATE,   
+            REQUESTCDATE,
+            RCVCOMPANY,
+            RCVCEO,
+            RCVZIPCODE,
+            RCVADDR1,
+            RCVADDR2,
+            RCVDEPT,
+            RCVEMAIL,
+            RCVHP,
+            RCVPHONE,
+            RCVFAX,
+            RCVTYPE,
+            TAXCOMPANY,
+            TAXCEO,
+            TAXZIPCODE,
+            TAXADDR1,
+            TAXADDR2,
+            TAXDEPT,
+            TAXEMAIL,
+            TAXHP,
+            TAXPHONE,
+            TAXFAX,
+            LANGTYPE,
+            ENTAXCEO,
+            ENTAXCOMPANY,
+            ENTAXADDR1,
+            ENRCVCEO,
+            ENRCVADDR1,
+            ENRCVCOMPANY,
+            PRICECHARGETYPE,
+            TAXISSUEDATE,
+            TAXBIZNO,
+            TAXMNGNAME,
+            RCVMNGNAME,
+            KOLASYN,
+            REGID,
+            REGDATE
+        ) 
+        VALUES
+        (
+            #reqid#,
+            #reportid#,   
+            #usage#,
+            #type#,      
+            #taxbiztype#,
+            #orgcnt#,
+            #copycnt#,
+            #reportstate#,  
+            sysdate,
+            #rcvcompany#,
+            #rcvceo#,
+            #rcvzipcode#,
+            #rcvaddr1#,
+            #rcvaddr2#,
+            #rcvdept#,
+            #rcvemail#,
+            #rcvhp#,
+            #rcvphone#,
+            #rcvfax#,
+            #rcvtype#,
+            #taxcompany#,
+            #taxceo#,
+            #taxzipcode#,
+            #taxaddr1#,
+            #taxaddr2#,
+            #taxdept#,
+            #taxemail#,
+            #taxhp#,
+            #taxphone#,
+            #taxfax#,
+            #langtype#,
+            #entaxceo#,
+            #entaxcompany#,
+            #entaxaddr1#,
+            #enrcvceo#,
+            #enrcvaddr1#,
+            #enrcvcompany#,
+            #pricechargetype#,
+            #taxissuedate#,
+            #taxbizno#,
+            #taxmngname#,
+            #rcvmngname#,
+            #kolasyn#,
+            #regid#,
+            sysdate
+        )     
+
+	]]>
+
+</insert>
+
+
+<update id="estimate_DAO.updateRequest" parameterClass="exam.com.req.model.RequestVO">
+	<![CDATA[
+        UPDATE TNE_REQUEST_estimate SET
+            ITEMAFTER=   #itemafter#, 
+            REGDATE=       sysdate    
+        WHERE            
+            REQID=#reqid#
+	]]>
+</update>
+
+
+
+<update id="estimate_DAO.updateReport" parameterClass="exam.com.req.model.RequestVO">
+	<![CDATA[
+        UPDATE TNE_REPORT_estimate SET
+            USAGE=            #usage#,          
+            TYPE=              #type#,  
+            TAXBIZTYPE =       #taxbiztype#,         
+            ORGCNT=            #orgcnt#,         
+            COPYCNT=           #copycnt#,        
+            REPORTSTATE=       #reportstate#,      
+            REQUESTCDATE=      sysdate,   
+            RCVCOMPANY=        #rcvcompany#,     
+            RCVCEO=            #rcvceo#,         
+            RCVZIPCODE=        #rcvzipcode#,     
+            RCVADDR1=        #rcvaddr1#,       
+            RCVADDR2=        #rcvaddr2#,       
+            RCVDEPT=        #rcvdept#,        
+            RCVEMAIL=        #rcvemail#,       
+            RCVHP=            #rcvhp#,          
+            RCVPHONE=        #rcvphone#,       
+            RCVFAX=            #rcvfax#,  
+            RCVTYPE =       #rcvtype#,       
+            TAXCOMPANY=        #taxcompany#,     
+            TAXCEO=            #taxceo#,         
+            TAXZIPCODE=        #taxzipcode#,     
+            TAXADDR1=        #taxaddr1#,       
+            TAXADDR2=        #taxaddr2#,       
+            TAXDEPT=        #taxdept#,        
+            TAXEMAIL=        #taxemail#,       
+            TAXHP=            #taxhp#,          
+            TAXPHONE=        #taxphone#,       
+            TAXFAX=            #taxfax#,          
+            LANGTYPE=        #langtype#,       
+            ENTAXCEO=        #entaxceo#,       
+            ENTAXCOMPANY=        #entaxcompany#,   
+            ENTAXADDR1=        #entaxaddr1#,     
+            ENRCVCEO=        #enrcvceo#,       
+            ENRCVADDR1=         #enrcvaddr1#,     
+            ENRCVCOMPANY=       #enrcvcompany#,       
+            PRICECHARGETYPE=    #pricechargetype#,
+            TAXISSUEDATE=       #taxissuedate#,   
+            TAXBIZNO   =        #taxbizno#,       
+            TAXMNGNAME =        #taxmngname#,     
+            RCVMNGNAME =        #rcvmngname#,     
+            REGID      =        #regid#,          
+            REGDATE    =        sysdate     
+        WHERE            
+            REQID    =    #reqid# 
+            AND
+            REPORTID=           #reportid# 
+
+	]]>
+</update>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<select id="estimate_DAO.selectSEQ_ReqId" resultClass="java.lang.String">
+	<![CDATA[
+
+		SELECT SEQ_TNE_REQUEST_ESTIMATE.NEXTVAL FROM DUAL
+	]]>
+
+</select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<select id="estimate_DAO.selectClass" resultClass="exam.com.req.model.ClassVO">
+	<![CDATA[
+
+		SELECT CLASSID, NAME, ENAME, ORDERBY CORDER FROM TCE_CLASS WHERE USEFLAG=1
+		ORDER BY CORDER
+	]]>
+
+</select>
+
+
+
+<select id="estimate_DAO.selectMaster" resultClass="exam.com.req.model.MasterVO">
+
+	<![CDATA[
+		SELECT CLASSID, CNAME, CENAME,CUSE, CORDER,
+		       GROUPID, GNAME, GUSE, GORDER,
+		       MASTERID, MNAME, MENAME, MUSE, MORDER
+		FROM 
+		VIEW_MASTER 
+		WHERE CUSE=1 AND GUSE=1 AND MUSE=1 AND CLASSID=#classid#
+		ORDER BY CORDER, CLASSID, GORDER, GROUPID, MORDER, MASTERID
+	]]>
+
+</select>
+
+
+
+<select id="estimate_DAO.selectSample" resultClass="exam.com.req.model.SampleVO" parameterClass="exam.com.req.model.SampleVO">
+	<![CDATA[
+
+		SELECT 
+			REQID, SMPID,MASTERID, 
+			(SELECT TRIM(NAME) FROM TCE_MASTER M WHERE M.MASTERID=S.MASTERID) MNAME,
+			NAME SNAME, PRICE, REGID, REGDATE
+		FROM TNE_SAMPLE_estimate S 
+		WHERE REQID=#reqid#
+		ORDER BY SMPID
+	]]>
+
+</select>
+
+
+
+<insert id="estimate_DAO.insertSample" parameterClass="exam.com.req.model.SampleVO">
+	<![CDATA[
+
+		INSERT INTO TNE_SAMPLE_estimate 
+
+		( REQID, SMPID, MASTERID, NAME, PRICE, REGID, REGDATE )
+
+		VALUES 
+
+		(#reqid#, #smpid#, #masterid#, #sname#, #price#,#regid#, sysdate)
+	]]>	
+
+</insert>
+
+<update id="estimate_DAO.updateSample" parameterClass="exam.com.req.model.SampleVO">
+	<![CDATA[
+		UPDATE TNE_SAMPLE_estimate SET NAME=#sname# WHERE REQID=#reqid# AND SMPID=#smpid#
+	]]>
+</update>
+
+
+<!-- 검사항목 가져오기  -->
+
+<select id="estimate_DAO.selectResult" resultClass="exam.com.req.model.ResultVO" parameterClass="exam.com.req.model.SampleVO">
+
+	<![CDATA[
+		SELECT 
+		    TORDERBY,
+		    LEAFS,
+		    ITEMIDS,
+		    TREELVL,
+		    RESULTID,
+		    RESULTPID,
+		    REQID,
+		    SMPID,
+		    IPID,    
+		    ITEMID, 
+		    ITEMPID,     
+		    METHODID, 
+		    UNITID, 
+		    DISPLAYUNIT,
+		    EQUIPID,
+		    LVL,
+		    REPORTUNIT,
+		    CONDID,
+		    CONDNAME,
+		    TEMPUNIT,
+            TIMECONDUNIT,
+		    CONDETC,
+		    SMPAMOUNT,
+		    ITEMTERM, 
+		    TO_CHAR( ITEMPRICE , '999,999,999,999,999') ITEMPRICE, 
+		    ORDERBY, 
+		    ADDPRICE, 
+		    ADDPRICECOND,  
+		    REQSPEC,
+		    REGID, REGDATE, 
+		    METHODNM, 
+		    LPAD('&'||'nbsp; ',(TREELVL-1)*7,'&'||'nbsp; ')||LPAD('- ',(TREELVL-1)*2,' ')||ITEMENAME ITEMENAME, 
+            LPAD('&'||'nbsp; ',(TREELVL-1)*7,'&'||'nbsp; ')||LPAD('- ',(TREELVL-1)*2,' ')||ITEMNAME ITEMNAME,
+		    REMARK,
+            BASICUNIT,
+            TEMPERCOND,
+            TIMECOND,
+            BASICCOND,
+            PRICEUNIT,
+		    SMETHODID, SMETHODNAME,
+		    SUNIT, 
+		    STEMPUNIT,
+            STIMEUNIT,
+            STEMPUNITID,
+            STIMECONDUNITID,
+		    SCONDID, SCONDNAME,
+		    CASE WHEN METHODID IS NULL OR '0'=METHODID OR '-1'=METHODID THEN CASE WHEN REQSPEC IS NULL THEN 'N' ELSE 'Y' END ELSE 'Y' END METHODTAG,
+            CASE WHEN (STEMPUNITID IS NOT NULL AND TEMPERCOND IS NULL) OR 
+                         (STIMECONDUNITID IS NOT NULL AND TIMECOND IS NULL) THEN 'N'
+            ELSE 'Y' END CONDTAG,
+            ISADD  
+		FROM
+		(
+            SELECT
+                ROWNUM   TORDERBY,
+                CONNECT_BY_ISLEAF                            LEAFS,
+                SUBSTR(SYS_CONNECT_BY_PATH(RESULTID,'_'),2) AS ITEMIDS,
+                LEVEL TREELVL,  
+                RESULTID,
+                RESULTPID,
+                REQID,
+                SMPID,
+                IPID,    
+                ITEMID, 
+                ITEMPID,     
+                METHODID, 
+                UNITID, 
+                DISPLAYUNIT,
+                EQUIPID,
+                LVL,
+                REPORTUNIT,
+                CONDID,
+                CONDNAME,
+                TEMPUNIT,
+                TIMECONDUNIT,
+                CONDETC,
+                SMPAMOUNT,
+                ITEMTERM, 
+                ITEMPRICE, 
+                ORDERBY, 
+                ADDPRICE, 
+                ADDPRICECOND,  
+                REQSPEC,
+                REGID, REGDATE, 
+                METHODNM, ITEMENAME, ITEMNAME, REMARK,
+                BASICUNIT,
+                TEMPERCOND,
+                TIMECOND,
+                BASICCOND,
+                PRICEUNIT,
+                ISADD 
+            FROM (    
+	            SELECT 
+	                RESULTID,
+	                RESULTPID,
+	                REQID,
+	                SMPID,
+	                ITEMID||'_'||ITEMPID IPID,     
+	                ITEMID, 
+	                ITEMPID,     
+	                METHODID, 
+	                NVL(UNITID,'-') UNITID, 
+	                DISPLAYUNIT,
+	                EQUIPID,
+	                LVL,
+	                REPORTUNIT,
+	                CONDID,
+	                ( 
+	                    DECODE(TEMPERCOND,NULL,NULL,TEMPERCOND||' '||(SELECT CODENAME FROM TCT_CODE_DETAIL D WHERE D.CODEGROUPID=10 AND D.CODEID=R.TEMPUNIT)||' ')||
+	                    DECODE(TIMECOND,NULL,NULL,TIMECOND||' '||(SELECT CODENAME FROM TCT_CODE_DETAIL D WHERE D.CODEGROUPID=11 AND D.CODEID=R.TIMECONDUNIT)||' ')||
+	                    DECODE(ETC,NULL,NULL,ETC||' '||(SELECT CODENAME FROM TCT_CODE_DETAIL D WHERE D.CODEGROUPID=12 AND D.CODEID=R.ETCUNIT) )        
+	                ) CONDNAME,
+                    DECODE(TEMPUNIT,NULL,NULL,(SELECT CODENAME FROM TCT_CODE_DETAIL D WHERE D.CODEGROUPID=10 AND D.CODEID=R.TEMPUNIT)) TEMPUNIT, 
+                    DECODE(TIMECONDUNIT,NULL,NULL,(SELECT CODENAME FROM TCT_CODE_DETAIL D WHERE D.CODEGROUPID=11 AND D.CODEID=R.TIMECONDUNIT)) TIMECONDUNIT,
+	                CONDETC,
+	                SMPAMOUNT,
+	                ITEMTERM, 
+	                ITEMPRICE, 
+	                NVL(ORDERBY,ITEMID) ORDERBY,
+	                ADDPRICE, 
+	                ADDPRICECOND,  
+	                REQSPEC,
+	                REGID, REGDATE, 
+	                METHODNM, ITEMENAME, ITEMNAME, REMARK,
+                    BASICUNIT,
+                    TEMPERCOND,
+                    TIMECOND,
+                    BASICCOND,
+                    ISADD,
+                    (SELECT CODENAME FROM TCT_CODE_DETAIL D WHERE D.CODEGROUPID=13 AND D.CODEID=R.BASICUNIT) PRICEUNIT
+	            FROM TNE_RESULT_estimate R WHERE REQID=#reqid# AND SMPID=#smpid#
+            )
+            START WITH (REQID=#reqid# AND SMPID=#smpid# AND RESULTPID=0)
+            CONNECT BY PRIOR RESULTID = RESULTPID
+            ORDER SIBLINGS BY TO_NUMBER(ORDERBY), RESULTID 
+		) R
+		LEFT JOIN
+		(
+		    SELECT ITEMID MIID, ITEMPID MPID,
+		        ITEMID||'_'||ITEMPID MIPID,  
+		        WM_CONCAT(METHODID) SMETHODID, 
+		        WM_CONCAT(METHODNAME) SMETHODNAME
+		    FROM(    
+		        SELECT 
+		            DT.ITEMID, DT.ITEMPID, 
+		            DT.METHODID,
+		            MT.NAME METHODNAME 
+		        FROM 
+		            TNE_ITEM_DETAIL DT,
+		            TCE_METHOD MT
+		        WHERE DT.METHODID=MT.METHODID
+		    ) GROUP BY ITEMID, ITEMPID
+		) M
+		ON R.IPID=M.MIPID
+		LEFT JOIN
+		(
+		    SELECT 
+		        ITEMID UIID, ITEMPID UPID,
+		        ITEMID||'_'||ITEMPID UIPID,
+		        WM_CONCAT(UNITID) SUNIT
+		    FROM(    
+		        SELECT 
+		            ITEMID, ITEMPID, NVL(UNITID,'-') UNITID
+		        FROM 
+		            TNE_ITEM_DETAIL DT
+		        GROUP BY ITEMID, ITEMPID, UNITID    
+		    ) GROUP BY ITEMID, ITEMPID
+		) U
+		ON R.IPID=U.UIPID    
+		LEFT JOIN
+		(
+		    SELECT 
+		        ITEMID||'_'||ITEMPID SIPID,  
+		        WM_CONCAT(CONDID) SCONDID,
+		        WM_CONCAT(CONDNAME) SCONDNAME,
+		        MAX(TEMPUNIT) STEMPUNIT,
+                MAX(TIMEUNIT) STIMEUNIT,
+                MAX(TEMPUNITID) STEMPUNITID,
+                MAX(TIMECONDUNITID) STIMECONDUNITID
+		    FROM 
+		    (
+		        SELECT CONDID,ITEMID,ITEMPID,
+		            TEMPERCOND||' '||(SELECT CODENAME FROM TCT_CODE_DETAIL D WHERE D.CODEGROUPID=10 AND D.CODEID=C.TEMPUNIT)|| ' ' ||
+		            TIMECOND||' '||(SELECT CODENAME FROM TCT_CODE_DETAIL D WHERE D.CODEGROUPID=11 AND D.CODEID=C.TIMECONDUNIT)|| ' ' ||
+		            ETC||' '||(SELECT CODENAME FROM TCT_CODE_DETAIL D WHERE D.CODEGROUPID=12 AND D.CODEID=C.ETCUNIT) CONDNAME,
+		            (SELECT CODENAME FROM TCT_CODE_DETAIL D WHERE D.CODEGROUPID=10 AND D.CODEID=C.TEMPUNIT) TEMPUNIT,
+                    (SELECT CODENAME FROM TCT_CODE_DETAIL D WHERE D.CODEGROUPID=11 AND D.CODEID=C.TIMECONDUNIT) TIMEUNIT,
+                    TEMPUNIT TEMPUNITID,
+                    TIMECONDUNIT TIMECONDUNITID
+		        FROM TNE_CONDITION C
+		    )    
+		    GROUP BY ITEMID,ITEMPID
+		) C
+		ON R.IPID = C.SIPID
+		ORDER BY TORDERBY
+	]]>
+
+</select>
+
+<!-- 기본항목 추가   -->
+
+<insert id="estimate_DAO.insertResult" parameterClass="exam.com.req.model.SampleVO">
+	<![CDATA[
+
+		INSERT INTO TNE_RESULT_estimate
+
+		    (
+
+		        RESULTID, RESULTPID, REQID, SMPID, ITEMID, ITEMPID, 
+
+		        METHODID, UNITID, DISPLAYUNIT,EQUIPID,LVL,REPORTUNIT, 
+
+		        CONDID,CONDETC, TEMPERCOND, TEMPUNIT, TIMECOND, TIMECONDUNIT, ETC,ETCUNIT,
+		        SMPAMOUNT,
+
+		        ITEMTERM, PRICE, ITEMPRICE, ORDERBY, ADDPRICE, ADDPRICECOND,  
+		        BASICCOND, BASICUNIT, PRICECNT,
+		        RESULTTYPE,
+
+		        REGID, REGDATE, METHODNM, ITEMNAME, ITEMENAME, REMARK, 
+		        CALC, RESULTFLAG
+
+		    )
+
+		SELECT 
+
+		    (SEQ_TNE_RESULT_estimate.NEXTVAL), MI.ITEMPID,
+
+		    #reqid#, #smpid#, MI.ITEMID,MI.ITEMPID,
+
+		    MI.METHODID, D.UNITID, D.UNITID, 0 EQUIPID,MI.LVL, D.UNITID,
+
+		    MI.CONDID,NULL CONDETC, MI.TEMPERCOND, MI.TEMPUNIT, MI.TIMECOND, MI.TIMECONDUNIT, MI.ETC, MI.ETCUNIT,
+		    D.SMPAMOUNT, 
+
+		    D.TERM, I.PRICE, I.PRICE, I.ORDERBY,I.ADDPRICE, I.BASICCOND,
+		    I.BASICCOND, I.BASICUNIT, I.BASICCNT,
+		    D.RULEID,
+
+		    #regid#, SYSDATE, 
+
+		    M.NAME METHODNM, I.NAME ITEMNAME, I.ENAME ITEMENAME, D.ETC,
+		    D.CALC, I.RESULTFLAG                
+
+		FROM 
+
+		    TCE_MASTER_ITEM MI, 
+
+		    TCE_ITEM I,
+
+		    TNE_ITEM_DETAIL D,
+
+		    TCE_METHOD M
+
+		WHERE 
+
+		        MI.ITEMID   = I.ITEMID
+
+		    AND MI.ITEMPID  = I.ITEMPID
+		    AND MI.ITEMID   = D.ITEMID (+)
+		    AND MI.ITEMPID  = D.ITEMPID (+)
+		    AND MI.METHODID = D.METHODID (+)
+		    AND MI.METHODID = M.METHODID
+
+		AND MI.MASTERID=#masterid#
+	]]>
+
+</insert>
+		    <!-- 시험방법이 없는 것 제외 함.
+		    AND MI.ITEMID   = D.ITEMID
+		    AND MI.ITEMPID  = D.ITEMPID
+		    AND MI.METHODID = D.METHODID 
+		    -->
+
+
+
+<!-- 기본항목 추가   후 resultpid update-->
+<update id="estimate_DAO.updateResultPid" parameterClass="exam.com.req.model.SampleVO" >
+	MERGE INTO TNE_RESULT_estimate T
+	USING
+	( 
+	    SELECT * FROM
+	    (        
+	        SELECT RESULTID, RESULTPID, ITEMID, ITEMPID FROM TNE_RESULT_estimate WHERE REQID=#reqid# AND SMPID=#smpid#
+	    ) A,
+	    (
+	       SELECT RESULTID BRID, RESULTPID BRPID, ITEMID BIID, ITEMPID BIPID FROM TNE_RESULT_estimate WHERE REQID=#reqid# AND SMPID=#smpid#
+	    ) B
+	    WHERE A.ITEMPID=B.BIID
+	) S
+	ON (T.RESULTID = S.RESULTID AND T.REQID = #reqid# AND SMPID = #smpid#)
+	WHEN MATCHED THEN 
+	UPDATE SET T.RESULTPID=S.BRID 
+</update>
+
+
+
+<insert id="estimate_DAO.insertResultWithKolas" parameterClass="exam.com.req.model.SampleVO">
+	<![CDATA[
+        INSERT INTO TNE_RESULT_estimate
+            (
+                RESULTID, RESULTPID, REQID, SMPID, ITEMID, ITEMPID, 
+                METHODID, UNITID, DISPLAYUNIT,EQUIPID,LVL,REPORTUNIT, 
+                CONDID,CONDETC, TEMPERCOND, TEMPUNIT, TIMECOND, TIMECONDUNIT, ETC,ETCUNIT,
+                SMPAMOUNT,
+                ITEMTERM, PRICE, ITEMPRICE, ORDERBY, ADDPRICE, ADDPRICECOND,  
+                BASICCOND, BASICUNIT, PRICECNT,
+                RESULTTYPE,
+                REGID, REGDATE, METHODNM, ITEMNAME, ITEMENAME, REMARK, 
+                CALC, RESULTFLAG
+            ) 
+        WITH ITEM AS
+        (
+            SELECT 
+                   ROWNUM IDX,
+                   ITEMID, ITEMPID, NAME, ENAME,
+                   SUBSTR(SYS_CONNECT_BY_PATH(ITEMID,','),2)               TREEITEMID, 
+                   SUBSTR(SYS_CONNECT_BY_PATH(REPLACE(NAME,'_',''),'_'),2) TREEITEMNAME,
+                   CONNECT_BY_ISLEAF                                       LEAFS,
+                   LEVEL                                                   LVL,
+                   LPAD('&'||'nbsp; ',(LEVEL-1)*7,'&'||'nbsp; ')||LPAD('-  ',(LEVEL-1)*2,' ')||NAME  AS TNAME,
+                   PRICE, ADDPRICE, BASICCOND,
+                   BASICUNIT, BASICCNT,
+                   RESULTFLAG,
+                   ORDERBY
+            FROM
+            (
+                SELECT I.ITEMID,I.ITEMPID,I.NAME,I.ENAME, I.ORDERBY, 
+                       I.PRICE, I.ADDPRICE, I.BASICCOND,
+                       I.BASICUNIT, I.BASICCNT, I.RESULTFLAG
+                FROM 
+                    TCE_ITEM I   
+                WHERE ( I.OLDYN != 'Y' AND I.USEFLAG = 'Y') AND ITEMID IN (SELECT ITEMID FROM TNE_ITEM_DETAIL WHERE KOLASFLAG='Y') 
+            )    
+            START WITH (ITEMPID=0) 
+            CONNECT BY PRIOR ITEMID = ITEMPID
+            ORDER SIBLINGS BY ORDERBY, ITEMID
+        )
+        SELECT 
+            (SEQ_TNE_RESULT_estimate.NEXTVAL) RESULTID,I.ITEMPID,#reqid#, #smpid#, I.ITEMID, I.ITEMPID,
+            CASE WHEN (INSTR(SMETHODID,',')>0) THEN SUBSTR(SMETHODID,0,INSTR(SMETHODID,',')-1) ELSE SMETHODID END METHODID,
+            CASE WHEN (INSTR(SUNIT,',')>0) THEN SUBSTR(SUNIT,0,INSTR(SUNIT,',')-1) ELSE SUNIT END UNIT, 
+            CASE WHEN (INSTR(SUNIT,',')>0) THEN SUBSTR(SUNIT,0,INSTR(SUNIT,',')-1) ELSE SUNIT END SUNIT,
+            0 EQUIPID, LVL, CASE WHEN (INSTR(SUNIT,',')>0) THEN SUBSTR(SUNIT,0,INSTR(SUNIT,',')-1) ELSE SUNIT END SUNIT,
+            CASE WHEN (INSTR(CONDID,',')>0) THEN SUBSTR(CONDID,0,INSTR(CONDID,',')-1) ELSE CONDID END CONDID,
+            NULL CONDETC, 
+            CASE WHEN (INSTR(TEMPERCOND,',')>0) THEN SUBSTR(TEMPERCOND,0,INSTR(TEMPERCOND,',')-1) ELSE TEMPERCOND END TEMPERCOND,
+            CASE WHEN (INSTR(TEMPUNIT,',')>0) THEN SUBSTR(TEMPUNIT,0,INSTR(TEMPUNIT,',')-1) ELSE TEMPUNIT END TEMPUNIT,
+            CASE WHEN (INSTR(TIMECOND,',')>0) THEN SUBSTR(TIMECOND,0,INSTR(TIMECOND,',')-1) ELSE TIMECOND END TIMECOND, 
+            CASE WHEN (INSTR(TIMECONDUNIT,',')>0) THEN SUBSTR(TIMECONDUNIT,0,INSTR(TIMECONDUNIT,',')-1) ELSE TIMECONDUNIT END TIMECONDUNIT, 
+            CASE WHEN (INSTR(ETC,',')>0) THEN SUBSTR(ETC,0,INSTR(ETC,',')-1) ELSE ETC END ETC, 
+            CASE WHEN (INSTR(ETCUNIT,',')>0) THEN SUBSTR(ETCUNIT,0,INSTR(ETCUNIT,',')-1) ELSE ETCUNIT END ETCUNIT, 
+            CASE WHEN (INSTR(SMPAMOUNT,',')>0) THEN SUBSTR(SMPAMOUNT,0,INSTR(SMPAMOUNT,',')-1) ELSE SMPAMOUNT END SMPAMOUNT,
+            CASE WHEN (INSTR(TERM,',')>0) THEN SUBSTR(TERM,0,INSTR(TERM,',')-1) ELSE TERM END TERM, 
+            I.PRICE, I.PRICE, I.ORDERBY,I.ADDPRICE, I.BASICCOND,
+            I.BASICCOND, I.BASICUNIT, I.BASICCNT,
+            CASE WHEN (INSTR(RULEID,',')>0) THEN SUBSTR(RULEID,0,INSTR(RULEID,',')-1) ELSE RULEID END RULEID,
+            #regid#, SYSDATE,
+            CASE WHEN (INSTR(SMETHODNAME,',')>0) THEN SUBSTR(SMETHODNAME,0,INSTR(SMETHODNAME,',')-1) ELSE SMETHODNAME END SMETHODNAME, 
+            NAME ITEMNAME,ENAME, 
+            REPLACE(CASE WHEN (INSTR(SREMARK,',')>0) THEN SUBSTR(SREMARK,0,INSTR(SREMARK,',')-1) ELSE SREMARK END,'└',',') SREMARK,
+            CASE WHEN (INSTR(CALC,',')>0) THEN SUBSTR(CALC,0,INSTR(CALC,',')-1) ELSE CALC END CALC,
+            RESULTFLAG 
+            FROM 
+                ITEM I,
+                (
+                    SELECT ITEMID MIID, ITEMPID MPID,
+                        SUBSTR (XMLAGG (XMLELEMENT (COL, ',', REPLACE(NVL(ETC,'-'),',','└'))  ORDER BY METHODID).EXTRACT ('//text()'), 2) AS SREMARK,
+                        SUBSTR (XMLAGG (XMLELEMENT (COL, ',', UNITID) ORDER BY METHODID).EXTRACT ('//text()'), 2) AS   SUNIT,
+                        SUBSTR (XMLAGG (XMLELEMENT (COL, ',', METHODID) ORDER BY METHODID).EXTRACT ('//text()'), 2) AS SMETHODID,
+                        SUBSTR (XMLAGG (XMLELEMENT (COL, ',', METHODNAME) ORDER BY METHODID).EXTRACT ('//text()'), 2) AS SMETHODNAME,
+                        SUBSTR (XMLAGG (XMLELEMENT (COL, ',', SMPAMOUNT) ORDER BY METHODID).EXTRACT ('//text()'), 2) AS SMPAMOUNT,
+                        SUBSTR (XMLAGG (XMLELEMENT (COL, ',', TERM) ORDER BY METHODID).EXTRACT ('//text()'), 2) AS TERM,
+                        SUBSTR (XMLAGG (XMLELEMENT (COL, ',', RULEID) ORDER BY METHODID).EXTRACT ('//text()'), 2) AS RULEID,
+                        SUBSTR (XMLAGG (XMLELEMENT (COL, ',', CALC) ORDER BY METHODID).EXTRACT ('//text()'), 2) AS CALC
+                    FROM(    
+                        SELECT 
+                            DT.ITEMID, DT.ITEMPID, 
+                            DT.METHODID,
+                            DT.UNITID,
+                            DT.ETC,
+                            DT.SMPAMOUNT,
+                            DT.TERM,
+                            DT.RULEID,
+                            DT.CALC,
+                            MT.NAME METHODNAME 
+                        FROM 
+                            TNE_ITEM_DETAIL DT,
+                            TCE_METHOD MT
+                        WHERE DT.METHODID=MT.METHODID AND DT.KOLASFLAG='Y'
+                    ) GROUP BY ITEMID, ITEMPID
+                ) D,
+                (
+                     SELECT
+                        ITEMID TIID, ITEMPID TPID,  
+                        ITEMID||'_'||ITEMPID SIPID,  
+                        SUBSTR (XMLAGG (XMLELEMENT (COL, ',', CONDID) ORDER BY CONDID).EXTRACT ('//text()'), 2) AS   CONDID,
+                        SUBSTR (XMLAGG (XMLELEMENT (COL, ',', TEMPERCOND) ORDER BY CONDID).EXTRACT ('//text()'), 2) AS   TEMPERCOND,
+                        SUBSTR (XMLAGG (XMLELEMENT (COL, ',', TEMPUNIT) ORDER BY CONDID).EXTRACT ('//text()'), 2) AS   TEMPUNIT,
+                        SUBSTR (XMLAGG (XMLELEMENT (COL, ',', TIMECOND) ORDER BY CONDID).EXTRACT ('//text()'), 2) AS   TIMECOND,
+                        SUBSTR (XMLAGG (XMLELEMENT (COL, ',', TIMECONDUNIT) ORDER BY CONDID).EXTRACT ('//text()'), 2) AS   TIMECONDUNIT,
+                        SUBSTR (XMLAGG (XMLELEMENT (COL, ',', ETC) ORDER BY CONDID).EXTRACT ('//text()'), 2) AS   ETC,
+                        SUBSTR (XMLAGG (XMLELEMENT (COL, ',', ETCUNIT) ORDER BY CONDID).EXTRACT ('//text()'), 2) AS   ETCUNIT
+                    FROM 
+                    (
+                        SELECT CONDID,ITEMID,ITEMPID,
+                            TEMPERCOND,TEMPUNIT,
+                            TIMECOND,TIMECONDUNIT,
+                            ETC,ETCUNIT
+                        FROM TNE_CONDITION C
+                    )    
+                    GROUP BY ITEMID,ITEMPID  
+               ) T
+                WHERE 
+                    I.ITEMID  = D.MIID(+)
+                    AND I.ITEMPID = D.MPID(+)
+                    AND I.ITEMID = T.TIID(+)
+	]]>	
+</insert>
+
+
+
+<select id="estimate_DAO.selectDuplicate" resultClass="exam.com.req.model.DuplicateVO">
+
+	SELECT ISTITEMPID,WM_CONCAT(ISTNAME) ISTNAME, RESULTID,ITEMID, ITEMPID,CONDID,CONDNAME,METHODNM,ITEMENAME,ITEMNAME,REMARK,UNITID FROM(  
+	    
+	    SELECT I.ITEMID ISTITEMID, I.ITEMPID ISTITEMPID, REPLACE(I.NAME,',','') ISTNAME,
+	           R.RESULTID, R.RESULTPID, R.ITEMID, R.ITEMPID,
+		       R.CONDID,
+		      ( 
+		        DECODE(R.TEMPERCOND,NULL,NULL,R.TEMPERCOND||' '||(SELECT CODENAME FROM TCT_CODE_DETAIL D WHERE D.CODEGROUPID=10 AND D.CODEID=R.TEMPUNIT)||' ')||
+		        DECODE(R.TIMECOND,NULL,NULL,R.TIMECOND||' '||(SELECT CODENAME FROM TCT_CODE_DETAIL D WHERE D.CODEGROUPID=11 AND D.CODEID=R.TIMECONDUNIT)||' ')||
+		        DECODE(R.ETC,NULL,NULL,R.ETC||' '||(SELECT CODENAME FROM TCT_CODE_DETAIL D WHERE D.CODEGROUPID=12 AND D.CODEID=R.ETCUNIT) )        
+		      ) CONDNAME,
+		      R.METHODNM, R.ITEMENAME, R.ITEMNAME, R.REMARK,
+		      R.UNITID
+		FROM TCE_ITEM I, 
+		     TNE_RESULT_estimate R
+		WHERE  
+		     R.REQID= #reqid# AND SMPID=#smpid#
+		     AND I.ITEMPID=R.ITEMID
+		<iterate property="itemList" prepend="AND I.ITEMID IN" open="(" close=")" conjunction="," >
+			#itemList[]#
+		</iterate>
+		    UNION ALL
+	    SELECT I.ITEMID ISTITEMID, I.ITEMPID ISTITEMPID, REPLACE(I.NAME,',','') ISTNAME,
+	           R.RESULTID, R.RESULTPID, R.ITEMID, R.ITEMPID,
+	           R.CONDID,
+	          ( 
+	            DECODE(R.TEMPERCOND,NULL,NULL,R.TEMPERCOND||' '||(SELECT CODENAME FROM TCT_CODE_DETAIL D WHERE D.CODEGROUPID=10 AND D.CODEID=R.TEMPUNIT)||' ')||
+	            DECODE(R.TIMECOND,NULL,NULL,R.TIMECOND||' '||(SELECT CODENAME FROM TCT_CODE_DETAIL D WHERE D.CODEGROUPID=11 AND D.CODEID=R.TIMECONDUNIT)||' ')||
+	            DECODE(R.ETC,NULL,NULL,R.ETC||' '||(SELECT CODENAME FROM TCT_CODE_DETAIL D WHERE D.CODEGROUPID=12 AND D.CODEID=R.ETCUNIT) )        
+	          ) CONDNAME,
+	          R.METHODNM, R.ITEMENAME, R.ITEMNAME, R.REMARK,
+	          R.UNITID
+	    FROM TCE_ITEM I, 
+	         TNE_RESULT_estimate R
+	    WHERE  
+	         R.REQID= #reqid# AND SMPID=#smpid#
+	         AND I.ITEMPID=R.ITEMID
+	         AND I.ITEMID IN (SELECT ITEMPID FROM TCE_ITEM 
+		<iterate property="itemList" prepend="WHERE ITEMID IN" open="(" close=")" conjunction="," >
+			#itemList[]#
+		</iterate>	         
+	         )    
+	)     
+	GROUP BY ISTITEMPID, RESULTID,ITEMID, ITEMPID,CONDID,CONDNAME,METHODNM,ITEMENAME,ITEMNAME,REMARK,UNITID 
+	ORDER BY ISTITEMPID, RESULTID
+	
+</select>
+
+
+
+
+
+
+<select id="estimate_DAO.selectNextSmpid" parameterClass="java.lang.String" resultClass="java.lang.String">
+	<![CDATA[
+		SELECT NVL((SELECT MAX(SMPID)+1 FROM TNE_SAMPLE_estimate WHERE REQID=#reqid#), 1) FROM DUAL
+	]]>	
+</select>
+
+<!-- 시료 삭제  -->
+<delete id="estimate_DAO.deleteSample" parameterClass="exam.com.req.model.SampleVO" >
+	<![CDATA[
+		DELETE FROM TNE_SAMPLE_estimate WHERE REQID=#reqid# AND SMPID=#smpid#
+	]]>	
+</delete>
+
+
+<!-- 해당 항목 삭제  -->
+<delete id="estimate_DAO.deleteResult" parameterClass="exam.com.req.model.SampleVO">
+	<![CDATA[
+		DELETE FROM TNE_RESULT_estimate WHERE REQID=#reqid# AND SMPID=#smpid#
+	]]>	
+</delete>
+ 
+<!-- 기본 항목 가져오기  item selectItem -->
+
+<select id="estimate_DAO.selectItems" resultClass="exam.com.req.model.ItemVO" >
+<![CDATA[
+		WITH ITEM AS
+		(
+	        SELECT 
+	               ROWNUM IDX,
+	               ITEMID, ITEMPID, NAME,
+	               SUBSTR(SYS_CONNECT_BY_PATH(ITEMID,','),2)               TREEITEMID, 
+	               SUBSTR(SYS_CONNECT_BY_PATH(REPLACE(NAME,'_',''),'_'),2) TREEITEMNAME,
+	               CONNECT_BY_ISLEAF                                       LEAFS,
+	               LEVEL                                                   LVL,
+	               LPAD('&'||'nbsp; ',(LEVEL-1)*7,'&'||'nbsp; ')||LPAD('-  ',(LEVEL-1)*2,' ')||NAME  AS TNAME,
+	               ORDERBY
+	        FROM
+	        (
+	            SELECT I.ITEMID,I.ITEMPID,I.NAME,I.ENAME, I.ORDERBY 
+	            FROM 
+	                TCE_ITEM I       
+	            WHERE ( I.OLDYN != 'Y' AND I.USEFLAG = 'Y') 
+]]>    
+	 	<isNotNull property="kolasyn">
+	    	<isEqual property="kolasyn" compareValue="Y">                        
+	                        AND ITEMID IN (SELECT ITEMID FROM TNE_ITEM_DETAIL WHERE KOLASFLAG='Y')       
+	        </isEqual>
+	   </isNotNull>  
+<![CDATA[	            
+	        )    
+	        START WITH (ITEMPID=0) 
+	        CONNECT BY PRIOR ITEMID = ITEMPID
+	        ORDER SIBLINGS BY ORDERBY, ITEMID
+		)
+        SELECT IDX, I.ITEMID, I.ITEMPID, NAME,
+            TREEITEMID, TREEITEMNAME, LEAFS, LVL, TNAME, ORDERBY,
+            D.SUNIT, D.SMETHODID,D.SMETHODNAME, D.SETC FROM 
+                ITEM I,
+                (
+                    SELECT ITEMID MIID, ITEMPID MPID,
+                        SUBSTR (XMLAGG (XMLELEMENT (COL, ',', REPLACE(NVL(ETC,'-'),',','└'))  ORDER BY METHODID).EXTRACT ('//text()'), 2) AS SETC,
+                        SUBSTR (XMLAGG (XMLELEMENT (COL, ',', UNITID) ORDER BY METHODID).EXTRACT ('//text()'), 2) AS   SUNIT,
+                        SUBSTR (XMLAGG (XMLELEMENT (COL, ',', METHODID) ORDER BY METHODID).EXTRACT ('//text()'), 2) AS SMETHODID,
+                        SUBSTR (XMLAGG (XMLELEMENT (COL, ',', METHODNAME) ORDER BY METHODID).EXTRACT ('//text()'), 2) AS SMETHODNAME
+                    FROM(    
+                        SELECT 
+                            DT.ITEMID, DT.ITEMPID, 
+                            DT.METHODID,
+                            DT.UNITID,
+                            DT.ETC,
+                            MT.NAME METHODNAME 
+                        FROM 
+                            TNE_ITEM_DETAIL DT,
+                            TCE_METHOD MT
+                        WHERE DT.METHODID=MT.METHODID
+]]>
+	 	<isNotNull property="kolasyn">
+	    	<isEqual property="kolasyn" compareValue="Y">                        
+	                        AND DT.KOLASFLAG='Y'    
+	        </isEqual>
+	   </isNotNull> 
+
+
+		<isNotNull property="searchType">
+	    	<isEqual property="searchType" compareValue="detail">                        
+	                        AND DT.METHODID IN
+	                        (
+	                            SELECT METHODID FROM TCE_ITEM_EXCEPT WHERE EXCEPTID= #exceptid#
+	                        )        
+	        </isEqual>
+	   </isNotNull>                     
+<![CDATA[                       
+                    ) GROUP BY ITEMID, ITEMPID
+                ) D
+            WHERE 
+                I.ITEMID  = D.MIID(+)
+                AND I.ITEMPID = D.MPID(+) 
+]]>
+
+	<isNotNull property="searchType">
+    	<isEqual property="searchType" compareValue="single">
+		AND I.ITEMID IN 
+		    (
+		        SELECT ITEMID FROM ITEM WHERE TREEITEMNAME LIKE ''||#itemname#||'%' 
+		        UNION 
+		        SELECT ITEMPID FROM ITEM WHERE TREEITEMNAME LIKE ''||#itemname#||'%'
+		        UNION
+                SELECT ITEMPID FROM ITEM WHERE ITEMID IN (SELECT ITEMPID FROM ITEM WHERE TREEITEMNAME LIKE ''||#itemname#||'%')
+		    )
+    	</isEqual>
+    	<isEqual property="searchType" compareValue="range">
+    	<![CDATA[
+		AND I.ITEMID IN 
+		    (
+		        SELECT ITEMID FROM ITEM WHERE LOWER(TREEITEMNAME) >= #searchText1# AND #searchText2# > LOWER(TREEITEMNAME) 
+		        UNION 
+		        SELECT ITEMPID FROM ITEM WHERE LOWER(TREEITEMNAME) >= #searchText1# AND #searchText2# > LOWER(TREEITEMNAME)
+		        UNION 
+		        SELECT ITEMPID FROM ITEM WHERE ITEMID IN (SELECT ITEMPID FROM ITEM WHERE LOWER(TREEITEMNAME) >= #searchText1# AND #searchText2# > LOWER(TREEITEMNAME))
+		        UNION 
+		        SELECT ITEMID FROM ITEM WHERE ITEMPID IN (SELECT ITEMID FROM ITEM WHERE LOWER(TREEITEMNAME) >= #searchText1# AND #searchText2# > LOWER(TREEITEMNAME))
+		        UNION 
+                SELECT ITEMID FROM ITEM WHERE ITEMPID IN (SELECT ITEMID FROM ITEM WHERE ITEMPID IN (SELECT ITEMID FROM ITEM WHERE LOWER(TREEITEMNAME) >= #searchText1# AND #searchText2# > LOWER(TREEITEMNAME)) )
+		    )
+		]]>   
+    	</isEqual>
+    	
+    	<isEqual property="searchType" compareValue="detail">
+		AND I.ITEMID IN 
+            (
+                SELECT ITEMID FROM TCE_ITEM_EXCEPT WHERE EXCEPTID = #exceptid#
+            )
+    	</isEqual>
+    </isNotNull>  
+    ORDER BY IDX  
+
+</select>
+
+<!-- WHERE I.OLDYN != 'Y' AND I.USEFLAG = 'Y'  -->
+
+
+
+
+<!-- 신규 항목추가  (상위항목) -->
+<insert id="estimate_DAO.insertResultItemP">
+	<![CDATA[
+		MERGE INTO TNE_RESULT_estimate A
+		USING (
+			    SELECT I.ITEMID, I.ITEMPID,I.LVL,I.PRICE,I.BASICCNT,I.BASICUNIT,I.BASICCOND, I.CALCBASE,I.ADDPRICE,D.ETC,NVL(D.METHODID,0) METHODID,METHODNM,
+			           D.UNITID, I.NAME,I.ENAME,I.RESULTFLAG,I.PRICE ITEMPRICE,I.ORDERBY,'REGID',SYSDATE
+			    FROM TCE_ITEM I, 
+			    (SELECT D.ITEMID, D.ITEMPID,D.UNITID, D.METHODID,D.ETC, M.NAME METHODNM 
+			      FROM 
+			        TNE_ITEM_DETAIL D,
+			        TCE_METHOD M WHERE D.METHODID=M.METHODID) D
+			    WHERE I.ITEMID     = #itemid# 
+			        AND I.ITEMID   = D.ITEMID(+)
+			        AND I.ITEMPID  = D.ITEMPID(+)
+			        AND #methodid# = D.METHODID(+)                     
+		) TMP
+		ON (
+		          A.ITEMID = TMP.ITEMID
+		      AND A.REQID  = #reqid#
+		      AND A.SMPID  = #smpid#
+		)    
+		WHEN NOT MATCHED THEN 
+		     INSERT(RESULTID,REQID,SMPID,ITEMID,ITEMPID,LVL,                                    PRICE,     PRICECNT, ADDPRICECOND, ADDPRICE,      BASICUNIT,  BASICCOND,      REMARK, METHODID, METHODNM, 
+		             UNITID, ITEMNAME, ITEMENAME, 
+		             RESULTFLAG, ITEMPRICE, ORDERBY, REGID, REGDATE)
+		     VALUES(SEQ_TNE_RESULT_estimate.NEXTVAL, #reqid#, #smpid#,TMP.ITEMID,TMP.ITEMPID,TMP.LVL,TMP.PRICE, TMP.BASICCNT, TMP.CALCBASE, TMP.ADDPRICE,TMP.BASICUNIT,TMP.BASICCOND, TMP.ETC,TMP.METHODID,TMP.METHODNM,
+		            TMP.UNITID,TMP.NAME, TMP.ENAME,
+		            TMP.RESULTFLAG,TMP.ITEMPRICE, TMP.ORDERBY, #regid#, SYSDATE)
+		WHEN MATCHED THEN 
+		     UPDATE SET A.METHODID=TMP.METHODID, A.UNITID=TMP.UNITID, A.METHODNM = TMP.METHODNM 
+	]]>
+</insert>
+
+<!-- 신규 항목추가  -->
+<insert id="estimate_DAO.insertResultItem" parameterClass="exam.com.req.model.TreeVO">
+	<selectKey resultClass="String" keyProperty="resultid">
+	<![CDATA[
+		SELECT SEQ_TNE_RESULT_estimate.NEXTVAL AS ID FROM DUAL
+	]]>	
+	</selectKey>
+
+
+	<![CDATA[
+	
+		INSERT INTO TNE_RESULT_estimate (RESULTID, RESULTPID, REQID,  SMPID,      ITEMID, ITEMPID,         LVL,   PRICE,      PRICECNT,  ADDPRICECOND, ADDPRICE,       BASICUNIT,   BASICCOND,     REMARK, METHODID, METHODNM,           
+		        UNITID, ITEMNAME, ITEMENAME, RESULTFLAG, ITEMPRICE, CALC, ORDERBY, ISADD, REGID, REGDATE)
+		SELECT #resultid#, #resultpid#, #reqid#, #smpid#,TMP.ITEMID, TMP.ITEMPID, TMP.LVL, TMP.PRICE, TMP.BASICCNT, TMP.CALCBASE, TMP.ADDPRICE,TMP.BASICUNIT,  TMP.BASICCOND,   D.ETC,NVL(D.METHODID,0), METHODNM,
+		       D.UNITID,TMP.NAME, TMP.ENAME, RESULTFLAG, TMP.PRICE ITEMPRICE, D.CALC, TMP.ORDERBY,'Y', #regid#, SYSDATE
+		FROM TCE_ITEM TMP,
+		    (SELECT D.ITEMID, D.ITEMPID,D.UNITID, D.METHODID,D.ETC, D.CALC, M.NAME METHODNM 
+		     FROM 
+		        TNE_ITEM_DETAIL D,
+		        TCE_METHOD M WHERE D.METHODID=M.METHODID) D
+		WHERE TMP.ITEMID =  #itemid#
+		    AND TMP.ITEMID = D.ITEMID(+)
+		    AND TMP.ITEMPID = D.ITEMPID(+)
+		    AND #methodid# = D.METHODID(+)
+
+	]]>
+</insert>
+
+
+
+<!-- 시료 복사   -->
+
+<insert id="estimate_DAO.insertCopySample">
+	<![CDATA[	
+		INSERT INTO TNE_SAMPLE_estimate (REQID,SMPID,MASTERID,NAME,PRICE,REGID,REGDATE,OFFICEID)
+		SELECT REQID, #target_smpid#, MASTERID, NAME||'-'||#serial#, PRICE,#regid#,SYSDATE,OFFICEID
+		FROM TNE_SAMPLE_estimate WHERE REQID=#reqid# AND SMPID=#smpid#
+	]]>
+</insert>
+
+<insert id="estimate_DAO.insertCopyResult">
+	<![CDATA[
+		INSERT INTO TNE_RESULT_estimate 
+		(
+		  RESULTID          ,
+		  RESULTPID         ,
+		  REQID             ,
+		  SMPID             ,
+		  ITEMID            ,
+		  ITEMPID           ,
+		  METHODID          ,
+		  UNITID            ,
+		  DISPLAYUNIT       ,
+		  EQUIPID           ,
+		  LVL               ,
+		  ITEMREGID         ,
+		  REPORTUNIT        ,
+		  CONDID            ,
+		  CONDETC           ,
+		  SMPAMOUNT         ,
+		  ITEMTERM          ,
+		  RESULTTYPE        ,
+		  ITEMVALUE         ,
+		  RESULTVALUE       ,
+		  RESULTCONTENTS    ,
+		  ANNOTATION        ,
+		  REMARK            ,
+		  ITEMPRICE         ,
+		  ITEMSTATE         ,
+		  ORDERBY           ,
+		  ADDPRICE          ,
+		  ADDPRICECOND      ,
+		  FIXCNT            ,
+		  COOPERRESULTSTATE ,
+		  COOPERYN          ,
+		  REGID             ,
+		  REGDATE           ,
+		  METHODNM          ,
+		  ITEMENAME         ,
+		  OFFICEID          ,
+		  ITEMNAME          ,
+		  SCSEQN            ,
+		  REQSPEC           ,
+		  SPEC              ,
+		  PRICE             ,
+		  CALC              ,
+		  RESULTFLAG        ,
+		  PRICECNT          ,
+		  TEMPERCOND        ,
+		  TEMPUNIT          ,
+		  TIMECOND          ,
+		  TIMECONDUNIT      ,
+		  ETC               ,
+		  ETCUNIT           ,
+		  BASICCOND         ,
+		  BASICUNIT         ,
+		  COPYRESULTID      ,
+          COPYRESULTPID     ,
+		  DISPLAYTYPE       
+		)
+		SELECT 
+		  (SEQ_TNE_RESULT_estimate.NEXTVAL),
+		  RESULTPID      ,
+		  REQID          ,
+		  #target_smpid# ,
+		  ITEMID         ,
+		  ITEMPID        ,
+		  METHODID       ,
+		  UNITID         ,
+		  DISPLAYUNIT    ,
+		  EQUIPID        ,
+		  LVL            ,
+		  ITEMREGID      ,
+		  REPORTUNIT     ,
+		  CONDID         ,
+		  CONDETC        ,
+		  SMPAMOUNT      ,
+		  ITEMTERM       ,
+		  RESULTTYPE     ,
+		  ITEMVALUE      ,
+		  RESULTVALUE    ,
+		  RESULTCONTENTS ,
+		  ANNOTATION     ,
+		  REMARK         ,
+		  ITEMPRICE      ,
+		  ITEMSTATE      ,
+		  ORDERBY        ,
+		  ADDPRICE       ,
+		  ADDPRICECOND   ,
+		  FIXCNT         ,
+		  COOPERRESULTSTATE    ,
+		  COOPERYN       ,
+		  #regid#        ,
+		  SYSDATE        ,
+		  METHODNM       ,
+		  ITEMENAME      ,
+		  OFFICEID       ,
+		  ITEMNAME       ,
+		  SCSEQN         ,
+		  REQSPEC        ,
+		  SPEC           ,
+		  PRICE          ,
+		  CALC           ,
+		  RESULTFLAG     ,
+		  PRICECNT       ,
+		  TEMPERCOND     ,
+		  TEMPUNIT       ,
+		  TIMECOND       ,
+		  TIMECONDUNIT   ,
+		  ETC            ,
+		  ETCUNIT        ,
+		  BASICCOND      ,
+		  BASICUNIT      ,
+		  RESULTID       ,
+          RESULTPID      ,
+		  DISPLAYTYPE    
+		FROM TNE_RESULT_estimate WHERE REQID=#reqid# AND SMPID=#smpid#
+    ]]>
+</insert>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 항목 수정  -->
+
+<update id="estimate_DAO.updateResult" parameterClass="exam.com.req.model.ResultVO">
+        UPDATE TNE_RESULT_estimate R SET
+            CONDID     = #condid#,
+            CONDETC    = #condetc#,
+	<isNotNull property="condid">
+    	<isEqual property="condid" compareValue="-1">
+            TEMPERCOND   = #tempercond#,
+            TIMECOND     = #timecond#,
+            TEMPUNIT     = #stempunitid#,
+            TIMECONDUNIT = #stimecondunitid#,
+    	</isEqual>
+    	<isNotEqual property="condid" compareValue="-1">
+            TEMPERCOND = (SELECT TEMPERCOND FROM TNE_CONDITION WHERE CONDID=#condid#) ,
+            TIMECOND   = (SELECT TIMECOND FROM TNE_CONDITION WHERE CONDID=#condid#) ,
+            TEMPUNIT   = (SELECT TEMPUNIT FROM TNE_CONDITION WHERE CONDID=#condid#) ,    
+            TIMECONDUNIT = (SELECT TIMECONDUNIT FROM TNE_CONDITION WHERE CONDID=#condid#) ,
+            ETC        = (SELECT ETC FROM TNE_CONDITION WHERE CONDID=#condid#) ,
+            ETCUNIT    = (SELECT ETCUNIT FROM TNE_CONDITION WHERE CONDID=#condid#) ,
+    	</isNotEqual>
+    </isNotNull> 
+
+            UNITID    = #unitid#,
+            DISPLAYUNIT=#unitid#,
+            REPORTUNIT= #unitid#,
+            METHODID  = #methodid#,
+            METHODNM  = (SELECT NAME FROM TCE_METHOD WHERE METHODID=#methodid#),
+            CALC      = (SELECT CALC FROM TNE_ITEM_DETAIL D WHERE D.METHODID=#methodid# AND D.ITEMID=R.ITEMID),
+            RESULTTYPE   = (SELECT RULEID FROM TNE_ITEM_DETAIL D WHERE D.METHODID=#methodid# AND D.ITEMID=R.ITEMID),
+            DISPLAYTYPE  = (SELECT DISPLAYTYPE FROM TNE_ITEM_DETAIL D WHERE D.METHODID=#methodid# AND D.ITEMID=R.ITEMID),
+            REQSPEC   = #reqspec#,
+            REGID     = #regid#,
+            REGDATE   = sysdate
+        WHERE RESULTID= #resultid#
+</update>
+
+
+
+<!-- 항목 복사  -->
+<update id="estimate_DAO.insertItemCopy">	
+	<![CDATA[
+	MERGE INTO TNE_RESULT_estimate T
+	USING (            
+	            SELECT * FROM (
+	            SELECT
+	                RESULTID,
+	                RESULTPID,
+	                REQID,
+	                SMPID,   
+	                ITEMID, 
+	                ITEMPID,     
+	                METHODID, 
+	                UNITID, 
+	                DISPLAYUNIT,
+	                EQUIPID,
+	                LVL,
+	                REPORTUNIT,
+	                CONDID,
+	                CONDETC,
+	                SMPAMOUNT,
+	                ITEMTERM, 
+	                PRICE,
+	                ITEMPRICE, 
+	                ADDPRICE, 
+	                ADDPRICECOND,
+	                PRICECNT,  
+	                CALC,
+	                FIXCNT,
+	                REQSPEC,
+	                REGID, REGDATE, 
+	                METHODNM, 
+	                ITEMENAME, ITEMNAME, REMARK,
+	                TEMPERCOND,
+	                TEMPUNIT,
+	                TIMECOND,
+	                TIMECONDUNIT,
+	                ETC,
+	                ETCUNIT,
+	                BASICCOND,
+	                BASICUNIT,
+	                RESULTTYPE,
+	                RESULTFLAG,
+	                ITEMSTATE,
+	                SPEC,
+	                ORDERBY
+	            FROM (    
+	                SELECT 
+	                    RESULTID,
+	                    RESULTPID,
+	                    REQID,
+	                    SMPID,     
+	                    ITEMID, 
+	                    ITEMPID,     
+	                    METHODID, 
+	                    UNITID, 
+	                    DISPLAYUNIT,
+	                    EQUIPID,
+	                    LVL,
+	                    REPORTUNIT,
+	                    CONDID,
+	                    CONDETC,
+	                    SMPAMOUNT,
+	                    ITEMTERM, 
+	                    ITEMPRICE, 
+	                    PRICE,
+	                    ADDPRICE, 
+	                    ADDPRICECOND,
+	                    PRICECNT,
+	                    CALC,
+	                    FIXCNT,  
+	                    REQSPEC,
+	                    REGID, REGDATE, 
+	                    METHODNM, ITEMENAME, ITEMNAME, REMARK,
+	                    TEMPERCOND,
+	                    TEMPUNIT,
+	                    TIMECOND,
+	                    TIMECONDUNIT,
+	                    ETC,
+	                    ETCUNIT,
+	                    BASICCOND,
+	                    BASICUNIT,
+	                    RESULTTYPE,
+	                    RESULTFLAG,
+	                    ITEMSTATE,
+	                    SPEC,
+	                    ORDERBY
+	                FROM TNE_RESULT_estimate R WHERE REQID=#reqid# AND SMPID=#smpid#
+	            )
+	            START WITH (REQID=#reqid# AND SMPID=#smpid# AND RESULTID=#resultid#)
+	            CONNECT BY RESULTID = PRIOR RESULTPID
+	            )
+	) S 
+	ON (
+	        T.REQID = S.REQID
+	    AND T.SMPID = #target_smpid#
+	    AND T.ITEMID = S.ITEMID
+	    AND T.COPYRESULTPID = S.RESULTPID
+	)  
+	WHEN NOT MATCHED THEN 
+	    INSERT ( 
+	            T.RESULTID,T.RESULTPID, T.COPYRESULTPID,T.COPYRESULTID, T.REQID, T.SMPID, T.ITEMID, T.ITEMPID,T.LVL,
+	            T.METHODID,T.UNITID,T.DISPLAYUNIT,T.REPORTUNIT,T.CONDID,
+	            T.CONDETC,T.ITEMPRICE,T.RESULTTYPE,
+	            T.ITEMSTATE,T.ORDERBY,T.ADDPRICE,T.ADDPRICECOND,T.FIXCNT,
+	            T.REGID,T.REGDATE,T.METHODNM,T.ITEMNAME,T.ITEMENAME,
+	            T.REQSPEC,T.SPEC,T.PRICE,T.CALC,T.RESULTFLAG,
+	            T.PRICECNT,
+	            T.TEMPERCOND,T.TEMPUNIT, T.TIMECOND, T.TIMECONDUNIT,T.ETC,
+	            T.ETCUNIT,T.BASICCOND, T.BASICUNIT,T.REMARK
+	        )
+	    VALUES (
+	            SEQ_TNE_RESULT_estimate.NEXTVAL,S.RESULTPID, S.RESULTPID,S.RESULTID, S.REQID, #target_smpid#, S.ITEMID, S.ITEMPID, S.LVL,
+	            S.METHODID,S.UNITID,S.DISPLAYUNIT,S.REPORTUNIT,S.CONDID,
+	            S.CONDETC,S.ITEMPRICE,S.RESULTTYPE,
+	            S.ITEMSTATE,S.ORDERBY,S.ADDPRICE,S.ADDPRICECOND,S.FIXCNT,
+	            #regid#,SYSDATE,S.METHODNM,S.ITEMNAME,S.ITEMENAME,
+	            S.REQSPEC,S.SPEC,S.PRICE,S.CALC,S.RESULTFLAG,
+	            S.PRICECNT,
+	            S.TEMPERCOND,S.TEMPUNIT, S.TIMECOND, S.TIMECONDUNIT,S.ETC,
+	            S.ETCUNIT,S.BASICCOND, S.BASICUNIT,S.REMARK
+	    )  
+	]]>
+</update>
+
+
+<!-- 복사후 해당 시료 상위항목 수정  -->
+<update id="estimate_DAO.updateCopyParent">
+	MERGE INTO TNE_RESULT_estimate T
+	USING (  
+	    SELECT R1.RESULTID, R1.RESULTPID, R1.COPYRESULTID,R1.COPYRESULTPID, R1.REQID,R1.SMPID, R1.ITEMID,R1.ITEMPID, R1.ITEMNAME,
+	        R2.RESULTID RRID,R2.COPYRESULTID CRID, R2.COPYRESULTPID CPRID
+	    FROM TNE_RESULT_estimate R1,
+	    TNE_RESULT_estimate R2
+	    WHERE R1.REQID=#reqid# AND R1.SMPID=#target_smpid#
+	        AND R1.REQID=R2.REQID
+	        AND R1.SMPID=R2.SMPID 
+	        AND R1.COPYRESULTPID=R2.COPYRESULTID
+	) S
+	ON (
+	   T.REQID=S.REQID AND T.SMPID=S.SMPID
+	   AND T.RESULTID=S.RESULTID )
+	WHEN MATCHED THEN
+	UPDATE SET T.RESULTPID = RRID 
+</update>
+
+<update id="estimate_DAO.updateCopyNull">
+	UPDATE TNE_RESULT_estimate T SET COPYRESULTID=NULL,COPYRESULTPID=NULL WHERE REQID=#reqid# AND SMPID=#target_smpid#
+</update>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 동일항목 속성 복사  -->
+<update id="estimate_DAO.updateItemCopy">	
+	<![CDATA[
+
+		UPDATE TNE_RESULT_estimate SET
+		(
+                CONDID,
+                CONDETC,
+                CALC,
+                TEMPERCOND,
+                ETCUNIT,
+                ETC,
+                TIMECONDUNIT,
+                REMARK,
+                METHODNM,
+                UNITID,
+                METHODID,
+                ITEMTERM,
+                PRICECNT,
+                ADDPRICE,
+                ORDERBY,
+                ITEMPRICE,
+                PRICE,                
+                ADDPRICECOND,
+                TEMPUNIT,
+                TIMECOND,
+                RESULTTYPE,
+                BASICUNIT,
+                BASICCOND,
+                REQID,
+                REQSPEC,
+                REGID,
+                REGDATE
+		) 
+		=
+		(    SELECT      
+		        CONDID,
+		        CONDETC,
+		        CALC,
+		        TEMPERCOND,
+		        ETCUNIT,
+		        ETC,
+		        TIMECONDUNIT,
+		        REMARK,
+		        METHODNM,
+		        UNITID,
+		        METHODID,
+		        ITEMTERM,
+		        PRICECNT,
+		        ADDPRICE,
+		        ORDERBY,
+		        ITEMPRICE,
+		        PRICE,
+		        ADDPRICECOND,
+		        TEMPUNIT,
+		        TIMECOND,
+		        RESULTTYPE,
+		        BASICUNIT,
+                BASICCOND,
+		        REQID,
+		        REQSPEC,
+		        #regid#,
+		        SYSDATE
+		    FROM TNE_RESULT_estimate WHERE REQID=#reqid# AND SMPID=#smpid# AND RESULTID=#resultid# )
+		WHERE REQID=#reqid# AND SMPID <> #smpid# AND ITEMID=#itemid#  
+
+
+	]]>
+</update>
+
+
+<delete id="estimate_DAO.deleteItem" >
+	DELETE FROM TNE_RESULT_estimate WHERE REQID=#reqid# AND SMPID=#smpid# AND RESULTID IN (                
+		SELECT     
+		    RESULTID
+		FROM TNE_RESULT_estimate R
+		WHERE REQID=#reqid# AND SMPID=#smpid#
+		START WITH (REQID=#reqid# AND SMPID=#smpid# AND RESULTID=#resultid#)
+		CONNECT BY PRIOR R.RESULTID = R.RESULTPID
+	)
+</delete>
+
+<delete id="estimate_DAO.deleteParent">
+	MERGE INTO TNE_RESULT_estimate T
+	USING
+	(        
+	    SELECT COUNT(RESULTID) CNT, REQID, SMPID, RESULTPID FROM 
+	    (
+	        SELECT RESULTID, RESULTPID, ITEMID, ITEMPID, REQID, SMPID FROM TNE_RESULT_estimate WHERE RESULTPID IN (
+	            SELECT RESULTID
+	            FROM TNE_RESULT_estimate WHERE RESULTID IN ( SELECT RESULTPID FROM TNE_RESULT_estimate WHERE RESULTID=#resultid# )
+	        ) 
+	    ) 
+	    GROUP BY REQID, SMPID, RESULTPID
+	) S
+	ON (T.REQID=S.REQID AND T.SMPID=S.SMPID AND T.RESULTID=S.RESULTPID AND 2 > S.CNT)
+	WHEN MATCHED THEN
+	    UPDATE SET T.OFFICEID = T.OFFICEID
+	    DELETE WHERE (T.RESULTID=S.RESULTPID)
+</delete>
+
+<delete id="estimate_DAO.deleteGrandParent">
+	MERGE INTO TNE_RESULT_estimate T
+	USING
+	(
+    SELECT COUNT(RESULTID) CNT, REQID, SMPID, RRESULTID FROM 
+    (
+            SELECT RESULTID, RESULTPID, ITEMID, ITEMPID, REQID, SMPID,
+            RESULTPID RRESULTID FROM TNE_RESULT_estimate R WHERE RESULTPID IN (
+                SELECT RESULTID FROM TNE_RESULT_estimate WHERE RESULTID IN (
+                    SELECT RESULTPID FROM TNE_RESULT_estimate WHERE RESULTID IN ( SELECT RESULTPID FROM TNE_RESULT_estimate WHERE RESULTID=#resultid# )
+                )
+            )
+            UNION ALL
+            SELECT RESULTID, RESULTPID, ITEMID, ITEMPID, REQID, SMPID,
+            (SELECT RESULTPID FROM TNE_RESULT_estimate R1 WHERE R1.RESULTID=R.RESULTPID) RRESULTID FROM TNE_RESULT_estimate R WHERE RESULTPID IN (
+                SELECT RESULTID FROM TNE_RESULT_estimate WHERE RESULTPID IN (
+                    SELECT RESULTID FROM TNE_RESULT_estimate WHERE RESULTID IN (
+                        SELECT RESULTPID FROM TNE_RESULT_estimate WHERE RESULTID IN ( SELECT RESULTPID FROM TNE_RESULT_estimate WHERE RESULTID=#resultid# )
+                    )
+                )
+            ) AND RESULTID != #resultid#             
+    ) GROUP BY REQID, SMPID, RRESULTID
+	) S
+	ON (T.REQID=S.REQID AND T.SMPID=S.SMPID AND T.RESULTID=S.RRESULTID AND 2 > S.CNT)
+	WHEN MATCHED THEN
+	    UPDATE SET T.OFFICEID=T.OFFICEID
+	    DELETE WHERE (T.RESULTID=S.RRESULTID)
+</delete>
+
+
+
+
+<delete id="estimate_DAO.deleteItemCopy" >
+	DELETE FROM TNE_RESULT_estimate WHERE REQID=#reqid# AND SMPID=#smpid# AND RESULTID IN (                
+		SELECT     
+		    RESULTID
+		FROM TNE_RESULT_estimate R
+		WHERE REQID=#reqid# AND SMPID=#smpid#
+		START WITH (REQID=#reqid# AND SMPID=#smpid# AND ITEMID=#itemid#)
+		CONNECT BY PRIOR R.ITEMID = R.ITEMPID
+	)
+</delete>
+
+
+
+
+
+
+
+<!-- 의뢰정보 삭제  -->
+<delete id="estimate_DAO.deleteRequestResult" >
+	<![CDATA[
+		DELETE FROM TNE_RESULT_estimate WHERE REQID=#reqid# 
+	]]>	
+</delete>
+
+<!-- 시료 삭제  -->
+<delete id="estimate_DAO.deleteRequestSample" >
+	<![CDATA[
+		DELETE FROM TNE_SAMPLE_estimate WHERE REQID=#reqid# 
+	]]>	
+</delete>
+
+<!-- 의뢰정보 삭제  -->
+<delete id="estimate_DAO.deleteRequest" >
+	<![CDATA[
+		DELETE FROM TNE_REQUEST_estimate WHERE REQID=#reqid# 
+	]]>	
+</delete>
+
+<!-- 의뢰보고서 삭제  -->
+<delete id="estimate_DAO.deleteReport" >
+	<![CDATA[
+		DELETE FROM TNE_REPORT_estimate WHERE REQID=#reqid# 
+	]]>	
+</delete>
+
+
+
+<!-- CAL PRICE -->
+<procedure id="estimate_DAO.procCalPrice" resultClass="java.lang.String">
+	{call CAL_PRICE_ESTIMATE (#reqid#, #p_strResult,javaType=java.lang.String,jdbcType=VARCHAR,mode=OUT#)}
+</procedure>
+
+<update id="estimate_DAO.updateRequestState">
+	UPDATE TNE_REQUEST_estimate SET ITEMDESC=#itemdesc#, REQSTATE=0, REGID=#regid#, REGDATE=SYSDATE WHERE REQID=#reqid#
+</update>
+
+<update id="estimate_DAO.updateReportState">
+ 	UPDATE TNE_REPORT_estimate SET REPORTSTATE=0, REQUESTCDATE=SYSDATE, REGID=#regid#, REGDATE=SYSDATE WHERE REQID=#reqid#
+</update>
+
+<select id="estimate_DAO.selectPrice" resultClass="exam.com.req.model.PriceVO">
+	SELECT 
+	       REQID,
+	       REQSTATE,
+	       ITEMDESC,
+	       TO_CHAR( TOTALPRICE , '999,999,999,999,999') TOTALPRICE,
+	       REGID
+	FROM TNE_REQUEST_estimate R 
+	WHERE REQID=#reqid#
+</select>
+
+<select id="estimate_DAO.selectCheckMethod" resultClass="exam.com.req.model.MethodCheckVO">
+	SELECT REQID, SMPID, SNAME, MNM, WM_CONCAT(ITEMNAME) ITEMNAMES FROM
+	(
+	    SELECT Q.REQID, S.SMPID, S.NAME SNAME, M.NAME MNM,METHODID, REQSPEC,R.ITEMNAME, 
+	        CASE WHEN METHODID IS NULL OR '0'=METHODID OR '-1'=METHODID THEN CASE WHEN REQSPEC IS NULL THEN 'N' ELSE 'Y' END ELSE 'Y' END D  FROM 
+	        TNE_REQUEST_estimate Q,
+	        TNE_SAMPLE_estimate S,
+	        TCE_MASTER M,
+	        TNE_RESULT_estimate R 
+	    WHERE Q.REQID=#reqid#
+	        AND Q.REQID=S.REQID
+	        AND S.MASTERID=M.MASTERID
+	        AND Q.REQID=R.REQID
+	        AND S.SMPID=R.SMPID
+	) WHERE D = 'N'
+	GROUP BY REQID, SMPID, SNAME, MNM
+</select>
+
+<select id="estimate_DAO.selectCheckCondition" resultClass="exam.com.req.model.MethodCheckVO">
+    SELECT REQID, SMPID, SNAME, WM_CONCAT(ITEMNAME) ITEMNAMES FROM
+    (
+        SELECT REQID, SMPID, SNAME, ITEMNAME,CONDID,CONDETC,TEMPERCOND,TEMPUNIT, TIMECOND, TIMECONDUNIT,ETC, ETCUNIT,
+               STEMPUNIT, STEMPUNITID, STIMEUNIT, STIMECONDUNITID,
+               CASE WHEN (STEMPUNITID IS NOT NULL AND TEMPERCOND IS NULL) OR 
+                         (STIMECONDUNITID IS NOT NULL AND TIMECOND IS NULL) THEN 'N'
+               ELSE 'Y' END CONDTAG       
+        FROM
+        (
+            SELECT Q.REQID, S.SMPID, S.NAME SNAME, M.NAME MNM,
+                R.ITEMID||'_'||R.ITEMPID IPID,
+                R.ITEMNAME,
+                R.CONDID,     R.CONDETC,
+                R.TEMPERCOND, R.TEMPUNIT,
+                R.TIMECOND,   R.TIMECONDUNIT,
+                R.ETC,        R.ETCUNIT  
+            FROM 
+                TNE_REQUEST_estimate Q,
+                TNE_SAMPLE_estimate S,
+                TCE_MASTER M,
+                TNE_RESULT_estimate R 
+            WHERE Q.REQID= #reqid#
+                AND Q.REQID=S.REQID
+                AND S.MASTERID=M.MASTERID
+                AND Q.REQID=R.REQID
+                AND S.SMPID=R.SMPID
+         ) I
+         LEFT JOIN
+         (
+            SELECT 
+                ITEMID||'_'||ITEMPID SIPID,  
+                WM_CONCAT(CONDID) SCONDID,
+                WM_CONCAT(CONDNAME) SCONDNAME,
+                MAX(TEMPUNIT) STEMPUNIT,
+                MAX(TIMEUNIT) STIMEUNIT,
+                MAX(TEMPUNITID) STEMPUNITID,
+                MAX(TIMECONDUNITID) STIMECONDUNITID
+            FROM 
+            (
+                SELECT CONDID,ITEMID,ITEMPID,
+                    TEMPERCOND||' '||(SELECT CODENAME FROM TCT_CODE_DETAIL D WHERE D.CODEGROUPID=10 AND D.CODEID=C.TEMPUNIT)|| ' ' ||
+                    TIMECOND||' '||(SELECT CODENAME FROM TCT_CODE_DETAIL D WHERE D.CODEGROUPID=11 AND D.CODEID=C.TIMECONDUNIT)|| ' ' ||
+                    ETC||' '||(SELECT CODENAME FROM TCT_CODE_DETAIL D WHERE D.CODEGROUPID=12 AND D.CODEID=C.ETCUNIT) CONDNAME,
+                    (SELECT CODENAME FROM TCT_CODE_DETAIL D WHERE D.CODEGROUPID=10 AND D.CODEID=C.TEMPUNIT) TEMPUNIT,
+                    (SELECT CODENAME FROM TCT_CODE_DETAIL D WHERE D.CODEGROUPID=11 AND D.CODEID=C.TIMECONDUNIT) TIMEUNIT,
+                    TEMPUNIT TEMPUNITID,
+                    TIMECONDUNIT TIMECONDUNITID
+                FROM TNE_CONDITION C
+            )    
+            GROUP BY ITEMID,ITEMPID         
+         )  C
+         ON I.IPID=C.SIPID                 
+    ) WHERE CONDTAG = 'N'
+    GROUP BY REQID, SMPID, SNAME
+</select>
+
+
+
+
+
+<!-- RESULT ASSIGN  -->
+
+<insert id="estimate_DAO.insertAssignSmple">
+	INSERT INTO TNE_ADMIN_ASSIGN 
+		(RESULTID, ADMINID, REGID, REGDATE) 
+	SELECT RESULTID,A.ADMINID,#regid#, SYSDATE 
+	FROM TNE_RESULT_estimate R,
+	     TNE_ITEM_ADMIN A
+	WHERE R.ITEMID=A.ITEMID AND R.METHODID=A.METHODID AND R.REQID=#reqid# AND R.SMPID=#smpid# 
+</insert>
+
+<delete id="estimate_DAO.deleteAssignSmple">
+	DELETE FROM TNE_ADMIN_ASSIGN WHERE RESULTID IN (
+	    SELECT RESULTID FROM TNE_RESULT_estimate R WHERE R.REQID=#reqid# AND R.SMPID=#smpid# 
+	)
+</delete>
+
+
+<insert id="estimate_DAO.insertAssign">
+	INSERT INTO TNE_ADMIN_ASSIGN 
+		(RESULTID, ADMINID, REGID, REGDATE) 
+	SELECT RESULTID,A.ADMINID,#regid#, SYSDATE 
+	FROM TNE_RESULT_estimate R,
+	     TNE_ITEM_ADMIN A
+	WHERE R.ITEMID=A.ITEMID AND R.METHODID=A.METHODID AND R.REQID=#reqid#  
+</insert>
+
+<delete id="estimate_DAO.deleteAssign">
+	DELETE FROM TNE_ADMIN_ASSIGN WHERE RESULTID IN (
+	    SELECT RESULTID FROM TNE_RESULT_estimate R WHERE R.REQID=#reqid#  
+	)
+</delete>
+
+
+
+
+<!-- ATTACH FILE -->
+<select id="estimate_DAO.selectAttach" resultClass="exam.com.req.model.RequestAttachVO">
+	SELECT REQFID,REQID,FILEPATH,ORGNAME,SAVENAME,REGID
+	FROM TNE_REQUEST_FILE WHERE REQID=#reqid#
+	ORDER BY REQFID
+</select>
+
+<insert id="estimate_DAO.insertAttach" parameterClass="exam.com.req.model.RequestAttachVO">
+	INSERT INTO TNE_REQUEST_FILE (REQFID, REQID, FILEPATH, ORGNAME, SAVENAME, REGID,REGDATE) 
+	VALUES (seq_tne_request_file.nextval,#reqid#,#filepath#,#orgname#,#savename#,#regid#,SYSDATE)
+</insert>
+
+<delete id="estimate_DAO.deleteAttach">
+	DELETE FROM TNE_REQUEST_FILE WHERE REQFID=#reqfid# AND REQID=#reqid#
+</delete>
+
+<delete id="estimate_DAO.deleteAttachAll">
+	DELETE FROM TNE_REQUEST_FILE WHERE REQID=#reqid#
+</delete>
+
+
+
+
+
+
+
+<!-- ITEM EXCEPT & PRICE  -->
+
+<!-- except heating selectHeating  -->
+<select id="estimate_DAO.selectSearchDetailItem" resultClass="exam.com.req.model.SearchDetailItem">
+	SELECT NAME, EXCEPTID FROM TCE_ITEM_EXCEPT
+	WHERE EXCEPTGROUP='heating' 
+	GROUP BY NAME, EXCEPTID
+	ORDER BY EXCEPTID
+</select>
+
+<!-- except exceptDetail 중복확인 -->
+<select id="estimate_DAO.selectExceptItems" resultClass="exam.com.req.model.ExceptItem">
+	SELECT REQID, SMPID, WM_CONCAT(REPLACE(ITEMNAME,',','') ) ITEMNAME 
+	FROM TNE_RESULT_estimate WHERE REQID=#reqid# AND SMPID=#smpid# AND ITEMID IN (SELECT EXCEPTITEMID FROM TCE_ITEM_EXCEPT_DETAIL 
+	<iterate property="itemList" prepend="WHERE ITEMID IN" open="(" close=")" conjunction="," >
+		#itemList[]#
+	</iterate>
+	)
+	GROUP BY REQID, SMPID
+</select>
+
+<!-- except deleteExcept deleteItem 중복제거 중복삭제   -->
+<delete id="estimate_DAO.deleteExcept">
+	DELETE FROM TNE_RESULT_estimate WHERE REQID=#reqid# AND SMPID=#smpid# AND ITEMID IN (SELECT EXCEPTITEMID FROM TCE_ITEM_EXCEPT_DETAIL WHERE ITEMID = #itemid#)
+</delete>
+
+
+
+
+<select id="estimate_DAO.selectItemGroup" resultClass="exam.com.req.model.ItemGroupVO">
+	SELECT ITEMID,ITEMPID,NAME,ORDERBY,BITEMID,BITEMPID,BNAME 
+	FROM TCE_ITEM_EXCEPT_ADD
+</select>
+
+
+</sqlMap>

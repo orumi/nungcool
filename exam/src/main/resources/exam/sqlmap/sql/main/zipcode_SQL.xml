@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="zipcodeDAO">
+	
+    <select id="zipcodeDAO.siguList" resultClass="exam.com.main.model.SiguVO">
+		select tbl_sido_code sidocode,
+		       tbl_sido      sido
+		from zip_sido
+		group by tbl_sido_code, tbl_sido 
+		order by tbl_sido_code  
+    </select>  
+    
+    
+   <select id="zipcodeDAO.zipCodeSearchList"   resultClass="exam.com.main.model.ZipcodeVO" >
+		SELECT RN, 
+	            tblZipcode 		zipcode,
+	            tblSido    		sido,
+	            tblSigu    		sigu,
+	            tblDong    		dong,
+	            tblRoadName		roadname,
+	            tblRoadNameFull roadnamefull,
+	            roadShortName
+	    FROM 
+	    (        
+	        SELECT 
+	            ROWNUM RN, 
+	            tblZipcode,
+	            tblSido,
+	            tblSigu,
+	            tblDong,
+	            tblRoadName,
+	            tblRoadNameFull,
+                <isNotNull property="searchType">
+                	<isEqual property="searchType" compareValue="road">
+                		tblSido||' '||tblSigu||' '||tblRoadName roadShortName
+                	</isEqual>
+                	<isEqual property="searchType" compareValue="area">
+                		 tblSido||' '||tblSigu||' '||tblDong||' '||tblRi roadShortName
+                	</isEqual>
+                </isNotNull>  		            
+	            
+	        FROM
+	        ( 
+		        SELECT 
+	                TBL_ZIPCODE         tblZipcode,
+	                TBL_SIDO            tblSido,
+	                TBL_SIGU            tblSigu,
+	                TBL_DONG            tblDong,
+	                TBL_ROAD_NAME       tblRoadName,
+	                TBL_RI	tblRi,
+	                
+	                <isNotNull property="searchType">
+	                	<isEqual property="searchType" compareValue="road">
+	                		TBL_ROAD_NAME_FULL  tblRoadNameFull
+	                	</isEqual>
+	                	<isEqual property="searchType" compareValue="area">
+	                		TBL_BUNJI_NAME_FULL tblRoadNameFull
+	                	</isEqual>
+	                </isNotNull>  	                
+
+				FROM $tablename$    
+				WHERE  
+	                (
+		                <isNotNull property="searchType">
+		                	<isEqual property="searchType" compareValue="road">
+		                		tbl_road_name_full like '%'||'$searchKey$'||'%'
+		                	</isEqual>
+		                	<isEqual property="searchType" compareValue="area">
+		                		TBL_BUNJI_NAME_FULL like '%'||'$searchKey$'||'%'
+		                	</isEqual>
+		                </isNotNull>  
+	                ) 
+	                AND TBL_ZIPCODE IS NOT NULL
+	                <isNotNull property="searchType">
+	                	<isEqual property="searchType" compareValue="road">
+	                		group by tbl_zipcode, tbl_sido, tbl_sigu, tbl_dong,tbl_ri,tbl_road_name, tbl_road_name_full
+	                	</isEqual>
+	                	<isEqual property="searchType" compareValue="area">
+	                		group by tbl_zipcode, tbl_sido, tbl_sigu, tbl_dong, tbl_ri, tbl_road_name, tbl_bunji_name_full
+	                	</isEqual>
+	                </isNotNull>      
+			) A WHERE #endrow# >= ROWNUM 
+		) WHERE RN > #startrow#
+    </select> 
+    
+    
+
+	<select id="zipcodeDAO.zipCodeSearchCount"  resultClass="java.lang.String">
+		SELECT COUNT(RN) CNT
+	    FROM 
+	    (        
+	        SELECT 
+	            ROWNUM RN, 
+	            tblZipcode
+	        FROM
+	        ( 
+		        SELECT 
+	                TBL_ZIPCODE         tblZipcode
+				FROM $tablename$ 
+				WHERE 
+	                (
+		                <isNotNull property="searchType">
+		                	<isEqual property="searchType" compareValue="road">
+		                		tbl_road_name_full like '%'||'$searchKey$'||'%'
+		                	</isEqual>
+		                	<isEqual property="searchType" compareValue="area">
+		                		TBL_BUNJI_NAME_FULL like '%'||'$searchKey$'||'%'
+		                	</isEqual>
+		                </isNotNull>  	                	
+
+	                )
+	                AND TBL_ZIPCODE IS NOT NULL
+	                <isNotNull property="searchType">
+	                	<isEqual property="searchType" compareValue="road">
+	                		group by tbl_zipcode, tbl_sido, tbl_sigu, tbl_dong,tbl_ri,tbl_road_name, tbl_road_name_full
+	                	</isEqual>
+	                	<isEqual property="searchType" compareValue="area">
+	                		group by tbl_zipcode, tbl_sido, tbl_sigu, tbl_dong, tbl_ri, tbl_road_name, tbl_bunji_name_full
+	                	</isEqual>
+	                </isNotNull>  	
+			) A 
+		) 
+
+    </select> 	     
+    
+    
+    
+    
+    
+        
+</sqlMap>

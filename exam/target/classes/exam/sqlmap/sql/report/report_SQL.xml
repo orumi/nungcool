@@ -1,0 +1,619 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+
+<sqlMap namespace="reportServiceDAO">
+
+    <!-- 최초 회원정보   -->
+    <select id="reportServiceDAO.selectReceiptInfo" resultClass="exam.com.report.model.ReportVO">
+
+        SELECT *
+        FROM (
+        SELECT
+        ROWNUM idx,
+        E.REPORTNO reportNo,
+        A.REQID reqId,
+        nvl(C.examItemCnt, 0) examItemCnt,
+        nvl(D.smpCnt, 0) smpCnt,
+        A.REQSTATE reqState,
+        A.TOTALPRICE totalPrice,
+        B.STATENM stateNm,
+        E.ACCEPTNO acceptNo,
+        to_char(E.ISSUEDATECMPL, 'YYYY-MM-DD') issueDateCmpl,
+        to_char(E.REQUESTCDATE, 'YYYY-MM-DD') requestCdate,
+        F.productName productName,
+        F.smpName smpName
+        FROM TNE_REQUEST A, TCT_STATE B, TNE_REPORT E,
+        (SELECT
+        REQID,
+        count(REQID) examItemCnt
+        FROM TNE_RESULT
+        GROUP BY REQID) C,
+        (SELECT
+        REQID,
+        count(REQID) smpCnt
+        FROM TNE_SAMPLE
+        GROUP BY REQID) D,
+        (SELECT
+        A.REQID,
+        count(A.SMPID) smpCnt,
+        WM_CONCAT(A.NAME) smpName,
+        WM_CONCAT(B.NAME) productName
+        FROM TNE_SAMPLE A, TCE_MASTER B
+        WHERE A.MASTERID = B.MASTERID
+        GROUP BY REQID) F
+        WHERE MEMID = #memid#
+        AND A.REQSTATE = B.STATECD (+)
+        AND A.REQSTATE = 8
+        AND A.REQID = C.REQID (+)
+        AND A.REQID = D.REQID (+)
+        AND A.REQID = E.REQID
+        AND A.REQID = F.REQID
+        AND E.REPORTID = 1
+        AND (E.ACCEPTNO LIKE '%' || #keyword# || '%' OR F.smpName LIKE '%' || #keyword# || '%' OR
+        F.productName LIKE '%'
+        || #keyword# || '%')
+        <isNotEmpty property="issueDate1">
+            <isNotEmpty property="issueDate2">
+                AND (TO_CHAR(E.ISSUEDATECMPL, 'YYYY-MM-DD') >= #issueDate1#
+                AND #issueDate2# >= to_char(E.ISSUEDATECMPL, 'YYYY-MM-DD'))
+            </isNotEmpty>
+        </isNotEmpty>
+
+        <isNotEmpty property="requestDate1">
+            <isNotEmpty property="requestDate2">
+                AND (TO_CHAR( E.REQUESTCDATE, 'YYYY-MM-DD') >= #requestDate1#
+                AND #requestDate2# >= to_char( E.REQUESTCDATE, 'YYYY-MM-DD'))
+            </isNotEmpty>
+        </isNotEmpty>
+
+        )
+        WHERE idx > 0 AND 15 >= idx
+        ORDER BY idx DESC
+    </select>
+
+
+    <select id="reportServiceDAO.selectReceiptInfoCnt" resultClass="int">
+
+        SELECT count(idx) cnt
+        FROM (
+        SELECT
+        ROWNUM idx,
+        E.REPORTNO reportNo,
+        A.REQID reqId,
+        nvl(C.examItemCnt, 0) examItemCnt,
+        nvl(D.smpCnt, 0) smpCnt,
+        A.REQSTATE reqState,
+        A.TOTALPRICE totalPrice,
+        B.STATENM stateNm,
+        E.ACCEPTNO acceptNo,
+        to_char(E.ISSUEDATECMPL, 'YYYY-MM-DD') issueDateCmpl,
+        to_char(E.REQUESTCDATE, 'YYYY-MM-DD') requestCdate,
+        F.productName productName,
+        F.smpName smpName
+        FROM TNE_REQUEST A, TCT_STATE B, TNE_REPORT E,
+        (SELECT
+        REQID,
+        count(REQID) examItemCnt
+        FROM TNE_RESULT
+        GROUP BY REQID) C,
+        (SELECT
+        REQID,
+        count(REQID) smpCnt
+        FROM TNE_SAMPLE
+        GROUP BY REQID) D,
+        (SELECT
+        A.REQID,
+        count(A.SMPID) smpCnt,
+        WM_CONCAT(A.NAME) smpName,
+        WM_CONCAT(B.NAME) productName
+        FROM TNE_SAMPLE A, TCE_MASTER B
+        WHERE A.MASTERID = B.MASTERID
+        GROUP BY REQID) F
+        WHERE MEMID = #memid#
+        AND A.REQSTATE = B.STATECD (+)
+        AND A.REQSTATE = 8
+        AND A.REQID = C.REQID (+)
+        AND A.REQID = D.REQID (+)
+        AND A.REQID = E.REQID
+        AND A.REQID = F.REQID
+        AND E.REPORTID = 1
+        AND (E.ACCEPTNO LIKE '%' || #keyword# || '%' OR F.smpName LIKE '%' || #keyword# || '%' OR
+        F.productName LIKE '%'
+        || #keyword# || '%')
+        <isNotEmpty property="issueDate1">
+            <isNotEmpty property="issueDate2">
+                AND (TO_CHAR(E.ISSUEDATECMPL, 'YYYY-MM-DD') >= #issueDate1#
+                AND #issueDate2# >= to_char(E.ISSUEDATECMPL, 'YYYY-MM-DD'))
+            </isNotEmpty>
+        </isNotEmpty>
+
+        <isNotEmpty property="requestDate1">
+            <isNotEmpty property="requestDate2">
+                AND (TO_CHAR( E.REQUESTCDATE, 'YYYY-MM-DD') >= #requestDate1#
+                AND #requestDate2# >= to_char( E.REQUESTCDATE, 'YYYY-MM-DD'))
+            </isNotEmpty>
+        </isNotEmpty>
+
+        )
+
+
+    </select>
+
+
+
+    <select id="reportServiceDAO.selectCopyReport" resultClass="exam.com.report.model.CopyReportVO"
+            parameterClass="map">
+
+        SELECT
+            REQID,
+            REPORTID,
+            USAGE,
+            TYPE,
+            TAXBIZTYPE,
+            ORGCNT,
+            COPYCNT,
+            REPORTSTATE,
+            REQUESTCDATE,
+            RCVCOMPANY,
+            RCVCEO,
+            RCVZIPCODE,
+            RCVADDR1,
+            RCVADDR2,
+            RCVDEPT,
+            RCVEMAIL,
+            RCVHP,
+            RCVPHONE,
+            RCVFAX,
+            RCVTYPE,
+            TAXCOMPANY,
+            TAXCEO,
+            TAXZIPCODE,
+            TAXADDR1,
+            TAXADDR2,
+            TAXDEPT,
+            TAXEMAIL,
+            TAXHP,
+            TAXPHONE,
+            TAXFAX,
+            LANGTYPE,
+            ENTAXCEO,
+            ENTAXCOMPANY,
+            ENTAXADDR1,
+            ENRCVCEO,
+            ENRCVADDR1,
+            ENRCVCOMPANY,
+            PRICECHARGETYPE,
+            TAXISSUEDATE,
+            TAXBIZNO,
+            TAXMNGNAME,
+            RCVMNGNAME,
+            REGID,
+            REGDATE,
+            REPORTPRICE,
+            REPORTNO,
+            ACCEPTNO,
+            KOLASYN
+        FROM TNE_REPORT
+        WHERE REQID = #reqId#
+              AND REPORTID = '1'
+
+    </select>
+
+    <select id="reportServiceDAO.selectCopyRequest" resultClass="exam.com.report.model.CopyRequestVO">
+
+        SELECT
+            REQID,
+            BIZNO,
+            COMID,
+            ORDINAL,
+            MEMID,
+            MNGNAME,
+            MNGDEPT,
+            MNGEMAIL,
+            MNGHP,
+            MNGPHONE,
+            FAX,
+            SMPCNT,
+            REQSTATE,
+            ITEMAFTER,
+            COMNAME,
+            REGID,
+            REGDATE
+        FROM TNE_REQUEST
+        WHERE REQID = #reqId#
+
+    </select>
+
+
+    <select id="reportServiceDAO.selectCopyReportWithReportId" resultClass="exam.com.report.model.CopyReportVO"
+            parameterClass="map">
+
+        SELECT
+            REQID,
+            REPORTID,
+            USAGE,
+            TYPE,
+            TAXBIZTYPE,
+            ORGCNT,
+            COPYCNT,
+            REPORTSTATE,
+            REQUESTCDATE,
+            RCVCOMPANY,
+            RCVCEO,
+            RCVZIPCODE,
+            RCVADDR1,
+            RCVADDR2,
+            RCVDEPT,
+            RCVEMAIL,
+            RCVHP,
+            RCVPHONE,
+            RCVFAX,
+            RCVTYPE,
+            TAXCOMPANY,
+            TAXCEO,
+            TAXZIPCODE,
+            TAXADDR1,
+            TAXADDR2,
+            TAXDEPT,
+            TAXEMAIL,
+            TAXHP,
+            TAXPHONE,
+            TAXFAX,
+            LANGTYPE,
+            ENTAXCEO,
+            ENTAXCOMPANY,
+            ENTAXADDR1,
+            ENRCVCEO,
+            ENRCVADDR1,
+            ENRCVCOMPANY,
+            PRICECHARGETYPE,
+            TAXISSUEDATE,
+            TAXBIZNO,
+            TAXMNGNAME,
+            RCVMNGNAME,
+            REGID,
+            REGDATE,
+            REPORTPRICE,
+            REPORTNO,
+            ACCEPTNO
+        FROM TNE_REPORT
+        WHERE REQID = #reqId#
+              AND REPORTID = #reportId#
+
+    </select>
+
+
+    <insert id="reportServiceDAO.insertCopyReport" parameterClass="exam.com.report.model.CopyReportVO">
+        <selectKey keyProperty="reportid">
+            SELECT max(reportid) + 1
+            FROM tne_report
+            WHERE reqid = #reqid#
+        </selectKey>
+        INSERT INTO TNE_REPORT
+        (REPORTID,
+        REQID, USAGE, TYPE, TAXBIZTYPE,
+        ORGCNT, COPYCNT, REPORTSTATE, REQUESTCDATE, RCVCOMPANY,
+        RCVCEO, RCVZIPCODE, RCVADDR1, RCVADDR2, RCVDEPT,
+        RCVEMAIL, RCVHP, RCVPHONE, RCVFAX, RCVTYPE,
+        TAXCOMPANY, TAXCEO, TAXZIPCODE, TAXADDR1, TAXADDR2,
+        TAXDEPT, TAXEMAIL, TAXHP, TAXPHONE, TAXFAX,
+        LANGTYPE, ENTAXCEO, ENTAXCOMPANY, ENTAXADDR1, ENRCVCEO,
+        ENRCVADDR1, ENRCVCOMPANY, PRICECHARGETYPE, TAXISSUEDATE, TAXBIZNO,
+        TAXMNGNAME, RCVMNGNAME, REGID, REGDATE, REPORTPRICE, ACCEPTNO, REPORTNO, KOLASYN, SENDSTYPE)
+        VALUES (
+        #reportid#,
+        #reqid#, #usage#, #type#, #taxbiztype#,
+        #orgcnt#, #copycnt#, '0', SYSDATE, #rcvcompany#,
+        #rcvceo#, #rcvzipcode#, #rcvaddr1#, #rcvaddr2#, #rcvdept#,
+        #rcvemail#, #rcvhp#, #rcvphone#, #rcvfax#, #rcvtype#,
+        #taxcompany#, #taxceo#, #taxzipcode#, #taxaddr1#, #taxaddr2#,
+        #taxdept#, #taxemail#, #taxhp#, #taxphone#, #taxfax#,
+        #langtype#, #entaxceo#, #entaxcompany#, #entaxaddr1#, #enrcvceo#,
+        #enrcvaddr1#, #enrcvcompany#, #pricechargetype#, #taxissuedate#, #taxbizno#,
+        #taxmngname#, #rcvmngname#, #regid#, sysdate, #reportprice#, #acceptno#, #reportno#, #kolasyn#, #sendstype#
+        )
+
+    </insert>
+
+    <insert id="reportServiceDAO.insertCopyReport2" parameterClass="exam.com.report.model.CopyReportVO">
+
+        INSERT INTO TNE_REPORT_SAMPLE
+        (REPORTID,
+         REQID, REGID, REGDATE, MERGEREQID)
+        VALUES
+            (#reportid#, #reqid#, #regid#, sysdate, #reqid#)
+
+    </insert>
+
+    <insert id="reportServiceDAO.updateCopyReport" parameterClass="exam.com.report.model.CopyReportVO">
+
+        UPDATE TNE_REPORT
+        SET
+            REPORTID        = #reportid#,
+            REQID           = #reqid#,
+            USAGE           = #usage#,
+            TYPE            = #type#,
+            TAXBIZTYPE      = #taxbiztype#,
+            ORGCNT          = #orgcnt#,
+            COPYCNT         = #copycnt#,
+            REPORTSTATE     = #reportstate#,
+            REQUESTCDATE    = #requestcdate#,
+            RCVCOMPANY      = #rcvcompany#,
+            RCVCEO          = #rcvceo#,
+            RCVZIPCODE      = #rcvzipcode#,
+            RCVADDR1        = #rcvaddr1#,
+            RCVADDR2        = #rcvaddr2#,
+            RCVDEPT         = #rcvdept#,
+            RCVEMAIL        = #rcvemail#,
+            RCVHP           = #rcvhp#,
+            RCVPHONE        = #rcvphone#,
+            RCVFAX          = #rcvfax#,
+            RCVTYPE         = #rcvtype#,
+            TAXCOMPANY      = #taxcompany#,
+            TAXCEO          = #taxceo#,
+            TAXZIPCODE      = #taxzipcode#,
+            TAXADDR1        = #taxaddr1#,
+            TAXADDR2        = #taxaddr2#,
+            TAXDEPT         = #taxdept#,
+            TAXEMAIL        = #taxemail#,
+            TAXHP           = #taxhp#,
+            TAXPHONE        = #taxphone#,
+            TAXFAX          = #taxfax#,
+            LANGTYPE        = #langtype#,
+            ENTAXCEO        = #entaxceo#,
+            ENTAXCOMPANY    = #entaxcompany#,
+            ENTAXADDR1      = #entaxaddr1#,
+            ENRCVCEO        = #enrcvceo#,
+            ENRCVADDR1      = #enrcvaddr1#,
+            ENRCVCOMPANY    = #enrcvcompany#,
+            PRICECHARGETYPE = #pricechargetype#,
+            TAXISSUEDATE    = #taxissuedate#,
+            TAXBIZNO        = #taxbizno#,
+            TAXMNGNAME      = #taxmngname#,
+            RCVMNGNAME      = #rcvmngname#,
+            REGID           = #regid#,
+            MODIFYDATE      = sysdate,
+            REPORTPRICE     = #reportprice#,
+            ACCEPTNO        = #acceptno#,
+            REPORTNO        = #reportno#
+        WHERE REQID = #reqid#
+              AND REPORTID = #reportid#
+
+    </insert>
+
+    <select id="reportServiceDAO.getReportIdMaxVal"
+            parameterClass="exam.com.report.model.CopyReportVO" resultClass="exam.com.report.model.CopyReportVO">
+
+        SELECT *
+        FROM (
+            SELECT
+                reqid,
+                reportid,
+                row_number()
+                OVER (PARTITION BY REPORTID
+                    ORDER BY REPORTID DESC) AS rn
+            FROM TNE_REPORT
+            WHERE REQID = #reqid#)
+        WHERE rn = '1'
+
+    </select>
+
+
+    <select id="reportServiceDAO.selectReportCopyList" resultClass="exam.com.report.model.ReportVO">
+
+        SELECT *
+        FROM (
+        SELECT
+        ROWNUM idx,
+        E.REPORTID reportId,
+        E.REPORTNO reportNo,
+        A.REQID reqId,
+        E.TYPE,
+        nvl(C.examItemCnt, 0) examItemCnt,
+        nvl(D.smpCnt, 0) smpCnt,
+        A.REQSTATE reqState,
+        E.reportprice totalPrice,
+        B.STATENM stateNm,
+        E.ACCEPTNO acceptNo,
+        to_char(E.ISSUEDATECMPL, 'YYYY-MM-DD') issueDateCmpl,
+        to_char(E.REQUESTCDATE, 'YYYY-MM-DD') requestCdate,
+        F.productName productName,
+        F.smpName smpName,
+        E.CARDBILLNO,
+        E.CARDPRICE,
+        E.CARDTYPE,
+        E.PRICEDATE,
+        e.pricetype,
+        e.reportState
+        FROM TNE_REQUEST A, TCT_STATE B, TNE_REPORT E,
+        (SELECT REQID,
+        count(REQID) examItemCnt
+        FROM TNE_RESULT
+        GROUP BY REQID) C,
+        (SELECT REQID,
+        count(REQID) smpCnt
+        FROM TNE_SAMPLE
+        GROUP BY REQID) D,
+        (SELECT A.REQID,
+        count(A.SMPID) smpCnt,
+        WM_CONCAT(A.NAME) smpName,
+        WM_CONCAT(B.NAME) productName
+        FROM TNE_SAMPLE A, TCE_MASTER B
+        WHERE A.MASTERID = B.MASTERID
+        GROUP BY REQID) F
+
+        WHERE MEMID = #memid#
+        AND E.reportState = B.STATECD (+)
+        AND A.REQID = C.REQID (+)
+        AND A.REQID = D.REQID (+)
+        AND A.REQID = E.REQID
+        AND A.REQID = F.REQID
+        AND E.REPORTID != '1'
+        AND (E.ACCEPTNO LIKE '%' || #keyword# || '%' OR F.smpName LIKE '%' || #keyword# || '%' OR F.productName LIKE '%'
+        || #keyword# || '%')
+
+        <isNotEmpty property="requestDate1">
+            <isNotEmpty property="requestDate2">
+                AND (TO_CHAR( E.REQUESTCDATE, 'YYYY-MM-DD') >= #requestDate1#
+                AND #requestDate2# >= TO_CHAR( E.REQUESTCDATE, 'YYYY-MM-DD'))
+            </isNotEmpty>
+        </isNotEmpty>
+
+        )
+        WHERE idx > 0 AND 15 >= idx
+        ORDER BY idx DESC
+
+    </select>
+
+    <select id="reportServiceDAO.selectReportCopyListCnt" parameterClass="map" resultClass="int">
+
+
+        SELECT count(idx) cnt
+        FROM (
+        SELECT
+        ROWNUM idx,
+        E.REPORTID reportId,
+        E.REPORTNO reportNo,
+        A.REQID reqId,
+        E.TYPE,
+        nvl(C.examItemCnt, 0) examItemCnt,
+        nvl(D.smpCnt, 0) smpCnt,
+        A.REQSTATE reqState,
+        A.TOTALPRICE totalPrice,
+        B.STATENM stateNm,
+        E.ACCEPTNO acceptNo,
+        to_char(E.ISSUEDATECMPL, 'YYYY-MM-DD') issueDateCmpl,
+        to_char(E.REQUESTCDATE, 'YYYY-MM-DD') requestCdate,
+        F.productName productName,
+        F.smpName smpName
+
+        FROM TNE_REQUEST A, TCT_STATE B, TNE_REPORT E,
+        (SELECT REQID,
+        count(REQID) examItemCnt
+        FROM TNE_RESULT
+        GROUP BY REQID) C,
+        (SELECT REQID,
+        count(REQID) smpCnt
+        FROM TNE_SAMPLE
+        GROUP BY REQID) D,
+        (SELECT A.REQID,
+        count(A.SMPID) smpCnt,
+        WM_CONCAT(A.NAME) smpName,
+        WM_CONCAT(B.NAME) productName
+        FROM TNE_SAMPLE A, TCE_MASTER B
+        WHERE A.MASTERID = B.MASTERID
+        GROUP BY REQID) F
+
+        WHERE MEMID = #memid#
+        AND A.REQSTATE = B.STATECD (+)
+        AND A.REQSTATE = 8
+        AND A.REQID = C.REQID (+)
+        AND A.REQID = D.REQID (+)
+        AND A.REQID = E.REQID
+        AND A.REQID = F.REQID
+        AND E.REPORTID != '1'
+        AND (E.ACCEPTNO LIKE '%' || #keyword# || '%' OR F.smpName LIKE '%' || #keyword# || '%' OR F.productName LIKE '%'
+        || #keyword# || '%')
+
+        <isNotEmpty property="requestDate1">
+            <isNotEmpty property="requestDate2">
+                AND (TO_CHAR( E.REQUESTCDATE, 'YYYY-MM-DD') >= #requestDate1#
+                AND #requestDate2# >= TO_CHAR( E.REQUESTCDATE, 'YYYY-MM-DD'))
+            </isNotEmpty>
+        </isNotEmpty>
+
+        )
+
+
+    </select>
+
+    <delete id="reportServiceDAO.deleteCopyList1" parameterClass="map">
+
+        DELETE TNE_REPORT
+        WHERE REPORTID = #reportId# AND REQID = #reqId#
+
+    </delete>
+
+    <delete id="reportServiceDAO.deleteCopyList2" parameterClass="map">
+
+        DELETE TNE_REPORT_SAMPLE
+        WHERE REPORTID = #reportId# AND REQID = #reqId#
+
+    </delete>
+
+    <select id="reportServiceDAO.selectMergeList" parameterClass="map" resultClass="exam.com.report.model.MergeListVO">
+
+        SELECT *
+        FROM (
+            SELECT
+                a.REQID,
+                a.acceptNo,
+                a.reportNo,
+                replace((a.rcvzipcode || a.rcvaddr1 || a.RCVADDR2), ' ', '') address,
+                c.smpName,
+                c.productName,
+                d.smpCnt
+            FROM
+                tne_report a, tne_request b,
+
+                (SELECT
+                     A.REQID,
+                     count(A.SMPID)    smpCnt,
+                     WM_CONCAT(A.NAME) smpName,
+                     WM_CONCAT(B.NAME) productName
+                 FROM TNE_SAMPLE A, TCE_MASTER B
+                 WHERE A.MASTERID = B.MASTERID
+                 GROUP BY REQID) c,
+
+                (SELECT
+                     REQID,
+                     count(REQID) smpCnt
+                 FROM TNE_SAMPLE
+                 GROUP BY REQID) D
+
+            WHERE a.reqid = b.reqid
+                  AND a.REQID = c.REQID
+                  AND a.reqid = d.reqid
+                  AND a.REPORTID = '1'
+                  AND a.REQID IN (SELECT REQID
+                                  FROM tne_request
+                                  WHERE MEMID = #memId# AND reqstate = 8 AND REQID != #reqId#)
+
+        )
+        WHERE address = (SELECT replace((rcvzipcode || rcvaddr1 || RCVADDR2), ' ', '') address
+                         FROM tne_report
+                         WHERE REQID = #reqId# AND REPORTID = '1')
+
+
+    </select>
+
+    <insert id="reportServiceDAO.insertMergeCopyReport2" parameterClass="exam.com.report.model.MergeSaveVO">
+
+        INSERT INTO TNE_REPORT_SAMPLE
+        (REPORTID,
+         REQID, REGID, REGDATE, MERGEREQID)
+        VALUES
+            (#reportid#, #reqid#, #regid#, sysdate, #mergereqid#)
+
+    </insert>
+
+    <select id="reportServiceDAO.selectMergeSavedList" parameterClass="map" resultClass="exam.com.report.model.MergeSaveVO">
+
+        SELECT
+            REPORTID,
+            REQID,
+            MERGEREQID,
+            REGID,
+            REGDATE,
+            MODIFYID,
+            MODIFYDATE
+        FROM TNE_REPORT_SAMPLE
+              WHERE REQID = #reqId#
+              AND REPORTID = #reportId#
+
+    </select>
+
+
+
+</sqlMap>

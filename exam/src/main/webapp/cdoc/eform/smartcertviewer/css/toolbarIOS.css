@@ -1,0 +1,83 @@
+#toolbar-modal {
+    background: #FFF;
+    position: absolute;
+    left: 50%;
+    margin: 0 0 0 -465px;
+    padding: 0 68px;
+    width: 794px;
+    box-shadow: 0 0 20px #000;
+        -moz-box-shadow: 0 0 20px #000;
+    	-webkit-box-shadow: 0 0 10px #000;
+}
+
+#toolbar-modal-content {
+    margin: 68px 0;
+    border: none;
+    height: 100%;
+    overflow: hidden;
+    width: 100%;
+}
+
+#toolbar-modal-controls {
+    border: 2px solid #ccc;
+    border-radius: 8px;
+        -webkit-border-radius: 8px;
+        -moz-border-radius: 8px;
+    top: 15px;
+    left: 50%;
+    margin: 0 0 0 -130px;
+    position: fixed;
+    padding: 5px 0;
+    background: rgba(250, 250, 250, 0.75);
+    z-index: 100;
+}
+
+    #toolbar-modal-controls a {
+        color: #FFF;
+        display: block;
+        float: left;
+        height: 32px;
+        text-decoration: none;
+        text-indent: -999em;
+        width: 50px;
+    }
+    
+    #toolbar-modal-controls a:hover {
+        opacity: 0.75;
+    }
+    
+    #toolbar-modal-controls a.pdf {
+        background: url(images/icon_doc.png) no-repeat 50% 50%;
+    }
+    .pdfClick {
+        background: url(images/icon_doc_click.png) no-repeat 50% 50%;
+    }
+    #toolbar-modal-controls a.first {
+        background: url(images/icon_previous.png) no-repeat 50% 50%;
+        width: 30px;
+    }
+    #toolbar-modal-controls a.last {
+        background: url(images/icon_next.png) no-repeat 50% 50%;
+        width: 30px;
+    }
+    #toolbar-modal-controls a.close {
+        background: url(images/icon-close.png) no-repeat 50% 50%;
+    }
+    #toolbar-modal-controls a.hpageno {
+        color: #484848;
+        display: block;
+        float: left;
+        height: 32px;
+        text-decoration: none;
+        text-indent: 1em;
+        width: 50px;
+        font-size: 14pt;
+        text-align: left;
+    }
+	#pageno{
+		height: 32px;
+		width: 50px;
+		text-align: left;
+		vertical-align: middle;
+		margin: 5px 0 0 -5px;
+	}

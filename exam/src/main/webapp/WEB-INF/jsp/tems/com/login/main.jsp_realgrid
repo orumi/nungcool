@@ -1,0 +1,1028 @@
+<%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+
+<script>
+	//그리드 갯수만큼 루프... 이래야만 하는것일까...
+	<%for(int i=0;i<=12;i++){%>
+	var gridView<%=i%>;
+	var dataProvider<%=i%>;
+	<%}%>
+	/* 
+	var gridView;
+	var dataProvider;
+	
+	var gridView2;
+	var dataProvider2;
+	
+	var gridView3;
+	var dataProvider3;
+	
+	var gridView4;
+	var dataProvider4;
+	
+	var gridView5;
+	var dataProvider5;
+	
+	var gridView6;
+	var dataProvider6;
+	
+	var gridView7;
+	var dataProvider7;
+	
+	var gridView8;
+	var dataProvider8; */
+	
+
+	
+	$(document).ready( function(){
+		RealGridJS.setTrace(false);
+	    RealGridJS.setRootContext("<c:url value='/script'/>");
+	    
+	    dataProvider0 = new RealGridJS.LocalDataProvider();
+	    gridView0 = new RealGridJS.GridView("realgrid");
+	    gridView0.setDataSource(dataProvider0);  
+	    
+	    
+	    /************
+	    	그리드 2번!!!그룹별 권한목록
+		************/	    	
+	    dataProvider2 = new RealGridJS.LocalDataProvider();
+	    gridView2 = new RealGridJS.GridView("realgrid2");
+	    gridView2.setDataSource(dataProvider2);   
+	    
+	    
+	    
+	    
+	    /************
+    	그리드 3번!!!그룹별 권한목록
+		************/	    	
+	    dataProvider3 = new RealGridJS.LocalDataProvider();
+	    gridView3 = new RealGridJS.GridView("realgrid3");
+	    gridView3.setDataSource(dataProvider3);   
+	    
+	    
+	    /************
+		그리드 4번!!!그룹별 권한목록
+		************/	    	
+		dataProvider4 = new RealGridJS.LocalDataProvider();
+		gridView4 = new RealGridJS.GridView("realgrid4");
+		gridView4.setDataSource(dataProvider4);   
+		
+		
+	    /************
+		그리드 5번!!!그룹별 권한목록
+		************/	    	
+		dataProvider5 = new RealGridJS.LocalDataProvider();
+		gridView5 = new RealGridJS.GridView("realgrid5");
+		gridView5.setDataSource(dataProvider5);   
+		
+		
+	    /************
+		그리드 6번!!!그룹별 권한목록
+		************/	    	
+		dataProvider6 = new RealGridJS.LocalDataProvider();
+		gridView6 = new RealGridJS.GridView("realgrid6");
+		gridView6.setDataSource(dataProvider6);
+		
+		/************
+		그리드 7번!!!그룹별 권한목록
+		************/	    	
+		dataProvider7 = new RealGridJS.LocalDataProvider();
+		gridView7 = new RealGridJS.GridView("realgrid7");
+		gridView7.setDataSource(dataProvider7);  
+		
+		/************
+		그리드 8번!!!그룹별 권한목록
+		************/	    	
+		dataProvider8 = new RealGridJS.LocalDataProvider();
+		gridView8 = new RealGridJS.GridView("realgrid8");
+		gridView8.setDataSource(dataProvider8);
+		
+		/************
+		그리드 9번!!!그룹별 권한목록
+		************/	    	
+		dataProvider9 = new RealGridJS.LocalDataProvider();
+		gridView9 = new RealGridJS.GridView("realgrid9");
+		gridView9.setDataSource(dataProvider9);
+		
+		/************
+		그리드 10번!!!그룹별 권한목록
+		************/	    	
+		dataProvider10 = new RealGridJS.LocalDataProvider();
+		gridView10 = new RealGridJS.GridView("realgrid10");
+		gridView10.setDataSource(dataProvider10);
+		
+		/************
+		그리드 11번!!!그룹별 권한목록
+		************/	    	
+		dataProvider11 = new RealGridJS.LocalDataProvider();
+		gridView11 = new RealGridJS.GridView("realgrid11");
+		gridView11.setDataSource(dataProvider11);
+		
+		/************
+		그리드 12번!!!그룹별 권한목록
+		************/	    	
+		dataProvider12 = new RealGridJS.LocalDataProvider();
+		gridView12 = new RealGridJS.GridView("realgrid12");
+		gridView12.setDataSource(dataProvider12);
+	});
+	
+	function setGrid1(){
+		
+		var fields = [ {
+			fieldName : "authorgpcode"
+		}, {
+			fieldName : "authorgpnm"
+		}, {
+			fieldName : "regid"
+		}, {
+			fieldName : "regdate"
+		}, {
+			fieldName : "orderby"
+		} ];
+
+		//DataProvider의 setFields함수로 필드를 입력합니다.
+		dataProvider0.setFields(fields);
+
+		//필드와 연결된 컬럼 배열 객체를 생성합니다.
+		var columns = [ {
+			name : "authorgpnm",
+			fieldName : "authorgpnm",
+			header : {
+				text : "권한그룹명"
+			},
+			width : 150
+		}, {
+			name : "orderby",
+			fieldName : "orderby",
+			header : {
+				text : "정렬순서"
+			},
+			width : 80,
+			styles : {
+				textAlignment : "center"
+			}
+		}, {
+			name : "regid",
+			fieldName : "regid",
+			header : {
+				text : "등록자"
+			},
+			width : 100,
+			readOnly : "true"
+		}, {
+			name : "regdate",
+			fieldName : "regdate",
+			header : {
+				text : "등록일"
+			},
+			width : 100,
+			readOnly : "true"
+		} ];
+
+		//컬럼을 GridView에 입력 합니다.
+		gridView0.setColumns(columns);
+
+		/* 그리드 row추가 옵션사용여부 */
+		gridView0.setOptions({
+			panel : {
+				visible : false
+			},
+			footer : {
+				visible : false
+			},
+		});
+
+		//그리드 클릭 이벤트
+		gridView0.onDataCellClicked = function(grid, index) {
+
+		};
+
+		var fields2 = [ {
+			fieldName : "authorgpcode"
+		}, {
+			fieldName : "chkyn"
+		}, {
+			fieldName : "authorcode"
+		}, {
+			fieldName : "authornm"
+		} ];
+
+		//DataProvider의 setFields함수로 필드를 입력합니다.
+		dataProvider2.setFields(fields2);
+
+		//필드와 연결된 컬럼 배열 객체를 생성합니다.
+		var columns2 = [ {
+			name : "authornm",
+			fieldName : "authornm",
+			header : {
+				text : "권한명"
+			},
+			width : 350
+		} ];
+
+		//컬럼을 GridView에 입력 합니다.
+		gridView2.setColumns(columns2);
+
+		/* 그리드 row추가 옵션사용여부 */
+		gridView2.setOptions({
+			panel : {
+				visible : false
+			},
+			footer : {
+				visible : false
+			},
+		});
+
+		var fields3 = [ {
+			fieldName : "authorgpcode"
+		}, {
+			fieldName : "chkyn"
+		}, {
+			fieldName : "authorcode"
+		}, {
+			fieldName : "authornm"
+		} ];
+
+		//DataProvider의 setFields함수로 필드를 입력합니다.
+		dataProvider3.setFields(fields3);
+
+		//필드와 연결된 컬럼 배열 객체를 생성합니다.
+		var columns3 = [ {
+			name : "authornm",
+			fieldName : "authornm",
+			header : {
+				text : "권한명"
+			},
+			width : 350
+		} ];
+
+		//컬럼을 GridView에 입력 합니다.
+		gridView3.setColumns(columns3);
+
+		/* 그리드 row추가 옵션사용여부 */
+		gridView3.setOptions({
+			panel : {
+				visible : false
+			},
+			footer : {
+				visible : false
+			},
+		});
+
+		var fields4 = [ {
+			fieldName : "authorgpcode"
+		}, {
+			fieldName : "chkyn"
+		}, {
+			fieldName : "authorcode"
+		}, {
+			fieldName : "authornm"
+		} ];
+
+		//DataProvider의 setFields함수로 필드를 입력합니다.
+		dataProvider4.setFields(fields4);
+
+		//필드와 연결된 컬럼 배열 객체를 생성합니다.
+		var columns4 = [ {
+			name : "authornm",
+			fieldName : "authornm",
+			header : {
+				text : "권한명"
+			},
+			width : 350
+		} ];
+
+		//컬럼을 GridView에 입력 합니다.
+		gridView4.setColumns(columns4);
+
+		/* 그리드 row추가 옵션사용여부 */
+		gridView4.setOptions({
+			panel : {
+				visible : false
+			},
+			footer : {
+				visible : false
+			},
+		});
+
+		var fields5 = [ {
+			fieldName : "authorgpcode"
+		}, {
+			fieldName : "chkyn"
+		}, {
+			fieldName : "authorcode"
+		}, {
+			fieldName : "authornm"
+		} ];
+
+		//DataProvider의 setFields함수로 필드를 입력합니다.
+		dataProvider5.setFields(fields5);
+
+		//필드와 연결된 컬럼 배열 객체를 생성합니다.
+		var columns5 = [ {
+			name : "authornm",
+			fieldName : "authornm",
+			header : {
+				text : "권한명"
+			},
+			width : 350
+		} ];
+
+		//컬럼을 GridView에 입력 합니다.
+		gridView5.setColumns(columns5);
+
+		/* 그리드 row추가 옵션사용여부 */
+		gridView5.setOptions({
+			panel : {
+				visible : false
+			},
+			footer : {
+				visible : false
+			},
+		});
+
+		var fields6 = [ {
+			fieldName : "authorgpcode"
+		}, {
+			fieldName : "chkyn"
+		}, {
+			fieldName : "authorcode"
+		}, {
+			fieldName : "authornm"
+		} ];
+
+		//DataProvider의 setFields함수로 필드를 입력합니다.
+		dataProvider6.setFields(fields6);
+
+		//필드와 연결된 컬럼 배열 객체를 생성합니다.
+		var columns6 = [ {
+			name : "authornm",
+			fieldName : "authornm",
+			header : {
+				text : "권한명"
+			},
+			width : 350
+		} ];
+
+		//컬럼을 GridView에 입력 합니다.
+		gridView6.setColumns(columns6);
+
+		/* 그리드 row추가 옵션사용여부 */
+		gridView6.setOptions({
+			panel : {
+				visible : false
+			},
+			footer : {
+				visible : false
+			},
+		});
+		
+		
+		
+		selData1();
+
+	}
+	
+	function selData1(){
+		$.ajax({
+			type : "post",
+		    dataType : "json",
+		    data : {"gpcode":gpcode},
+            url: "<c:url value='/system/selAuthorList.json'/>",
+            success: function (data) {
+                dataProvider2.fillJsonData(data);
+                var values = dataProvider2.getFieldValues("chkyn");  // 특정 필드의 값을 배열로 가져옵니다.
+                if (values.length > 0) {
+                    for (var i =0; i < values.length ; i++) {
+                        if (values[i]) {
+                            gridView2.checkRow(i);
+                        }
+                    }
+                }
+            },
+            error:function(request,status,error){
+                alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+            },
+            complete: function (data) {
+            	//gridView.hideToast();
+            },
+            cache: false
+        });
+	}
+	
+	function setGrid2(){
+		
+		var fields = [ {
+			fieldName : "authorgpcode"
+		}, {
+			fieldName : "authorgpnm"
+		}, {
+			fieldName : "regid"
+		}, {
+			fieldName : "regdate"
+		}, {
+			fieldName : "orderby"
+		} ];
+
+		//DataProvider의 setFields함수로 필드를 입력합니다.
+		dataProvider7.setFields(fields);
+
+		//필드와 연결된 컬럼 배열 객체를 생성합니다.
+		var columns = [ {
+			name : "authorgpnm",
+			fieldName : "authorgpnm",
+			header : {
+				text : "권한그룹명"
+			},
+			width : 150
+		}];
+
+		//컬럼을 GridView에 입력 합니다.
+		gridView7.setColumns(columns);
+		
+		//8번
+		var fields8 = [ {
+			fieldName : "authorgpcode"
+		}, {
+			fieldName : "authorgpnm"
+		}, {
+			fieldName : "regid"
+		}, {
+			fieldName : "regdate"
+		}, {
+			fieldName : "orderby"
+		} ];
+
+		//DataProvider의 setFields함수로 필드를 입력합니다.
+		dataProvider8.setFields(fields8);
+
+		//필드와 연결된 컬럼 배열 객체를 생성합니다.
+		var columns8 = [ {
+			name : "authorgpnm",
+			fieldName : "authorgpnm",
+			header : {
+				text : "권한그룹명"
+			},
+			width : 150
+		}];
+
+		//컬럼을 GridView에 입력 합니다.
+		gridView8.setColumns(columns8);
+		
+		//8번
+		var fields9 = [ {
+			fieldName : "authorgpcode"
+		}, {
+			fieldName : "authorgpnm"
+		}, {
+			fieldName : "regid"
+		}, {
+			fieldName : "regdate"
+		}, {
+			fieldName : "orderby"
+		} ];
+
+		//DataProvider의 setFields함수로 필드를 입력합니다.
+		dataProvider9.setFields(fields9);
+
+		//필드와 연결된 컬럼 배열 객체를 생성합니다.
+		var columns9 = [ {
+			name : "authorgpnm",
+			fieldName : "authorgpnm",
+			header : {
+				text : "권한그룹명"
+			},
+			width : 150
+		}];
+
+		//컬럼을 GridView에 입력 합니다.
+		gridView9.setColumns(columns9);
+		
+		//8번
+		var fields10 = [ {
+			fieldName : "authorgpcode"
+		}, {
+			fieldName : "authorgpnm"
+		}, {
+			fieldName : "regid"
+		}, {
+			fieldName : "regdate"
+		}, {
+			fieldName : "orderby"
+		} ];
+
+		//DataProvider의 setFields함수로 필드를 입력합니다.
+		dataProvider10.setFields(fields10);
+
+		//필드와 연결된 컬럼 배열 객체를 생성합니다.
+		var columns10 = [ {
+			name : "authorgpnm",
+			fieldName : "authorgpnm",
+			header : {
+				text : "권한그룹명"
+			},
+			width : 150
+		}];
+
+		//컬럼을 GridView에 입력 합니다.
+		gridView10.setColumns(columns10);
+		
+		//8번
+		var fields11 = [ {
+			fieldName : "authorgpcode"
+		}, {
+			fieldName : "authorgpnm"
+		}, {
+			fieldName : "regid"
+		}, {
+			fieldName : "regdate"
+		}, {
+			fieldName : "orderby"
+		} ];
+
+		//DataProvider의 setFields함수로 필드를 입력합니다.
+		dataProvider11.setFields(fields11);
+
+		//필드와 연결된 컬럼 배열 객체를 생성합니다.
+		var columns11 = [ {
+			name : "authorgpnm",
+			fieldName : "authorgpnm",
+			header : {
+				text : "권한그룹명"
+			},
+			width : 150
+		}];
+
+		//컬럼을 GridView에 입력 합니다.
+		gridView11.setColumns(columns11);
+		
+		//8번
+		var fields12 = [ {
+			fieldName : "authorgpcode"
+		}, {
+			fieldName : "authorgpnm"
+		}, {
+			fieldName : "regid"
+		}, {
+			fieldName : "regdate"
+		}, {
+			fieldName : "orderby"
+		} ];
+
+		//DataProvider의 setFields함수로 필드를 입력합니다.
+		dataProvider12.setFields(fields12);
+
+		//필드와 연결된 컬럼 배열 객체를 생성합니다.
+		var columns12 = [ {
+			name : "authorgpnm",
+			fieldName : "authorgpnm",
+			header : {
+				text : "권한그룹명"
+			},
+			width : 150
+		}];
+
+		//컬럼을 GridView에 입력 합니다.
+		gridView12.setColumns(columns12);
+		
+		/* 그리드 row추가 옵션사용여부 */
+		gridView7.setOptions({
+			panel : {
+				visible : false
+			},
+			footer : {
+				visible : false
+			},
+		});
+		
+		/* 그리드 row추가 옵션사용여부 */
+		gridView8.setOptions({
+			panel : {
+				visible : false
+			},
+			footer : {
+				visible : false
+			},
+		});
+		
+		/* 그리드 row추가 옵션사용여부 */
+		gridView9.setOptions({
+			panel : {
+				visible : false
+			},
+			footer : {
+				visible : false
+			},
+		});
+		
+		/* 그리드 row추가 옵션사용여부 */
+		gridView10.setOptions({
+			panel : {
+				visible : false
+			},
+			footer : {
+				visible : false
+			},
+		});
+		
+		/* 그리드 row추가 옵션사용여부 */
+		gridView11.setOptions({
+			panel : {
+				visible : false
+			},
+			footer : {
+				visible : false
+			},
+		});
+		
+		/* 그리드 row추가 옵션사용여부 */
+		gridView12.setOptions({
+			panel : {
+				visible : false
+			},
+			footer : {
+				visible : false
+			},
+		});
+		
+		setTimeout(fnReset, 1000);
+		//gridView7.resetSize();
+		//gridView8.resetSize();
+		
+			
+	}
+	
+	function fnReset(){
+		gridView7.resetSize();
+		gridView8.resetSize();
+		gridView9.resetSize();
+		gridView10.resetSize();
+		gridView11.resetSize();
+		gridView12.resetSize();
+	}
+	
+	function setGrid3(){
+		  
+		var fields = [ {
+			fieldName : "authorgpcode"
+		}, {
+			fieldName : "authorgpnm"
+		}, {
+			fieldName : "regid"
+		}, {
+			fieldName : "regdate"
+		}, {
+			fieldName : "orderby"
+		} ];
+
+		//DataProvider의 setFields함수로 필드를 입력합니다.
+		dataProvider.setFields(fields);
+
+		//필드와 연결된 컬럼 배열 객체를 생성합니다.
+		var columns = [ {
+			name : "authorgpnm",
+			fieldName : "authorgpnm",
+			header : {
+				text : "그리드1"
+			},
+			width : 150
+		}];
+
+		//컬럼을 GridView에 입력 합니다.
+		gridView.setColumns(columns);
+
+		/* 그리드 row추가 옵션사용여부 */
+		gridView.setOptions({
+			panel : {
+				visible : false
+			},
+			footer : {
+				visible : false
+			},
+		});
+
+		//그리드 클릭 이벤트
+		gridView.onDataCellClicked = function(grid, index) {
+
+		};
+
+		var fields2 = [ {
+			fieldName : "authorgpcode"
+		}, {
+			fieldName : "chkyn"
+		}, {
+			fieldName : "authorcode"
+		}, {
+			fieldName : "authornm"
+		} ];
+
+		//DataProvider의 setFields함수로 필드를 입력합니다.
+		dataProvider2.setFields(fields2);
+
+		//필드와 연결된 컬럼 배열 객체를 생성합니다.
+		var columns2 = [ {
+			name : "authornm",
+			fieldName : "authornm",
+			header : {
+				text : "그리드2"
+			},
+			width : 350
+		} ];
+
+		//컬럼을 GridView에 입력 합니다.
+		gridView2.setColumns(columns2);
+
+		/* 그리드 row추가 옵션사용여부 */
+		gridView2.setOptions({
+			panel : {
+				visible : false
+			},
+			footer : {
+				visible : false
+			},
+		});
+
+		var fields3 = [ {
+			fieldName : "authorgpcode"
+		}, {
+			fieldName : "chkyn"
+		}, {
+			fieldName : "authorcode"
+		}, {
+			fieldName : "authornm"
+		} ];
+
+		//DataProvider의 setFields함수로 필드를 입력합니다.
+		dataProvider3.setFields(fields3);
+
+		//필드와 연결된 컬럼 배열 객체를 생성합니다.
+		var columns3 = [ {
+			name : "authornm",
+			fieldName : "authornm",
+			header : {
+				text : "그리드3"
+			},
+			width : 350
+		} ];
+
+		//컬럼을 GridView에 입력 합니다.
+		gridView3.setColumns(columns3);
+
+		/* 그리드 row추가 옵션사용여부 */
+		gridView3.setOptions({
+			panel : {
+				visible : false
+			},
+			footer : {
+				visible : false
+			},
+		});
+
+		var fields4 = [ {
+			fieldName : "authorgpcode"
+		}, {
+			fieldName : "chkyn"
+		}, {
+			fieldName : "authorcode"
+		}, {
+			fieldName : "authornm"
+		} ];
+
+		//DataProvider의 setFields함수로 필드를 입력합니다.
+		dataProvider4.setFields(fields4);
+
+		//필드와 연결된 컬럼 배열 객체를 생성합니다.
+		var columns4 = [ {
+			name : "authornm",
+			fieldName : "authornm",
+			header : {
+				text : "그리드4"
+			},
+			width : 350
+		} ];
+
+		//컬럼을 GridView에 입력 합니다.
+		gridView4.setColumns(columns4);
+
+		/* 그리드 row추가 옵션사용여부 */
+		gridView4.setOptions({
+			panel : {
+				visible : false
+			},
+			footer : {
+				visible : false
+			},
+		});
+
+		var fields5 = [ {
+			fieldName : "authorgpcode"
+		}, {
+			fieldName : "chkyn"
+		}, {
+			fieldName : "authorcode"
+		}, {
+			fieldName : "authornm"
+		} ];
+
+		//DataProvider의 setFields함수로 필드를 입력합니다.
+		dataProvider5.setFields(fields5);
+
+		//필드와 연결된 컬럼 배열 객체를 생성합니다.
+		var columns5 = [ {
+			name : "authornm",
+			fieldName : "authornm",
+			header : {
+				text : "그리드5"
+			},
+			width : 350
+		} ];
+
+		//컬럼을 GridView에 입력 합니다.
+		gridView5.setColumns(columns5);
+
+		/* 그리드 row추가 옵션사용여부 */
+		gridView5.setOptions({
+			panel : {
+				visible : false
+			},
+			footer : {
+				visible : false
+			},
+		});
+
+		var fields6 = [ {
+			fieldName : "authorgpcode"
+		}, {
+			fieldName : "chkyn"
+		}, {
+			fieldName : "authorcode"
+		}, {
+			fieldName : "authornm"
+		} ];
+
+		//DataProvider의 setFields함수로 필드를 입력합니다.
+		dataProvider6.setFields(fields6);
+
+		//필드와 연결된 컬럼 배열 객체를 생성합니다.
+		var columns6 = [ {
+			name : "authornm",
+			fieldName : "authornm",
+			header : {
+				text : "그리드6"
+			},
+			width : 350
+		} ];
+
+		//컬럼을 GridView에 입력 합니다.
+		gridView6.setColumns(columns6);
+
+		/* 그리드 row추가 옵션사용여부 */
+		gridView6.setOptions({
+			panel : {
+				visible : false
+			},
+			footer : {
+				visible : false
+			},
+		});
+		
+		setTimeout(fnReset, 1000);
+		alert("아오!!");
+	}
+	
+	
+</script>
+
+				<!-- /section:basics/content.breadcrumbs -->
+				<div class="page-content">
+					<table width="100%">
+						<tr>
+							<td rowspan="2" width="70%">
+							<div class="tabbable">
+								<ul class="nav nav-tabs padding-12 tab-color-blue background-blue" id="myTab">
+									<li class="active">
+										<a aria-expanded="true" href="#tab1" onclick="javascript:setGrid1()" data-toggle="tab">시험(일반)</a>
+									</li>
+									<li>
+										<a aria-expanded="false" href="#tab2" onclick="javascript:setGrid2()" data-toggle="tab">시험(성능)</a>
+									</li>
+									<li>
+										<a aria-expanded="false" href="#tab3" onclick="javascript:setGrid3()"  data-toggle="tab">법정(공인)</a>
+									</li>
+									<li>
+										<a aria-expanded="false" href="#tab4" data-toggle="tab">교육</a>
+									</li>
+									<li>
+										<a aria-expanded="false" href="#tab5" data-toggle="tab">e-KOLAS</a>
+									</li>
+								</ul>
+
+								<div class="tab-content">
+									<div class="tab-pane active" id="tab1">
+										<table width="100%">
+											<tr>
+												<td  width="49%">
+													<div class="gridleft" id="realgrid"
+														style="width: 100%; height: 200px;"></div>
+												</td>
+												<td rowspan="5" width="2%">&nbsp;</td>
+												<td  width="49%">
+													<div class="gridleft" id="realgrid2"
+														style="width: 100%; height: 200px;"></div>
+												</td>
+											</tr>
+											<tr><td colspan="3" height="10px">&nbsp;</td>
+											</tr>
+											<tr>
+												<td>
+													<div class="gridleft" id="realgrid3"
+														style="width: 100%; height: 200px;"></div>
+												</td>
+												<td>
+													<div class="gridleft" id="realgrid4"
+														style="width: 100%; height: 200px;"></div>
+												</td>
+											</tr>
+											<tr><td colspan="3" height="10px">&nbsp;</td>
+											<tr>
+												<td>
+													<div class="gridleft" id="realgrid5"
+														style="width: 100%; height: 200px;"></div>
+												</td>
+												<td>
+													<div class="gridleft" id="realgrid6"
+														style="width: 100%; height: 200px;"></div>
+												</td>
+											</tr>
+										</table>
+									</div>
+
+									<div class="tab-pane" id="tab2">
+										<table width="100%">
+											<tr>
+												<td  width="49%">
+													<div class="gridleft" id="realgrid7"
+														style="width: 98%; height: 200px;"></div>
+												</td>
+												<td rowspan="5" width="2%">&nbsp;</td>
+												<td  width="49%">
+													<div class="gridright" id="realgrid8"
+														style="width: 98%; height: 200px;"></div>
+												</td>
+											</tr>
+											<tr><td colspan="3" height="10px">&nbsp;</td>
+											</tr>
+											<tr>
+												<td>
+													<div class="gridleft" id="realgrid9"
+														style="width: 98%; height: 200px;"></div>
+												</td>
+												<td>
+													<div class="gridright" id="realgrid10"
+														style="width: 98%; height: 200px;"></div>
+												</td>
+											</tr>
+											<tr><td colspan="3" height="10px">&nbsp;</td>
+											<tr>
+												<td>
+													<div class="gridleft" id="realgrid11"
+														style="width: 98%; height: 200px;"></div>
+												</td>
+												<td>
+													<div class="gridright" id="realgrid12"
+														style="width: 98%; height: 200px;"></div>
+												</td>
+											</tr>
+										</table>
+									</div>
+
+									<div class="tab-pane" id="tab3">
+									</div>
+									
+									<div class="tab-pane" id="tab4">
+										<p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid.</p>
+									</div>
+
+									<div class="tab-pane" id="tab5">
+										<p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade.</p>
+									</div>
+								</div>
+							</div>
+							</td>
+							<td>
+							공지사항
+							</td>
+						</tr>
+						<tr>
+							<td>
+							자료실
+							</td>
+						</tr>
+					</table>
+				</div><!-- /.page-content -->
+				
+							

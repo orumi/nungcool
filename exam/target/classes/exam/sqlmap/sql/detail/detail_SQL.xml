@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="detailDAO">
+
+
+    <select id="detailDAO.selRecepInfoLookUp"
+            parameterClass="java.util.HashMap"
+            resultClass="exam.com.detail.model.DetailVO">
+
+				SELECT  
+				    IDX,
+				    MEMID, COMID,
+				    REQID,
+				    SMPGETYN,
+				    REQUESTCDATE,
+				    ACCEPTNO,
+				    REPORTNO,
+				    ITEMCNT,
+				    SMPCNT,
+				    REQSTATE,
+				    TO_CHAR( TOTALPRICE , '999,999,999,999,999') TOTALPRICE,
+				    CARDBILLNO,
+                    PRICETYPE,
+				    STATENM,
+				    SMPNAME,
+				    PRDNAME
+				FROM (                   
+				    SELECT 
+				        ROWNUM IDX,
+				        MEMID, COMID,
+				        REQID,
+				        SMPGETYN,
+				        REQUESTCDATE,
+				        ACCEPTNO,
+				        REPORTNO,
+				        ITEMCNT,
+				        SMPCNT,
+				        REQSTATE,
+				        TOTALPRICE,
+				        CARDBILLNO,
+                        PRICETYPE,
+				        STATENM,
+				        SMPNAME,
+				        PRDNAME
+				    FROM (               
+				        SELECT
+				            Q.MEMID, Q.COMID,
+				            Q.REQID,
+				            Q.SMPGETYN,
+				            P.REQUESTCDATE,
+				            P.ACCEPTNO,
+				            P.REPORTNO,
+				            NVL(I.ITEMCNT, 0) ITEMCNT,
+				            NVL(S.SMPCNT, 0)  SMPCNT,
+				            Q.REQSTATE,
+				            Q.TOTALPRICE,
+				            P.CARDBILLNO,
+                            P.PRICETYPE,
+				            S.STATENM,
+				            S.SMPNAME,
+				            S.PRDNAME
+				        FROM TNE_REQUEST Q,
+				             TNE_REPORT  P, 
+				             TCT_STATE   S,
+				            (SELECT
+				                 REQID,
+				                 COUNT(REQID) ITEMCNT
+				             FROM TNE_RESULT
+				             GROUP BY REQID) I,
+
+
+
+				            (SELECT
+								 REQID,
+								 count(SMPID) SMPCNT,
+								 SUBSTR(
+										 XMLAGG(
+												 XMLELEMENT(COL ,', ', aNames) ORDER BY rank).EXTRACT('//text()'
+										 ).GETSTRINGVAL()
+										 , 2) SMPNAME,
+								 SUBSTR(
+										 XMLAGG(
+												 XMLELEMENT(COL ,', ', bNames) ORDER BY rank).EXTRACT('//text()'
+										 ).GETSTRINGVAL()
+										 , 2) PRDNAME
+							 FROM (
+								 SELECT
+									 reqid,
+									 SMPID,
+									 <![CDATA[
+									 ('##' || rank || ' ' || aName) as aNames,
+									 ('##' || rank || ' ' || bName) as bNames,
+									 rank
+								 	  ]]>
+								 FROM (
+									 SELECT
+										 A.reqid,
+										 a.smpid,
+										 a.name                 aName,
+										 b.NAME                 bName,
+										 rank()
+										 OVER (PARTITION BY a.REQID
+											 ORDER BY SMPID DESC) rank
+									 FROM tne_sample a, tce_master b
+									 WHERE A.MASTERID = B.MASTERID
+								 )
+							 ) GROUP BY REQID) S
+
+
+				        WHERE Q.MEMID = #memid# 
+				              AND Q.REQID    = P.REQID
+				              AND P.REPORTID = 1
+				              AND Q.REQSTATE = S.STATECD (+)
+				              AND #reqstate# > Q.REQSTATE
+				              AND Q.REQID = I.REQID (+)
+				              AND Q.REQID = S.REQID (+)
+				              AND (ACCEPTNO LIKE '%'||#keyword#||'%' OR NVL(SMPNAME,'-') LIKE '%'||#keyword#||'%' OR NVL(PRDNAME,'-') LIKE '%'||#keyword#||'%')
+				        ORDER BY REQID DESC      
+				    )  WHERE  #endNum# >= ROWNUM                    
+				) WHERE IDX >  #startNum#  
+    </select>
+
+    <select id="detailDAO.selRecepInfoCnt" parameterClass="java.util.HashMap" resultClass="int">
+			SELECT
+	            COUNT(Q.MEMID) CNT
+	        FROM TNE_REQUEST Q,
+	             TNE_REPORT  P, 
+	             TCT_STATE   S,
+	            (SELECT
+	                 REQID,
+	                 COUNT(REQID) ITEMCNT
+	             FROM TNE_RESULT
+	             GROUP BY REQID) I,
+	            (SELECT
+	                 A.REQID,
+	                 COUNT(A.SMPID)    SMPCNT,
+	                 WM_CONCAT(A.NAME) SMPNAME,
+	                 WM_CONCAT(B.NAME) PRDNAME
+	             FROM TNE_SAMPLE A, TCE_MASTER B
+	             WHERE A.MASTERID = B.MASTERID
+	             GROUP BY REQID) S
+		        WHERE Q.MEMID = #memid# 
+		              AND Q.REQID    = P.REQID
+		              AND P.REPORTID = 1
+		              AND Q.REQSTATE = S.STATECD (+)
+		              AND #reqstate# > Q.REQSTATE
+		              AND Q.REQID = I.REQID (+)
+		              AND Q.REQID = S.REQID (+)
+		              AND (ACCEPTNO LIKE '%'||#keyword#||'%' OR NVL(SMPNAME,'-') LIKE '%'||#keyword#||'%' OR NVL(PRDNAME,'-') LIKE '%'||#keyword#||'%')
+    </select>
+
+
+
+
+
+
+
+
+
+    <!-- 분석 진행 상태 Start-->
+    <select id="detailDAO.selAnalProgState"
+            parameterClass="java.util.HashMap"
+            resultClass="exam.com.detail.model.DetailVO">
+
+				SELECT  
+				    IDX,
+				    MEMID, COMID,
+				    REQID,
+				    SMPGETYN,
+				    REQUESTCDATE,
+				    ACCEPTNO,
+				    REPORTNO,
+				    ITEMCNT,
+				    SMPCNT,
+				    REQSTATE,
+				    TOTALPRICE,
+				    STATENM,
+				    SMPNAME,
+				    PRDNAME
+				FROM (                   
+				    SELECT 
+				        ROWNUM IDX,
+				        MEMID, COMID,
+				        REQID,
+				        SMPGETYN,
+				        REQUESTCDATE,
+				        ACCEPTNO,
+				        REPORTNO,
+				        ITEMCNT,
+				        SMPCNT,
+				        REQSTATE,
+				        TOTALPRICE,
+				        STATENM,
+				        SMPNAME,
+				        PRDNAME
+				    FROM (               
+				        SELECT
+				            Q.MEMID, Q.COMID,
+				            Q.REQID,
+				            Q.SMPGETYN,
+				            P.REQUESTCDATE,
+				            P.ACCEPTNO,
+				            P.REPORTNO,
+				            NVL(I.ITEMCNT, 0) ITEMCNT,
+				            NVL(S.SMPCNT, 0)  SMPCNT,
+				            Q.REQSTATE,
+				            Q.TOTALPRICE,
+				            S.STATENM,
+				            S.SMPNAME,
+				            S.PRDNAME
+				        FROM TNE_REQUEST Q,
+				             TNE_REPORT  P, 
+				             TCT_STATE   S,
+				            (SELECT
+				                 REQID,
+				                 COUNT(REQID) ITEMCNT
+				             FROM TNE_RESULT
+				             GROUP BY REQID) I,
+				            (SELECT
+				                 A.REQID,
+				                 COUNT(A.SMPID)    SMPCNT,
+				                 WM_CONCAT(A.NAME) SMPNAME,
+				                 WM_CONCAT(B.NAME) PRDNAME
+				             FROM TNE_SAMPLE A, TCE_MASTER B
+				             WHERE A.MASTERID = B.MASTERID
+				             GROUP BY REQID) S
+				        WHERE Q.MEMID = #memid# 
+				              AND Q.REQID    = P.REQID
+				              AND P.REPORTID = 1
+				              AND Q.REQSTATE = S.STATECD (+)
+				              AND #reqstate# > Q.REQSTATE AND Q.REQSTATE > 2
+				              AND Q.REQID = I.REQID (+)
+				              AND Q.REQID = S.REQID (+)
+				              AND (ACCEPTNO LIKE '%'||#keyword#||'%' OR NVL(SMPNAME,'-') LIKE '%'||#keyword#||'%' OR NVL(PRDNAME,'-') LIKE '%'||#keyword#||'%')
+				        ORDER BY REQID DESC      
+				    )  WHERE  #endNum# >= ROWNUM                    
+				) WHERE IDX >  #startNum#  
+    </select>
+
+    <select id="detailDAO.selAnalProgStateCnt"
+            parameterClass="java.util.HashMap"
+            resultClass="int">
+
+			SELECT
+	            COUNT(Q.MEMID) CNT
+	        FROM TNE_REQUEST Q,
+	             TNE_REPORT  P, 
+	             TCT_STATE   S,
+	            (SELECT
+	                 REQID,
+	                 COUNT(REQID) ITEMCNT
+	             FROM TNE_RESULT
+	             GROUP BY REQID) I,
+	            (SELECT
+	                 A.REQID,
+	                 COUNT(A.SMPID)    SMPCNT,
+	                 WM_CONCAT(A.NAME) SMPNAME,
+	                 WM_CONCAT(B.NAME) PRDNAME
+	             FROM TNE_SAMPLE A, TCE_MASTER B
+	             WHERE A.MASTERID = B.MASTERID
+	             GROUP BY REQID) S
+		        WHERE Q.MEMID = #memid# 
+		              AND Q.REQID    = P.REQID
+		              AND P.REPORTID = 1
+		              AND Q.REQSTATE = S.STATECD (+)
+		              AND #reqstate# > Q.REQSTATE AND Q.REQSTATE > 2
+		              AND Q.REQID = I.REQID (+)
+		              AND Q.REQID = S.REQID (+)
+		              AND (ACCEPTNO LIKE '%'||#keyword#||'%' OR NVL(SMPNAME,'-') LIKE '%'||#keyword#||'%' OR NVL(PRDNAME,'-') LIKE '%'||#keyword#||'%')
+    </select>
+
+
+
+
+
+
+
+
+</sqlMap>

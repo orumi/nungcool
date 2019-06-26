@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="loginUserDAO">
+
+
+    <select id="loginUserDAO.selectLoginUser" resultClass="exam.com.main.model.LoginUserVO">
+        <![CDATA[
+		SELECT 
+		    M.MEMID,M.MEMPW,M.COMID,M.COMNAME,M.NAME MEMNAME,M.DEPT,M.PHONE,M.HP,M.EMAIL,M.FAX,
+		    M.ZIPCODE,M.ADDR1,M.ADDR2,M.USEFLAG,M.MEMYN,M.OLDMEMID,
+		    C.BIZNO,C.NAME CNAME,C.TYPE,C.CEONAME, C.MNGNAME,C.MNGDEPT,C.MNGPHONE,C.MNGHP,C.FAX MNGFAX,
+		    C.MNGEMAIL,C.ZIPCODE COMZIP,C.ADDR1 COMADDR1,C.ADDR2 COMADDR2,
+		    C.ENAME,C.ECEONAME,C.EADDR1,C.EADDR2,C.ORDINAL 
+		FROM TNT_MEMBER M,
+		    TNT_COMPANY C
+		WHERE 
+		    M.MEMID=#memid# 
+		    AND M.MEMPW=#mempw# 
+		    AND M.MEMYN='Y'
+		    AND M.COMID=C.COMID 
+		]]>
+    </select>
+    
+    
+    <select id="loginUserDAO.selectOldUser" resultClass="exam.com.main.model.LoginOldUserVO">
+        <![CDATA[
+		SELECT     
+		    M.MEMID,M.MEMPW,M.COMID,M.COMNAME,M.NAME MEMNAME,M.DEPT,M.PHONE,M.HP,M.EMAIL,M.FAX,
+		    M.ZIPCODE,M.ADDR1,M.ADDR2,M.USEFLAG,M.MEMYN,M.OLDMEMID,
+		    C.BIZNO,C.NAME CNAME,C.TYPE,C.CEONAME, C.MNGNAME,C.MNGDEPT,C.MNGPHONE,C.MNGHP,
+		    C.FAX MNGFAX,C.MNGEMAIL,C.ZIPCODE COMZIP,C.ADDR1 COMADDR1,C.ADDR2 COMADDR2,
+		    C.ENAME,C.ECEONAME,C.EADDR1,C.EADDR2,C.ORDINAL
+		FROM TNT_MEMBER M,
+		     TNT_COMPANY C
+		WHERE 
+		    M.OLDMEMID         =  C.ECID
+		    AND M.OLDMEMID     = #memid# 
+		    AND M.MEMPW        = #mempw#
+		    AND M.MEMYN        = 'N'
+		    AND M.MEMKIND      = 1 
+		    AND M.CONFIRMFLAG  = 1
+		]]>
+    </select>    
+
+    
+    
+
+
+</sqlMap>

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="joinMemberDAO">
+
+
+    <select id="joinMemberDAO.checkCompRegi"
+            parameterClass="exam.com.member.model.CompanyVO"
+            resultClass="exam.com.member.model.CompanyVO">
+
+        <![CDATA[
+        SELECT
+            COMID,
+            BIZNO   bisNum,
+            NAME compName,
+            TYPE,
+            CEONAME ceonm,
+            MNGNAME,
+            MNGDEPT,
+            MNGPHONE,
+            MNGHP,
+            FAX,
+            MNGEMAIL,
+            ZIPCODE compAddrNum,
+            ADDR1   compAddr1,
+            ADDR2   compAddr2,
+            ENAME,
+            ECEONAME,
+            EADDR1,
+            EADDR2,
+            USEFLAG,
+            CONFIRMFLAG,
+            CONFIRMID,
+            CONFIRMDATE,
+            MODIFYID,
+            MODIFYDATE,
+            FILE1,
+            FILE2,
+            ORDINAL
+        FROM TNT_COMPANY
+        WHERE NAME LIKE '%' || #compName# || '%'
+        ]]>
+
+    </select>
+
+    <select id="joinMemberDAO.selectOneUser"
+            parameterClass="exam.com.member.model.MemberVO"
+            resultClass="exam.com.member.model.MemberVO">
+		<![CDATA[
+        SELECT
+            MEMID,
+            MEMPW,
+            COMID,
+            COMNAME,
+            NAME,
+            DEPT,
+            PHONE,
+            HP,
+            EMAIL,
+            FAX,
+            ZIPCODE,
+            ADDR1,
+            ADDR2,
+            USEFLAG,
+            CONFIRMFLAG,
+            CONFIRMID,
+            CONFIRMDATE,
+            MODIFYID,
+            MODIFYDATE,
+            FILE1,
+            OLDMEMID,
+            MEMYN,
+            MEMKIND
+        FROM TNT_MEMBER
+        WHERE MEMID = #userId#
+        ]]>
+	</select>
+
+    <select id="joinMemberDAO.selectOneCompanyByBisNum"
+            parameterClass="exam.com.member.model.CompanyVO"
+            resultClass="exam.com.member.model.CompanyVO">
+
+        SELECT
+            COMID,
+            BIZNO,
+            NAME,
+            TYPE,
+            CEONAME,
+            MNGNAME,
+            MNGDEPT,
+            MNGPHONE,
+            MNGHP,
+            FAX,
+            MNGEMAIL,
+            ZIPCODE,
+            ADDR1,
+            ADDR2,
+            ENAME,
+            ECEONAME,
+            EADDR1,
+            EADDR2,
+            USEFLAG,
+            CONFIRMFLAG,
+            CONFIRMID,
+            CONFIRMDATE,
+            MODIFYID,
+            MODIFYDATE,
+            FILE1,
+            FILE2,
+            ORDINAL
+        FROM TNT_COMPANY
+        WHERE BIZNO = #bisNum#
+
+    </select>
+
+    <insert id="joinMemberDAO.insertJoinMember"
+            parameterClass="exam.com.member.model.MemberVO">
+		<![CDATA[
+        INSERT INTO TNT_MEMBER (MEMID, MEMPW, COMID, COMNAME, NAME, DEPT, PHONE, HP, EMAIL,
+                                FAX, ZIPCODE, ADDR1, ADDR2, USEFLAG, CONFIRMFLAG, MEMYN, MEMKIND)
+        VALUES (#userId#, #psword#, #comId#, #compName#, #userNm#, #departNm#, #teleNum#, #mobile#, #email#, #faxNum#,
+                #userAddrNum#, #userAddr1#, #userAddr2#, #useFlag#, #confirmFlag#, #memYn#, #memKind#)
+        ]]>
+	</insert>
+
+    <insert id="joinMemberDAO.insertJoinCompany"
+            parameterClass="exam.com.member.model.CompanyVO">
+        <![CDATA[
+        INSERT INTO TNT_COMPANY (COMID, BIZNO, NAME, TYPE, CEONAME, ZIPCODE, ADDR1, ADDR2,
+                                 ENAME, ECEONAME, USEFLAG, CONFIRMFLAG, MNGHP)
+        VALUES (#comId#, #bisNum#, #compName#, #bisType#, #ceoNm#, #compAddrNum#, #compAddr1#, #compAddr2#,
+                #compEnNm#, #ceoEnNm#, #useFlag#, #confirmFlag#, #mngHp#)
+        ]]>
+    </insert>
+
+    <select id="joinMemberDAO.selectIdInquiry" parameterClass="exam.com.member.model.IdInquiry"
+            resultClass="exam.com.member.model.IdInquiry">
+
+        SELECT
+            NAME userName,
+            HP phoneNum,
+            MEMID userId
+        FROM TNT_MEMBER WHERE name = #userName# and HP = #phoneNum#
+
+    </select>
+
+    <select id="joinMemberDAO.selectPhoneValid"
+            parameterClass="exam.com.member.model.MemberVO" resultClass="exam.com.member.model.MemberVO" >
+
+        select HP from TNT_MEMBER WHERE replace(hp,'-','') = #mobile#
+
+
+    </select>
+    <select id="joinMemberDAO.selectEmailValid"
+            parameterClass="exam.com.member.model.MemberVO" resultClass="exam.com.member.model.MemberVO" >
+        select email from TNT_MEMBER WHERE EMAIL = #email#
+    </select>
+
+    <insert id="joinMemberDAO.insertJoinCompDummy" parameterClass="exam.com.member.model.CompanyVO">
+        INSERT INTO THT_COMPANY (COMID, BIZNO, NAME, TYPE, CEONAME, ZIPCODE, ADDR1, ADDR2,
+                                 ENAME, ECEONAME, USEFLAG, CONFIRMFLAG, MNGHP, ORDINAL)
+        VALUES (#comId#, #bisNum#, #compName#, #bisType#, #ceoNm#, #compAddrNum#, #compAddr1#, #compAddr2#,
+                #compEnNm#, #ceoEnNm#, #useFlag#, #confirmFlag#, #mngHp#, '1')
+    </insert>
+
+</sqlMap>

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="euc-kr"?>
+<root>
+	<kpetro>
+		<comname><![CDATA[대성나찌공업]]></comname>						<!-- 업체명 -->
+		<mngname><![CDATA[대표자1]]></mngname>							<!-- 대표자 -->
+		<rcvaddr><![CDATA[경상남도 양산시 유산동 289-22]]></rcvaddr>	<!-- 주소 -->
+		<acceptno><![CDATA[TSC2016-0342]]></acceptno>					<!-- 접수번호 -->
+		<reportno><![CDATA[TSC2016-0158L]]></reportno>					<!-- 성적서번호 -->
+		<receiptdate><![CDATA[2016년 01월 29일]]></receiptdate>			<!-- 접수일자 -->
+		<testenddate><![CDATA[2016년 02월 12일]]></testenddate>			<!-- 시험완료일자 -->
+		<currpagecnt><![CDATA[1]]></currpagecnt>						<!-- 현재페이지 -->
+		<pagecnt><![CDATA[2]]></pagecnt>								<!-- 총페이지 -->
+		<codename><![CDATA[품질관리용]]></codename>						<!-- 성적서용도 -->
+		<draftnm><![CDATA[담당자1]]></draftnm>							<!-- 담당자 -->
+		<apprnm><![CDATA[승인자1]]></apprnm>							<!-- 승인자 -->
+		<agreedate><![CDATA[승인일날짜출력]]></agreedate>				<!-- 승인날짜 -->			<!-- 컬럼 없음 -->
+		<docno><![CDATA[0000-0000-0000-0000]]></docno>					<!-- 문서확인번호 -->		<!-- 컬럼 없음 -->
+		<resulttxt><![CDATA[붙임참조]]></resulttxt>						<!-- 시험결과 -->
+		<rows smpnm="JP-8">												<!-- 시료명 -->
+			<row lvl="1">
+				<itemname1><![CDATA[밀도]]></itemname1>
+				<displayunit><![CDATA[kg/㎥]]></displayunit>
+				<resultvalue><![CDATA[775.5]]></resultvalue>
+				<methodnm><![CDATA[ASTM D4052-11]]></methodnm>
+				<commend><![CDATA[주석내용1]]></commend>
+			</row>
+			<row lvl="2">
+				<itemname1 idx="1" total="8"><![CDATA[증류성상]]></itemname1>
+				<itemname2><![CDATA[초류점(IBP))]]></itemname2>
+				<displayunit><![CDATA[℃]]></displayunit>
+				<resultvalue><![CDATA[775.5]]></resultvalue>
+				<methodnm idx="1" total="8"><![CDATA[ASTM D4052-11]]></methodnm>
+			</row>
+			<row lvl="2">
+				<itemname1 idx="2" total="8"><![CDATA[증류성상]]></itemname1>
+				<itemname2><![CDATA[초류점2(IBP)]]></itemname2>
+				<displayunit><![CDATA[℃]]></displayunit>
+				<resultvalue><![CDATA[775.5]]></resultvalue>
+				<methodnm idx="2" total="8"><![CDATA[ASTM D4052-11]]></methodnm>
+				<commend><![CDATA[주석내용2]]></commend>
+			</row>
+			<row lvl="2">
+				<itemname1 idx="3" total="8"><![CDATA[증류성상]]></itemname1>
+				<itemname2><![CDATA[초류점3(IBP)]]></itemname2>
+				<displayunit><![CDATA[℃]]></displayunit>
+				<resultvalue><![CDATA[775.5]]></resultvalue>
+				<methodnm idx="3" total="8"><![CDATA[ASTM D4052-11]]></methodnm>
+			</row>
+			<row lvl="2">
+				<itemname1 idx="4" total="8"><![CDATA[증류성상]]></itemname1>
+				<itemname2><![CDATA[초류점4(IBP)]]></itemname2>
+				<displayunit><![CDATA[℃]]></displayunit>
+				<resultvalue><![CDATA[775.5]]></resultvalue>
+				<methodnm idx="4" total="8"><![CDATA[ASTM D4052-11]]></methodnm>
+			</row>
+			<row lvl="2">
+				<itemname1 idx="5" total="8"><![CDATA[증류성상]]></itemname1>
+				<itemname2><![CDATA[초류점5(IBP)]]></itemname2>
+				<displayunit><![CDATA[℃]]></displayunit>
+				<resultvalue><![CDATA[775.5]]></resultvalue>
+				<methodnm idx="5" total="8"><![CDATA[ASTM D4052-11]]></methodnm>
+			</row>
+			<row lvl="2">
+				<itemname1 idx="6" total="8"><![CDATA[증류성상]]></itemname1>
+				<itemname2><![CDATA[초류점6(IBP)]]></itemname2>
+				<displayunit><![CDATA[℃]]></displayunit>
+				<resultvalue><![CDATA[775.5]]></resultvalue>
+				<methodnm idx="6" total="8"><![CDATA[ASTM D4052-11]]></methodnm>
+			</row>
+			<row lvl="2">
+				<itemname1 idx="7" total="8"><![CDATA[증류성상]]></itemname1>
+				<itemname2><![CDATA[초류점7(IBP)]]></itemname2>
+				<displayunit><![CDATA[℃]]></displayunit>
+				<resultvalue><![CDATA[775.5]]></resultvalue>
+				<methodnm idx="7" total="8"><![CDATA[ASTM D4052-11]]></methodnm>
+			</row>
+			<row lvl="2">
+				<itemname1 idx="8" total="8"><![CDATA[증류성상]]></itemname1>
+				<itemname2><![CDATA[초류점8(IBP)]]></itemname2>
+				<displayunit><![CDATA[℃]]></displayunit>
+				<resultvalue><![CDATA[775.5]]></resultvalue>
+				<methodnm idx="8" total="8"><![CDATA[ASTM D4052-11]]></methodnm>
+			</row>		
+			<row lvl="3">
+				<itemname1 idx="1" total="2"><![CDATA[부식성 (55 ℃, 7일 가나다라마바사아아아아끝)]]></itemname1>
+				<itemname2 idx="1" total="2"><![CDATA[알루미늄]]></itemname2>
+				<itemname3><![CDATA[무게변화]]></itemname3>
+				<displayunit><![CDATA[㎎/㎠]]></displayunit>
+				<resultvalue><![CDATA[+0.01]]></resultvalue>
+				<methodnm idx="1" total="2"><![CDATA[KS M 2109:2014]]></methodnm>
+			</row>	
+			<row lvl="3">
+				<itemname1 idx="2" total="2"><![CDATA[부식성 (55 ℃, 7일)]]></itemname1>
+				<itemname2 idx="2" total="2"><![CDATA[알루미늄]]></itemname2>
+				<itemname3><![CDATA[겉모양]]></itemname3>
+				<displayunit><![CDATA[㎎/㎠]]></displayunit>
+				<resultvalue><![CDATA[표면거칠음, 오염 및 변색없음]]></resultvalue>
+				<methodnm idx="2" total="2"><![CDATA[KS M 2109:2014]]></methodnm>
+			</row>	
+			<row lvl="3">
+				<itemname1 idx="1" total="3"><![CDATA[부식성33 (55 ℃, 7일 가나다라마바사아아아아끝)]]></itemname1>
+				<itemname2 idx="1" total="3"><![CDATA[알루미늄]]></itemname2>
+				<itemname3><![CDATA[무게변화]]></itemname3>
+				<displayunit><![CDATA[㎎/㎠]]></displayunit>
+				<resultvalue><![CDATA[+0.01]]></resultvalue>
+				<methodnm idx="1" total="3"><![CDATA[KS M 2109:2014]]></methodnm>
+			</row>	
+			<row lvl="3">
+				<itemname1 idx="2" total="3"><![CDATA[부식성 (55 ℃, 7일)]]></itemname1>
+				<itemname2 idx="2" total="3"><![CDATA[알루미늄]]></itemname2>
+				<itemname3><![CDATA[겉모양]]></itemname3>
+				<displayunit><![CDATA[㎎/㎠]]></displayunit>
+				<resultvalue><![CDATA[이상없음]]></resultvalue>
+				<methodnm idx="2" total="3"><![CDATA[KS M 2109:2014]]></methodnm>
+			</row>	
+			<row lvl="3">
+				<itemname1 idx="3" total="3"><![CDATA[부식성 (55 ℃, 7일)]]></itemname1>
+				<itemname2 idx="3" total="3"><![CDATA[알루미늄]]></itemname2>
+				<itemname3><![CDATA[속모양]]></itemname3>
+				<displayunit><![CDATA[㎎/㎠]]></displayunit>
+				<resultvalue><![CDATA[결과없음]]></resultvalue>
+				<methodnm idx="3" total="3"><![CDATA[KS M 2109:2014]]></methodnm>
+			</row>	
+		</rows>
+		<rows smpnm="JP-8-222">	
+			<row lvl="1">
+				<itemname1><![CDATA[밀도1]]></itemname1>
+				<displayunit><![CDATA[kg/㎥]]></displayunit>
+				<resultvalue><![CDATA[775.5]]></resultvalue>
+				<methodnm><![CDATA[ASTM D4052-11]]></methodnm>
+				<commend><![CDATA[주석내용1]]></commend>
+			</row>
+			<row lvl="1">
+				<itemname1><![CDATA[밀도2]]></itemname1>
+				<displayunit><![CDATA[kg/㎥]]></displayunit>
+				<resultvalue><![CDATA[775.5]]></resultvalue>
+				<methodnm><![CDATA[ASTM D4052-11]]></methodnm>
+				<commend><![CDATA[주석내용2]]></commend>
+			</row>
+			<row lvl="1">
+				<itemname1><![CDATA[밀도3]]></itemname1>
+				<displayunit><![CDATA[kg/㎥]]></displayunit>
+				<resultvalue><![CDATA[775.5]]></resultvalue>
+				<methodnm><![CDATA[ASTM D4052-11]]></methodnm>
+				<commend><![CDATA[주석내용3]]></commend>
+			</row>
+			<row lvl="1">
+				<itemname1><![CDATA[밀도4]]></itemname1>
+				<displayunit><![CDATA[kg/㎥]]></displayunit>
+				<resultvalue><![CDATA[775.5]]></resultvalue>
+				<methodnm><![CDATA[ASTM D4052-11]]></methodnm>
+				<commend><![CDATA[주석내용4]]></commend>
+			</row>
+		</rows>
+		<rows smpnm="JP-8-333">	
+			<row lvl="1">
+				<itemname1><![CDATA[밀도1]]></itemname1>
+				<displayunit><![CDATA[kg/㎥]]></displayunit>
+				<resultvalue><![CDATA[775.5]]></resultvalue>
+				<methodnm><![CDATA[ASTM D4052-11]]></methodnm>
+				<commend><![CDATA[주석내용1]]></commend>
+			</row>
+			<row lvl="1">
+				<itemname1><![CDATA[밀도2]]></itemname1>
+				<displayunit><![CDATA[kg/㎥]]></displayunit>
+				<resultvalue><![CDATA[775.5]]></resultvalue>
+				<methodnm><![CDATA[ASTM D4052-11]]></methodnm>
+				<commend><![CDATA[주석내용2]]></commend>
+			</row>
+			<row lvl="1">
+				<itemname1><![CDATA[밀도3]]></itemname1>
+				<displayunit><![CDATA[kg/㎥]]></displayunit>
+				<resultvalue><![CDATA[775.5]]></resultvalue>
+				<methodnm><![CDATA[ASTM D4052-11]]></methodnm>
+				<commend><![CDATA[주석내용3]]></commend>
+			</row>
+			<row lvl="1">
+				<itemname1><![CDATA[밀도4]]></itemname1>
+				<displayunit><![CDATA[kg/㎥]]></displayunit>
+				<resultvalue><![CDATA[775.5]]></resultvalue>
+				<methodnm><![CDATA[ASTM D4052-11]]></methodnm>
+				<commend><![CDATA[주석내용4]]></commend>
+			</row>
+		</rows>
+	</kpetro>
+</root>

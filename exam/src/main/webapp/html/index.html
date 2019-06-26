@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="js/tinyfader.js"></script>
+<link rel="stylesheet" type="text/css" href="css/common.css"/>
+<link rel="stylesheet" type="text/css" href="css/index.css"/>
+<title>kpetro 한국석유관리원</title>
+<script type="text/javascript">
+//<![CDATA[
+
+//]]> 
+</script>
+</head>
+<body>
+<!-- wrap -->
+<div class="wrap">
+	<!-- gnb -->
+	<div class="gnb">
+		<div class="gnb_in">
+			<ul class="first">
+				<li class="g01"><a href="#"><img src="images/btn/btn_legal.gif" alt="법정공인" /></a></li>
+				<li class="g02"><a href="#"><img src="images/btn/btn_training.gif" alt="교육" /></a></li>
+			</ul>
+			<ul class="last">
+				<li class=""><a href="#"><img src="images/btn/btn_home.gif" alt="home" /></a></li>
+				<li class=""><a href="#"><img src="images/btn/btn_membership.gif" alt="회원가입" /></a></li>
+			</ul>
+		</div>
+	</div>
+	<!-- //gnb -->
+	<!-- header -->
+	<div class="header">
+		<!-- menu -->
+		<div class="menu">
+			<h1><img src="images/bg/logo.png" alt="kpetro 한국석유관리원" /></h1>
+			<ul>
+				<li><a href="sub/application01.html"><img src="images/menu/m01_off.gif" onmouseover="this.src='images/menu/m01_on.gif'" onmouseout="this.src='images/menu/m01_off.gif'" alt="시험신청" /></a></li>
+				<li><a href="sub/breakdown01.html"><img src="images/menu/m02_off.gif" onmouseover="this.src='images/menu/m02_on.gif'" onmouseout="this.src='images/menu/m02_off.gif'" alt="접수내역" /></a></li>
+				<li><a href="sub/application01.html"><img src="images/menu/m03_off.gif" onmouseover="this.src='images/menu/m03_on.gif'" onmouseout="this.src='images/menu/m03_off.gif'" alt="시험서확인" /></a></li>
+				<li><a href="sub/application01.html"><img src="images/menu/m04_off.gif" onmouseover="this.src='images/menu/m04_on.gif'" onmouseout="this.src='images/menu/m04_off.gif'" alt="커뮤니티" /></a></li>
+				<li><a href="sub/application01.html"><img src="images/menu/m05_off.gif" onmouseover="this.src='images/menu/m05_on.gif'" onmouseout="this.src='images/menu/m05_off.gif'" alt="고객지원센터" /></a></li>
+			</ul>
+		</div>
+		<!-- //menu -->
+	</div>
+	<!-- //header -->
+
+	<!-- container -->
+	<div class="container">
+		<!-- left_warp (왼쪽 비주얼) -->
+		<div class="left_warp">
+			<!-- visual -->
+			<div class="visual">
+				<!-- slideshow -->
+				<div id="slideshow">
+					<ul id="slides">
+						<li class="img01">
+							<img src="images/bg/visual_bg01.jpg" class="" alt="의뢰시험절차안내 신청부터 성적서발급까지 각 단계별로 자세한 내용을 안내해드립니다."/>
+							<a href="#" class="btn"><img src="images/btn/btn_content.gif" alt="자세한 내용보기"/></a>
+						</li>
+						<li class="img01">
+							<img src="images/bg/visual_bg02.jpg" class="" alt="의뢰시험절차안내 신청부터 성적서발급까지 각 단계별로 자세한 내용을 안내해드립니다."/>
+							<a href="#" class="btn"><img src="images/btn/btn_content.gif" alt="자세한 내용보기"/></a>
+						</li>
+						<li class="img01">
+							<img src="images/bg/visual_bg03.jpg" class="" alt="의뢰시험절차안내 신청부터 성적서발급까지 각 단계별로 자세한 내용을 안내해드립니다."/>
+							<a href="#" class="btn"><img src="images/btn/btn_content.gif" alt="자세한 내용보기"/></a>
+						</li>
+						<li class="img01">
+							<img src="images/bg/visual_bg04.jpg" class="" alt="의뢰시험절차안내 신청부터 성적서발급까지 각 단계별로 자세한 내용을 안내해드립니다."/>
+							<a href="#" class="btn"><img src="images/btn/btn_content.gif" alt="자세한 내용보기"/></a>
+						</li>
+					</ul>
+				</div>
+				<!-- //slideshow -->
+				<ul id="pagination" class="pagination">
+					<li onclick="slideshow.pos(0)"></li>
+					<li onclick="slideshow.pos(1)"></li>
+					<li onclick="slideshow.pos(2)"></li>
+					<li onclick="slideshow.pos(3)"></li>
+				</ul>
+			</div>
+			<!-- //visual -->
+			<script type="text/javascript">
+				var slideshow=new TINY.fader.fade('slideshow',{
+					id:'slides',
+					auto:2,
+					resume:true,
+					navid:'pagination',
+					activeclass:'current',
+					visible:true,
+					position:0
+				});
+			</script>
+
+			<!-- test_btn -->
+			<div class="test_btn">
+				<ul>
+					<li class="first"><a href="#"><img src="images/btn/btn_test.jpg" alt="의뢰시험 신청 의뢰시험 신청 설명입니다." /></a></li>
+					<li><a href="#"><img src="images/btn/btn_progression.jpg" alt="진행상태 확인 진행상태 확인 설명입니다." /></a></li>
+				</ul>
+			</div>
+			<!-- test_btn -->
+
+			<!-- notice_wrap -->
+			<div class="notice_wrap">
+				<!-- 공지사항 -->
+				<div class="notice">
+					<h4>
+						<img src="images/bg/notice.gif" alt="공지사항" />
+						<a href="#"><img src="images/btn/btn_next01.gif" alt="더보기" /></a>
+					</h4>
+					<ul>
+						<li><a href="#">· 공지사항 입니다<span class="days">2015.01.01</span></a></li>
+						<li><a href="#">· 공지사항 입니다<span class="days">2015.01.01</span></a></li>
+						<li><a href="#">· 공지사항 입니다<span class="days">2015.01.01</span></a></li>
+						<li><a href="#">· 공지사항 입니다<span class="days">2015.01.01</span></a></li>
+						<li><a href="#">· 공지사항 입니다<span class="days">2015.01.01</span></a></li>
+						<li><a href="#">· 공지사항 입니다<span class="days">2015.01.01</span></a></li>
+					</ul>
+				</div>
+				<!-- //공지사항 -->
+				<!-- 자주하는질문 -->
+				<div class="question">
+					<h4>
+						<img src="images/bg/question.gif" alt="자주하는질문" />
+						<a href="#"><img src="images/btn/btn_next01.gif" alt="더보기" /></a>
+					</h4>
+					<ul>
+						<li><a href="#">· 결재가 잘 안되는데요?<span class="days">2015.01.01</span></a></li>
+						<li><a href="#">· 서비스 기한이 어떻게 되지?<span class="days">2015.01.01</span></a></li>
+						<li><a href="#">· 환불 받고 싶습니다.<span class="days">2015.01.01</span></a></li>
+						<li><a href="#">· 결재가 잘 안되는데요?<span class="days">2015.01.01</span></a></li>
+						<li><a href="#">· 서비스 기한이 어떻게 되지?<span class="days">2015.01.01</span></a></li>
+						<li><a href="#">· 환불 받고 싶습니다.<span class="days">2015.01.01</span></a></li>
+					</ul>
+				</div>
+				<!-- //자주하는질문 -->
+			</div>
+			<!-- //notice_wrap -->
+		</div>
+		<!-- //left_warp (왼쪽 비주얼) -->
+
+		<!-- right_warp(오른쪽 로그인 및 버튼) -->
+		<div class="right_warp">
+			<div class="login">
+				<h4><img src="images/bg/member_login.gif" alt="Member Login" /></h4>
+				<ul class="id_pw">
+					<li class="id"><input type="text" value="아이디" /></li>
+					<li class="pw"><input type="password" value="password" /></li>
+					<li class="id_save"><input type="checkbox" /> 아이디 저장</li>
+				</ul>
+				<p class="login_btn"><a href="#"><img src="images/btn/btn_login.gif" alt="Member Login" /></a></p>
+				<ul class="member_id">
+					<li class="menber"><a href="#"><img src="images/btn/btn_membership01.gif" alt="회원가입" /></a></li>
+					<li class="id_pw_ find"><a href="#"><img src="images/btn/btn_idpass.gif" alt="아이디 비밀번호" /></a></li>
+				</ul>
+			</div>
+			<p class="estimat"><a href="#"><img src="images/btn/btn_estimate.jpg" alt="견적서 산출" /></a></p>
+			<p class="mark"><a href="#"><img src="images/btn/btn_mark.jpg" alt="성적서 위변조 확인" /></a></p>
+			<p class="issue_member">
+				<span><a href="#"><img src="images/btn/btn_issue.jpg" alt="등본발급요청" /></a></span>
+				<span><a href="#"><img src="images/btn/btn_member.jpg" alt="연회비회원" /></a></span>
+			</p>
+			<p class="btn_service">
+				<span><a href="#"><img src="images/btn/btn_service.jpg" alt="설비계약서비스" /></a></span>
+				<span><a href="#"><img src="images/btn/btn_service01.jpg" alt="교육신청서비스" /></a></span>
+			</p>
+			<p><a href="#"><img src="images/btn/btn_phone.jpg" alt="문의전화 043-243-7980" /></a></p>
+		</div>
+		<!-- //right_warp(오른쪽 로그인 및 버튼) -->
+	</div>
+	<!-- //container -->
+
+	<!-- footer -->
+	<div class="footer">
+		<ul class="footer_info">
+			<li class="first"><a href="#"><img src="images/btn/information.gif" alt="개인정보 보호정책" /></a></li>
+			<li><a href="#"><img src="images/btn/provision.gif" alt="이용약관" /></a></li>
+			<li><a href="#"><img src="images/btn/mail.gif" alt="이메일" /></a></li>
+			<li><a href="#"><img src="images/btn/refusal.gif" alt="무단수집거부" /></a></li>
+			<li><a href="#"><img src="images/btn/way.gif" alt="찾아오시는길" /></a></li>
+			<li><a href="#"><img src="images/btn/ad_mail.gif" alt="관리자메일" /></a></li>
+		</ul>
+		<p class="address">
+			[28115] 충청북도 청주시 청원구 오창읍 양청3길 33  전화 :043)240-7980 <br/>
+			COPY RIGHT© 한국석유관리원 ALL RIGHTS RESERVED
+		</p>
+		<div class="move_btn">
+			<span class="move_b">
+				<select>
+					<option>내부사이트</option>
+					<option>내부사이트</option>
+					<option>내부사이트</option>
+				</select>
+			</span>
+			<a href="#"><img src="images/btn/btn_move01.gif" alt="이동" /></a> 
+		</div>
+	</div>
+	<!-- //footer -->
+
+</div>
+<!-- //wrap -->
+</body>
+</html>

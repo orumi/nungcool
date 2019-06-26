@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="eleItemServiceDAO">
+
+    <select id="eleItemServiceDAO.selectElePopUP"
+            resultClass="tems.com.testBaseManagement.oilTypeProduct.elementaryItemManagement.model.ElePopUpVO">
+
+        <![CDATA[
+        SELECT
+            SUBSTR(sys_connect_by_path(A.NAME, ' ->'), 4) AS ITEMNAME,
+            ITEMID,
+            ITEMPID,
+            PRICE,
+            LVL,
+            (SELECT COUNT(ITEMPID)
+             FROM TCE_ITEM
+             WHERE A.ITEMID = ITEMPID)                       CNT
+        FROM TCE_ITEM A
+        WHERE A.OLDYN = 'N'
+
+        ]]>
+    </select>
+
+    <select id="eleItemServiceDAO.duplicateCheck"
+            resultClass="tems.com.testBaseManagement.oilTypeProduct.elementaryItemManagement.model.ElePopUpVO">
+
+        <![CDATA[
+        SELECT
+            MASTERID,
+            ITEMID,
+            LVL,
+            METHODID,
+            CONDID,
+            TEMPERCOND,
+            TEMPUNIT,
+            TIMECOND,
+            TIMECONDUNIT,
+            ETC,
+            ETCUNIT,
+            RESULTFLAG,
+            MODIFYID,
+            MODIFYDATE,
+            REGID,
+            REGDATE,
+            ITEMPID
+        FROM TCE_MASTER_ITEM
+        WHERE ITEMID = #itemID#
+        AND MASTERID = #masterID#
+        ]]>
+    </select>
+
+    <select id="eleItemServiceDAO.selectRightOne"
+            resultClass="tems.com.testBaseManagement.oilTypeProduct.elementaryItemManagement.model.RightOneVO">
+
+        <![CDATA[
+        SELECT DISTINCT
+            C.TREE,
+            C.MTITEMID,
+            C.MASTERID,
+            C.ITEMID,
+            C.METHODID,
+            C.TEMPERCOND,
+            C.TEMPUNIT,
+            C.TIMECOND,
+            C.TIMECONDUNIT,
+            C.ETC,
+            C.ETCUNIT,
+            C.LVL,
+            C.RESULTFLAG,
+            C.CONDID,
+            C.UNITID,
+            C.DISPLAYTYPE,
+            C.PRICE,
+            C.NAME,
+            C.ENAME,
+            C.ITEMPID
+        FROM
+            (SELECT
+                 SUBSTR(sys_connect_by_path(A.ITEMID, '.'), 2)           TREE,
+                 A.MTITEMID,
+                 A.MASTERID,
+                 A.ITEMID,
+                 A.METHODID,
+                 A.TEMPERCOND,
+                 A.TEMPUNIT,
+                 A.TIMECOND,
+                 A.TIMECONDUNIT,
+                 A.ETC,
+                 A.ETCUNIT,
+                 A.LVL,
+                 A.RESULTFLAG,
+                 A.ITEMPID,
+                 A.CONDID,
+                 (SELECT C.UNITID
+                  FROM TNE_ITEM_DETAIL C
+                  WHERE C.ITEMID = A.ITEMID AND C.METHODID = A.METHODID) UNITID,
+                 (SELECT C.DISPLAYTYPE
+                  FROM TNE_ITEM_DETAIL C
+                  WHERE C.ITEMID = A.ITEMID AND C.METHODID = A.METHODID) DISPLAYTYPE,
+                 B.PRICE,
+                 B.NAME,
+                 B.ENAME
+             FROM TCE_MASTER_ITEM A, TCE_ITEM B
+             WHERE A.ITEMID = B.ITEMID
+                   AND A.MASTERID = #masterID#
+                                     AND B.OLDYN = 'N'
+                                     START WITH ( A.ITEMPID = 0)
+            CONNECT BY PRIOR A.ITEMID = A.ITEMPID) C
+            ORDER BY TREE
+        ]]>
+
+    </select>
+
+    <select id="eleItemServiceDAO.loadTestMethod"
+            parameterClass="tems.com.testBaseManagement.oilTypeProduct.elementaryItemManagement.model.RightOneVO"
+            resultClass="tems.com.testBaseManagement.oilTypeProduct.elementaryItemManagement.model.RightOneVO">
+
+        <![CDATA[
+        SELECT
+            A.ITEMID,
+            A.ITEMPID,
+            C.METHODID,
+            C.NAME,
+            B.UNITID
+        FROM TCE_MASTER_ITEM A, TNE_ITEM_DETAIL B, TCE_METHOD C
+        WHERE A.ITEMID = B.ITEMID
+              AND B.METHODID = C.METHODID
+              AND A.MASTERID = #masterID#
+        ]]>
+
+    </select>
+
+    <select id="eleItemServiceDAO.loadTesTCondtion"
+            resultClass="tems.com.testBaseManagement.oilTypeProduct.elementaryItemManagement.model.RightOneVO">
+
+        <![CDATA[
+        SELECT
+            A.ITEMID,
+            A.CONDID,
+            A.TEMPERCOND || B.CODENAME || '/' || TIMECOND || C.CODENAME || '/' || ETC || D.CODENAME TESTCOND
+        FROM TNE_CONDITION A, TCT_CODE_DETAIL B, TCT_CODE_DETAIL C, TCT_CODE_DETAIL D
+        WHERE A.TEMPUNIT = B.CODEID (+)
+              AND A.TIMECONDUNIT = C.CODEID (+)
+              AND A.ETCUNIT = D.CODEID (+)
+        ]]>
+
+    </select>
+
+
+    <select id="eleItemServiceDAO.checkParents"
+            resultClass="tems.com.testBaseManagement.oilTypeProduct.elementaryItemManagement.model.RightOneVO">
+
+        <![CDATA[
+        SELECT
+            MTITEMID,
+            MASTERID,
+            ITEMID,
+            ITEMPID,
+            LVL,
+            METHODID,
+            CONDID,
+            TEMPERCOND,
+            TEMPUNIT,
+            TIMECOND,
+            TIMECONDUNIT,
+            ETC,
+            ETCUNIT,
+            RESULTFLAG,
+            MODIFYID,
+            MODIFYDATE,
+            REGID,
+            REGDATE
+        FROM TCE_MASTER_ITEM
+        WHERE ITEMID = #itemPID#
+        AND MASTERID = #masterID#
+        ]]>
+
+    </select>
+
+    <select id="eleItemServiceDAO.getOneFromTCEITEM"
+            resultClass="tems.com.testBaseManagement.oilTypeProduct.elementaryItemManagement.model.ElePopUpVO">
+
+        <![CDATA[
+        SELECT
+            A.ITEMID,
+            A.ITEMPID,
+            A.LVL,
+            A.NAME,
+            A.ENAME,
+            A.USEFLAG,
+            A.PRICE,
+            A.BASICCOND,
+            A.BASICUNIT,
+            A.BASICCNT,
+            A.CALCBASE,
+            A.ADDPRICE,
+            A.ETC,
+            A.REGID,
+            A.REGDATE,
+            A.MODIFYID,
+            A.MODIFYDATE,
+            A.OLDYN,
+            A.ORDERBY,
+            A.OLDID
+        FROM TCE_ITEM A
+        WHERE A.ITEMID = #itemPID#
+        ]]>
+
+    </select>
+
+
+    <select id="eleItemServiceDAO.loadDataLeft"
+            parameterClass="tems.com.testBaseManagement.oilTypeProduct.elementaryItemManagement.model.RightOneVO"
+            resultClass="tems.com.testBaseManagement.oilTypeProduct.elementaryItemManagement.model.RightOneVO">
+
+        <![CDATA[
+        SELECT
+            A.UNITID,
+            A.DISPLAYTYPE
+        FROM TNE_ITEM_DETAIL A
+        WHERE A.ITEMID = #itemID#
+        AND A.METHODID = #methodID#
+        ]]>
+
+    </select>
+
+
+    <insert id="eleItemServiceDAO.insertElePopUP"
+            parameterClass="tems.com.testBaseManagement.oilTypeProduct.elementaryItemManagement.model.ElePopUpVO">
+
+        <![CDATA[
+        INSERT INTO TCE_MASTER_ITEM
+        (
+            MTITEMID, MASTERID, ITEMID, METHODID, ITEMPID, LVL, RESULTFLAG
+        )
+        VALUES
+            (
+                SEQ_TCE_MASTER_ITEM.nextval,
+                #masterID#,
+                #itemID#,
+                #methodID#,
+                #itemPID#,
+                #lvl#,
+                #resultFlag#
+            )
+        ]]>
+
+    </insert>
+    <update id="eleItemServiceDAO.updateRightOne"
+            parameterClass="tems.com.testBaseManagement.oilTypeProduct.elementaryItemManagement.model.RightOneVO">
+
+        <![CDATA[
+        UPDATE TCE_MASTER_ITEM A
+        SET
+            A.METHODID = #methodID#,
+        A.CONDID       = #condID#,
+        A.TEMPERCOND   = ( SELECT B.TEMPERCOND
+        FROM TNE_CONDITION B
+        WHERE B.CONDID = #condID#),
+        A.TEMPUNIT     = ( SELECT B.TEMPUNIT
+        FROM TNE_CONDITION B
+        WHERE B.CONDID = #condID#),
+        A.TIMECOND     = ( SELECT B.TIMECOND
+        FROM TNE_CONDITION B
+        WHERE B.CONDID = #condID#),
+        A.TIMECONDUNIT = ( SELECT B.TIMECONDUNIT
+        FROM TNE_CONDITION B
+        WHERE B.CONDID = #condID#),
+        A.ETC          = ( SELECT B.ETC
+        FROM TNE_CONDITION B
+        WHERE B.CONDID = #condID#),
+        A.ETCUNIT      = ( SELECT B.ETCUNIT
+        FROM TNE_CONDITION B
+        WHERE B.CONDID = #condID#)
+        WHERE A.MTITEMID = #mtItemID#
+        ]]>
+
+    </update>
+    <delete id="eleItemServiceDAO.deleteRightOne"
+            parameterClass="tems.com.testBaseManagement.oilTypeProduct.elementaryItemManagement.model.RightOneVO">
+
+        <![CDATA[
+        DELETE
+        FROM TCE_MASTER_ITEM
+        WHERE MTITEMID = #mtItemID#
+        ]]>
+
+    </delete>
+
+</sqlMap>

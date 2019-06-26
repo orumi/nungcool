@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+
+<sqlMap namespace="membership_DAO">
+
+
+<select id="membership_DAO.selectMembership" resultClass="exam.com.support.model.MembershipVO">
+	<![CDATA[
+		SELECT COMID, MSHIPID, DCRATE, TO_CHAR(STARTDATE,'YYYY-MM-DD') STARTDATE, TO_CHAR(ENDDATE,'YYYY-MM-DD') ENDDATE, ECSTATE, ECDIV,
+	       CASE WHEN ECDIV=-1 THEN -1
+	            WHEN ECDIV=1 THEN
+	                CASE WHEN SYSDATE>=STARTDATE AND ENDDATE>=SYSDATE THEN 1
+	                ELSE 2 END
+	       END DIVTAG
+		FROM TNE_MEMBERSHIP WHERE COMID = #comid#
+	]]>
+</select>
+
+
+<insert id="membership_DAO.insertMemebership" parameterClass="exam.com.support.model.MembershipVO">
+	<![CDATA[
+		INSERT INTO TNE_MEMBERSHIP (COMID,STARTDATE, ENDDATE, ECSTATE,ECDIV, REGID, REGDATE) VALUES (#comid#,#startdate#,#enddate#,0,-1, #regid#, SYSDATE)
+	]]>
+</insert>
+
+
+
+<update id="membership_DAO.updateMembership" parameterClass="exam.com.support.model.MembershipVO">
+	<![CDATA[
+		UPDATE TNE_MEMBERSHIP SET STARTDATE=#startdate#, ENDDATE=#enddate#, ECSTATE=0, ECDIV=-1, REGID=#regid#, REGDATE=SYSDATE WHERE COMID=#comid#
+	]]>
+</update>
+
+
+
+<!-- 설비 계약 목록   -->
+<select id="membership_DAO.selectEquipReq" resultClass="exam.com.support.model.EquipReqVO">
+	SELECT * FROM
+	(
+	    SELECT   
+	         EQUIPREQID       
+	        ,COMID            
+	        ,TAXCOMPANY       
+	        ,TAXCEO           
+	        ,TAXZIPCODE       
+	        ,TAXADDR1         
+	        ,TAXADDR2         
+	        ,TAXBIZNO         
+	        ,TAXMNGNAME       
+	        ,TAXDEPT          
+	        ,TAXEMAIL         
+	        ,TAXHP            
+	        ,TAXPHONE         
+	        ,TAXFAX  
+	        ,TAXBIZTYPE          
+	        ,TAXISSUEDATE     
+	        ,CARDBILLNO       
+	        ,CARDPRICE        
+	        ,CARDTYPE         
+	        ,STATE  
+	        ,CASE WHEN STATE=0 THEN '신청'
+             WHEN STATE=2 THEN '접수'
+             WHEN STATE=4 THEN '완료' 
+             ELSE '작성중' END STATENAME           
+	        ,PRICESTATE       
+	        ,PRICEDATE        
+	        ,REQUESTCDATE     
+	        ,RECEIPTDATE      
+	        ,ACCEPTNO         
+	        ,USEOBJECT        
+	        ,TO_CHAR(STARTDATE,'YYYY-MM-DD') STARTDATE        
+            ,TO_CHAR(ENDDATE,'YYYY-MM-DD') ENDDATE         
+	        ,REQPAY           
+	        ,TO_CHAR(TOTREQPAY, '999,999,999,999,999') TOTREQPAY        
+	        ,PRICECHARGETYPE  
+	        ,PRICETYPE        
+	        ,GIANTITLE        
+	        ,GIANTEXT         
+	        ,MEMID   
+	        ,(SELECT NAME FROM TNT_MEMBER M WHERE M.MEMID= R.MEMID) MEMNAME          
+	    FROM TNE_EQUIP_REQ R
+	    WHERE COMID=#comid#
+	) E    
+	LEFT JOIN
+	(
+	    SELECT EQUIPREQID REQID, EQNAME, 
+	        CASE WHEN CNT>0 THEN SUBSTR(EQNAME,0,INSTR(EQNAME,',')-1)||' 외'||CNT
+	        ELSE EQNAME
+	        END EQUIPNAMES
+	    FROM
+	    (
+	        SELECT 
+	             C.EQUIPREQID, COUNT(C.EQUIPID)-1 CNT,
+	             SUBSTR (XMLAGG (XMLELEMENT (COL, ',', E.NAME) ORDER BY E.EQUIPID).EXTRACT ('//text()'), 2) AS   EQNAME
+	        FROM TNE_EQUIP_CONTRACT C,
+	             TNE_EQUIP E
+	        WHERE C.EQUIPID = E.EQUIPID     
+	        GROUP BY EQUIPREQID   
+	    )
+	) R
+	ON E.EQUIPREQID=R.REQID   
+	ORDER BY EQUIPREQID
+</select>
+
+<!-- 계약 상세 정보   -->
+<select id="membership_DAO.selectEquipReqDetail" resultClass="exam.com.support.model.EquipReqVO">
+	    SELECT   
+	         EQUIPREQID       
+	        ,COMID            
+	        ,TAXCOMPANY       
+	        ,TAXCEO           
+	        ,TAXZIPCODE       
+	        ,TAXADDR1         
+	        ,TAXADDR2         
+	        ,TAXBIZNO         
+	        ,TAXMNGNAME       
+	        ,TAXDEPT          
+	        ,TAXEMAIL         
+	        ,TAXHP            
+	        ,TAXPHONE         
+	        ,TAXFAX  
+	        ,TAXBIZTYPE          
+	        ,TAXISSUEDATE     
+	        ,CARDBILLNO       
+	        ,CARDPRICE        
+	        ,CARDTYPE         
+	        ,STATE            
+	        ,PRICESTATE       
+	        ,PRICEDATE        
+	        ,REQUESTCDATE     
+	        ,RECEIPTDATE      
+	        ,ACCEPTNO         
+	        ,USEOBJECT        
+	        ,TO_CHAR(STARTDATE,'YYYY-MM-DD') STARTDATE        
+            ,TO_CHAR(ENDDATE,'YYYY-MM-DD') ENDDATE           
+	        ,REQPAY           
+	        ,TOTREQPAY        
+	        ,PRICECHARGETYPE  
+	        ,PRICETYPE        
+	        ,GIANTITLE        
+	        ,GIANTEXT         
+	        ,MEMID            
+	    FROM TNE_EQUIP_REQ
+	    WHERE COMID=#comid#
+	    AND EQUIPREQID=#equipreqid#
+</select>
+
+<!-- 계약장비 목록   -->
+<select id="membership_DAO.selectEquipDetailList" resultClass="exam.com.support.model.EquipDetailVO">
+	SELECT 
+	    C.EQUIPREQID,
+	    C.EQUIPID,
+	    C.EQPAY,
+	    C.DCRATE,
+	    E.NAME,
+	    E.MODEL
+	FROM TNE_EQUIP_CONTRACT C,
+	     TNE_EQUIP E
+	WHERE C.EQUIPID=E.EQUIPID
+	    AND C.EQUIPREQID = #equipreqid#
+	ORDER BY EQUIPID
+
+</select>
+
+
+
+<!-- 장비 검색 쿼리   -->
+<select id="membership_DAO.selectSearchEquip" resultClass="exam.com.support.model.EquipItemVO">
+    WITH EQUITEM AS
+    (
+        SELECT 
+            EQUIPID, EQNAME, MODEL, ASSETCODE,MAKER,
+            SVCAGENT, BUYDATE, BUYPRICE,ITEMID, ITEMPID, ITEMNAME, ORDERBY,
+            SUBSTR(SYS_CONNECT_BY_PATH(REPLACE(ITEMNAME,'_',''),'_'),2) TREEITEMNAME,
+            (SELECT TO_CHAR(YEARPRICE, '999,999,999,999,999') FROM TNE_EQUIP_DCRATE R WHERE BUYPRICE>R.MINPRICE AND R.MAXPRICE>BUYPRICE) YEARPRICE,
+            (SELECT DCRATE FROM TNE_EQUIP_DCRATE R WHERE BUYPRICE>R.MINPRICE AND R.MAXPRICE>BUYPRICE) DCRATE
+        FROM
+        (
+            SELECT 
+                E.EQUIPID, E.NAME EQNAME, MODEL,ASSETCODE, MAKER, SVCAGENT,BUYDATE,BUYPRICE,
+                EI.ITEMID, EI.ITEMPID,
+                I.NAME ITEMNAME, I.ORDERBY   
+            FROM 
+                TNE_EQUIP E,
+                TNE_EQUIP_ITEM EI,
+                TCE_ITEM I
+            WHERE E.EQUIPID=EI.EQUIPID
+            AND EI.ITEMID=I.ITEMID 
+            AND EI.ITEMPID=I.ITEMPID
+        ) I
+        START WITH (ITEMPID=0)
+        CONNECT BY PRIOR ITEMID=ITEMPID
+        ORDER SIBLINGS BY ORDERBY, EQUIPID
+    )
+    SELECT EQUIPID, EQNAME, MODEL, ASSETCODE,MAKER,
+           SVCAGENT, BUYDATE, BUYPRICE, YEARPRICE, DCRATE,
+           SUBSTR (XMLAGG (XMLELEMENT (COL, ',', ITEMNAME) ORDER BY ITEMID).EXTRACT ('//text()'), 2) AS   ITEMNAME
+    FROM (            
+        SELECT EQUIPID, EQNAME, MODEL, ASSETCODE,MAKER,
+                SVCAGENT, BUYDATE, BUYPRICE,ITEMID, ITEMPID, ITEMNAME, ORDERBY,
+                TREEITEMNAME, YEARPRICE, DCRATE
+        FROM EQUITEM
+        WHERE EQNAME LIKE '%'||#searchkey#||'%' OR TREEITEMNAME LIKE '%'||#searchkey#||'%' 
+    ) GROUP BY EQUIPID, EQNAME, MODEL, ASSETCODE,MAKER,
+            SVCAGENT, BUYDATE, BUYPRICE, YEARPRICE, DCRATE
+	
+</select>
+
+
+<insert id="membership_DAO.insertEquipReq" parameterClass="exam.com.support.model.EquipReqVO">
+
+	<selectKey resultClass="String" keyProperty="equipreqid">
+	<![CDATA[
+		SELECT SEQ_TNE_EQUIP_REQ.NEXTVAL AS ID FROM DUAL
+	]]>	
+	</selectKey>
+	
+	
+	INSERT INTO 
+	TNE_EQUIP_REQ (
+	     EQUIPREQID           
+	    ,COMID                
+	    ,TAXCOMPANY           
+	    ,TAXCEO           
+	    ,TAXZIPCODE           
+	    ,TAXADDR1         
+	    ,TAXADDR2         
+	    ,TAXBIZNO         
+	    ,TAXMNGNAME       
+	    ,TAXDEPT          
+	    ,TAXEMAIL         
+	    ,TAXHP            
+	    ,TAXPHONE         
+	    ,TAXFAX      
+	    ,TAXBIZTYPE            
+	    ,STATE                    
+	    ,REQUESTCDATE               
+	    ,USEOBJECT                
+	    ,STARTDATE           
+	    ,ENDDATE             
+	    ,REQPAY              
+	    ,TOTREQPAY           
+	    ,PRICECHARGETYPE               
+	    ,MEMID  
+	) VALUES
+	(
+	     #equipreqid#  
+	    ,#comid#
+	    ,#taxcompany#
+	    ,#taxceo#           
+	    ,#taxzipcode#           
+	    ,#taxaddr1#         
+	    ,#taxaddr2#         
+	    ,#taxbizno#         
+	    ,#taxmngname#       
+	    ,#taxdept#          
+	    ,#taxemail#         
+	    ,#taxhp#            
+	    ,#taxphone#         
+	    ,#taxfax#      
+	    ,#taxbiztype#               
+	    ,#state#     
+	    ,SYSDATE       
+	    ,#useobject#     
+	    ,#startdate#
+	    ,#enddate#
+	    ,#reqpay#
+	    ,#totreqpay#
+	    ,#pricechargetype#          
+	    ,#memid#
+	)
+</insert>
+
+<update id="membership_DAO.updateEquipReq" parameterClass="exam.com.support.model.EquipReqVO">
+	UPDATE TNE_EQUIP_REQ SET
+	     TAXCOMPANY   = #taxcompany#
+	    ,TAXCEO       = #taxceo#    
+	    ,TAXZIPCODE   = #taxzipcode#        
+	    ,TAXADDR1     = #taxaddr1#    
+	    ,TAXADDR2     = #taxaddr2#    
+	    ,TAXBIZNO     = #taxbizno#    
+	    ,TAXMNGNAME   = #taxmngname#    
+	    ,TAXDEPT      = #taxdept#    
+	    ,TAXEMAIL     = #taxemail#    
+	    ,TAXHP        = #taxhp#    
+	    ,TAXPHONE     = #taxphone#    
+	    ,TAXFAX       = #taxfax#
+	    ,TAXBIZTYPE   = #taxbiztype#  
+	    ,REQUESTCDATE        = SYSDATE
+	    ,USEOBJECT           = #useobject#   
+	    ,STARTDATE           = #startdate#
+	    ,ENDDATE             = #enddate#
+	    ,REQPAY              = #reqpay#
+	    ,TOTREQPAY           = #totreqpay#
+	    ,PRICECHARGETYPE     = #pricechargetype#          
+	 WHERE EQUIPREQID   = #equipreqid#
+</update>
+
+
+<delete id="membership_DAO.deleteEquipReq">
+	DELETE FROM TNE_EQUIP_REQ WHERE EQUIPREQID = #equipreqid#
+</delete>
+
+<delete id="membership_DAO.deleteEquipContract">
+	DELETE FROM TNE_EQUIP_CONTRACT WHERE EQUIPREQID=#equipreqid#
+</delete>
+
+<insert id="membership_DAO.insertEquipContract" parameterClass="exam.com.support.model.EquipDetailVO">
+	INSERT INTO TNE_EQUIP_CONTRACT 
+	(
+	    EQUIPREQID,
+	    EQUIPID,
+	    EQPAY,
+	    DCRATE,
+	    REGID,
+	    REGDATE
+	)
+	SELECT 
+		#equipreqid#,
+		EQUIPID,
+		(SELECT TO_CHAR(YEARPRICE, '999,999,999,999,999') FROM TNE_EQUIP_DCRATE R WHERE BUYPRICE>R.MINPRICE AND R.MAXPRICE>BUYPRICE) YEARPRICE,
+		(SELECT DCRATE FROM TNE_EQUIP_DCRATE R WHERE BUYPRICE>R.MINPRICE AND R.MAXPRICE>BUYPRICE) DCRATE,
+		#regid#,
+		SYSDATE
+	FROM TNE_EQUIP E WHERE EQUIPID=#equipid#
+	
+</insert>
+
+
+<update id="membership_DAO.updateTotpay">
+	UPDATE TNE_EQUIP_REQ R SET 
+	    REQPAY    = (SELECT SUM(REPLACE(EQPAY,',','')) SM FROM TNE_EQUIP_CONTRACT C WHERE C.EQUIPREQID=R.EQUIPREQID),
+	    TOTREQPAY = (SELECT SUM(REPLACE(EQPAY,',','')) SM FROM TNE_EQUIP_CONTRACT C WHERE C.EQUIPREQID=R.EQUIPREQID)+(SELECT SUM(REPLACE(EQPAY,',','')) SM FROM TNE_EQUIP_CONTRACT C WHERE C.EQUIPREQID=R.EQUIPREQID)*0.1 
+	WHERE R.EQUIPREQID=#equipreqid# 
+</update>
+
+
+
+
+</sqlMap>

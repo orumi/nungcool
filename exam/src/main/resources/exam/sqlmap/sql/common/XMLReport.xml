@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="xmlReport">
+
+
+    <select id="xmlDAO.selectXmlReport"
+            parameterClass="java.util.HashMap" resultClass="exam.com.common.model.XmlReportVO">
+
+				    select a.comname
+                           , a.mngname
+                           , b.rcvaddr1||' '||b.rcvaddr2 rcvaddr
+                           , b.acceptno
+                           , b.reportno
+                           , b.rcvcompany
+                           , b.rcvceo
+                           , b.rcvmngname
+                           , to_char(b.receiptdate,'yyyy"년" mm"월" dd"일"') receiptdate
+                           , to_char(a.testenddate,'yyyy"년" mm"월" dd"일"') testenddate
+                           , to_char(b.issuedatecmpl,'yyyy"년" mm"월" dd"일"') issuedate
+                           , '페이지수' pagecnt
+                           , e.codename       
+                           , (select name from tct_admin where adminid = ta.draftid) draftnm
+                           , (select name from tct_admin where adminid = ta.apprid) apprnm
+                           , 'draftsign' draftsign
+                           , 'apprsing' apprsign                       
+                    from 
+                         tne_request a
+                        ,tne_report b
+                        ,(select codeid, codename from tct_code_detail where codegroupid = '14' ) e
+                        ,(select draftid, apprid, ordinal, reqid  
+                            from TNE_REPORT_APPROVAL ta
+                          where ordinal = (select max(ordinal) 
+                                                     from tne_report_approval 
+                                                   where reqid = ta.reqid)
+                                                   and reqid =#reqid#) ta
+                    where 
+                          a.reqid = b.reqid      
+                    and a.reqid = #reqid#
+                    and b.reportid = #reportid#
+                    and b.usage = e.codeid
+                    and a.reqid = ta.reqid
+    </select>
+
+    <select id="xmlDAO.selectXmlItem" parameterClass="java.util.HashMap" resultClass="exam.com.common.model.XmlItemVO">
+	<!-- 	 
+     select 
+         smpnm,
+         idx,
+         itemname,
+         lvl,
+         itemname1,
+         itemname2,
+         itemname3,
+         displayunit,
+         resultvalue,
+         methodnm,
+         resultflag,
+         resultlevel,
+         conitemid,
+         conitempid,
+         reqid,
+         smpid,
+         orderby,
+         count(smpid) over (partition by smpid) as itemtotal,
+         row_number() over (partition by smpid order by idx ) as rowidx,
+         count(smpnm||'_'||lvl||'_'||itemname1) over (partition by smpid, lvl, itemname1) itemcnt,
+         row_number() over (partition by smpid, lvl, itemname1 order by idx) as itemidx
+         from
+         (         
+                 select                                                                                                                          
+                             smpnm,
+                             rownum idx                                                                                                                            
+                           , itemname                                                                                                                          
+                           , level lvl                                                                                                                     
+                           , regexp_substr(substr(sys_connect_by_path(itemname,','),2),'[^,]+',1,1) as itemname1                   
+                           , regexp_substr(substr(sys_connect_by_path(itemname,','),2),'[^,]+',1,2) as itemname2            
+                           , regexp_substr(substr(sys_connect_by_path(itemname,','),2),'[^,]+',1,3) as itemname3            
+                           , displayunit                                                                                                                          
+                           , resultvalue 
+                           , substr(sys_connect_by_path(resultflag,','),2) as resultlevel                                                                                                                        
+                           , methodnm                                                                                                                           
+                           , resultflag                                                                                                                             
+                           , conitemid
+                           , conitempid
+                           , reqid
+                           , smpid
+                           , orderby                                                                                                                                
+                from            
+                           (
+                                    select a.comname
+                                           , a.mngname
+                                           , b.rcvaddr1||' '||b.rcvaddr2 rcvaddr
+                                           , b.acceptno
+                                           , b.reportno
+                                           , to_char(b.receiptdate,'yyyy"년" mm"월" dd"일"') receiptdate
+                                           , to_char(a.testenddate,'yyyy"년" mm"월" dd"일"') testenddate
+                                           , '페이지수' pagecnt
+                                           , e.codename
+                                           , '붙임참조' resulttxt       
+                                           , (select name from tct_admin where adminid = ta.draftid) draftnm
+                                           , (select name from tct_admin where adminid = ta.apprid) apprnm
+                                           , 'draftsign' draftsign
+                                           , 'apprsing' apprsign
+                                           , c.name smpnm
+                                           , replace(d.itemname,',','') itemname
+                                           , d.displayunit
+                                           , d.resultvalue
+                                           , d.methodnm
+                                           , d.resultflag
+                                           , d.reqid||'_'||d.smpid||'_'||d.itemid conitemid
+                                           , d.reqid||'_'||d.smpid||'_'||d.itempid conitempid
+                                           , d.orderby
+                                           , d.reqid
+                                           , d.smpid                           
+                                    from 
+                                         tne_request a
+                                        ,tne_report b
+                                        ,tne_sample c
+                                        ,tne_result d
+                                        ,(select codeid, codename from tct_code_detail where codegroupid = '14' ) e
+                                        ,(select draftid, apprid, ordinal, reqid  
+                                            from TNE_REPORT_APPROVAL ta
+                                          where ordinal = (select max(ordinal) 
+                                                                     from tne_report_approval 
+                                                                   where reqid = ta.reqid)
+                                                                   and reqid =#reqid#) ta
+                                    where 
+                                          a.reqid = b.reqid      
+                                    and a.reqid = #reqid#
+                                    and b.reportid = #reportid#
+                                    and a.reqid = c.reqid
+                                    and c.reqid = d.reqid
+                                    and c.smpid = d.smpid
+                                    and b.usage = e.codeid
+                                    and a.reqid = ta.reqid(+)
+                          ) A          
+                start with (A.conitempid = reqid||'_'||smpid||'_'||'0')
+                connect by prior A.conitemid = A.conitempid
+                ORDER SIBLINGS BY acceptno, smpid, orderby
+        ) 
+	order by idx         -->
+	
+	select row_number() over (partition by smpid,ce, pitemname order by idx )
+	         as pageitemidx,
+	         row_number() over (partition by smpid,ce, itemname1, itemname2 order by idx )
+	         as lev,
+	         count(pitemname) over (partition by smpid,ce, pitemname)
+	         as tcnt,
+	         count(smpid) over (partition by smpid,ce, itemname1, itemname2 order by idx )
+	         as levcnt,
+	         smpnm,
+	         idx,
+	         itemname,
+	         lvl,
+	         rlvl,
+	         itemtotal,
+	         ce,
+	         rowidx,
+	         itemcnt,                 
+	         itemidx,
+	         pitemname,
+	         itemname1,
+	         itemname2,
+	         itemname3,
+	         displayunit,
+	         resultvalue,
+	         methodnm,
+	         resultflag,
+	         resultlevel,
+	         conitemid,
+	         conitempid,
+	         reqid,
+	         smpid,
+	         orderby
+	from (
+	        select 
+	                 smpnm,
+	                 idx,
+	                 itemname,
+	                 lvl,
+	                 case when resultlevel = 'Y,Y' then 1
+	                        when resultlevel = 'Y,Y,Y' then 1
+	                        else lvl
+	                 end rlvl,                 
+	                 count(smpid) over (partition by smpid) as itemtotal,
+	                 ceil(idx/13) ce,
+	                 row_number() over (partition by smpid order by idx ) rowidx,
+	                 count(smpnm||'_'||lvl||'_'||itemname1) over (partition by smpid, lvl, itemname1) itemcnt,                 
+	                 row_number() over (partition by smpid, lvl, itemname1 order by idx) as itemidx,
+	                 case when resultlevel = 'Y,Y' then '   '||itemname2 when resultlevel = 'Y,Y,Y' then '      '||itemname3 else itemname1 end itemname1,
+	                 case when resultlevel = 'Y,Y' then ''  when resultlevel = 'Y,Y,Y' then '' else itemname2 end itemname2,
+	                 case when resultlevel = 'Y,Y,Y' then '' else itemname3 end itemname3,
+	                 pitemname,
+	                 displayunit,
+	                 resultvalue,
+	                 methodnm,
+	                 resultflag,
+	                 resultlevel,
+	                 conitemid,
+	                 conitempid,
+	                 reqid,
+	                 smpid,
+	                 orderby
+	                 from
+	                 (         
+	                         select                                                                                                                          
+	                                     smpnm,
+	                                     rownum idx                                                                                                                            
+	                                   , itemname                                                                                                                          
+	                                   , level lvl                                                                                                                     
+	                                   , regexp_substr(substr(sys_connect_by_path(itemname,','),2),'[^,]+',1,1) as itemname1                   
+	                                   , regexp_substr(substr(sys_connect_by_path(itemname,','),2),'[^,]+',1,2) as itemname2            
+	                                   , regexp_substr(substr(sys_connect_by_path(itemname,','),2),'[^,]+',1,3) as itemname3
+	                                   , regexp_substr(substr(sys_connect_by_path(itemname,','),2),'[^,]+',1,1) as pitemname            
+	                                   , displayunit                                                                                                                          
+	                                   , resultvalue 
+	                                   , substr(sys_connect_by_path(resultflag,','),2) as resultlevel                                                                                                                        
+	                                   , methodnm                                                                                                                           
+	                                   , resultflag                                                                                                                             
+	                                   , conitemid
+	                                   , conitempid
+	                                   , reqid
+	                                   , smpid
+	                                   , orderby                                                                                                                                
+	                        from            
+	                                   (
+	                                            select a.comname
+	                                                   , a.mngname
+	                                                   , b.rcvaddr1||' '||b.rcvaddr2 rcvaddr
+	                                                   , b.acceptno
+	                                                   , b.reportno
+	                                                   , to_char(b.receiptdate,'yyyy"년" mm"월" dd"일"') receiptdate
+	                                                   , to_char(a.testenddate,'yyyy"년" mm"월" dd"일"') testenddate
+	                                                   , '페이지수' pagecnt
+	                                                   , e.codename
+	                                                   , '붙임참조' resulttxt       
+	                                                   , (select name from tct_admin where adminid = ta.draftid) draftnm
+	                                                   , (select name from tct_admin where adminid = ta.apprid) apprnm
+	                                                   , 'draftsign' draftsign
+	                                                   , 'apprsing' apprsign
+	                                                   , c.name smpnm
+	                                                   , replace(d.itemname,',','') itemname
+	                                                   , d.displayunit
+	                                                   , d.resultvalue
+	                                                   , d.methodnm
+	                                                   , d.resultflag
+	                                                   , d.reqid||'_'||d.smpid||'_'||d.itemid conitemid
+	                                                   , d.reqid||'_'||d.smpid||'_'||d.itempid conitempid
+	                                                   , f.orderby
+	                                                   , d.reqid
+	                                                   , d.smpid                           
+	                                            from 
+	                                                 tne_request a
+	                                                ,tne_report b
+	                                                ,tne_sample c
+	                                                ,tne_result d                                        
+	                                                ,(select codeid, codename from tct_code_detail where codegroupid = '14' ) e
+	                                                ,tce_item f
+	                                                ,(select draftid, apprid, ordinal, reqid  
+	                                                    from TNE_REPORT_APPROVAL ta
+	                                                  where ordinal = (select max(ordinal) 
+	                                                                             from tne_report_approval 
+	                                                                           where reqid = ta.reqid)
+	                                                                           and reqid =#reqid#) ta
+	                                            where 
+	                                                  a.reqid = b.reqid      
+	                                            and a.reqid = #reqid#
+	                                            and b.reportid = #reportid#
+	                                            and a.reqid = c.reqid
+	                                            and c.reqid = d.reqid
+	                                            and c.smpid = d.smpid
+	                                            and b.usage = e.codeid
+	                                            and d.itemid = f.itemid
+	                                            and d.itempid = f.itempid
+	                                            and a.reqid = ta.reqid(+)
+	                                  ) A          
+	                        start with (A.conitempid = reqid||'_'||smpid||'_'||'0')
+	                        connect by prior A.conitemid = A.conitempid
+	                        ORDER SIBLINGS BY acceptno, smpid, orderby
+	                ) 
+	        order by idx
+	) A
+	where A.RESULTLEVEL NOT IN ('N','N,N')
+	order by idx
+
+    </select>
+
+
+
+
+
+
+
+
+
+</sqlMap>

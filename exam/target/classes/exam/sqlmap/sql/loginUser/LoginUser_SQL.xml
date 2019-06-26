@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="loginUserDAO">
+
+
+    <select id="loginUserDAO.selectLoginUser" resultClass="exam.com.main.model.LoginUserVO">
+        <![CDATA[
+		SELECT 
+		    M.MEMID,M.MEMPW,M.COMID,M.COMNAME,M.NAME MEMNAME,M.DEPT,M.PHONE,M.HP,M.EMAIL,M.FAX,
+		    M.ZIPCODE,M.ADDR1,M.ADDR2,M.USEFLAG,M.MEMYN,M.OLDMEMID,
+		    C.BIZNO,C.NAME CNAME,C.TYPE,C.CEONAME, C.MNGNAME,C.MNGDEPT,C.MNGPHONE,C.MNGHP,C.FAX MNGFAX,
+		    C.MNGEMAIL,C.ZIPCODE COMZIP,C.ADDR1 COMADDR1,C.ADDR2 COMADDR2,
+		    C.ENAME,C.ECEONAME,C.EADDR1,C.EADDR2,C.ORDINAL 
+		FROM TNT_MEMBER M,
+		    TNT_COMPANY C
+		WHERE 
+		    M.MEMID=#memid# 
+		    AND M.MEMPW=#mempw# 
+		    AND M.MEMYN='Y'
+		    AND M.COMID=C.COMID 
+		]]>
+    </select>
+    
+    
+    <select id="loginUserDAO.selectOldUser" resultClass="exam.com.main.model.LoginOldUserVO">
+        <![CDATA[
+		SELECT     
+		    M.MEMID,M.MEMPW,M.COMID,M.COMNAME,M.NAME MEMNAME,M.DEPT,M.PHONE,M.HP,M.EMAIL,M.FAX,
+		    M.ZIPCODE,M.ADDR1,M.ADDR2,M.USEFLAG,M.MEMYN,M.OLDMEMID,
+		    C.BIZNO,C.NAME CNAME,C.TYPE,C.CEONAME, C.MNGNAME,C.MNGDEPT,C.MNGPHONE,C.MNGHP,
+		    C.FAX MNGFAX,C.MNGEMAIL,C.ZIPCODE COMZIP,C.ADDR1 COMADDR1,C.ADDR2 COMADDR2,
+		    C.ENAME,C.ECEONAME,C.EADDR1,C.EADDR2,C.ORDINAL
+		FROM TNT_MEMBER M,
+		     TNT_COMPANY C
+		WHERE 
+		    M.OLDMEMID         =  C.ECID
+		    AND M.OLDMEMID     = #memid# 
+		    AND M.MEMPW        = #mempw#
+		    AND M.MEMYN        = 'N'
+		    AND M.MEMKIND      = 1 
+		    AND M.CONFIRMFLAG  = 1
+		]]>
+    </select>    
+
+    <select id="loginUserDAO.selectCountNewId" resultClass="int" parameterClass="java.lang.String">
+    	SELECT COUNT(MEMID) CNT FROM TNT_MEMBER WHERE MEMID=#newid#
+    </select>
+    
+    
+    <update id="loginUserDAO.updateNewId" parameterClass="exam.com.main.model.LoginOldUserVO" >
+    	UPDATE TNT_MEMBER SET MEMID=#newid#, MEMYN='Y' WHERE OLDMEMID=#oldmemid#
+    </update>
+    
+    <update id="loginUserDAO.updateRequest" parameterClass="exam.com.main.model.LoginOldUserVO">
+    	UPDATE TNE_REQUEST SET MEMID=#newid# WHERE MEMID=#memid#
+    </update>
+    
+    
+    <select id="loginUserDAO.selectCompany" resultClass="exam.com.main.model.CompanyVO">
+		SELECT 
+		   	COMID,
+		    BIZNO,
+		    NAME COMNAME, 
+		    TYPE BIZTYPE, 
+		    CEONAME, 
+		    MNGNAME, 
+		    MNGDEPT,
+		    MNGPHONE,
+		    MNGHP,
+		    FAX MNGFAX,
+		    MNGEMAIL,
+		    ZIPCODE,
+		    ADDR1,
+		    ADDR2,
+		    ENAME,
+		    ECEONAME,
+		    EADDR1,
+		    EADDR2,
+		    ORDINAL
+		FROM TNT_COMPANY WHERE COMID=#comid#    
+    </select>
+    
+    <select id="loginUserDAO.selectMember" resultClass="exam.com.main.model.MemberVO">
+	    SELECT 
+		    MEMID,
+		    MEMPW,
+		    COMID,
+		    COMNAME,
+		    NAME,
+		    DEPT,
+		    PHONE,
+		    HP,
+		    EMAIL,
+		    FAX,
+		    ZIPCODE,
+		    ADDR1,
+		    ADDR2,
+		    MODIFYID,
+		    MODIFYDATE
+		FROM TNT_MEMBER 
+		WHERE MEMID=#memid#
+    </select>
+    
+
+	<update id="loginUserDAO.updateCompany">
+		UPDATE TNT_COMPANY SET 
+		    BIZNO    = #bizno#,
+		    NAME     = #comname#, 
+		    TYPE     = #biztype#, 
+		    CEONAME  = #ceoname#, 
+		    MNGNAME  = #mngname#, 
+		    MNGDEPT  = #mngdept#,
+		    MNGPHONE = #mngphone#,
+		    MNGHP    = #mnghp#,
+		    FAX      = #mngfax#,
+		    MNGEMAIL = #mngemail#,
+		    ZIPCODE  = #zipcode#,
+		    ADDR1    = #addr1#,
+		    ADDR2    = #addr2#,
+		    ENAME    = #ename#,
+		    ECEONAME = #eceoname#,
+		    EADDR1   = #eaddr1#,
+		    EADDR2   = #eaddr2#,
+		    ORDINAL  = ORDINAL+1
+		WHERE COMID  = #comid#	
+	</update>
+
+	<insert id="loginUserDAO.insertTHTCompany">
+		INSERT INTO THT_COMPANY
+		(
+		    COMID        ,
+		    BIZNO        ,
+		    NAME         ,
+		    TYPE         ,
+		    CEONAME      ,
+		    MNGNAME      ,
+		    MNGDEPT      ,
+		    MNGPHONE     ,
+		    MNGHP        ,
+		    FAX          ,
+		    MNGEMAIL     ,
+		    ZIPCODE      ,
+		    ADDR1        ,
+		    ADDR2        ,
+		    ENAME        ,
+		    ECEONAME     ,
+		    EADDR1       ,
+		    EADDR2       ,
+		    USEFLAG      ,
+		    CONFIRMFLAG  ,
+		    CONFIRMID    ,
+		    CONFIRMDATE  ,
+		    MODIFYID     ,
+		    MODIFYDATE   ,
+		    FILE1        ,
+		    FILE2        ,
+		    ORDINAL      ,
+		    ECID         
+		)
+		SELECT 
+		    COMID        ,
+		    BIZNO        ,
+		    NAME         ,
+		    TYPE         ,
+		    CEONAME      ,
+		    MNGNAME      ,
+		    MNGDEPT      ,
+		    MNGPHONE     ,
+		    MNGHP        ,
+		    FAX          ,
+		    MNGEMAIL     ,
+		    ZIPCODE      ,
+		    ADDR1        ,
+		    ADDR2        ,
+		    ENAME        ,
+		    ECEONAME     ,
+		    EADDR1       ,
+		    EADDR2       ,
+		    USEFLAG      ,
+		    CONFIRMFLAG  ,
+		    CONFIRMID    ,
+		    CONFIRMDATE  ,
+		    MODIFYID     ,
+		    MODIFYDATE   ,
+		    FILE1        ,
+		    FILE2        ,
+		    ORDINAL      ,
+		    ECID         
+		FROM TNT_COMPANY
+		WHERE COMID= #comid#
+	</insert>
+
+	<update id="loginUserDAO.updateMember">
+		UPDATE TNT_MEMBER SET
+		    DEPT  = #dept#,
+		    PHONE = #phone#,
+		    HP    = #hp#,
+		    EMAIL = #email#,
+		    FAX   = #fax#,
+		    ZIPCODE = #zipcode#,
+		    ADDR1 = #addr1#,
+		    ADDR2 = #addr2#
+		WHERE MEMID=#memid#	
+	</update>
+	
+
+	<update id="loginUserDAO.updateUserPassword" parameterClass="exam.com.member.model.PswordChg">
+		UPDATE TNT_MEMBER SET
+			MEMPW = #newPsword#
+		WHERE MEMID = #memid#
+	</update>
+
+
+
+ 
+
+<!-- 개인회원 로그인 처리 관련   -->
+
+    <select id="loginUserDAO.selectPersonUser" resultClass="exam.com.main.model.LoginPersonUserVO">
+        <![CDATA[
+			SELECT 
+			    MEMID, 
+			    MEMPW, 
+			    COMID, 
+			    COMNAME, 
+			    NAME, 
+			    DEPT, 
+			    PHONE, 
+			    HP,
+			    EMAIL,
+			    FAX,
+			    ZIPCODE,
+			    ADDR1,
+			    ADDR2,
+			    MODIFYID,
+			    MODIFYDATE
+			 FROM TNT_MEMBER 
+			WHERE MEMID      = #memid#
+			      AND MEMPW  = #mempw# 
+			      AND MEMKIND=0 AND MEMYN='N'
+		]]>
+    </select>  
+
+
+    <select id="loginUserDAO.selectCompanyByBizNum" resultClass="exam.com.main.model.CompanyVO">
+
+	        SELECT
+	            COMID,
+	            BIZNO,
+	            NAME COMNAME,
+	            TYPE BIZTYPE,
+	            CEONAME,
+	            MNGNAME,
+	            MNGDEPT,
+	            MNGPHONE,
+	            MNGHP,
+	            FAX,
+	            MNGEMAIL,
+	            ZIPCODE,
+	            ADDR1,
+	            ADDR2,
+	            ENAME,
+	            ECEONAME,
+	            EADDR1,
+	            EADDR2,
+	            USEFLAG,
+	            CONFIRMFLAG,
+	            CONFIRMID,
+	            CONFIRMDATE,
+	            MODIFYID,
+	            MODIFYDATE,
+	            FILE1,
+	            FILE2,
+	            ORDINAL
+	        FROM TNT_COMPANY
+	        WHERE BIZNO = #bizno#
+
+    </select>
+
+
+    <insert id="loginUserDAO.insertCompany" parameterClass="exam.com.main.model.CompanyVO">
+        <![CDATA[
+        INSERT INTO TNT_COMPANY (COMID, BIZNO, NAME, TYPE, CEONAME, ZIPCODE, ADDR1, ADDR2,
+                                 ENAME, ECEONAME, USEFLAG, CONFIRMFLAG, MNGPHONE, ORDINAL)
+        VALUES (#comid#, #bizno#, #comname#, #biztype#, #ceoname#, #zipcode#, #addr1#, #addr2#,
+                #ename#, #eceoname#, 1, 0, #mngphone#, 1)
+        ]]>
+    </insert>
+    
+  
+  	<update id="loginUserDAO.updateMemberComid">
+		UPDATE TNT_MEMBER SET
+		    COMID = #comid#,
+		    COMNAME = (SELECT NAME FROM TNT_COMPANY WHERE COMID=#comid#),
+		    DEPT  = #dept#,
+		    PHONE = #phone#,
+		    HP    = #hp#,
+		    EMAIL = #email#,
+		    FAX   = #fax#,
+		    ZIPCODE = #zipcode#,
+		    ADDR1 = #addr1#,
+		    ADDR2 = #addr2#
+		WHERE MEMID=#memid#	
+	</update>
+	
+	<update id="loginUserDAO.updateRequestComid">
+		UPDATE TNE_REQUEST SET COMID=#comid#
+		WHERE MEMID = #memid#
+	</update>
+	
+	
+	
+	 <update id="loginUserDAO.updateMemYN" >
+    	UPDATE TNT_MEMBER SET MEMYN='Y' WHERE MEMID=#memid#
+    </update>
+	
+
+</sqlMap>

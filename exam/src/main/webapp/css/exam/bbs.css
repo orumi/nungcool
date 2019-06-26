@@ -1,0 +1,50 @@
+@charset "utf-8";
+
+.seachArea {
+	text-align: center;
+	margin: 12px 0px 60px 0px;
+}
+
+.serachBtn {
+	height: 28px;	
+}
+
+
+.writer {
+	float: left;
+	margin : 0px 10px 0px 10px ;
+}
+    
+.regDate {
+	float: right;
+	margin : 0px 10px 0px 10px ;
+}   
+
+.cnt {
+	float: right;
+	margin : 0px 10px 0px 10px ;
+}
+
+.cont {
+	margin : 30px 10px 30px 10px ;
+}
+
+.fileList{
+	margin : 15px 10px 10px 10px ;
+}
+.btnArea {
+	text-align: center;
+	margin: 12px 0px 60px 0px;
+}
+
+
+.mouseLink{ cursor: pointer; }
+
+.hoverLink:hover {
+	text-decoration:underline; color:#3355cc 
+}
+
+.noBullet {
+    list-style:none;
+    padding: 5px 20px 5px 0px !important; 
+}

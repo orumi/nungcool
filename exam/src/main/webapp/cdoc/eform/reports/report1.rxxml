@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ReportExpress xmlns="http://www.cabsoftware.com/reportexpress" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.cabsoftware.com/reportexpress http://www.cabsoftware.com/reportexpress/xsd/reportexpress.xsd" name="report1" pageWidth="595" pageHeight="842" columnWidth="545" leftMargin="25" rightMargin="25" topMargin="42" bottomMargin="24" uuid="15fe2d3b-245b-461d-8490-e815bb75ece4">
+	<property name="rxreport.zoom" value="1.610510000000001"/>
+	<property name="rxreport.x" value="0"/>
+	<property name="rxreport.y" value="1017"/>
+	<style name="Default" isDefault="true"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["./"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="imgDir" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["./"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="chemical_font_size" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["5"]]></defaultValueExpression>
+	</parameter>
+	<queryString language="xPath">
+		<![CDATA[/root/kpetro]]>
+	</queryString>
+	<field name="rows" class="java.lang.String">
+		<fieldDescription><![CDATA[rows]]></fieldDescription>
+	</field>
+	<field name="comname" class="java.lang.String">
+		<fieldDescription><![CDATA[comname]]></fieldDescription>
+	</field>
+	<field name="mngname" class="java.lang.String">
+		<fieldDescription><![CDATA[mngname]]></fieldDescription>
+	</field>
+	<field name="rcvaddr" class="java.lang.String">
+		<fieldDescription><![CDATA[rcvaddr]]></fieldDescription>
+	</field>
+	<field name="acceptno" class="java.lang.String">
+		<fieldDescription><![CDATA[acceptno]]></fieldDescription>
+	</field>
+	<field name="reportno" class="java.lang.String">
+		<fieldDescription><![CDATA[reportno]]></fieldDescription>
+	</field>
+	<field name="receiptdate" class="java.lang.String">
+		<fieldDescription><![CDATA[receiptdate]]></fieldDescription>
+	</field>
+	<field name="testenddate" class="java.lang.String">
+		<fieldDescription><![CDATA[testenddate]]></fieldDescription>
+	</field>
+	<field name="currpagecnt" class="java.lang.String">
+		<fieldDescription><![CDATA[currpagecnt]]></fieldDescription>
+	</field>
+	<field name="pagecnt" class="java.lang.String">
+		<fieldDescription><![CDATA[pagecnt]]></fieldDescription>
+	</field>
+	<field name="codename" class="java.lang.String">
+		<fieldDescription><![CDATA[codename]]></fieldDescription>
+	</field>
+	<field name="draftnm" class="java.lang.String">
+		<fieldDescription><![CDATA[draftnm]]></fieldDescription>
+	</field>
+	<field name="apprnm" class="java.lang.String">
+		<fieldDescription><![CDATA[apprnm]]></fieldDescription>
+	</field>
+	<field name="agreedate" class="java.lang.String">
+		<fieldDescription><![CDATA[agreedate]]></fieldDescription>
+	</field>
+	<field name="resulttxt" class="java.lang.String">
+		<fieldDescription><![CDATA[resulttxt]]></fieldDescription>
+	</field>
+	<field name="draftsign" class="java.lang.String">
+		<fieldDescription><![CDATA[draftsign]]></fieldDescription>
+	</field>
+	<field name="apprsign" class="java.lang.String">
+		<fieldDescription><![CDATA[apprsign]]></fieldDescription>
+	</field>
+	<group name="GH1">
+		<groupHeader>
+			<band height="520">
+				<line>
+					<reportElement uuid="4ca771ba-3109-4f43-a2ce-6254cd1394a7" x="0" y="64" width="545" height="1"/>
+					<graphicElement>
+						<pen lineWidth="3.0"/>
+					</graphicElement>
+				</line>
+				<staticText>
+					<reportElement uuid="803e3b82-629b-4cc2-a5f9-b9891306d012" x="0" y="198" width="74" height="30"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<text><![CDATA[5. 페이지 :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="f873095c-3410-4384-945f-2b494d62efc3" x="0" y="258" width="74" height="30"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<text><![CDATA[7. 시험결과 :]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="7eb0912c-97a5-4e45-bd1c-933039a41ac4" x="44" y="0" width="100" height="20"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{comname}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="f8a5eac9-12b1-4bab-a951-0e66ce38f078" x="0" y="78" width="74" height="30"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<text><![CDATA[1. 접수번호 :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="534a9d22-e476-490a-b77e-0c25ff50ae7a" x="0" y="39" width="44" height="20"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<text><![CDATA[주     소 :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="2b16e4c5-cdfb-4f93-9b32-8ce27de0338a" x="0" y="228" width="74" height="30"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<text><![CDATA[6. 성적서용도 :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="738883d9-cd80-48b7-afb7-6bf5dbad53bd" x="0" y="138" width="74" height="30"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<text><![CDATA[3. 접수일자 :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="5212f451-198d-4a8a-8c04-457d8d8987b8" x="0" y="0" width="44" height="20"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<text><![CDATA[업 체 명 : ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="37380cd3-c800-434e-9d85-457d2bbb9f40" x="0" y="168" width="74" height="30"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<text><![CDATA[4. 시험완료일자 :]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="aa69691c-bedd-40d2-9580-ae4f088af38c" x="44" y="20" width="100" height="20"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{mngname}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="2e0b0623-8e87-4cc1-91c5-e7030412ecde" x="44" y="40" width="100" height="20"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{rcvaddr}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="c6ddbffd-12cb-4126-9842-58cb3d0455b1" x="0" y="108" width="74" height="30"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<text><![CDATA[2. 성적서번호 :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="606da0f8-5ecb-4dab-8314-005a3f1d46cb" x="0" y="20" width="44" height="20"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<text><![CDATA[대 표 자 : ]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="8354f9d9-6d4a-4661-9bf3-3410ca928025" x="74" y="78" width="100" height="30"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{acceptno}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="8ce9e1d8-98b0-46eb-bf77-bda6342a7dff" x="74" y="108" width="100" height="30"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{reportno}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="317f65f6-077d-4cab-bc29-06ba08bbc9f3" x="74" y="138" width="100" height="30"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{receiptdate}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="8da8bae8-265c-4c9b-8f37-52d5c673d0d7" x="74" y="168" width="100" height="30"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{testenddate}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="3f5e60b8-d111-40cb-9f37-06f2d9bfe41a" x="74" y="198" width="25" height="30"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="7d268850-3764-4b24-9a61-28397f6270a0" x="74" y="228" width="100" height="30"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{codename}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="67d5b584-2c76-4a33-ac0e-2ef6d4710036" x="74" y="258" width="100" height="30"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{resulttxt}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="b956a26d-4913-491e-90c8-b190fef239b4" x="34" y="317" width="40" height="20"/>
+					<textElement/>
+					<text><![CDATA[담당자 :]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="63e0b4e1-e2ae-4bd2-b442-7b91c6003224" x="74" y="317" width="80" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{draftnm}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="80a75368-2b40-4134-b6f9-f7ceb5229c4b" x="342" y="317" width="80" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{apprnm}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="e0acd7e7-ec83-40d3-b6fb-2110774e6f06" x="302" y="317" width="40" height="20"/>
+					<textElement/>
+					<text><![CDATA[승인자 :]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="62e2aa44-e75a-45fe-a3cc-798c45d87ee5" x="1" y="367" width="545" height="20"/>
+					<textElement/>
+					<text><![CDATA[1. 이 성적서는 시험의뢰인이 제시한 시료 및 시료명으로 시험한 결과로서 전체 시료에 대한 품질을 보증하지 않습니다.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="e7756c41-c44f-4944-a025-aec004962bf1" x="2" y="387" width="544" height="20"/>
+					<textElement/>
+					<text><![CDATA[2. 이 성적서는 홍보, 선전, 광고 및 소송용 등으로 사용될 수 없으며, 용도 이외의 사용을 금합니다.]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="511fce96-f59c-4095-a2fb-5c0ea4217c16" x="2" y="426" width="545" height="20"/>
+					<textElement textAlignment="Center">
+						<font size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{agreedate}]]></textFieldExpression>
+				</textField>
+				<image scaleImage="RetainShape">
+					<reportElement uuid="99bae58c-4beb-4d0b-a236-8a65d51c783f" mode="Transparent" x="353" y="446" width="159" height="62"/>
+					<imageExpression><![CDATA[$P{imgDir} + "logo2.png"]]></imageExpression>
+				</image>
+				<staticText>
+					<reportElement uuid="ec3d0940-a1a1-4a82-ae64-7e7e6dd20a59" x="2" y="468" width="545" height="40"/>
+					<textElement textAlignment="Center">
+						<font fontName="맑은 고딕" size="20"/>
+					</textElement>
+					<text><![CDATA[한국석유관리원이사장]]></text>
+				</staticText>
+				<break>
+					<reportElement uuid="516692d1-1f5c-40d7-ad64-d2f6506e3217" x="0" y="485" width="100" height="1"/>
+				</break>
+				<image onErrorType="Blank">
+					<reportElement uuid="dbd6e54d-4ce6-4a45-876f-3d62135c80b6" x="154" y="304" width="102" height="33"/>
+					<imageExpression><![CDATA[$F{draftsign}]]></imageExpression>
+				</image>
+				<staticText>
+					<reportElement uuid="1c0cd945-a340-41a5-bcfa-29dfd5c2ee82" x="174" y="317" width="40" height="20"/>
+					<textElement/>
+					<text><![CDATA[(서명)]]></text>
+				</staticText>
+				<image onErrorType="Blank">
+					<reportElement uuid="347dce96-9fe1-40be-bee3-e88b83fc4ec6" x="422" y="304" width="102" height="33"/>
+					<imageExpression><![CDATA[$F{apprsign}]]></imageExpression>
+				</image>
+				<staticText>
+					<reportElement uuid="ece6b10e-89ef-4a0b-b4e1-d5584738be2c" x="442" y="317" width="40" height="20"/>
+					<textElement/>
+					<text><![CDATA[(서명)]]></text>
+				</staticText>
+				<textField evaluationTime="Report" isBlankWhenNull="true">
+					<reportElement uuid="7c3bc52b-b330-43c3-bbc0-f2553fc2ed3f" x="114" y="198" width="58" height="30"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="b15643b9-84a7-49ef-8cc4-d230d8390092" x="98" y="198" width="16" height="30"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle"/>
+					<text><![CDATA[/]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<group name="GH2" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{rows}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<staticText>
+					<reportElement uuid="801457b7-d09b-4747-ae80-2864abf40dbd" x="1" y="0" width="57" height="20"/>
+					<textElement/>
+					<text><![CDATA[성적서 번호 :]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="98f277e1-092a-41b1-8f04-ffd17c602b21" x="58" y="0" width="100" height="20"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{reportno}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<group name="GH3">
+		<groupHeader>
+			<band height="36">
+				<subreport>
+					<reportElement uuid="e53b9fbf-17b8-4212-bff1-0f86e1982f7c" x="1" y="0" width="544" height="36"/>
+					<dataSourceExpression><![CDATA[((com.cabsoft.rx.engine.data.RXXmlDataSource)$P{REPORT_DATA_SOURCE}).dataSource("/root/kpetro/rows/row")]]></dataSourceExpression>
+					<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "report1_subreport1.report"]]></subreportExpression>
+				</subreport>
+			</band>
+			<band height="15">
+				<staticText>
+					<reportElement uuid="0f5885a5-6bf4-4911-9056-e47f55980306" x="0" y="0" width="100" height="15"/>
+					<textElement/>
+					<text><![CDATA[끝.]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band/>
+		</groupFooter>
+	</group>
+	<pageHeader>
+		<band height="90">
+			<staticText>
+				<reportElement uuid="ad90a488-c669-4df7-8b4d-52d66688eff1" x="305" y="15" width="240" height="15"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[우 28115 충청북도 청주시 청원군 오창읍 양청3길 33번지
+
+]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="31e05c35-5258-4254-b379-7738853e2ba9" x="101" y="15" width="155" height="15"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[한국석유관리원 석유기술연구소]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="cfbe682f-187b-4685-b19b-661815b6a19f" x="101" y="30" width="100" height="15"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[www.kpetro.or.kr/exam/]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3fce48fc-6676-42ee-bf05-e4f098b607ba" x="1" y="48" width="544" height="30"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="20"/>
+				</textElement>
+				<text><![CDATA[시 험 성 적 서]]></text>
+			</staticText>
+			<image onErrorType="Blank">
+				<reportElement uuid="dae5bc8b-df88-475f-a64f-c18434bdceb5" key="logo1.png" x="1" y="15" width="100" height="30"/>
+				<imageExpression><![CDATA[$P{imgDir} + "logo1.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement uuid="d4764a12-755c-4dc1-8af7-8741aa060802" x="305" y="30" width="120" height="15"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[TEL: 043-240-7980 	]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ce0e30a5-dc5c-462d-b9ce-e7012d196577" x="426" y="30" width="120" height="15"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[FAX : 043-240-7997]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="962fd766-b3d2-4f55-b7e1-13a68d2320da" x="1" y="0" width="100" height="15"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}.toString().equals("1") ? "(별지 제4호서식)" : "[붙임]"]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement uuid="8b6670e5-0412-4ade-b7fa-a5ea944e76bf" x="1" y="87" width="543" height="1"/>
+				<graphicElement>
+					<pen lineWidth="3.0"/>
+				</graphicElement>
+			</line>
+		</band>
+	</pageHeader>
+	<pageFooter>
+		<band height="156">
+			<textField>
+				<reportElement uuid="7129280c-07e0-41f9-bbf9-01919f189f1a" x="260" y="136" width="20" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="7c4bc52b-b330-43c3-bbc0-f2553fc2ed3f" x="290" y="136" width="20" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="07f73983-b173-4b4b-b3df-eb145b4fe800" x="1" y="20" width="65" height="20"/>
+				<textElement/>
+				<text><![CDATA[문서확인번호 :]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="5eff34d6-2028-4eb4-ae1d-bf548a7f29ff" x="66" y="20" width="169" height="20">
+					<propertyExpression name="com.cabsoft.rx.export.html.id"><![CDATA["IssuerID"]]></propertyExpression>
+				</reportElement>
+				<textElement/>
+				<textFieldExpression><![CDATA["미부여"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="c7e302d0-43c2-45d3-8644-a0acfcba225a" x="1" y="116" width="544" height="20"/>
+				<textElement/>
+				<text><![CDATA[※ 홈페이지 접속 후 성적서 진위여부 메뉴에서 문서확인번호를 통해 위ㆍ변조여부를 확인할 수 있습니다.]]></text>
+			</staticText>
+			<image scaleImage="FillFrame" hAlign="Center" vAlign="Middle" onErrorType="Blank">
+				<reportElement uuid="2a04d483-6b85-4a93-a94f-47b741e2a234" x="0" y="43" width="545" height="64">
+					<property name="com.cabsoft.rx.export.html.id" value="rxcode"/>
+				</reportElement>
+				<imageExpression><![CDATA[$P{imgDir}+"barcode2.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement uuid="158fa71a-ac04-47e3-a48d-41f5083b72b9" x="0" y="0" width="545" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}.toString().equals("1") ? "" : "- 다음 페이지 -"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="6d15d239-337c-4c66-8954-428394874509" x="235" y="136" width="25" height="20"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Page]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3124c3f4-3cf6-4069-932a-d25a69e4f752" x="280" y="136" width="10" height="20"/>
+				<textElement/>
+				<text><![CDATA[of]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+	<lastPageFooter>
+		<band height="136">
+			<staticText>
+				<reportElement uuid="c6e302d0-43c2-45d3-8644-a0acfcba225a" x="1" y="96" width="544" height="20"/>
+				<textElement/>
+				<text><![CDATA[※ 홈페이지 접속 후 성적서 진위여부 메뉴에서 문서확인번호를 통해 위ㆍ변조여부를 확인할 수 있습니다.]]></text>
+			</staticText>
+			<image scaleImage="FillFrame" hAlign="Center" vAlign="Middle" onErrorType="Blank">
+				<reportElement uuid="2a04d483-6b85-4a93-a94f-47b741e2a234" x="0" y="23" width="545" height="64">
+					<property name="com.cabsoft.rx.export.html.id" value="rxcode"/>
+				</reportElement>
+				<imageExpression><![CDATA[$P{imgDir}+"barcode2.png"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement uuid="5eff32d6-2028-4eb4-ae1d-bf548a7f29ff" x="66" y="0" width="169" height="20">
+					<propertyExpression name="com.cabsoft.rx.export.html.id"><![CDATA["IssuerID"]]></propertyExpression>
+				</reportElement>
+				<textElement/>
+				<textFieldExpression><![CDATA["미부여"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="05f73983-b173-4b4b-b3df-eb145b4fe800" x="1" y="0" width="65" height="20"/>
+				<textElement/>
+				<text><![CDATA[문서확인번호 :]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6d15d239-337c-4c66-8954-428394874509" x="235" y="116" width="25" height="20"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Page]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3124c3f4-3cf6-4069-932a-d25a69e4f752" x="280" y="116" width="10" height="20"/>
+				<textElement/>
+				<text><![CDATA[of]]></text>
+			</staticText>
+			<textField evaluationTime="Report">
+				<reportElement uuid="7c4bc52b-b330-43c3-bbc0-f2553fc2ed3f" x="290" y="116" width="20" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7129280c-07e0-41f9-bbf9-01919f189f1a" x="260" y="116" width="20" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</lastPageFooter>
+</ReportExpress>

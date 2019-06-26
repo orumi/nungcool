@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TestItem">
+	
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="testItemSerarchVO" type="tems.com.testSample.model.TestItemDefaultVO"/>
+	
+	<resultMap id="testItem" class="tems.com.testSample.model.TestItemVO">
+		<result property="tblItemCode" column="TBL_ITEM_CODE" columnIndex="1"/>
+		<result property="tblItemName" column="TBL_ITEM_NAME" columnIndex="2"/>
+		<result property="tblItemEname" column="TBL_ITEM_ENAME" columnIndex="3"/>
+		<result property="tblSItemCode" column="TBL_S_ITEM_CODE" columnIndex="4"/>
+		<result property="tblUserId" column="TBL_USER_ID" columnIndex="5"/>
+		<result property="tblReportclasscode" column="TBL_REPORTCLASSCODE" columnIndex="6"/>
+		<result property="tblEndterm" column="TBL_ENDTERM" columnIndex="7"/>
+		<result property="tblEndtermK" column="TBL_ENDTERM_K" columnIndex="8"/>
+		<result property="tblEndtermJ" column="TBL_ENDTERM_J" columnIndex="9"/>
+		<result property="tblEndtermC" column="TBL_ENDTERM_C" columnIndex="10"/>
+		<result property="tblEndtermG" column="TBL_ENDTERM_G" columnIndex="11"/>
+		<result property="tblTestmethod" column="TBL_TESTMETHOD" columnIndex="12"/>
+		<result property="tblReferencebook" column="TBL_REFERENCEBOOK" columnIndex="13"/>
+		<result property="tblGubun" column="TBL_GUBUN" columnIndex="14"/>
+		<result property="tblOrderby" column="TBL_ORDERBY" columnIndex="15"/>
+		<result property="tblUseYn" column="TBL_USE_YN" columnIndex="16"/>
+		<result property="tblSysmuser" column="TBL_SYSMUSER" columnIndex="17"/>
+		<result property="tblSysmdate" column="TBL_SYSMDATE" columnIndex="18"/>
+		<result property="tblFupduser" column="TBL_FUPDUSER" columnIndex="19"/>
+		<result property="tblFupddate" column="TBL_FUPDDATE" columnIndex="20"/>
+		<result property="mssqlGubun" column="MSSQL_GUBUN" columnIndex="21"/>
+		<result property="mssqlTestitemcode" column="MSSQL_TESTITEMCODE" columnIndex="22"/>
+		<result property="mssqlSTestitemcode" column="MSSQL_S_TESTITEMCODE" columnIndex="23"/>
+	</resultMap>
+	
+	<insert id="testItemDAO.insertTestItem_S">
+		<![CDATA[
+			INSERT INTO TEST_ITEM 
+				( TBL_ITEM_CODE
+				  , TBL_ITEM_NAME
+				  , TBL_ITEM_ENAME
+				  , TBL_S_ITEM_CODE
+				  , TBL_USER_ID
+				  , TBL_REPORTCLASSCODE
+				  , TBL_ENDTERM
+				  , TBL_ENDTERM_K
+				  , TBL_ENDTERM_J
+				  , TBL_ENDTERM_C
+				  , TBL_ENDTERM_G
+				  , TBL_TESTMETHOD
+				  , TBL_REFERENCEBOOK
+				  , TBL_GUBUN
+				  , TBL_ORDERBY
+				  , TBL_USE_YN
+				  , TBL_SYSMUSER
+				  , TBL_SYSMDATE
+				  , TBL_FUPDUSER
+				  , TBL_FUPDDATE
+				  , MSSQL_GUBUN
+				  , MSSQL_TESTITEMCODE
+				  , MSSQL_S_TESTITEMCODE )
+			VALUES ( #tblItemCode#
+				  , #tblItemName#
+				  , #tblItemEname#
+				  , #tblSItemCode#
+				  , #tblUserId#
+				  , #tblReportclasscode#
+				  , #tblEndterm#
+				  , #tblEndtermK#
+				  , #tblEndtermJ#
+				  , #tblEndtermC#
+				  , #tblEndtermG#
+				  , #tblTestmethod#
+				  , #tblReferencebook#
+				  , #tblGubun#
+				  , #tblOrderby#
+				  , #tblUseYn#
+				  , #tblSysmuser#
+				  , #tblSysmdate#
+				  , #tblFupduser#
+				  , #tblFupddate#
+				  , #mssqlGubun#
+				  , #mssqlTestitemcode#
+				  , #mssqlSTestitemcode# )
+		]]>
+	</insert>
+	
+	<update id="testItemDAO.updateTestItem_S">
+		<![CDATA[
+			UPDATE TEST_ITEM
+			SET TBL_ITEM_CODE=#tblItemCode#
+				, TBL_ITEM_NAME=#tblItemName#
+				, TBL_ITEM_ENAME=#tblItemEname#
+				, TBL_S_ITEM_CODE=#tblSItemCode#
+				, TBL_USER_ID=#tblUserId#
+				, TBL_REPORTCLASSCODE=#tblReportclasscode#
+				, TBL_ENDTERM=#tblEndterm#
+				, TBL_ENDTERM_K=#tblEndtermK#
+				, TBL_ENDTERM_J=#tblEndtermJ#
+				, TBL_ENDTERM_C=#tblEndtermC#
+				, TBL_ENDTERM_G=#tblEndtermG#
+				, TBL_TESTMETHOD=#tblTestmethod#
+				, TBL_REFERENCEBOOK=#tblReferencebook#
+				, TBL_GUBUN=#tblGubun#
+				, TBL_ORDERBY=#tblOrderby#
+				, TBL_USE_YN=#tblUseYn#
+				, TBL_SYSMUSER=#tblSysmuser#
+				, TBL_SYSMDATE=#tblSysmdate#
+				, TBL_FUPDUSER=#tblFupduser#
+				, TBL_FUPDDATE=#tblFupddate#
+				, MSSQL_GUBUN=#mssqlGubun#
+				, MSSQL_TESTITEMCODE=#mssqlTestitemcode#
+				, MSSQL_S_TESTITEMCODE=#mssqlSTestitemcode#
+						WHERE TBL_ITEM_CODE=#tblItemCode#
+				]]>
+	</update>
+	
+	<delete id="testItemDAO.deleteTestItem_S">
+		<![CDATA[
+			DELETE FROM TEST_ITEM 
+						WHERE TBL_ITEM_CODE=#tblItemCode#
+				]]>
+	</delete>
+	
+	<select id="testItemDAO.selectTestItem_S" resultMap="testItem">
+		<![CDATA[
+			SELECT
+							TBL_ITEM_CODE	
+									,TBL_ITEM_NAME	
+									,TBL_ITEM_ENAME	
+									,TBL_S_ITEM_CODE	
+									,TBL_USER_ID	
+									,TBL_REPORTCLASSCODE	
+									,TBL_ENDTERM	
+									,TBL_ENDTERM_K	
+									,TBL_ENDTERM_J	
+									,TBL_ENDTERM_C	
+									,TBL_ENDTERM_G	
+									,TBL_TESTMETHOD	
+									,TBL_REFERENCEBOOK	
+									,TBL_GUBUN	
+									,TBL_ORDERBY	
+									,TBL_USE_YN	
+									,TBL_SYSMUSER	
+									,to_char(TBL_SYSMDATE,'YYYY-MM-DD') TBL_SYSMDATE
+									,TBL_FUPDUSER	
+									,to_char(TBL_FUPDDATE,'YYYY-MM-DD') TBL_FUPDDATE
+									,MSSQL_GUBUN	
+									,MSSQL_TESTITEMCODE	
+									,MSSQL_S_TESTITEMCODE	
+					FROM TEST_ITEM
+						WHERE TBL_ITEM_CODE=#tblItemCode#
+				]]>
+	</select>
+	
+	<select id="testItemDAO.selectTestItemList_D" parameterClass="testItemSerarchVO" resultClass="egovMap">
+				SELECT
+								TBL_ITEM_CODE
+								, TBL_ITEM_NAME
+								, TBL_ITEM_ENAME
+								, TBL_S_ITEM_CODE
+								, TBL_USER_ID
+								, TBL_REPORTCLASSCODE
+								, TBL_ENDTERM
+								, TBL_ENDTERM_K
+								, TBL_ENDTERM_J
+								, TBL_ENDTERM_C
+								, TBL_ENDTERM_G
+								, TBL_TESTMETHOD
+								, TBL_REFERENCEBOOK
+								, TBL_GUBUN
+								, TBL_ORDERBY
+								, TBL_USE_YN
+								, TBL_SYSMUSER
+								, TBL_SYSMDATE
+								, TBL_FUPDUSER
+								, TBL_FUPDDATE
+								, MSSQL_GUBUN
+								, MSSQL_TESTITEMCODE
+								, MSSQL_S_TESTITEMCODE
+						FROM TEST_ITEM
+				WHERE 1=1
+				<isEqual prepend="AND" property="searchCondition" compareValue="0">
+					TBL_ITEM_CODE = #searchKeyword#
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					TBL_ITEM_NAME LIKE '%' || #searchKeyword# || '%'
+				</isEqual>
+					ORDER BY 
+						TBL_ITEM_CODE DESC
+	</select>	
+	<select id="testItemDAO.selectTestItemListTotCnt_S" parameterClass="testItemSerarchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM TEST_ITEM
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				TBL_ITEM_CODE = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				TBL_ITEM_NAME LIKE '%' || #searchKeyword# || '%'
+			</isEqual>
+	</select>
+
+</sqlMap>

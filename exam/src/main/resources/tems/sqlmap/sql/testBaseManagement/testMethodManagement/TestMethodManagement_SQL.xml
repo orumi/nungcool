@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="testMethodManagementDAO">
+
+    <select id="testMethodManagementDAO.selectTestMethodList"
+            resultClass="tems.com.testBaseManagement.testMethodManagement.model.TestMethodManagementVO">
+        <![CDATA[
+
+                            SELECT METHODID,
+                                   NAME,
+                                   VERSION,
+                                   KNAME,
+                                   KURL,
+                                   REGDATE,
+                                   REGID,
+                                   MODIFYDATE,
+                                   MODIFYID
+                                   FROM TCE_METHOD ORDER BY METHODID ASC
+		]]>
+    </select>
+
+    <update id="testMethodManagementDAO.updateTestMethodItems"
+            parameterClass="tems.com.testBaseManagement.testMethodManagement.model.TestMethodManagementVO">
+
+        <![CDATA[
+                UPDATE TCE_METHOD
+			    SET
+			    METHODID = #methodID#,
+                NAME = #name#,
+                VERSION = #version#,
+                KNAME = #kName#,
+                KURL = #kUrl#,
+                REGDATE = #regDate#,
+                REGID = #regID#,
+                MODIFYDATE = #modifyDate#,
+                MODIFYID = #modifyID#
+				WHERE METHODID = #methodID#
+		]]>
+
+    </update>
+
+    <select id="testMethodManagementDAO.searchTestItems"
+            parameterClass="tems.com.testBaseManagement.testMethodManagement.model.TestMethodManagementVO"
+            resultClass="tems.com.testBaseManagement.testMethodManagement.model.TestMethodManagementVO">
+        <![CDATA[
+
+                            SELECT METHODID,
+                                   NAME,
+                                   VERSION,
+                                   KNAME,
+                                   KURL,
+                                   REGDATE,
+                                   REGID,
+                                   MODIFYDATE,
+                                   MODIFYID
+                                   FROM TCE_METHOD
+                                   WHERE NAME LIKE '%'||#name#||'%'
+		]]>
+    </select>
+
+    <insert id="testMethodManagementDAO.insertTestMethodItems"
+            parameterClass="tems.com.testBaseManagement.testMethodManagement.model.TestMethodManagementVO">
+
+        <![CDATA[
+                      INSERT
+                      INTO TCE_METHOD
+                           (METHODID,
+                            NAME,
+                            VERSION,
+                            KNAME,
+                            KURL,
+                            REGDATE,
+                            REGID,
+                            MODIFYDATE,
+                            MODIFYID)
+                    VALUES (SEQ_TCE_METHOD.nextval,
+                            #name#,
+                            #version#,
+                            #kName#,
+                            #kUrl#,
+                            #regDate#,
+                            #regID#,
+                            #modifyDate#,
+                            #modifyID#)
+		]]>
+    </insert>
+
+</sqlMap>
+

@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ReportExpress xmlns="http://www.cabsoftware.com/reportexpress" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.cabsoftware.com/reportexpress http://www.cabsoftware.com/reportexpress/xsd/reportexpress.xsd" name="report1_subreport1" pageWidth="544" pageHeight="750" columnWidth="544" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="15fe2d3b-245b-461d-8490-e815bb75ece4">
+	<property name="rxreport.zoom" value="1.8181818181818186"/>
+	<property name="rxreport.x" value="0"/>
+	<property name="rxreport.y" value="0"/>
+	<style name="Default"/>
+	<style name="LPad4">
+		<box leftPadding="4"/>
+	</style>
+	<style name="LMerge_Itemname1" style="LPad4">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{idx}.equals("1") && $F{total}.equals("1")]]></conditionExpression>
+			<style vAlign="Middle">
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+			</style>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{idx}.equals("1") && Integer.parseInt($F{idx}) < Integer.parseInt($F{total})]]></conditionExpression>
+			<style vAlign="Top">
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+				</box>
+			</style>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[(Integer.parseInt($F{idx} == null? "1" : $F{idx}) >= Integer.parseInt("2") ) &&
+(Integer.parseInt($F{idx} == null? "1" : $F{idx}) < Integer.parseInt($F{total} == null? "1" : $F{total}))]]></conditionExpression>
+			<style/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[(Integer.parseInt($F{idx} == null? "1" : $F{idx}) >= Integer.parseInt("2") ) &&
+(Integer.parseInt($F{idx} == null? "1" : $F{idx}) == Integer.parseInt($F{total} == null? "1" : $F{total}))]]></conditionExpression>
+			<style>
+				<box>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+			</style>
+		</conditionalStyle>
+	</style>
+	<style name="RMerge_Exam" style="LPad4">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{methodnm_idx}.equals("1") && $F{methodnm_total}.equals("1")]]></conditionExpression>
+			<style vAlign="Middle">
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+			</style>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{methodnm_idx}.equals("1") && Integer.parseInt($F{methodnm_idx}) < Integer.parseInt($F{methodnm_total})]]></conditionExpression>
+			<style vAlign="Top">
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+				</box>
+			</style>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[(Integer.parseInt($F{methodnm_idx} == null? "1" : $F{methodnm_idx}) >= Integer.parseInt("2") ) &&
+(Integer.parseInt($F{methodnm_idx} == null? "1" : $F{methodnm_idx}) < Integer.parseInt($F{methodnm_total} == null? "1" : $F{methodnm_total}))]]></conditionExpression>
+			<style>
+				<box>
+					<leftPen lineWidth="0.5"/>
+				</box>
+			</style>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[(Integer.parseInt($F{methodnm_idx} == null? "1" : $F{methodnm_idx}) >= Integer.parseInt("2") ) &&
+(Integer.parseInt($F{methodnm_idx} == null? "1" : $F{methodnm_idx}) == Integer.parseInt($F{methodnm_total} == null? "1" : $F{methodnm_total}))]]></conditionExpression>
+			<style>
+				<box>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+			</style>
+		</conditionalStyle>
+	</style>
+	<style name="LMerge_Itemname2" style="LPad4">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{itemname2_idx}.equals("1") && $F{itemname2_total}.equals("1")]]></conditionExpression>
+			<style vAlign="Middle">
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+			</style>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{itemname2_idx}.equals("1") && Integer.parseInt($F{itemname2_idx}) < Integer.parseInt($F{itemname2_total})]]></conditionExpression>
+			<style vAlign="Top">
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+				</box>
+			</style>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[(Integer.parseInt($F{itemname2_idx} == null? "1" : $F{itemname2_idx}) >= Integer.parseInt("2") ) &&
+(Integer.parseInt($F{itemname2_idx} == null? "1" : $F{itemname2_idx}) < Integer.parseInt($F{itemname2_total} == null? "1" : $F{itemname2_total}))]]></conditionExpression>
+			<style>
+				<box>
+					<leftPen lineWidth="0.5"/>
+				</box>
+			</style>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[(Integer.parseInt($F{itemname2_idx} == null? "1" : $F{itemname2_idx}) >= Integer.parseInt("2") ) &&
+(Integer.parseInt($F{itemname2_idx} == null? "1" : $F{itemname2_idx}) == Integer.parseInt($F{itemname2_total} == null? "1" : $F{itemname2_total}))]]></conditionExpression>
+			<style>
+				<box>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+				</box>
+			</style>
+		</conditionalStyle>
+	</style>
+	<style name="Font_Itemname1" style="LMerge_Itemname1">
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{itemname1}.length() > 10]]></conditionExpression>
+			<style fontSize="6"/>
+		</conditionalStyle>
+	</style>
+	<subDataset name="dataset1" uuid="9844186a-9781-497d-bd93-cb157f81e0d8">
+		<queryString language="xPath">
+			<![CDATA[/root/kpetro/rows[@smpnm='"+$F{smpnm}+"']/row]]>
+		</queryString>
+		<field name="commend" class="java.lang.String">
+			<fieldDescription><![CDATA[commend]]></fieldDescription>
+		</field>
+	</subDataset>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["./"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="chemical_font_size" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["5"]]></defaultValueExpression>
+	</parameter>
+	<queryString language="xPath">
+		<![CDATA[/root/kpetro/rows/row]]>
+	</queryString>
+	<field name="itemname1" class="java.lang.String">
+		<fieldDescription><![CDATA[itemname1]]></fieldDescription>
+	</field>
+	<field name="displayunit" class="java.lang.String">
+		<fieldDescription><![CDATA[displayunit]]></fieldDescription>
+	</field>
+	<field name="methodnm_total" class="java.lang.String">
+		<fieldDescription><![CDATA[methodnm/@total]]></fieldDescription>
+	</field>
+	<field name="total" class="java.lang.String">
+		<fieldDescription><![CDATA[itemname1/@total]]></fieldDescription>
+	</field>
+	<field name="itemname3" class="java.lang.String">
+		<fieldDescription><![CDATA[itemname3]]></fieldDescription>
+	</field>
+	<field name="rows" class="java.lang.String">
+		<fieldDescription><![CDATA[ancestor::rows]]></fieldDescription>
+	</field>
+	<field name="idx" class="java.lang.String">
+		<fieldDescription><![CDATA[itemname1/@idx]]></fieldDescription>
+	</field>
+	<field name="methodnm_idx" class="java.lang.String">
+		<fieldDescription><![CDATA[methodnm/@idx]]></fieldDescription>
+	</field>
+	<field name="resultvalue" class="java.lang.String">
+		<fieldDescription><![CDATA[resultvalue]]></fieldDescription>
+	</field>
+	<field name="methodnm" class="java.lang.String">
+		<fieldDescription><![CDATA[methodnm]]></fieldDescription>
+	</field>
+	<field name="itemname2" class="java.lang.String">
+		<fieldDescription><![CDATA[itemname2]]></fieldDescription>
+	</field>
+	<field name="lvl" class="java.lang.String">
+		<fieldDescription><![CDATA[@lvl]]></fieldDescription>
+	</field>
+	<field name="smpnm" class="java.lang.String">
+		<fieldDescription><![CDATA[ancestor::rows/@smpnm]]></fieldDescription>
+	</field>
+	<field name="itemname2_idx" class="java.lang.String">
+		<fieldDescription><![CDATA[itemname2/@idx]]></fieldDescription>
+	</field>
+	<field name="itemname2_total" class="java.lang.String">
+		<fieldDescription><![CDATA[itemname2/@total]]></fieldDescription>
+	</field>
+	<group name="GH1" isReprintHeaderOnEachPage="true" keepTogether="true">
+		<groupExpression><![CDATA[$F{smpnm}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<staticText>
+					<reportElement uuid="46a9f460-87ab-4126-821b-3df25610c02d" x="1" y="0" width="48" height="19"/>
+					<textElement/>
+					<text><![CDATA[시료명 : ]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement uuid="2b21a055-ec2e-4a45-813e-01ced99a219a" x="49" y="0" width="100" height="19"/>
+					<textElement/>
+					<textFieldExpression><![CDATA[$F{smpnm}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<componentElement>
+					<reportElement uuid="6a0a5e97-90b5-4739-bd50-ebb3589c2f01" x="0" y="0" width="544" height="20"/>
+					<rx:list xmlns:rx="http://www.cabsoftware.com/reportexpress/components" xsi:schemaLocation="http://www.cabsoftware.com/reportexpress/components http://www.cabsoftware.com/xsd/components.xsd" printOrder="Vertical">
+						<datasetRun subDataset="dataset1" uuid="85a3e254-dcf1-4355-9845-e380b15bda3e">
+							<dataSourceExpression><![CDATA[((com.cabsoft.rx.engine.data.RXXmlDataSource)$P{REPORT_DATA_SOURCE}).dataSource("/root/kpetro/rows[@smpnm='"+$F{smpnm}+"']/row")]]></dataSourceExpression>
+						</datasetRun>
+						<rx:listContents height="20" width="544">
+							<textField isBlankWhenNull="true">
+								<reportElement uuid="7c4d94b7-04f4-4be2-b907-d70516d43df3" x="0" y="0" width="544" height="20" isRemoveLineWhenBlank="true">
+									<printWhenExpression><![CDATA[$F{commend} != null]]></printWhenExpression>
+								</reportElement>
+								<textElement/>
+								<textFieldExpression><![CDATA[($F{commend} != null && $F{commend} != "") ? $F{commend} : ""]]></textFieldExpression>
+							</textField>
+						</rx:listContents>
+					</rx:list>
+				</componentElement>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="GH2" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{smpnm}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<staticText>
+					<reportElement uuid="dcf719c3-88c6-401d-8f71-a3a05e0280e7" x="0" y="0" width="348" height="20"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.0"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[시 험 항 목]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="f5b72bab-d724-4566-9afe-477c5d71c8a5" x="348" y="0" width="38" height="20"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[단 위]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="fbae3611-8eb7-43ca-a2bf-b90a629b919d" x="386" y="0" width="56" height="20"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[시 험 결 과]]></text>
+				</staticText>
+				<staticText>
+					<reportElement uuid="dca8b37f-8451-4975-a6fc-9813bbb38e87" x="442" y="0" width="102" height="20"/>
+					<box>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.0"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle"/>
+					<text><![CDATA[시 험 방 법]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="GH3">
+		<groupExpression><![CDATA[$F{smpnm}]]></groupExpression>
+	</group>
+	<detail>
+		<band height="20">
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="ad18bf03-4973-4cfe-ab75-8e0dfbbb5928" style="LPad4" stretchType="RelativeToTallestObject" x="0" y="0" width="348" height="20">
+					<printWhenExpression><![CDATA[$F{lvl}.equals("1")]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.0"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{itemname1}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="ed58db59-59da-4c10-8bf4-666f4f7b5ccc" stretchType="RelativeToTallestObject" x="348" y="0" width="38" height="20">
+					<printWhenExpression><![CDATA[$F{lvl}.equals("1")]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{displayunit}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="3821cfb1-0e01-47b3-ae36-c4405c21cfff" stretchType="RelativeToTallestObject" x="386" y="0" width="56" height="20">
+					<printWhenExpression><![CDATA[$F{lvl}.equals("1")]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled"/>
+				<textFieldExpression><![CDATA[$F{resultvalue} == null ? "" : $F{resultvalue}.toString().replaceAll("([주][)])", "<sup>$1</sup>")]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="db1d87bd-ac71-4a33-9494-600e28829c93" style="LPad4" stretchType="RelativeToTallestObject" x="442" y="0" width="102" height="20">
+					<printWhenExpression><![CDATA[$F{lvl}.equals("1")]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.0"/>
+				</box>
+				<textElement textAlignment="Left" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{methodnm}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="166a3729-e8b5-4a8b-9a33-4ce9c9cbf24b" style="LMerge_Itemname1" stretchType="RelativeToTallestObject" x="0" y="0" width="174" height="20">
+					<printWhenExpression><![CDATA[$F{lvl}.equals("2")]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[(Integer.parseInt($F{idx} == null? "1" : $F{idx}) == 1) ? $F{itemname1} : ""]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="65281131-b6ee-493a-9c82-6152f7e6c50f" stretchType="RelativeToTallestObject" x="174" y="0" width="174" height="20">
+					<printWhenExpression><![CDATA[$F{lvl}.equals("2")]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled"/>
+				<textFieldExpression><![CDATA[$F{itemname2} == null ? "" : $F{itemname2}.toString().replaceAll("([A-Za-z]+)([0-9]+)", "$1<font size='"+$P{chemical_font_size}+"'>$2</font>")]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="00f3f0a7-d5f0-4cdd-b299-0fee4140e268" stretchType="RelativeToTallestObject" x="348" y="0" width="38" height="20">
+					<printWhenExpression><![CDATA[$F{lvl}.equals("2")]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{displayunit}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="37848a8b-5e5d-491c-80a8-67852b6c2bbc" stretchType="RelativeToTallestObject" x="386" y="0" width="56" height="20">
+					<printWhenExpression><![CDATA[$F{lvl}.equals("2")]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled"/>
+				<textFieldExpression><![CDATA[$F{resultvalue} == null ? "" : $F{resultvalue}.toString().replaceAll("([주][)])", "<sup>$1</sup>")]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="e49cfec5-cca4-4681-bb67-62dd2f5a89ea" style="RMerge_Exam" stretchType="RelativeToTallestObject" x="442" y="0" width="102" height="20">
+					<printWhenExpression><![CDATA[$F{lvl}.equals("2")]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[(Integer.parseInt($F{methodnm_idx} == null? "1" : $F{methodnm_idx}) == 1) ? $F{methodnm} : ""]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="0873cf15-b8f7-4c0d-996d-6db95a96389e" style="LMerge_Itemname1" stretchType="RelativeToTallestObject" x="0" y="0" width="116" height="20">
+					<printWhenExpression><![CDATA[$F{lvl}.equals("3")]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[(Integer.parseInt($F{idx} == null? "1" : $F{idx}) == 1) ? $F{itemname1} : ""]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="8e8644ca-a511-407e-985d-a288fde2aa7e" style="LMerge_Itemname2" stretchType="RelativeToTallestObject" x="116" y="0" width="116" height="20">
+					<printWhenExpression><![CDATA[$F{lvl}.equals("3")]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[(Integer.parseInt($F{itemname2_idx} == null? "1" : $F{itemname2_idx}) == 1) ? $F{itemname2} : ""]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="b127ef5c-9bb2-468d-9bf2-62e6604cd3ef" stretchType="RelativeToTallestObject" x="232" y="0" width="116" height="20">
+					<printWhenExpression><![CDATA[$F{lvl}.equals("3")]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{itemname3}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="331e35bc-1d5b-413a-85e6-05cd9e1e4d17" stretchType="RelativeToTallestObject" x="348" y="0" width="38" height="20">
+					<printWhenExpression><![CDATA[$F{lvl}.equals("3")]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{displayunit}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="8df97caf-407f-4639-a94f-f68cbf81b996" stretchType="RelativeToTallestObject" x="386" y="0" width="56" height="20">
+					<printWhenExpression><![CDATA[$F{lvl}.equals("3")]]></printWhenExpression>
+				</reportElement>
+				<box>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" markup="styled"/>
+				<textFieldExpression><![CDATA[$F{resultvalue} == null ? "" : $F{resultvalue}.toString().replaceAll("([주][)])", "<sup>$1</sup>")]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="f9a5bdb6-d270-447e-b942-24d427607d4c" style="RMerge_Exam" stretchType="RelativeToTallestObject" x="442" y="0" width="102" height="20">
+					<printWhenExpression><![CDATA[$F{lvl}.equals("3")]]></printWhenExpression>
+				</reportElement>
+				<box leftPadding="4"/>
+				<textElement verticalAlignment="Top"/>
+				<textFieldExpression><![CDATA[(Integer.parseInt($F{methodnm_idx} == null? "1" : $F{methodnm_idx}) == 1) ? $F{methodnm} : ""]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</ReportExpress>

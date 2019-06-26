@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="attachFileSql">
+
+	<resultMap id="attachFileMap" class="tems.com.attachFile.model.AttachFileVO">
+		<result property="fID" column="FID" />
+		<result property="bID" column="BID" />
+		<result property="filePath" column="FILEPATH" />
+		<result property="orgName" column="ORGNAME" />
+		<result property="saveName" column="SAVENAME" />
+		<result property="fileSize" column="FILESIZE" />
+		<result property="regID" column="REGID" />
+	</resultMap>
+
+	<!-- 파일업로드 -->
+	<insert id="attachFileDAO.uploadFile" parameterClass="tems.com.attachFile.model.AttachFileVO">
+		<selectKey resultClass="int" keyProperty="fID">
+		<![CDATA[
+    	    SELECT TNE_NOTICE_FILE_SEQ.NEXTVAL as id FROM DUAL
+		]]>
+		</selectKey>
+		
+    	<![CDATA[
+            INSERT INTO TNE_NOTICE_FILE
+            (FID,
+             BID,        
+             FILEPATH,        
+             ORGNAME,
+             SAVENAME,        
+             FILESIZE,        
+             REGID,
+             REGDATE
+            )
+            VALUES 
+            (#fID#,
+             #bID#,
+             #filePath#,
+             #orgName#,
+             #saveName#,
+             #fileSize#,
+             #regID#,
+             SYSDATE
+            )
+        ]]>
+
+	</insert>
+	
+	<update id="attachFileDAO.updateBid" parameterClass="java.util.Map">
+    	<![CDATA[
+	    	UPDATE TNE_NOTICE_FILE
+	    	SET BID = #bID#
+	    	WHERE FID = #fID#
+	    ]]>	
+	</update>
+	
+	<!-- bID값 저장(글등록) -->
+	<!--
+	<update id="attachFileDAO.updateBid" parameterClass="java.util.HashMap">
+    	<![CDATA[
+	    	UPDATE TNE_NOTICE_FILE
+	    	SET BID = #bID#
+	    ]]>	
+	    	<iterate prepend="WHERE FID IN" open="(" close=")"  conjunction="," >
+				<![CDATA[
+	    			#fID[]#
+				]]>	
+			</iterate>
+	</update>
+	-->
+		
+	<!-- 파일 리스트 -->
+	<select id="attachFileDAO.listAttachFile" parameterClass="int" resultMap="attachFileMap">
+        <![CDATA[
+			SELECT * FROM TNE_NOTICE_FILE
+			WHERE BID=#bID#
+		]]>
+	</select>
+		
+	<!-- 특정글 모든 파일 삭제 -->
+	<delete id="attachFileDAO.deleteAttachFileAll" parameterClass="int">
+        <![CDATA[
+			DELETE FROM TNE_NOTICE_FILE
+			WHERE BID=#bID#
+		]]>
+	</delete>
+
+</sqlMap>

@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="UserMaster">
+	
+	<typeAlias  alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+	<typeAlias  alias="userMasterSerarchVO" type="tems.com.testSample.model.UserMasterDefaultVO"/>
+	
+	<resultMap id="userMaster" class="tems.com.testSample.model.UserMasterVO">
+		<result property="tblUserName" column="TBL_USER_NAME" columnIndex="1"/>
+		<result property="tblBirth" column="TBL_BIRTH" columnIndex="2"/>
+		<result property="tblAuthority" column="TBL_AUTHORITY" columnIndex="3"/>
+		<result property="tblEName" column="TBL_E_NAME" columnIndex="4"/>
+		<result property="tblCName" column="TBL_C_NAME" columnIndex="5"/>
+		<result property="tblUserId" column="TBL_USER_ID" columnIndex="6"/>
+		<result property="tblUserPw" column="TBL_USER_PW" columnIndex="7"/>
+		<result property="tblJikwiCode" column="TBL_JIKWI_CODE" columnIndex="8"/>
+		<result property="tblPositionCode" column="TBL_POSITION_CODE" columnIndex="9"/>
+		<result property="tblTeamCode" column="TBL_TEAM_CODE" columnIndex="10"/>
+		<result property="tblEmail" column="TBL_EMAIL" columnIndex="11"/>
+		<result property="tblTel" column="TBL_TEL" columnIndex="12"/>
+		<result property="tblZipcode" column="TBL_ZIPCODE" columnIndex="13"/>
+		<result property="tblAddress1" column="TBL_ADDRESS1" columnIndex="14"/>
+		<result property="tblAddress2" column="TBL_ADDRESS2" columnIndex="15"/>
+		<result property="tblHandyuid" column="TBL_HANDYUID" columnIndex="16"/>
+		<result property="tblMajor" column="TBL_MAJOR" columnIndex="17"/>
+		<result property="tblUseYn" column="TBL_USE_YN" columnIndex="18"/>
+		<result property="tblSysmuser" column="TBL_SYSMUSER" columnIndex="19"/>
+		<result property="tblSysmdate" column="TBL_SYSMDATE" columnIndex="20"/>
+		<result property="tblUpduser" column="TBL_UPDUSER" columnIndex="21"/>
+		<result property="tblUpddate" column="TBL_UPDDATE" columnIndex="22"/>
+		<result property="tblFileImg" column="TBL_FILE_IMG" columnIndex="23"/>
+		<result property="tblKolasJikwi" column="TBL_KOLAS_JIKWI" columnIndex="24"/>
+		<result property="tblPortalId" column="TBL_PORTAL_ID" columnIndex="25"/>
+		<result property="mssqlGubun" column="MSSQL_GUBUN" columnIndex="26"/>
+		<result property="mssqlUid" column="MSSQL_UID" columnIndex="27"/>
+		<result property="tblLastIp" column="TBL_LAST_IP" columnIndex="28"/>
+		<result property="tblLastDate" column="TBL_LAST_DATE" columnIndex="29"/>
+		<result property="mssql70Uid" column="MSSQL70_UID" columnIndex="30"/>
+		<result property="tblSign" column="TBL_SIGN" columnIndex="31"/>
+	</resultMap>
+	
+	<insert id="userMasterDAO.insertUserMaster_S">
+		<![CDATA[
+			INSERT INTO USER_MASTER 
+				( TBL_USER_NAME
+				  , TBL_BIRTH
+				  , TBL_AUTHORITY
+				  , TBL_E_NAME
+				  , TBL_C_NAME
+				  , TBL_USER_ID
+				  , TBL_USER_PW
+				  , TBL_JIKWI_CODE
+				  , TBL_POSITION_CODE
+				  , TBL_TEAM_CODE
+				  , TBL_EMAIL
+				  , TBL_TEL
+				  , TBL_ZIPCODE
+				  , TBL_ADDRESS1
+				  , TBL_ADDRESS2
+				  , TBL_HANDYUID
+				  , TBL_MAJOR
+				  , TBL_USE_YN
+				  , TBL_SYSMUSER
+				  , TBL_SYSMDATE
+				  , TBL_UPDUSER
+				  , TBL_UPDDATE
+				  , TBL_FILE_IMG
+				  , TBL_KOLAS_JIKWI
+				  , TBL_PORTAL_ID
+				  , MSSQL_GUBUN
+				  , MSSQL_UID
+				  , TBL_LAST_IP
+				  , TBL_LAST_DATE
+				  , MSSQL70_UID
+				  , TBL_SIGN )
+			VALUES ( #tblUserName#
+				  , #tblBirth#
+				  , #tblAuthority#
+				  , #tblEName#
+				  , #tblCName#
+				  , #tblUserId#
+				  , #tblUserPw#
+				  , #tblJikwiCode#
+				  , #tblPositionCode#
+				  , #tblTeamCode#
+				  , #tblEmail#
+				  , #tblTel#
+				  , #tblZipcode#
+				  , #tblAddress1#
+				  , #tblAddress2#
+				  , #tblHandyuid#
+				  , #tblMajor#
+				  , #tblUseYn#
+				  , #tblSysmuser#
+				  , #tblSysmdate#
+				  , #tblUpduser#
+				  , #tblUpddate#
+				  , #tblFileImg#
+				  , #tblKolasJikwi#
+				  , #tblPortalId#
+				  , #mssqlGubun#
+				  , #mssqlUid#
+				  , #tblLastIp#
+				  , #tblLastDate#
+				  , #mssql70Uid#
+				  , #tblSign# )
+		]]>
+	</insert>
+	
+	<update id="userMasterDAO.updateUserMaster_S">
+		<![CDATA[
+			UPDATE USER_MASTER
+			SET TBL_USER_NAME=#tblUserName#
+				, TBL_BIRTH=#tblBirth#
+				, TBL_AUTHORITY=#tblAuthority#
+				, TBL_E_NAME=#tblEName#
+				, TBL_C_NAME=#tblCName#
+				, TBL_USER_ID=#tblUserId#
+				, TBL_USER_PW=#tblUserPw#
+				, TBL_JIKWI_CODE=#tblJikwiCode#
+				, TBL_POSITION_CODE=#tblPositionCode#
+				, TBL_TEAM_CODE=#tblTeamCode#
+				, TBL_EMAIL=#tblEmail#
+				, TBL_TEL=#tblTel#
+				, TBL_ZIPCODE=#tblZipcode#
+				, TBL_ADDRESS1=#tblAddress1#
+				, TBL_ADDRESS2=#tblAddress2#
+				, TBL_HANDYUID=#tblHandyuid#
+				, TBL_MAJOR=#tblMajor#
+				, TBL_USE_YN=#tblUseYn#
+				, TBL_SYSMUSER=#tblSysmuser#
+				, TBL_SYSMDATE=#tblSysmdate#
+				, TBL_UPDUSER=#tblUpduser#
+				, TBL_UPDDATE=#tblUpddate#
+				, TBL_FILE_IMG=#tblFileImg#
+				, TBL_KOLAS_JIKWI=#tblKolasJikwi#
+				, TBL_PORTAL_ID=#tblPortalId#
+				, MSSQL_GUBUN=#mssqlGubun#
+				, MSSQL_UID=#mssqlUid#
+				, TBL_LAST_IP=#tblLastIp#
+				, TBL_LAST_DATE=#tblLastDate#
+				, MSSQL70_UID=#mssql70Uid#
+				, TBL_SIGN=#tblSign#
+						WHERE TBL_USER_ID=#tblUserId#
+				]]>
+	</update>
+	
+	<delete id="userMasterDAO.deleteUserMaster_S">
+		<![CDATA[
+			DELETE FROM USER_MASTER 
+						WHERE TBL_USER_ID=#tblUserId#
+				]]>
+	</delete>
+	
+	<select id="userMasterDAO.selectUserMaster_S" resultMap="userMaster">
+		<![CDATA[
+			SELECT
+				TBL_USER_NAME
+				, TBL_BIRTH
+				, TBL_AUTHORITY
+				, TBL_E_NAME
+				, TBL_C_NAME
+				, TBL_USER_ID
+				, TBL_USER_PW
+				, TBL_JIKWI_CODE
+				, TBL_POSITION_CODE
+				, TBL_TEAM_CODE
+				, TBL_EMAIL
+				, TBL_TEL
+				, TBL_ZIPCODE
+				, TBL_ADDRESS1
+				, TBL_ADDRESS2
+				, TBL_HANDYUID
+				, TBL_MAJOR
+				, TBL_USE_YN
+				, TBL_SYSMUSER
+				, TBL_SYSMDATE
+				, TBL_UPDUSER
+				, TBL_UPDDATE
+				, TBL_FILE_IMG
+				, TBL_KOLAS_JIKWI
+				, TBL_PORTAL_ID
+				, MSSQL_GUBUN
+				, MSSQL_UID
+				, TBL_LAST_IP
+				, TBL_LAST_DATE
+				, MSSQL70_UID
+				, TBL_SIGN
+			FROM USER_MASTER
+						WHERE TBL_USER_ID=#tblUserId#
+				]]>
+	</select>
+	
+	<select id="userMasterDAO.selectUserMasterList_D" parameterClass="userMasterSerarchVO" resultClass="egovMap">
+SELECT * FROM (
+	SELECT A.*, ROWNUM RNUM FROM (
+				SELECT
+								TBL_USER_NAME
+								, TBL_BIRTH
+								, TBL_AUTHORITY
+								, TBL_E_NAME
+								, TBL_C_NAME
+								, TBL_USER_ID
+								, TBL_USER_PW
+								, TBL_JIKWI_CODE
+								, TBL_POSITION_CODE
+								, TBL_TEAM_CODE
+								, TBL_EMAIL
+								, TBL_TEL
+								, TBL_ZIPCODE
+								, TBL_ADDRESS1
+								, TBL_ADDRESS2
+								, TBL_HANDYUID
+								, TBL_MAJOR
+								, TBL_USE_YN
+								, TBL_SYSMUSER
+								, TBL_SYSMDATE
+								, TBL_UPDUSER
+								, TBL_UPDDATE
+								, TBL_FILE_IMG
+								, TBL_KOLAS_JIKWI
+								, TBL_PORTAL_ID
+								, MSSQL_GUBUN
+								, MSSQL_UID
+								, TBL_LAST_IP
+								, TBL_LAST_DATE
+								, MSSQL70_UID
+								, TBL_SIGN
+						FROM USER_MASTER
+				WHERE 1=1
+				<isEqual prepend="AND" property="searchCondition" compareValue="0">
+					TBL_USER_NAME = #searchKeyword#
+				</isEqual>
+				<isEqual prepend="AND" property="searchCondition" compareValue="1">
+					TBL_BIRTH LIKE '%' || #searchKeyword# || '%'
+				</isEqual>
+					ORDER BY 
+						TBL_USER_ID DESC
+		
+		<![CDATA[					
+	) A WHERE ROWNUM <= #lastIndex#
+)WHERE RNUM > #firstIndex#
+]]>
+	</select>	
+	<select id="userMasterDAO.selectUserMasterListTotCnt_S" parameterClass="userMasterSerarchVO" resultClass="int">
+			SELECT COUNT(*) totcnt
+			FROM USER_MASTER
+			WHERE 1=1
+			<isEqual prepend="AND" property="searchCondition" compareValue="0">
+				TBL_USER_NAME = #searchKeyword#
+			</isEqual>
+			<isEqual prepend="AND" property="searchCondition" compareValue="1">
+				TBL_BIRTH LIKE '%' || #searchKeyword# || '%'
+			</isEqual>
+	</select>
+
+</sqlMap>

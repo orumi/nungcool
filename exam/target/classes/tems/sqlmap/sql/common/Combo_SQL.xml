@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ComboDAO">
+	
+    <select id="ComboDAO.getCodeDetailList" resultClass="tems.com.common.model.ComboVO">
+        select codegroupid
+        	  ,codeid
+		      ,codename 
+		from tct_code_detail
+		where codegroupid = #codegroupid#
+    </select>
+    
+    <select id="ComboDAO.getApprStateCodeList" resultClass="tems.com.common.model.ComboVO">
+        select statecd codeid
+		      ,statenm codename 
+		from TCT_APPR_STATE
+		where statecd not in ($statecd$)
+    </select>
+    
+    <select id="ComboDAO.getStateCodeList" resultClass="tems.com.common.model.ComboVO">
+        select statecd codeid
+		      ,statenm codename 
+		from TCT_STATE
+		where statecd not in ($statecd$)
+    </select>
+
+</sqlMap>

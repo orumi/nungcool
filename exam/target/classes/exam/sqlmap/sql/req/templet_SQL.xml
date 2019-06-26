@@ -1,0 +1,813 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+
+<sqlMap namespace="templet_DAO">
+
+<select id="templet_DAO.selectSEQ_TempletId" resultClass="java.lang.String">
+	<![CDATA[
+		SELECT SEQ_TNE_TEMPLET.NEXTVAL FROM DUAL
+	]]>
+</select>
+
+<select id="templet_DAO.selectTemplet" resultClass="exam.com.req.model.TempletVO">
+<![CDATA[
+	SELECT 
+	    MEMID,
+	    TEMPLETID, TEMPLETNAME,
+	    TEMPLETDESC,
+	    SCNT,SMPID, SNAME, MNAME,
+	    CASE WHEN SCNT=1 THEN SNAME||' ('||MNAME||')'
+	    WHEN SCNT>1 THEN SNAME||' ('||MNAME||')'||' 외'||(SCNT-1)
+	    ELSE '' END FNAME
+	FROM
+	(
+	    SELECT MEMID,TEMPLETID,TEMPLETNAME, TEMPLETDESC
+	    FROM TNE_TEMPLET_REQUEST WHERE MEMID=#memid#
+	    ORDER BY TEMPLETID
+	) R
+	LEFT JOIN
+	(
+	    SELECT TEMPLETID STEMPLETID, SCNT, SMPID, (SELECT NAME FROM TNE_TEMPLET_SAMPLE T WHERE T.TEMPLETID=SG.TEMPLETID AND T.SMPID=SG.SMPID) SNAME,
+	    (SELECT (SELECT NAME FROM TCE_MASTER M WHERE M.MASTERID=T.MASTERID) FROM TNE_TEMPLET_SAMPLE T WHERE T.TEMPLETID=SG.TEMPLETID AND T.SMPID=SG.SMPID) MNAME
+	    FROM 
+	    (
+	        SELECT TEMPLETID, COUNT(TEMPLETID) SCNT, MIN(SMPID) SMPID 
+	        FROM TNE_TEMPLET_SAMPLE S GROUP BY TEMPLETID
+	    ) SG
+	) S
+	ON R.TEMPLETID=S.STEMPLETID
+]]>	
+</select>
+
+
+<insert id="templet_DAO.insertRequest" parameterClass="exam.com.req.model.TempletVO">
+<![CDATA[
+	INSERT INTO TNE_TEMPLET_REQUEST
+	(
+	    TEMPLETID       ,
+	    TEMPLETNAME     ,
+	    TEMPLETDESC     , 
+	    MEMID           ,
+	    COMID           ,
+	    ORDINAL         ,
+	    REQID           ,
+	    BIZNO           ,
+	    MNGNAME         ,
+	    MNGDEPT         ,
+	    MNGEMAIL        ,
+	    MNGHP           ,
+	    MNGPHONE        ,
+	    FAX             ,
+	    SMPCNT          ,
+	    REQSTATE        ,
+	    ITEMAFTER       ,
+	    ITEMDESC        ,
+	    TOTALPRICETEMP  ,
+	    DCRATE          ,
+	    DCPRICE         ,
+	    ETCPRICE        ,
+	    TOTALPRICE      ,
+	    PRICEDESC       ,
+	    CONFIRMID       ,
+	    CHECKID         ,
+	    AGENTID         ,
+	    COMNAME         ,
+	    SCSEQN          ,
+	    ISSUEAPPR       ,
+	    SIGNAPPR        ,
+	    REMARK          ,
+	    REGID           ,
+	    REGDATE         ,
+	    MODIFYID        ,
+	    MODIFYDATE         
+	)
+	SELECT 
+	    #templetid#     ,
+	    #templetname#   ,
+	    #templetdesc#   ,
+	    #memid#         ,
+	    COMID           ,
+	    ORDINAL         ,
+	    REQID           ,
+	    BIZNO           ,
+	    MNGNAME         ,
+	    MNGDEPT         ,
+	    MNGEMAIL        ,
+	    MNGHP           ,
+	    MNGPHONE        ,
+	    FAX             ,
+	    SMPCNT          ,
+	    '-1'            REQSTATE  ,
+	    ITEMAFTER       ,
+	    ITEMDESC        ,
+	    TOTALPRICETEMP  ,
+	    DCRATE          ,
+	    DCPRICE         ,
+	    ETCPRICE        ,
+	    TOTALPRICE      ,
+	    PRICEDESC       ,
+	    CONFIRMID       ,
+	    CHECKID         ,
+	    AGENTID         ,
+	    COMNAME         ,
+	    SCSEQN          ,
+	    ISSUEAPPR       ,
+	    SIGNAPPR        ,
+	    REMARK          ,
+	    REGID           ,
+	    REGDATE         ,
+	    MODIFYID        ,
+	    MODIFYDATE         
+	FROM TNE_REQUEST 
+	WHERE REQID=#reqid#
+]]>
+</insert>
+
+
+<insert id="templet_DAO.insertReport" parameterClass="exam.com.req.model.TempletVO">
+<![CDATA[
+	INSERT INTO TNE_TEMPLET_REPORT
+	(
+	    TEMPLETID        ,
+	    REQID            ,
+	    REPORTID         ,
+	    USAGE            ,
+	    TYPE             ,
+	    TAXBIZTYPE          ,
+	    ORGCNT           ,
+	    COPYCNT          ,
+	    REPORTPRICE      ,
+	    REPORTSTATE      ,
+	    PRICESTATE       ,
+	    REQUESTCDATE     ,
+	    RECEIPTDATE      ,
+	    ACCEPTNO         ,
+	    REPORTNO         ,
+	    RCVCOMPANY       ,
+	    RCVCEO           ,
+	    RCVZIPCODE       ,
+	    RCVADDR1         ,
+	    RCVADDR2         ,
+	    RCVDEPT          ,
+	    RCVEMAIL         ,
+	    RCVHP            ,
+	    RCVPHONE         ,
+	    RCVFAX           ,
+	    TAXCOMPANY       ,
+	    TAXCEO           ,
+	    TAXZIPCODE       ,
+	    TAXADDR1         ,
+	    TAXADDR2         ,
+	    TAXDEPT          ,
+	    TAXEMAIL         ,
+	    TAXHP            ,
+	    TAXPHONE         ,
+	    TAXFAX           ,
+	    ISSUEDATEPLAN    ,
+	    ISSUEDATECMPL    ,
+	    CARDBILLNO       ,
+	    CARDPRICE        ,
+	    CARDTYPE         ,
+	    LANGTYPE         ,
+	    ENTAXCEO         ,
+	    ENTAXCOMPANY     ,
+	    ENTAXADDR1       ,
+	    ENRCVCEO         ,
+	    ENRCVADDR1       ,
+	    ENRCVCOMPANY     ,
+	    PRICETYPE        ,
+	    PRICEDATE        ,
+	    PRICECHARGETYPE  ,
+	    TAXISSUEDATE     ,
+	    REGID            ,
+	    REGDATE          ,
+	    MODIFYID         ,
+	    MODIFYDATE       ,
+	    TAXBIZNO         ,
+	    TAXMNGNAME       ,
+	    RCVMNGNAME       
+	)
+	SELECT
+	    #templetid#      TEMPLETID,
+	    REQID            ,
+	    REPORTID         ,
+	    USAGE            ,
+	    TYPE             ,
+	    TAXBIZTYPE          ,
+	    ORGCNT           ,
+	    COPYCNT          ,
+	    REPORTPRICE      ,
+	    REPORTSTATE      ,
+	    PRICESTATE       ,
+	    REQUESTCDATE     ,
+	    RECEIPTDATE      ,
+	    ACCEPTNO         ,
+	    REPORTNO         ,
+	    RCVCOMPANY       ,
+	    RCVCEO           ,
+	    RCVZIPCODE       ,
+	    RCVADDR1         ,
+	    RCVADDR2         ,
+	    RCVDEPT          ,
+	    RCVEMAIL         ,
+	    RCVHP            ,
+	    RCVPHONE         ,
+	    RCVFAX           ,
+	    TAXCOMPANY       ,
+	    TAXCEO           ,
+	    TAXZIPCODE       ,
+	    TAXADDR1         ,
+	    TAXADDR2         ,
+	    TAXDEPT          ,
+	    TAXEMAIL         ,
+	    TAXHP            ,
+	    TAXPHONE         ,
+	    TAXFAX           ,
+	    ISSUEDATEPLAN    ,
+	    ISSUEDATECMPL    ,
+	    CARDBILLNO       ,
+	    CARDPRICE        ,
+	    CARDTYPE         ,
+	    LANGTYPE         ,
+	    ENTAXCEO         ,
+	    ENTAXCOMPANY     ,
+	    ENTAXADDR1       ,
+	    ENRCVCEO         ,
+	    ENRCVADDR1       ,
+	    ENRCVCOMPANY     ,
+	    PRICETYPE        ,
+	    PRICEDATE        ,
+	    PRICECHARGETYPE  ,
+	    TAXISSUEDATE     ,
+	    REGID            ,
+	    REGDATE          ,
+	    MODIFYID         ,
+	    MODIFYDATE       ,
+	    TAXBIZNO         ,
+	    TAXMNGNAME       ,
+	    RCVMNGNAME         
+	FROM TNE_REPORT WHERE REQID=#reqid# AND REPORTID=1
+]]>
+</insert>
+
+
+
+
+<insert id="templet_DAO.insertSample" parameterClass="exam.com.req.model.TempletVO">
+<![CDATA[
+	INSERT INTO TNE_TEMPLET_SAMPLE
+	(
+	    TEMPLETID   ,
+	    REQID       ,
+	    SMPID       ,
+	    MASTERID    ,
+	    NAME        ,
+	    PRICE       ,
+	    REGID       ,
+	    REGDATE     ,
+	    MODIFYID    ,
+	    MODIFYDATE  ,
+	    OFFICEID    ,
+	    ADMINID     ,
+	    SMPFID      ,
+	    SCSEQN      
+	)
+	SELECT 
+	    #templetid#     TEMPLETID,
+	    REQID       ,
+	    SMPID       ,
+	    MASTERID    ,
+	    NAME        ,
+	    PRICE       ,
+	    REGID       ,
+	    REGDATE     ,
+	    MODIFYID    ,
+	    MODIFYDATE  ,
+	    OFFICEID    ,
+	    ADMINID     ,
+	    SMPFID      ,
+	    SCSEQN      
+	FROM TNE_SAMPLE WHERE REQID=#reqid#
+]]>
+</insert>
+
+
+
+
+<insert id="templet_DAO.insertResult" parameterClass="exam.com.req.model.TempletVO">
+<![CDATA[
+	INSERT INTO TNE_TEMPLET_RESULT
+	(
+	    TEMPLETID       ,
+	    RESULTID        ,
+	    RESULTPID       ,
+	    REQID           ,
+	    SMPID           ,
+	    ITEMID          ,
+	    ITEMPID         ,
+	    METHODID        ,
+	    UNITID          ,
+	    DISPLAYUNIT     ,
+	    EQUIPID         ,
+	    LVL             ,
+	    ITEMREGID       ,
+	    REPORTUNIT      ,
+	    CONDID          ,
+	    CONDETC         ,
+	    SMPAMOUNT       ,
+	    ITEMTERM        ,
+	    RESULTTYPE      ,
+	    ITEMVALUE       ,
+	    RESULTVALUE     ,
+	    RESULTCONTENTS  ,
+	    ANNOTATION      ,
+	    REMARK          ,
+	    ITEMPRICE       ,
+	    ITEMSTATE       ,
+	    ORDERBY         ,
+	    ADDPRICE        ,
+	    ADDPRICECOND    ,
+	    FIXCNT          ,
+	    COOPERYN        ,
+	    REGID           ,
+	    REGDATE         ,
+	    MODIFYID        ,
+	    MODIFYDATE      ,
+	    METHODNM        ,
+	    ITEMENAME       ,
+	    OFFICEID        ,
+	    ITEMNAME        ,
+	    SCSEQN          ,
+	    REQSPEC         ,
+	    SPEC            ,
+	    PRICE           ,
+	    CALC            ,
+	    RESULTFLAG      ,
+	    PRICECNT        ,
+	    TEMPERCOND      ,
+	    TEMPUNIT        ,
+	    TIMECOND        ,
+	    TIMECONDUNIT    ,
+	    ETC             ,
+	    ETCUNIT         ,
+	    BASICCOND       ,
+	    BASICUNIT      
+	)
+	SELECT
+	    #templetid#     TEMPLETID,
+	    RESULTID        ,
+	    RESULTPID       ,
+	    REQID           ,
+	    SMPID           ,
+	    ITEMID          ,
+	    ITEMPID         ,
+	    METHODID        ,
+	    UNITID          ,
+	    DISPLAYUNIT     ,
+	    EQUIPID         ,
+	    LVL             ,
+	    ITEMREGID       ,
+	    REPORTUNIT      ,
+	    CONDID          ,
+	    CONDETC         ,
+	    SMPAMOUNT       ,
+	    ITEMTERM        ,
+	    RESULTTYPE      ,
+	    ITEMVALUE       ,
+	    RESULTVALUE     ,
+	    RESULTCONTENTS  ,
+	    ANNOTATION      ,
+	    REMARK          ,
+	    ITEMPRICE       ,
+	    ITEMSTATE       ,
+	    ORDERBY         ,
+	    ADDPRICE        ,
+	    ADDPRICECOND    ,
+	    FIXCNT          ,
+	    COOPERYN        ,
+	    REGID           ,
+	    REGDATE         ,
+	    MODIFYID        ,
+	    MODIFYDATE      ,
+	    METHODNM        ,
+	    ITEMENAME       ,
+	    OFFICEID        ,
+	    ITEMNAME        ,
+	    SCSEQN          ,
+	    REQSPEC         ,
+	    SPEC            ,
+	    PRICE           ,
+	    CALC            ,
+	    RESULTFLAG      ,
+	    PRICECNT        ,
+	    TEMPERCOND      ,
+	    TEMPUNIT        ,
+	    TIMECOND        ,
+	    TIMECONDUNIT    ,
+	    ETC             ,
+	    ETCUNIT         ,
+	    BASICCOND       ,
+	    BASICUNIT       
+	FROM TNE_RESULT WHERE REQID=#reqid#
+]]>
+</insert>
+
+
+
+<!-- DELETE TEMPLET  -->
+
+<delete id="templet_DAO.deleteRequest" parameterClass="exam.com.req.model.TempletVO" >
+	<![CDATA[
+		DELETE FROM TNE_TEMPLET_REQUEST WHERE TEMPLETID=#templetid#
+	]]>	
+</delete>
+
+<delete id="templet_DAO.deleteReport" parameterClass="exam.com.req.model.TempletVO" >
+	<![CDATA[
+		DELETE FROM TNE_TEMPLET_REPORT WHERE TEMPLETID=#templetid#
+	]]>	
+</delete>
+
+<delete id="templet_DAO.deleteSample" parameterClass="exam.com.req.model.TempletVO" >
+	<![CDATA[
+		DELETE FROM TNE_TEMPLET_SAMPLE WHERE TEMPLETID=#templetid#
+	]]>	
+</delete>
+
+<delete id="templet_DAO.deleteResult" parameterClass="exam.com.req.model.TempletVO" >
+	<![CDATA[
+		DELETE FROM TNE_TEMPLET_RESULT WHERE TEMPLETID=#templetid#
+	]]>	
+</delete>
+
+
+<!-- ADJUST TEMPLET  -->
+
+<insert id="templet_DAO.adjustRequest">
+<![CDATA[
+	INSERT INTO TNE_REQUEST
+	(
+	    MEMID           ,
+	    COMID           ,
+	    ORDINAL         ,
+	    REQID           ,
+	    BIZNO           ,
+	    MNGNAME         ,
+	    MNGDEPT         ,
+	    MNGEMAIL        ,
+	    MNGHP           ,
+	    MNGPHONE        ,
+	    FAX             ,
+	    SMPCNT          ,
+	    REQSTATE        ,
+	    ITEMAFTER       ,
+	    ITEMDESC        ,
+	    TOTALPRICETEMP  ,
+	    DCRATE          ,
+	    DCPRICE         ,
+	    ETCPRICE        ,
+	    TOTALPRICE      ,
+	    PRICEDESC       ,
+	    CONFIRMID       ,
+	    CHECKID         ,
+	    AGENTID         ,
+	    COMNAME         ,
+	    SCSEQN          ,
+	    ISSUEAPPR       ,
+	    SIGNAPPR        ,
+	    REMARK          ,
+	    REGID           ,
+	    REGDATE         ,
+	    MODIFYID        ,
+	    MODIFYDATE         
+	)
+	SELECT 
+	    MEMID           ,
+	    COMID           ,
+	    ORDINAL         ,
+	    #reqid#   REQID ,
+	    BIZNO           ,
+	    MNGNAME         ,
+	    MNGDEPT         ,
+	    MNGEMAIL        ,
+	    MNGHP           ,
+	    MNGPHONE        ,
+	    FAX             ,
+	    SMPCNT          ,
+	    '-1'  REQSTATE  ,
+	    ITEMAFTER       ,
+	    ITEMDESC        ,
+	    TOTALPRICETEMP  ,
+	    DCRATE          ,
+	    DCPRICE         ,
+	    ETCPRICE        ,
+	    TOTALPRICE      ,
+	    PRICEDESC       ,
+	    CONFIRMID       ,
+	    CHECKID         ,
+	    AGENTID         ,
+	    COMNAME         ,
+	    SCSEQN          ,
+	    ISSUEAPPR       ,
+	    SIGNAPPR        ,
+	    REMARK          ,
+	    REGID           ,
+	    REGDATE         ,
+	    MODIFYID        ,
+	    MODIFYDATE         
+	FROM TNE_TEMPLET_REQUEST 
+	WHERE TEMPLETID= #templetid#
+]]>
+</insert>
+
+
+<insert id="templet_DAO.adjustReport">
+<![CDATA[
+	INSERT INTO TNE_REPORT
+	(
+	    REQID            ,
+	    REPORTID         ,
+	    USAGE            ,
+	    TYPE             ,
+	    TAXBIZTYPE          ,
+	    ORGCNT           ,
+	    COPYCNT          ,
+	    REPORTPRICE      ,
+	    REPORTSTATE      ,
+	    PRICESTATE       ,
+	    REQUESTCDATE     ,
+	    RECEIPTDATE      ,
+	    ACCEPTNO         ,
+	    REPORTNO         ,
+	    RCVCOMPANY       ,
+	    RCVCEO           ,
+	    RCVZIPCODE       ,
+	    RCVADDR1         ,
+	    RCVADDR2         ,
+	    RCVDEPT          ,
+	    RCVEMAIL         ,
+	    RCVHP            ,
+	    RCVPHONE         ,
+	    RCVFAX           ,
+	    TAXCOMPANY       ,
+	    TAXCEO           ,
+	    TAXZIPCODE       ,
+	    TAXADDR1         ,
+	    TAXADDR2         ,
+	    TAXDEPT          ,
+	    TAXEMAIL         ,
+	    TAXHP            ,
+	    TAXPHONE         ,
+	    TAXFAX           ,
+	    ISSUEDATEPLAN    ,
+	    ISSUEDATECMPL    ,
+	    CARDBILLNO       ,
+	    CARDPRICE        ,
+	    CARDTYPE         ,
+	    LANGTYPE         ,
+	    ENTAXCEO         ,
+	    ENTAXCOMPANY     ,
+	    ENTAXADDR1       ,
+	    ENRCVCEO         ,
+	    ENRCVADDR1       ,
+	    ENRCVCOMPANY     ,
+	    PRICETYPE        ,
+	    PRICEDATE        ,
+	    PRICECHARGETYPE  ,
+	    TAXISSUEDATE     ,
+	    REGID            ,
+	    REGDATE          ,
+	    MODIFYID         ,
+	    MODIFYDATE       ,
+	    TAXBIZNO         ,
+	    TAXMNGNAME       ,
+	    RCVMNGNAME       
+	)
+	SELECT
+	    #reqid#    REQID ,
+	    REPORTID         ,
+	    USAGE            ,
+	    TYPE             ,
+	    TAXBIZTYPE          ,
+	    ORGCNT           ,
+	    COPYCNT          ,
+	    REPORTPRICE      ,
+	    REPORTSTATE      ,
+	    PRICESTATE       ,
+	    REQUESTCDATE     ,
+	    RECEIPTDATE      ,
+	    ACCEPTNO         ,
+	    REPORTNO         ,
+	    RCVCOMPANY       ,
+	    RCVCEO           ,
+	    RCVZIPCODE       ,
+	    RCVADDR1         ,
+	    RCVADDR2         ,
+	    RCVDEPT          ,
+	    RCVEMAIL         ,
+	    RCVHP            ,
+	    RCVPHONE         ,
+	    RCVFAX           ,
+	    TAXCOMPANY       ,
+	    TAXCEO           ,
+	    TAXZIPCODE       ,
+	    TAXADDR1         ,
+	    TAXADDR2         ,
+	    TAXDEPT          ,
+	    TAXEMAIL         ,
+	    TAXHP            ,
+	    TAXPHONE         ,
+	    TAXFAX           ,
+	    ISSUEDATEPLAN    ,
+	    ISSUEDATECMPL    ,
+	    CARDBILLNO       ,
+	    CARDPRICE        ,
+	    CARDTYPE         ,
+	    LANGTYPE         ,
+	    ENTAXCEO         ,
+	    ENTAXCOMPANY     ,
+	    ENTAXADDR1       ,
+	    ENRCVCEO         ,
+	    ENRCVADDR1       ,
+	    ENRCVCOMPANY     ,
+	    PRICETYPE        ,
+	    PRICEDATE        ,
+	    PRICECHARGETYPE  ,
+	    TAXISSUEDATE     ,
+	    REGID            ,
+	    REGDATE          ,
+	    MODIFYID         ,
+	    MODIFYDATE       ,
+	    TAXBIZNO         ,
+	    TAXMNGNAME       ,
+	    RCVMNGNAME         
+	FROM TNE_TEMPLET_REPORT WHERE TEMPLETID=#templetid#
+]]>
+</insert>
+
+
+<insert id="templet_DAO.adjustSample">
+<![CDATA[
+	INSERT INTO TNE_SAMPLE
+	(
+	    REQID       ,
+	    SMPID       ,
+	    MASTERID    ,
+	    NAME        ,
+	    PRICE       ,
+	    REGID       ,
+	    REGDATE     ,
+	    MODIFYID    ,
+	    MODIFYDATE  ,
+	    OFFICEID    ,
+	    ADMINID     ,
+	    SMPFID      ,
+	    SCSEQN      
+	)
+	SELECT     
+	    #reqid# REQID,
+	    SMPID       ,
+	    MASTERID    ,
+	    NAME        ,
+	    PRICE       ,
+	    REGID       ,
+	    REGDATE     ,
+	    MODIFYID    ,
+	    MODIFYDATE  ,
+	    OFFICEID    ,
+	    ADMINID     ,
+	    SMPFID      ,
+	    SCSEQN      
+	FROM TNE_TEMPLET_SAMPLE WHERE TEMPLETID=#templetid#
+]]>
+</insert>
+
+
+<insert id="templet_DAO.adjustResult">
+<![CDATA[
+	INSERT INTO TNE_RESULT
+	(
+	    RESULTID        ,
+	    RESULTPID       ,
+	    REQID           ,
+	    SMPID           ,
+	    ITEMID          ,
+	    ITEMPID         ,
+	    METHODID        ,
+	    UNITID          ,
+	    DISPLAYUNIT     ,
+	    EQUIPID         ,
+	    LVL             ,
+	    ITEMREGID       ,
+	    REPORTUNIT      ,
+	    CONDID          ,
+	    CONDETC         ,
+	    SMPAMOUNT       ,
+	    ITEMTERM        ,
+	    RESULTTYPE      ,
+	    ITEMVALUE       ,
+	    RESULTVALUE     ,
+	    RESULTCONTENTS  ,
+	    ANNOTATION      ,
+	    REMARK          ,
+	    ITEMPRICE       ,
+	    ITEMSTATE       ,
+	    ORDERBY         ,
+	    ADDPRICE        ,
+	    ADDPRICECOND    ,
+	    FIXCNT          ,
+	    COOPERYN        ,
+	    REGID           ,
+	    REGDATE         ,
+	    MODIFYID        ,
+	    MODIFYDATE      ,
+	    METHODNM        ,
+	    ITEMENAME       ,
+	    OFFICEID        ,
+	    ITEMNAME        ,
+	    SCSEQN          ,
+	    REQSPEC         ,
+	    SPEC            ,
+	    PRICE           ,
+	    CALC            ,
+	    RESULTFLAG      ,
+	    PRICECNT        ,
+	    TEMPERCOND      ,
+	    TEMPUNIT        ,
+	    TIMECOND        ,
+	    TIMECONDUNIT    ,
+	    ETC             ,
+	    ETCUNIT         ,
+	    BASICCOND       ,
+	    COPYRESULTID    ,
+	    COPYRESULTPID   ,
+	    BASICUNIT      
+	)
+	SELECT
+	    (SEQ_TNE_RESULT.NEXTVAL)    ,
+	    RESULTPID       ,
+	    #reqid#  REQID  ,
+	    SMPID           ,
+	    ITEMID          ,
+	    ITEMPID         ,
+	    METHODID        ,
+	    UNITID          ,
+	    DISPLAYUNIT     ,
+	    EQUIPID         ,
+	    LVL             ,
+	    ITEMREGID       ,
+	    REPORTUNIT      ,
+	    CONDID          ,
+	    CONDETC         ,
+	    SMPAMOUNT       ,
+	    ITEMTERM        ,
+	    RESULTTYPE      ,
+	    ITEMVALUE       ,
+	    RESULTVALUE     ,
+	    RESULTCONTENTS  ,
+	    ANNOTATION      ,
+	    REMARK          ,
+	    ITEMPRICE       ,
+	    ITEMSTATE       ,
+	    ORDERBY         ,
+	    ADDPRICE        ,
+	    ADDPRICECOND    ,
+	    FIXCNT          ,
+	    COOPERYN        ,
+	    REGID           ,
+	    REGDATE         ,
+	    MODIFYID        ,
+	    MODIFYDATE      ,
+	    METHODNM        ,
+	    ITEMENAME       ,
+	    OFFICEID        ,
+	    ITEMNAME        ,
+	    SCSEQN          ,
+	    REQSPEC         ,
+	    SPEC            ,
+	    PRICE           ,
+	    CALC            ,
+	    RESULTFLAG      ,
+	    PRICECNT        ,
+	    TEMPERCOND      ,
+	    TEMPUNIT        ,
+	    TIMECOND        ,
+	    TIMECONDUNIT    ,
+	    ETC             ,
+	    ETCUNIT         ,
+	    BASICCOND       ,
+	    RESULTID        ,
+	    RESULTPID       ,
+	    BASICUNIT       
+	FROM TNE_TEMPLET_RESULT WHERE TEMPLETID=#templetid#
+]]>
+</insert>
+
+
+
+
+
+
+
+</sqlMap>

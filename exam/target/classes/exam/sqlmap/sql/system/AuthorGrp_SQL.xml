@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="AuthorGrpDAO">
+
+
+    <select id="AuthorGrpDAO.selAuthorGrpList" resultClass="tems.com.system.model.AuthorGrpVO">
+        <![CDATA[
+			select  author_gpcode authorgpcode
+         			,author_gpnm authorgpnm
+         			,regid 
+        			,to_char(regdate,'yyyy-mm-dd') regdate
+        			,orderby
+			from COMTNAUTHORGRP
+			order by orderby
+		]]>
+    </select>
+    
+    <insert id="AuthorGrpDAO.inAuthorGrpList">
+    <![CDATA[
+    		insert into COMTNAUTHORGRP(regid,regdate,author_gpnm,author_gpcode)
+    		values(#regid#,sysdate,#authorgpnm#,SEQ_COMTNAUTHORGRP.NEXTVAL)
+    ]]>
+    </insert>
+    
+    <update id="AuthorGrpDAO.upAuthorGrpList">
+    <![CDATA[
+    		UPDATE COMTNAUTHORGRP SET 
+    			 author_gpnm = #authorgpnm#
+    			,modifyid = #regid# 
+    			,modifydate = sysdate	 
+    			,orderby = #orderby#
+    		WHERE author_gpcode =  #authorgpcode#
+	]]>    		
+    </update>
+    
+    <delete id="AuthorGrpDAO.delAuthorGrpList">
+    <![CDATA[
+    		delete from COMTNAUTHORGRP
+    		where author_gpcode = #authorgpcode#
+	]]>    		
+    </delete>
+    
+    
+    <select id="AuthorGrpDAO.selAuthorList" resultClass="tems.com.system.model.AuthorListVO">
+    <![CDATA[
+    		select  A.author_code authorcode
+			        , A.author_nm authornm
+			        ,B.author_gpcode chkyn
+			from COMTNAUTHORINFO A
+			    , (select * from COMTNAUTHORGPINFO where author_gpcode = #authorgpcode#)  B 
+			where A.author_code = B.author_code(+)
+	]]>			
+    </select>
+    
+    <insert id="AuthorGrpDAO.inAuthorList">
+    <![CDATA[
+    		insert into COMTNAUTHORGPINFO(author_gpcode, author_code, regid, regdate)
+    		values(#authorgpcode#, #authorcode#, #regid# ,sysdate)
+    ]]>
+    </insert>
+    
+    <delete id="AuthorGrpDAO.delAuthorList">
+    <![CDATA[
+    		delete from COMTNAUTHORGPINFO 
+    		where author_gpcode = #authorgpcode#
+    ]]>
+    </delete>
+
+
+</sqlMap>

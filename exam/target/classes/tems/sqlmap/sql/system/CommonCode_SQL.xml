@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="UserInfoDAO">
+
+
+    <select id="CommonCodeDAO.selectCodeGroupList" resultClass="tems.com.system.model.CodeGroupVO">
+        <![CDATA[
+        SELECT
+            CODEGROUPID,
+            CODEGROUPNAME,
+            USEFLAG,
+            REGID,
+            REGDATE,
+            MODIFYID,
+            MODIFYDATE
+        FROM TCT_CODE_GROUP
+        ]]>
+    </select>
+
+    <update id="CommonCodeDAO.updateCodeGroupList"
+            parameterClass="tems.com.system.model.CodeGroupVO">
+    	<![CDATA[
+        UPDATE TCT_CODE_GROUP
+        SET
+            CODEGROUPNAME = #codeGroupName#,
+            USEFLAG       = #useFlag#,
+            MODIFYID      = #modifyID#,
+            MODIFYDATE    = SYSDATE
+        WHERE CODEGROUPID = #codeGroupID#
+        ]]>
+    </update>
+
+    <insert id="CommonCodeDAO.insertCodeGroupList"
+            parameterClass="tems.com.system.model.CodeGroupVO">
+        <![CDATA[
+        INSERT INTO TCT_CODE_GROUP (CODEGROUPID,
+                                    CODEGROUPNAME,
+                                    USEFLAG,
+                                    REGID,
+                                    REGDATE)
+        VALUES (
+            SEQ_TCT_CODE_GROUP.nextval,
+            #codeGroupName#,
+            #useFlag#,
+            #regID#,
+            SYSDATE)
+        ]]>
+    </insert>
+
+    <delete id="CommonCodeDAO.deleteCodeGroupList"
+            parameterClass="tems.com.system.model.CodeGroupVO">
+        <![CDATA[
+        DELETE FROM TCT_CODE_GROUP
+        WHERE CODEGROUPID = #codeGroupID#
+        ]]>
+    </delete>
+
+    <select id="CommonCodeDAO.selectCodeGroupList2"
+            parameterClass="String"
+            resultClass="tems.com.system.model.CodeDetailVO">
+        <![CDATA[
+        SELECT
+            CODEGROUPID,
+            CODEID,
+            CODENAME,
+            USEFLAG,
+            REGID,
+            REGDATE,
+            MODIFYID,
+            MODIFYDATE
+        FROM TCT_CODE_DETAIL
+        WHERE CODEGROUPID = #str#
+        ]]>
+    </select>
+
+    <update id="CommonCodeDAO.updateCodeGroupList2"
+            parameterClass="tems.com.system.model.CodeDetailVO">
+        <![CDATA[
+        UPDATE TCT_CODE_DETAIL
+        SET
+            CODENAME   = #codeName#,
+            USEFLAG    = #useFlag#,
+            REGID      = #regID#,
+            MODIFYID   = #modifyID#,
+            MODIFYDATE = SYSDATE
+        WHERE CODEID = #codeID#
+        ]]>
+    </update>
+
+    <insert id="CommonCodeDAO.insertCodeGroupList2"
+            parameterClass="tems.com.system.model.CodeDetailVO">
+        <![CDATA[
+        INSERT INTO TCT_CODE_DETAIL
+        (
+            CODEGROUPID,
+            CODEID,
+            CODENAME,
+            USEFLAG,
+            REGID,
+            REGDATE
+        )
+        VALUES
+            (
+                #codeGroupID#,
+                SEQ_TCT_CODE_DETAIL.nextval,
+                #codeName#,
+                #useFlag#,
+                #regID#,
+                #regDate#
+            )
+        ]]>
+    </insert>
+
+    <delete id="CommonCodeDAO.deleteCodeGroupList2"
+            parameterClass="tems.com.system.model.CodeDetailVO">
+        <![CDATA[
+        DELETE FROM TCT_CODE_DETAIL
+        WHERE CODEID = #codeID#
+        ]]>
+    </delete>
+
+
+</sqlMap>

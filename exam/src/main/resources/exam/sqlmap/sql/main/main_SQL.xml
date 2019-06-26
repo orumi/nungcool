@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="mainDAO">
+	
+    <select id="mainDAO.selectState" parameterClass="exam.com.main.model.LoginUserVO" resultClass="exam.com.main.model.StateVO">
+    	<![CDATA[
+		SELECT SUM(CNT) CNT, SUM(S01) S01,SUM(S02) S02,SUM(S03) S03,SUM(S04) S04 FROM (                
+		SELECT COUNT(REQID) CNT, SUM(STEP01) S01, SUM(STEP02) S02, SUM(STEP03) S03, 0 S04
+		    FROM
+		    (                      
+		        SELECT
+		            Q.REQID
+		           ,Q.MEMID 
+		           ,Q.REQSTATE
+		           ,CASE WHEN REQSTATE<4 THEN 1 ELSE 0 END STEP01
+		           ,CASE WHEN 4<=REQSTATE AND REQSTATE<8 THEN 1 ELSE 0 END STEP02
+		           ,CASE WHEN 8<=REQSTATE AND REQSTATE<9 THEN 1 ELSE 0 END STEP03
+		        FROM 
+		            TNE_REQUEST Q,
+		            TNE_REPORT  P,
+		            THE_REPORT H
+		        WHERE Q.MEMID=#memid#
+		          AND Q.REQID=P.REQID
+		          AND P.REPORTID='1'
+		          AND P.REQID = H.REQID(+)
+		          AND P.REPORTID = H.REPORTID(+) 
+		          AND NVL(H.PRINTFLAG,'N') <> 'Y'
+		    ) GROUP BY MEMID
+		UNION ALL
+		    SELECT 0, 0, 0, 0, COUNT(REQID) S04 FROM
+		    (
+		        SELECT
+		            Q.REQID
+		           ,Q.MEMID 
+		           ,P.REPORTSTATE
+		        FROM 
+		            TNE_REQUEST Q,
+		            TNE_REPORT  P,
+		            THE_REPORT H
+		        WHERE Q.MEMID=#memid#
+		          AND Q.REQID=P.REQID
+		          AND P.REPORTID <>'1'
+		          AND P.REQID = H.REQID(+)
+		          AND P.REPORTID = H.REPORTID(+) 
+		          AND NVL(H.PRINTFLAG,'N') <> 'Y'
+		    )      
+		    GROUP BY MEMID   
+		) 
+	]]>		
+    </select>  
+    
+    
+    
+    
+    
+    
+        
+</sqlMap>

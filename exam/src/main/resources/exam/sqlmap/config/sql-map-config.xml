@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+        "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+
+    <sqlMap resource="exam/sqlmap/sql/loginUser/LoginUser_SQL.xml"/>
+
+	<sqlMap resource="exam/sqlmap/sql/main/zipcode_SQL.xml"></sqlMap>
+
+    <sqlMap resource="exam/sqlmap/sql/system/UserInfo_SQL.xml"/>
+
+    <sqlMap resource="exam/sqlmap/sql/system/AuthorGrp_SQL.xml"/>
+    
+    <sqlMap resource="exam/sqlmap/sql/common/XMLReport.xml"/>
+    
+    
+
+	<sqlMap resource="exam/sqlmap/sql/main/main_SQL.xml"></sqlMap>
+
+<sqlMap resource="exam/sqlmap/sql/card/INIpay_SQL.xml"></sqlMap></sqlMapConfig>

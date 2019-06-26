@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+
+<sqlMap namespace="INIpay_DAO">
+
+	<select id="INIpay_DAO.selectReqCard" resultClass="exam.com.card.model.ReqCardVO">
+		SELECT
+		    Q.MEMID, Q.COMID,
+		    Q.REQID,
+		    Q.SMPGETYN,
+		    P.REQUESTCDATE,
+		    P.ACCEPTNO,
+		    P.REPORTNO,
+		    NVL(I.ITEMCNT, 0) ITEMCNT,
+		    NVL(S.SMPCNT, 0)  SMPCNT,
+		    Q.REQSTATE,
+		    Q.TOTALPRICE,
+		    TO_CHAR( Q.TOTALPRICE , '999,999,999,999,999') CHARPRICE,
+		    S.STATENM,
+		    S.SMPNAME,
+		    COUNT(Q.REQID) OVER (PARTITION BY MEMID) CNT,
+		    SUM(TOTALPRICE) OVER (PARTITION BY MEMID) SUMPRICE,
+		    TO_CHAR( SUM(TOTALPRICE) OVER (PARTITION BY MEMID) , '999,999,999,999,999') TOTALSUMPRICE
+		FROM TNE_REQUEST Q,
+		     TNE_REPORT  P, 
+		     TCT_STATE   S,
+		    (SELECT
+		         REQID,
+		         COUNT(REQID) ITEMCNT
+		     FROM TNE_RESULT
+		     GROUP BY REQID) I,
+		    (SELECT
+		         REQID,
+		         count(SMPID) SMPCNT,
+		         SUBSTR( XMLAGG( XMLELEMENT(COL ,', ', aNames) ORDER BY rank).EXTRACT('//text()' ).GETSTRINGVAL() , 2) SMPNAME
+		     FROM (
+		         SELECT
+		             REQID,
+		             SMPID,
+		             ('##' || rank || ' ' || aName) as aNames,
+		             ('##' || rank || ' ' || bName) as bNames,
+		             rank
+		         FROM (
+		             SELECT
+		                 A.reqid,
+		                 a.smpid,
+		                 a.name                 aName,
+		                 b.NAME                 bName,
+		                 rank()
+		                 OVER (PARTITION BY a.REQID
+		                     ORDER BY SMPID DESC) rank
+		             FROM tne_sample a, tce_master b
+		             WHERE A.MASTERID = B.MASTERID
+		         )
+		     ) GROUP BY REQID) S
+		WHERE 
+
+		<iterate property="reqlist" prepend=" Q.REQID IN" open="(" close=")" conjunction="," >
+			#reqlist[]#
+		</iterate>		
+
+		      AND Q.REQID    = P.REQID
+		      AND P.REPORTID = 1
+		      AND Q.REQSTATE = S.STATECD (+)
+		      AND Q.REQID = I.REQID (+)
+		      AND Q.REQID = S.REQID (+)
+		ORDER BY REQID DESC 
+	</select>
+
+
+	<update id="INIpay_DAO.updateReqCard">
+		UPDATE TNE_REPORT R SET CARDBILLNO=#cardbillno#, CARDPRICE=#cardprice#, PRICETYPE=29, PRICEDATE=TO_DATE(#pricedate#,'YYYYMMDDHH24MISS'), REPORTPRICE=#reportprice# 
+		WHERE R.REQID = #reqid#
+	</update>
+
+
+
+	<update id="INIpay_DAO.updateCancelCard">
+		UPDATE TNE_REPORT SET CARDBILLNO=null, CARDPRICE=null, PRICETYPE=null, PRICEDATE=null, REPORTPRICE=null, CARDCANCELRST=#cardcancelrst#, CARDCANCELDATE=SYSDATE WHERE CARDBILLNO=#cardbillno#
+	</update>
+
+
+
+
+
+	<select id="INIpay_DAO.selectEquipCard" resultClass="exam.com.card.model.EquipCardVO">
+	    SELECT * FROM
+	    (
+	        SELECT   
+	             EQUIPREQID       
+	            ,COMID            
+	            ,TAXCOMPANY       
+	            ,TAXCEO           
+	            ,TAXZIPCODE       
+	            ,TAXADDR1         
+	            ,TAXADDR2         
+	            ,TAXBIZNO         
+	            ,TAXMNGNAME       
+	            ,TAXDEPT          
+	            ,TAXEMAIL         
+	            ,TAXHP            
+	            ,TAXPHONE         
+	            ,TAXFAX  
+	            ,TAXBIZTYPE          
+	            ,TAXISSUEDATE     
+	            ,CARDBILLNO       
+	            ,CARDPRICE        
+	            ,CARDTYPE         
+	            ,STATE  
+	            ,CASE WHEN STATE=0 THEN '신청'
+	             WHEN STATE=2 THEN '접수'
+	             WHEN STATE=4 THEN '완료' 
+	             ELSE '작성중' END STATENAME           
+	            ,PRICESTATE       
+	            ,PRICEDATE        
+	            ,REQUESTCDATE     
+	            ,RECEIPTDATE      
+	            ,ACCEPTNO         
+	            ,USEOBJECT        
+	            ,TO_CHAR(STARTDATE,'YYYY-MM-DD') STARTDATE        
+	            ,TO_CHAR(ENDDATE,'YYYY-MM-DD')   ENDDATE         
+	            ,REQPAY           
+	            ,TO_CHAR(TOTREQPAY, '999,999,999,999,999') TOTREQPAY
+	            ,TOTREQPAY TPAY 
+	            ,COUNT(EQUIPREQID) OVER (PARTITION BY COMID) CNT
+                ,SUM(TOTREQPAY) OVER (PARTITION BY COMID) SUMPRICE
+                ,TO_CHAR( SUM(TOTREQPAY) OVER (PARTITION BY COMID) , '999,999,999,999,999') TOTALSUMPRICE       
+	            ,PRICECHARGETYPE  
+	            ,PRICETYPE        
+	            ,GIANTITLE        
+	            ,GIANTEXT         
+	            ,MEMID   
+	            ,(SELECT NAME FROM TNT_MEMBER M WHERE M.MEMID= R.MEMID) MEMNAME          
+	        FROM TNE_EQUIP_REQ R
+	        
+		    <iterate property="equiplist" prepend=" WHERE R.EQUIPREQID IN" open="(" close=")" conjunction="," >
+				#equiplist[]#
+			</iterate>	
+		
+	    ) E    
+	    LEFT JOIN
+	    (
+	        SELECT EQUIPREQID REQID, EQNAME, 
+	            CASE WHEN CNT>0 THEN SUBSTR(EQNAME,0,INSTR(EQNAME,',')-1)
+	            ELSE EQNAME
+	            END EQUIPNAMES
+	        FROM
+	        (
+	            SELECT 
+	                 C.EQUIPREQID, COUNT(C.EQUIPID)-1 CNT,
+	                 SUBSTR (XMLAGG (XMLELEMENT (COL, ',', E.NAME) ORDER BY E.EQUIPID).EXTRACT ('//text()'), 2) AS   EQNAME
+	            FROM TNE_EQUIP_CONTRACT C,
+	                 TNE_EQUIP E
+	            WHERE C.EQUIPID = E.EQUIPID     
+	            GROUP BY EQUIPREQID   
+	        )
+	    ) R
+	    ON E.EQUIPREQID=R.REQID   
+	    ORDER BY EQUIPREQID	
+	</select>
+
+
+
+	<update id="INIpay_DAO.updateEquipCard">
+		UPDATE TNE_EQUIP_REQ R SET CARDBILLNO=#cardbillno#, CARDPRICE=#cardprice#, PRICETYPE=29, PRICEDATE=TO_DATE(#pricedate#,'YYYYMMDDHH24MISS') 
+		WHERE R.EQUIPREQID = #equipreqid#
+	</update>
+
+
+
+	<update id="INIpay_DAO.updateEquipCancelCard">
+		UPDATE TNE_EQUIP_REQ SET CARDBILLNO=null, CARDPRICE=null, PRICETYPE=null, PRICEDATE=null CARDCANCELRST=#cardcancelrst#, CARDCANCELDATE=SYSDATE WHERE CARDBILLNO=#cardbillno#
+	</update>
+
+
+
+	<select id="INIpay_DAO.selectReportCard" resultClass="exam.com.card.model.ReportCardVO">
+	   SELECT
+	        ROWNUM idx,
+	        E.REPORTID reportId,
+	        E.REPORTNO reportNo,
+	        A.REQID reqId,
+	        E.TYPE,
+	        nvl(C.examItemCnt, 0) examItemCnt,
+	        nvl(D.smpCnt, 0) smpCnt,
+	        A.REQSTATE reqState,
+	        TO_CHAR( E.reportprice , '999,999,999,999,999') CHARPRICE,
+	        E.reportprice totalPrice,
+	        COUNT(E.REQID||'_'||E.REPORTID) OVER (PARTITION BY COMID) CNT,
+	        SUM(E.reportprice) OVER (PARTITION BY COMID) SUMPRICE,
+	        TO_CHAR( SUM(E.reportprice) OVER (PARTITION BY COMID) , '999,999,999,999,999') TOTALSUMPRICE,
+	        B.STATENM stateNm,
+	        E.ACCEPTNO acceptNo,
+	        to_char(E.ISSUEDATECMPL, 'YYYY-MM-DD') issueDateCmpl,
+	        to_char(E.REQUESTCDATE, 'YYYY-MM-DD') requestCdate,
+	        F.productName productName,
+	        F.smpName smpName,
+	        E.CARDBILLNO,
+	        E.CARDPRICE,
+	        E.CARDTYPE,
+	        E.PRICEDATE,
+	        e.pricetype,
+	        e.reportState
+	        FROM TNE_REQUEST A, TCT_STATE B, TNE_REPORT E,
+	        (SELECT REQID,
+	        count(REQID) examItemCnt
+	        FROM TNE_RESULT
+	        GROUP BY REQID) C,
+	        (SELECT REQID,
+	        count(REQID) smpCnt
+	        FROM TNE_SAMPLE
+	        GROUP BY REQID) D,
+	        (SELECT A.REQID,
+	        count(A.SMPID) smpCnt,
+	        WM_CONCAT(A.NAME) smpName,
+	        WM_CONCAT(B.NAME) productName
+	        FROM TNE_SAMPLE A, TCE_MASTER B
+	        WHERE A.MASTERID = B.MASTERID
+	        GROUP BY REQID) F
+	        WHERE 
+	        
+		<iterate property="reportlist" prepend=" E.REQID||'_'||E.REPORTID IN" open="(" close=")" conjunction="," >
+			#reportlist[]#
+		</iterate>	
+
+	        AND E.reportState = B.STATECD (+)
+	        AND A.REQID = C.REQID (+)
+	        AND A.REQID = D.REQID (+)
+	        AND A.REQID = E.REQID
+	        AND A.REQID = F.REQID
+	        AND E.REPORTID != '1'
+
+        ORDER BY reqid, reportid	
+	</select>
+
+
+	<update id="INIpay_DAO.updateReportCard">
+		UPDATE TNE_REPORT R SET CARDBILLNO=#cardbillno#, CARDPRICE=#cardprice#, PRICETYPE=29, PRICEDATE=TO_DATE(#pricedate#,'YYYYMMDDHH24MISS'), REPORTPRICE=#reportprice# 
+		WHERE R.REQID = #reqid# AND R.REPORTID = #reportid#
+	</update>
+
+
+
+	<update id="INIpay_DAO.updateReportCancelCard">
+		UPDATE TNE_REPORT SET CARDBILLNO=null, CARDPRICE=null, PRICETYPE=null, PRICEDATE=null, REPORTPRICE=null, CARDCANCELRST=#cardcancelrst#, CARDCANCELDATE=SYSDATE WHERE CARDBILLNO=#cardbillno#
+	</update>
+	
+
+
+</sqlMap>

@@ -1,0 +1,308 @@
+   
+.form-terms{
+	clear: both;
+    margin: 0 0 10px;
+    position: relative;
+    -moz-border-radius: 0;
+    -khtml-border-radius: 0;
+    -webkit-border-radius: 0;
+    border-radius: 0;
+    padding-bottom: 10px;
+   }
+
+
+
+/* widget-body */    
+.form-terms .widget-body {
+   	background-color: #FAFAFA !important;
+}
+   
+.form-terms .widget-body {
+    float: left;
+    width: 100%;
+    position: relative;
+    font-size: 13px;
+    -moz-border-radius: 2px;
+    -khtml-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    margin: 0;
+    border-width: 1px 1px 1px;
+    border-style: solid;
+    /* border-top: none; */
+    border-top-color: #CCC !important;
+    border-right-color: #CCC !important;
+    border-bottom-color: #CCC !important;
+    border-left-color: #CCC !important;
+    padding: 3px 3px;
+    overflow: visible;
+}
+   
+   
+.form-terms fieldset+fieldset{
+    border-top: 1px dashed rgba(218, 218, 218, 0.67);
+}
+    
+.form-terms .form-group{
+    padding:0px;
+	margin:0px !important;
+}
+
+.form-terms .input-group {
+	margin-top: 3px;
+}	
+
+/* form control elements */  
+.smart-style-0 .form-terms .form-label{
+    text-align: right;
+    color: #FFFFFF;
+   	background-color: #676563 !important;
+   	margin: 0px;
+   	padding-top:7px;
+   	padding-bottom:8px;
+   	padding-right: 8px;
+   	height:100%;
+   }
+   
+/* form control other theme */  
+.form-terms .form-label{
+    text-align: right;
+    color: #4A4A4A;
+   	background-color: #EEEEEE !important;
+   	margin: 0px;
+   	padding-top:7px;
+   	padding-bottom:8px;
+   	padding-right: 8px;
+   	height:100%;
+   }
+ 
+   
+.form-terms .form-control {
+	height: 28px;
+	width:80%;
+	margin-top: 0px;
+}
+
+.form-terms .form-button {
+	padding-left: 0px;
+}
+
+.form-terms .form-button .form-control {
+	height: 28px;
+	width:100%;
+	margin-top: 3px;
+}	
+
+.form-terms .form-button>button{
+    margin:3px;
+	padding: 4px 12px;
+}
+
+.form-terms .selectBox{
+	height: 28px;
+	border: 1px solid #ccc;
+	width: 80%;
+	padding:2px 12px;
+	margin-top: 3px;
+}
+
+.form-terms .inputBox{
+    border: 1px solid #ccc;
+    margin-top: 3px;
+    width: 80%;
+}
+
+.form-terms .textAreaBox{
+	border: 1px solid #ccc;
+}
+
+.form-terms .form-calendar {
+	width:100% !important;
+}
+
+.form-terms .wave{
+	height: 100%;
+	display: table;
+	padding-left:1px;
+}
+.form-terms .wave b{
+	display: table-cell; 
+	text-align: center; 
+	vertical-align: middle;
+	padding-top:8px;
+}
+
+
+.dt-toolbar{
+	border-top:1px solid #CCC;
+	border-left:1px solid #CCC;
+	border-right:1px solid #CCC;
+	border-bottom:0px solid #CCC !important;
+}
+
+.border-bottom-solid{
+	border-bottom:1px solid #CCC !important;
+	padding-bottom:3px;	
+	margin-bottom: 22px;
+}
+
+.border-top-solid{
+	border-top:1px solid #CCC !important;	
+}
+
+.dt-footbar{
+    clear: both;
+	border-top:0px solid #CCC;
+	border-left:1px solid #CCC;
+	border-right:1px solid #CCC;
+	border-bottom:1px solid #CCC;
+	padding: 4px;
+}
+
+.dt-footbar .input-group{
+
+}
+
+.div-realgrid{
+	clear: both;
+}
+
+
+/* 안내문 */
+.txt-guide{
+    margin-top: 8px;
+    margin-left: 10px;
+    font-size: 13px;
+    color: #525252;
+}
+
+
+
+
+
+
+.modal-footer{
+	clear: both;
+	
+}
+
+
+
+/* detail css */
+.clear-both {
+	clear: both;
+}
+
+
+
+.col-11p{
+	float: left;
+	width: 11.11111%;
+}
+
+.col-89p{
+	float: left;
+	width: 88.88888%;
+	padding-left:13px;
+	padding-right: 13px;
+}
+
+.jarviswidget {
+    margin: 0;
+    padding: 0;
+}
+
+
+
+
+
+
+/* sub_content elements */  
+
+/* widget-body */    
+.sub-content .form-terms .widget-body {
+   	background-color: #FAFAFA !important;
+}
+
+
+.smart-style-0 .sub-content .form-terms .form-label{
+    text-align: right;
+    color: #FFFFFF;
+   	background-color: #676563 !important;
+   	margin: 0px;
+   	padding-top:5px;
+   	padding-bottom:5px;
+   	padding-right: 5px;
+   	
+   	height:100%;
+   }   
+
+
+   
+/* sub_content form control other theme */  
+.sub-content .form-terms .form-label{
+    text-align: right;
+    color: #4A4A4A;
+   	background-color: #EEEEEE !important;
+   	margin: 0px;
+   	padding-top:5px;
+   	padding-bottom:5px;
+   	padding-right: 5px;
+   	height:100%;
+   }  
+
+
+.sub-content .form-terms .inputBox{
+    border: 1px solid #ccc;
+    margin-top: 1px;
+    width: 100%;
+}
+
+
+
+.sub-content {
+	padding-top: 0px;
+
+}
+
+.sub-content .ui-sortable .jarviswidget-sortable>header {
+	border-bottom:0px;
+}
+
+.txt-sub-content {
+    float: left;
+    padding-top: 6px;
+    margin: 1px;
+    width: 100%;
+}
+
+
+
+
+/* form - vertical */
+.sub-content .form-terms .form-vertical .form-label {
+    text-align: center !important;
+}
+
+.form-terms .form-vertical .form-group+.form-group  {
+	border-left:1px dashed rgba(218,218, 218, 0.67);
+}
+
+.dash-left {
+	border-left:1px dashed rgba(218,218, 218, 0.67);
+}
+
+
+/* etc component */
+
+.dd3-content {
+	margin:0px !important;
+	padding: 2px 20px 6px 20px;
+}
+.row-merge {
+	position: absolute;
+	display: block;
+	height: 100%;
+	width: 140px;
+	padding-bottom: 5px;
+}

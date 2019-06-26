@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<head>
+<meta http-equiv='Content-type' content='text/html; charset=utf-8'>
+<title>PopBox</title>
+<link rel='stylesheet' href='../css/popbox.css' type='text/css' media='screen'
+	charset='utf-8'>
+<script type='text/javascript' charset='utf-8'
+	src='../js/jquery-1.9.1.js'></script>
+<script type='text/javascript' charset='utf-8' src='popbox.js'></script>
+<style type='text/css' media='screen'>
+
+</style>
+<script type='text/javascript' charset='utf-8'>
+	$(document).ready(function() {
+		var opt = {
+				width		: 550,
+				left 		: 0,
+				top 		: 30,
+				arrowpos	: 30,
+				autoClose 	: 0
+		};
+		$('.popbox').popbox(opt);
+	});
+</script>
+</head>
+<body>
+
+	<div class='popbox'>
+		<div class='collapse'>
+			<div class='box'>
+				<div class='arrow'></div>
+				<div class='arrow-border'></div>
+				<p>
+					<small>Please complete the form to sign up for the <font color="red">Gristmill.io</font> mailing list!
+					</small>
+				</p>
+			</div>
+		</div>
+	</div>
+
+</body>

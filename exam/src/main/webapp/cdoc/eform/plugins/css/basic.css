@@ -1,0 +1,307 @@
+BODY {
+	background-color: #FFFFFF }
+A {
+	text-decoration: none; color: #0000FF }
+A:link {
+	text-decoration:none; color: #0000FF;   }
+A:visited {
+	text-decoration:none; color: #0000FF;   }
+A:hover {
+      text-decoration: underline; color: #FF0000;  }
+A:active {
+	text-decoration:none;  }
+
+A.pbttn {
+      BORDER-RIGHT: #104a7b 1px solid; PADDING-RIGHT: 4px; BORDER-TOP: #afc4d5 1px solid; PADDING-LEFT: 4px; FONT-SIZE: 12px; BACKGROUND: #d6e7ef; BORDER-LEFT: #afc4d5 1px solid; CURSOR: hand; COLOR: #000066; PADDING-TOP: 2px; BORDER-BOTTOM: #104a7b 1px solid; FONT-FAMILY: 굴림, Gulim, AppleGothic, Seoul, Arial; HEIGHT: 19px; TEXT-DECORATION: none }
+A.pbttn:link {
+    BORDER-RIGHT: #104a7b 1px solid; PADDING-RIGHT: 4px; BORDER-TOP: #afc4d5 1px solid; PADDING-LEFT: 4px; FONT-SIZE: 12px; BACKGROUND: #d6e7ef; BORDER-LEFT: #afc4d5 1px solid; CURSOR: hand; COLOR: #000066; PADDING-TOP: 2px; BORDER-BOTTOM: #104a7b 1px solid; FONT-FAMILY: 굴림, Gulim, AppleGothic, Seoul, Arial; HEIGHT: 19px; TEXT-DECORATION: none }
+A.pbttn:visited {
+    BORDER-RIGHT: #104a7b 1px solid; PADDING-RIGHT: 4px; BORDER-TOP: #afc4d5 1px solid; PADDING-LEFT: 4px; FONT-SIZE: 12px; BACKGROUND: #d6e7ef; BORDER-LEFT: #afc4d5 1px solid; CURSOR: hand; COLOR: #000066; PADDING-TOP: 2px; BORDER-BOTTOM: #104a7b 1px solid; FONT-FAMILY: 굴림, Gulim, AppleGothic, Seoul, Arial; HEIGHT: 19px; TEXT-DECORATION: none }
+A.pbttn:hover {
+      BORDER-RIGHT: #104a7b 1px solid; PADDING-RIGHT: 4px; BORDER-TOP: #afc4d5 1px solid; PADDING-LEFT: 4px; FONT-SIZE: 12px; BACKGROUND: #d6e7ef; BORDER-LEFT: #afc4d5 1px solid; CURSOR: hand; COLOR: #000066; PADDING-TOP: 2px; FONT-FAMILY: 굴림, Gulim, AppleGothic, Seoul, Arial; HEIGHT: 19px; TEXT-DECORATION: none }
+
+form { border:0; margin:10px;}
+
+
+.root {
+       font-family: arial; font-weight: bold; font-size  : 10pt  }
+.item {
+       font-family: arial;  font-weight: normal;   font-size  : 9pt;   }
+.itemred {
+       font-family: arial;   font-weight: normal;  font-size  : 9pt;  color: red; }
+.frm{
+       font: 9pt 굴림;   Background-color:#FFFFFF; border-width:1; border-style:solid; }
+.frmemp {
+       font: 9pt 굴림;   Background-color:#FFFFFF;  Border:0x SOLID #000000  }
+td {
+	font-family: "굴림"; font-size: 9pt; line-height: 150% }
+.frmclick {
+	font: 9pt 굴림; color: black; Background-color: #42CFFF; Border:0x SOLID #000000 }
+.text {
+	FONT-SIZE: 10pt; LINE-HEIGHT: 160%; FONT-FAMILY: "돋움"; }
+
+.sbttn {
+        BORDER-RIGHT: #104a7b 1px solid; PADDING-RIGHT: 4px; BORDER-TOP: #afc4d5 1px solid; PADDING-LEFT: 4px; FONT-SIZE: 12px; BACKGROUND: #FFFFF; BORDER-LEFT: #afc4d5 1px solid; CURSOR: hand; COLOR: #000066; PADDING-TOP: 2px; BORDER-BOTTOM: #104a7b 1px solid; FONT-FAMILY: 굴림, Gulim, AppleGothic, Seoul, Arial; HEIGHT: 22px; TEXT-DECORATION: none}
+.wbttn {
+	font-size: 12px; background-color: #FFFFFF; background-repeat: repeat; background-attachment: scroll; cursor: hand; color: #000066; font-family: 굴림, Gulim, AppleGothic, Seoul, Arial; height: 19px; text-decoration: none; border: 1 solid #7eadd9; padding-left: 4px; padding-right: 4px; padding-top: 3px; background-position: 0% 50% }
+.text1 {
+	font-size: 9pt;
+	color: #494949;
+}
+.textfiled {
+	font-size: 9pt;
+	border: 1px solid #7eadd9;
+}
+.titletext1 {
+	font-size: 14pt;
+	color: #1F6787;
+	font-weight: bold;
+	border-top-width: 2px;
+	border-right-width: 2px;
+	border-bottom-width: 2px;
+	border-left-width: 2px;
+	border-top-color: aaaaff;
+	border-right-color: aaaaff;
+	border-bottom-color: aaaaff;
+	border-left-color: aaaaff;
+	border-top-style: solid;
+	border-right-style: solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+}
+.textfiled1 {
+	font-size: 9pt;
+	font-weight: normal;
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+	border-top-color: aaaaff;
+	border-right-color: aaaaff;
+	border-bottom-color: aaaaff;
+	border-left-color: aaaaff;
+	border-top-style: solid;
+	border-bottom-style: solid;
+	border-right-style: solid;
+	border-left-style: solid;
+}
+.textfiled2 {
+	font-size: 10pt;
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+	border-top-color: AE7A4F;
+	border-right-color: AE7A4F;
+	border-bottom-color: AE7A4F;
+	border-left-color: AE7A4F;
+	border-top-style: solid;
+	border-right-style: solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+}
+.textfiled3 {
+	font-size: 10pt;
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+	border-top-color: 0000FF;
+	border-right-color: 0000FF;
+	border-bottom-color: 0000FF;
+	border-left-color: 0000FF;
+	border-top-style: solid;
+	border-right-style: solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+}
+.textfiled4 {
+	font-size: 10pt;
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+	border-top-color: 0000FF;
+	border-right-color: 0000FF;
+	border-bottom-color: 0000FF;
+	border-left-color: 0000FF;
+	border-top-style: dotted;
+	border-right-style: dotted;
+	border-bottom-style: dotted;
+	border-left-style: dotted;
+}
+.textfiled5 {
+	font: 9pt 돋움체;
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+	border-top-color: 0000FF;
+	border-right-color: 0000FF;
+	border-bottom-color: 0000FF;
+	border-left-color: 0000FF;
+	border-top-style: solid;
+	border-right-style: solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+}
+.textred {
+	font-size: 9pt;
+	color: #CC0000;
+	font-weight: normal;
+}
+.textblue {
+	font-size: 10pt;
+	color: #0000FF;
+	font-weight: bold;
+	border-top-width: 0px;
+	border-right-width: 0px;
+	border-bottom-width: 0px;
+	border-left-width: 0px;
+}
+.text3 {
+	font-size: 9pt;
+	color: #BE3131;
+}
+.text4 {
+	font-size: 9pt;
+	color: #1F6787;
+}
+.text5 {
+	font-size: 9pt;
+	color: #464646;
+	font-weight: bold;
+}
+.text6 {
+	font-size: 9pt;
+	color: 6E3200;
+	font-weight: bold;
+}
+.text7 {
+	font-size: 9pt;
+	color: 6E3200;
+	font-weight: normal;
+	border-top-style: none;
+	border-right-style: none;
+	border-left-style: none;
+}
+.text8 {
+	font-size: 9pt;
+	color: 6E3200;
+}
+
+.text9 {
+	font-size: 9pt;
+	color: #6E3200;
+	text-align: right;
+}
+
+.panel0 {
+        background-color: #CDD6E3;
+}
+
+.panel1 {
+        background-color: #EDF2F7;
+}
+
+.panel2 {
+        Background-color: #FFFFFF;
+}
+
+.tdtitle1{
+    Background-color: #EDF2F7;
+}
+
+.Loading {
+  position:absolute;
+  width:200px;
+  height:115px;
+  z-index:1;
+  left: 200px;
+  top: 200px;
+}
+
+/* 서브페이지의 백그라운드 */
+/* 5단 (top, left, body, right, footer) */
+.sub_bg01 {background-image:url('/KBLCM/images/service/cy/es/sub_body_bg01.gif'); background-repeat:repeat-y}
+.sub_bg02 {background-image:url('/KBLCM/images/service/cy/es/sub_body_bg02.gif'); background-repeat:no-repeat; padding:35 50 0 50}
+.sub_bg03 {background-image:url('/KBLCM/images/service/cy/es/sub_body_bg03.gif'); background-repeat:no-repeat; background-position:bottom; }
+
+/* 4단 (top, left, body, footer) */
+.sub_bg04 {background-image:url('/KBLCM/images/service/cy/es/sub_body_bg04.gif'); background-repeat:repeat-y}
+.sub_bg05 {background-image:url('/KBLCM/images/service/cy/es/sub_body_bg05.gif'); background-repeat:no-repeat; padding:35 70 0 70}
+.sub_bg05a {background-image:url('/KBLCM/images/service/cy/es/sub_body_bg05.gif'); background-repeat:no-repeat; padding:35 50 0 50}
+.sub_bg06 {background-image:url('/KBLCM/images/service/cy/es/sub_body_bg06.gif'); background-repeat:no-repeat; background-position:bottom}
+
+/* 관리자단 (top, left, body, footer) */
+.sub_bg07 {background-image:url('/KBLCM/images/service/cy/es/sub_body_bg07.gif'); background-repeat:repeat-y}
+.sub_bg08 {background-image:url('/KBLCM/images/service/cy/es/sub_body_bg08.gif'); background-repeat:no-repeat; padding:35 52 0 52}
+.sub_bg09 {background-image:url('/KBLCM/images/service/cy/es/sub_body_bg09.gif'); background-repeat:no-repeat; background-position:bottom}
+
+/* IR자료실관리자단 (top, left, body, footer) */
+.sub_bg13 {background-image:url('/KBLCM/images/service/cy/es/sub_body_bg10.gif'); background-repeat:repeat-y}
+.sub_bg11 {background-image:url('/KBLCM/images/service/cy/es/sub_body_bg11.gif'); background-repeat:no-repeat; padding:35 52 0 52}
+.sub_bg12 {background-image:url('/KBLCM/images/service/cy/es/sub_body_bg12.gif'); background-repeat:no-repeat; background-position:bottom}
+
+
+
+/* 서브메인 (top, left, body, footer) */
+.sub_bg10 {background-image:url('/KBLCM/images/service/cy/es/sub_body_bg10.gif'); background-repeat:no-repeat; padding:35 50 0 50}
+
+TABLE.tblinfo{
+	border:none;
+	border-right:1px solid white;
+	border-bottom: 1px solid rgb(205, 214, 227);
+	border-top:1px solid rgb(100,129,174);
+	width:100%;
+	border:1px solid rgb(205, 214, 227);
+}
+TABLE.tblinfo TR, TABLE.tblinfo TD, TABLE.tblinfo TH
+{ border:1px solid rgb(205, 214, 227); padding: 2px 5px 2px 7px;}
+
+/*** 전자청약 고지사항 ***/
+TABLE.tblnotice		{ border: 1px solid rgb(212,212,212);width:100%; }
+TABLE.tblnotice TR, TABLE.tblnotice TD, TABLE.tblnotice TH
+					{ border:1px solid rgb(212,212,212); padding: 5px 10px 5px 15px;}
+TABLE.tblnotice TH	{ color:rgb(102,102,102); background-color:rgb(246,246,246); font-size:11px;}
+
+.tableborder{border:1px solid #c9d5e2; width:100%;}
+.tableth{background-color:#EDF2F7; font-weight:bold; text-align:center; padding:2px 4px 2px 4px; color:rgb(79,112,163); font-size:12px;border-bottom:1px solid #c9d5e2;}
+.tabletd{font-size:12px;padding:2px 4px 2px 4px; border-bottom:1px solid #c9d5e2;}
+.tabletdbgr1{background-color:rgb(246,246,246); font-size:12px;padding:2px 4px 2px 4px; border-bottom:1px solid #c9d5e2;}
+.tabletdbgr2{background-color:rgb(250,250,250); font-size:12px;padding:2px 4px 2px 4px; border-bottom:1px solid #c9d5e2;}
+.tabletdbgr3{background-color:rgb(248,247,241); font-size:12px;padding:2px 4px 2px 4px; border-bottom:1px solid #c9d5e2;}
+.tabletdbgb1{background-color:rgb(237,242,247); font-size:12px;padding:2px 4px 2px 4px; border-bottom:1px solid #c9d5e2;}
+.tabletdbgb2{background-color:rgb(248,250,252); font-size:12px;padding:2px 4px 2px 4px; border-bottom:1px solid #c9d5e2;}
+
+.bg_gray1	{ background-color:rgb(246,246,246); }
+.bg_gray2	{ background-color:rgb(250,250,250); }
+.bg_gray3	{ background-color:rgb(248,247,241); }
+
+.bg_blue1	{ background-color:rgb(237,242,247); }
+.bg_blue2	{ background-color:rgb(248,250,252); }
+
+.input1{ border:1px solid rgb(221,221,221); background-color:#f5f5f5; color:#4f70a3; height:18px; font-size:12px; }
+.input2{ border:1px solid rgb(221,221,221); color:000000; height:18px; font-size:12px; }
+.btn_style01{background:#607da8;color:#ffffff;border:0;font-weight:bold;padding:2px 5px 0px 5px;}
+
+H2.title_bullet_style01 {font-size:12px; padding:4px 0 0 9px;font-weight:bold;color:#333333;background:url(/KBLCM/images/service/ad/bullet_06.gif) no-repeat 6px 6px;}
+H2.ess_search {font-size:12px; padding:4px 0 4px 0;font-weight:bold;color:#333333;}
+
+DIV.cnt_box5{width:708px;background:url(/KBLCM/images/common/bg_box_top.gif) no-repeat 0 0;}
+DIV.cnt_box5 H1{text-align:center;font-size:16px;color:#003975;margin:12px 20px 0 20px;padding:0 0 12px 0;background:url(/KBLCM/images/common/under_line.gif) repeat-x 0 bottom;}
+DIV.cnt_box5 P{font-weight:bold;color:#555555;background:url(/KBLCM/images/common/bg_box_bottom.gif) no-repeat 0 bottom;margin:12px 0 0 0;padding:0 0 15px 0;text-align:center;}
+
+/**청약 완료 박스**/
+DIV.cnt_box10{}
+DIV.cnt_box10 DIV.cnt_box10_top{text-align:center;padding:70px 0 0 0;height:41px;background:url('/KBLCM/images/service/cy/es/bg_box3_top.gif') no-repeat 0 0;}
+DIV.cnt_box10 DIV.cnt_box10_bottom{text-align:center;padding:20px 140px 60px 140px;background:url('/KBLCM/images/service/cy/es/bg_box3_bottom.gif') no-repeat 0 bottom;}
+DIV.cnt_box10 DIV.cnt_box10_top_pop{text-align:center;padding:70px 0 0 0;height:41px;background:url('/KBLCM/images/service/cy/es/bg_box3_top_pop.gif') no-repeat 0 0;}
+DIV.cnt_box10 DIV.cnt_box10_bottom_pop{text-align:center;padding:20px 140px 60px 140px;background:url('/KBLCM/images/service/cy/es/bg_box3_bottom_pop.gif') no-repeat 0 bottom;}
+
+.lst_title_blue2_font14	{  _height:18px;background:url('/KBLCM/images/common/bullet_rect01.gif') no-repeat 0 4px; padding-top:3px; padding-left:14px; color:rgb(0, 57, 117); font-weight:bold; font-size:14px; }
+
+.f_ora{color:#F26522}
+.f_red{color:#E9040B}
+.f_blue{color:#006CB7}
+}
