@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="apprListSql">
+	
+	<select id="apprListDAO.listApprMember"  parameterClass="java.util.List" resultClass="tems.com.edu.appr.model.ApprMemberVO">
+		<![CDATA[
+		SELECT 
+                en.ENROLLID ENROLLID,
+                en.COSID COSID,
+                co.COSNAME COSNAME,
+                MEMID,
+                MEMNAME,
+                HP,
+                EMAIL, 
+                ENROLLSTATEID,
+                ENROLLSTATENAME,
+                CERTIFICATEISSUE,
+               
+                PAYID,
+                pa.ENROLLID paENROLLID,
+                pa.PAYPRICE PAYPRICE,
+                PAYTYPEID,
+                PAYTYPENAME,
+                PAYTIMEID,
+                PAYTIMENAME,
+                PAYSTATEID,
+                PAYSTATENAME,
+                TAXTYPEID,
+            	TAXTYPENAME,
+            	
+                es.ENROLLID esENROLLID,
+                ESTIMATECNT,
+                 
+                ta.ENROLLID taENROLLID,         
+                TAXBILLCNT,
+                
+                re.ENROLLID reENROLLID,         
+                RECEIPTCNT,
+                
+                GRADEID,
+                gr.ENROLLID grENROLLID,
+                PASSID,
+                PASSNAME,
+                SCORE,
+                
+                ce.ENROLLID ceENROLLID,
+                CERTIFICATECNT
+                
+                
+            FROM  
+                TND_ENROLL en,    
+                TND_PAY pa,
+                TND_COURSE co,
+                (SELECT ENROLLID , COUNT(*) ESTIMATECNT FROM TND_ESTIMATE GROUP BY ENROLLID) es,
+                (SELECT ENROLLID , COUNT(*) TAXBILLCNT FROM TND_TAXBILL GROUP BY ENROLLID) ta,
+                (SELECT ENROLLID , COUNT(*) RECEIPTCNT FROM TND_RECEIPT GROUP BY ENROLLID) re,    
+                TND_GRADE gr,
+                (SELECT ENROLLID , COUNT(*) CERTIFICATECNT FROM TND_CERTIFICATE GROUP BY ENROLLID) ce,
+                
+                TCD_ENROLL_STATE ens,
+                TCD_PAY_STATE pas,
+                TCD_PAY_TYPE  pay,
+                TCD_PAY_TIME  pai,
+                TCD_TAX_TYPE  tay,
+                TCD_PASS      pass
+                  
+            WHERE 1=1
+            AND en.ENROLLID = pa.ENROLLID(+)
+            AND en.COSID = co.COSID(+)
+            AND en.ENROLLID = es.ENROLLID(+)
+            AND en.ENROLLID = ta.ENROLLID(+)
+            AND en.ENROLLID = re.ENROLLID(+)
+            AND en.ENROLLID = gr.ENROLLID(+)
+            AND en.ENROLLID = ce.ENROLLID(+)
+                        
+            AND en.ENROLLSTATE = ens.ENROLLSTATEID(+)
+            AND pa.PAYSTATE = pas.PAYSTATEID(+)
+            AND pa.PAYTYPE = pay.PAYTYPEID(+)
+            AND pa.PAYTIME = pai.PAYTIMEID(+)
+            AND pa.TAXTYPE = tay.TAXTYPEID(+)
+            AND gr.PASS = pass.PASSID(+)            
+      ]]>
+             <iterate prepend="AND en.ENROLLID IN" open="(" close=")" conjunction="," >
+            	#chkedList[]#
+       		 </iterate>
+            
+      <![CDATA[      
+            ORDER BY en.ENROLLID DESC
+		]]>
+	</select>
+
+	
+	
+	<insert id="apprListDAO.insertAppr"  parameterClass="tems.com.edu.appr.model.ApprPaperVO">
+		<selectKey resultClass="string" keyProperty="apprID">
+			<![CDATA[
+				SELECT TND_APPR_SEQ.NEXTVAL as id FROM DUAL
+			]]>
+		</selectKey>
+			<![CDATA[	
+				INSERT INTO TND_APPR
+				(
+					APPRID,
+					COSID,
+					APPRNAME,
+					APPRCONTENT,
+					DRAFTID,
+					DRAFTDATE,
+					APPRTYPE,
+					APPRSTATE,
+					MAXORDINAL
+				)
+				VALUES
+				(
+					#apprID#,
+	 	 			#cosID#,
+	 	 			#apprName#,
+	 	 			#apprContent#,
+	 	 			#draftID#,
+	 	 			sysdate,
+	 	 			#apprType#,
+	 	 			#apprState#,
+	 	 			#maxOrdinal#
+	 	 		)   
+			]]>
+	</insert>
+	
+	
+	<insert id="apprListDAO.insertApprManager"  parameterClass="tems.com.edu.appr.model.ApprManagerVO">
+		<![CDATA[	
+			INSERT INTO TND_APPR_MANAGER
+			(
+				APPRMNGID,
+				APPRID,
+				ADMINID,
+				ORDINAL,
+				APPRSTATE,
+				APPRDATE,
+				MEMO
+			)
+			VALUES
+			(
+				TND_APPR_MANAGER_SEQ.NEXTVAL,
+				#apprID#,
+				#adminID#,
+				#ordinal#,
+				#apprState#,
+				#apprDate#,
+				#memo#   
+ 	 		)   
+		]]>
+	</insert>
+	
+	<update id="apprListDAO.updateApprManagerState"  parameterClass="java.util.Map">
+		<![CDATA[	
+			UPDATE TND_APPR_MANAGER
+			SET 
+				APPRSTATE = #apprState#,
+				APPRDATE = SYSDATE,
+				MEMO = #mome#
+			WHERE APPRMNGID = #apprMngID#
+		]]>
+	</update>
+	
+	
+	<select id="apprListDAO.selectCrtApprManager" parameterClass="java.util.Map" resultClass="tems.com.edu.appr.model.CrtApprManagerVO">
+		<![CDATA[	
+            SELECT 
+                COSID,
+                APPRCONTENT,
+                DRAFTID,
+                to_char(DRAFTDATE,'yyyy.mm.dd') DRAFTDATE,
+                APPRTYPE,
+                a.APPRSTATE,
+                MAXORDINAL,
+                
+                APPRMNGID,
+                m.APPRID APPRID,
+                m.ADMINID ADMINID,
+                ORDINAL MYORDINAL,
+                m.APPRSTATE MYAPPRSTATE,
+                to_char(m.APPRDATE,'yyyy.mm.dd') OKAPPRDATE,
+                MEMO
+             
+            FROM TND_APPR a, TND_APPR_MANAGER m
+            WHERE a.APPRID = m.APPRID
+			AND m.APPRID = #apprID#
+			AND ADMINID = #adminID#    
+		]]>
+	</select>
+	
+	
+	<update id="apprListDAO.updateNextApprManagerState"  parameterClass="java.util.Map">
+		<![CDATA[	
+			UPDATE TND_APPR_MANAGER
+			SET APPRSTATE = #apprState#
+			WHERE APPRID = #apprID#
+			AND ORDINAL = #myOrdinal#   
+		]]>
+	</update>
+	
+	
+	
+	<update id="apprListDAO.updateApprState"  parameterClass="java.util.Map">
+		<![CDATA[	
+			UPDATE TND_APPR
+			SET APPRSTATE = #apprState#
+			WHERE APPRID = #apprID# 
+		]]>
+	</update>
+	
+	
+	<select id="apprListDAO.selectAppr" parameterClass="java.lang.String" resultClass="tems.com.edu.appr.model.ApprVO">
+		<![CDATA[	
+			SELECT 
+			    APPRID,
+			    COSID,
+			    APPRNAME,
+			    APPRCONTENT,
+			    DRAFTID,
+			    t.NAME,
+			    to_char(DRAFTDATE,'yyyy.mm.dd') DRAFTDATE,
+			    APPRTYPE APPRTYPEID
+			FROM TND_APPR d, TCT_ADMIN t
+			WHERE d.DRAFTID = t.ADMINID
+			AND APPRID = #apprID#
+		]]>
+	</select>
+	
+	
+	<select id="apprListDAO.listApprMemberByApprID" parameterClass="java.lang.String" resultClass="tems.com.edu.appr.model.ApprMemberVO">
+		<![CDATA[	
+            SELECT
+                apmem.APPRMEMBERID,
+                apmem.APPRID,
+                apmem.ENROLLID,
+                apmem.MEMNAME,
+                apmem.HP,
+                apmem.EMAIL,
+                en.ENROLLSTATEID,
+                en.ENROLLSTATENAME,
+                apmem.PAYPRICE,
+                py.PAYTYPEID,
+                py.PAYTYPENAME,
+                pi.PAYTIMEID,
+                pi.PAYTIMENAME,
+                ps.PAYSTATEID,
+                ps.PAYSTATENAME,
+                ty.TAXTYPEID,
+                ty.TAXTYPENAME,
+                pass.PASSID,
+                pass.PASSNAME,
+                apmem.SCORE,
+                apmem.CERTIFICATEISSUE,
+                cos.COSNAME  
+            FROM 
+                TND_APPR_MEMBER apmem,
+                TND_ENROLL enr,                
+                TND_COURSE cos,
+                TCD_ENROLL_STATE en, 
+                TCD_PAY_STATE ps, 
+                TCD_PAY_TYPE py, 
+                TCD_PAY_TIME pi, 
+                TCD_TAX_TYPE ty, 
+                TCD_PASS pass
+            WHERE apmem.APPRID = #apprID#
+           	AND apmem.ENROLLID = enr.ENROLLID(+)
+            AND enr.COSID = cos.COSID(+)
+            AND apmem.ENROLLSTATE = en.ENROLLSTATEID(+)
+            AND apmem.PAYSTATE = ps.PAYSTATEID(+)
+            AND apmem.PAYTYPE = py.PAYTYPEID(+)
+            AND apmem.PAYTIME = pi.PAYTIMEID(+)
+            AND apmem.TAXTYPE = ty.TAXTYPEID(+)
+            AND apmem.PASS = pass.PASSID(+)  
+		]]>
+	</select>
+	
+				
+	<insert id="apprListDAO.insertApprMember"  parameterClass="tems.com.edu.appr.model.ApprMemberVO">
+	<![CDATA[	
+		INSERT INTO TND_APPR_MEMBER
+		(
+ 			APPRMEMBERID,
+  			APPRID,
+  			ENROLLID,
+  			MEMNAME,
+  			HP,
+  			EMAIL,
+  			ENROLLSTATE,
+  			PAYPRICE,
+  			PAYTYPE,
+  			PAYTIME,
+  			PAYSTATE,
+  			TAXTYPE,
+  			PASS,
+  			SCORE,
+ 			CERTIFICATEISSUE
+		)
+		VALUES
+		(
+			TND_APPR_MEMBER_SEQ.NEXTVAL,
+ 	 		#apprID#,
+ 	 		#enrollID#,
+ 	 		#memName#,
+ 	 		#hp#,
+ 	 		#email#,
+ 	 		#enrollStateID#,
+ 	 		#payPrice#,
+ 	 		#payTypeID#,
+ 	 		#payTimeID#,
+ 	 		#payStateID#,
+ 	 		#taxTypeID#,
+ 	 		#passID#,
+ 	 		#score#,
+ 	 		#certificateIssue# 
+ 	 		  
+	 	)   
+	]]>
+	</insert>
+	
+	
+	<select id="apprListDAO.listApprManager" parameterClass="java.lang.String" resultClass="tems.com.edu.appr.model.ApprManagerVO">
+		<![CDATA[	
+			SELECT 
+			    APPRMNGID,
+			    APPRID,
+			    d.ADMINID,
+			    t.NAME,
+			    ORDINAL,
+			    APPRSTATE,
+			    to_char(APPRDATE,'yyyy.mm.dd') APPRDATE,
+			    MEMO
+			
+			FROM TND_APPR_MANAGER d, TCT_ADMIN t
+			WHERE D.ADMINID=T.ADMINID
+			AND APPRID =#apprID#
+			ORDER BY ORDINAL ASC
+		]]>
+	</select>
+	
+	<select id="apprListDAO.listApprDraft" parameterClass="tems.com.common.Criteria" resultClass="tems.com.edu.appr.model.ApprVO">
+		<![CDATA[
+    		SELECT 
+                APPRID, COSID, APPRNAME, APPRCONTENT, DRAFTID, NAME,
+                to_char(DRAFTDATE,'yyyy.mm.dd') DRAFTDATE, 
+                APPRTYPEID, APPRTYPENAME,
+                APPRSTATEID, APPRSTATENAME, ADMINID,
+                rnum
+            FROM
+                    (SELECT 
+                        APPRID, COSID, APPRNAME, APPRCONTENT, DRAFTID, NAME,
+                        DRAFTDATE, APPRTYPEID, APPRTYPENAME, 
+                        APPRSTATEID, APPRSTATENAME, ADMINID,
+                        ROWNUM rnum
+                    FROM 
+                            (SELECT
+                                APPRID, COSID, APPRNAME, APPRCONTENT, DRAFTID, t.NAME NAME,
+                                DRAFTDATE, p.APPRTYPEID APPRTYPEID, p.APPRTYPENAME APPRTYPENAME, 
+                                s.APPRSTATEID APPRSTATEID, s.APPRSTATENAME APPRSTATENAME, t.ADMINID ADMINID
+                            FROM TND_APPR d, TCT_ADMIN t, TCD_APPR_STATE s, TCD_APPR_TYPE p
+                            
+                            WHERE d.DRAFTID = t.ADMINID
+                            AND d.APPRSTATE = s.APPRSTATEID(+)
+                            AND d.APPRTYPE = p.APPRTYPEID(+)
+					        AND d.DRAFTID = #loginAdminID#
+		]]>
+			                <isNotNull property="searchType">
+								<isEqual property="searchType" compareValue="t">
+							 		AND APPRNAME LIKE
+							 		'%' || #keyword# || '%'
+								</isEqual>
+							</isNotNull>
+		<![CDATA[	                
+					        ORDER BY APPRID DESC
+					        ) t_o
+				    )t_or
+			WHERE t_or.rnum > #first# AND t_or.rnum <= #end#   
+			
+		]]>	
+	</select>
+
+
+	<select id="apprListDAO.selectApprDraftTotCnt" parameterClass="tems.com.common.Criteria" resultClass="java.lang.Integer">
+		<![CDATA[
+			SELECT COUNT(*) 
+			FROM TND_APPR d, TCT_ADMIN t
+			WHERE d.DRAFTID = t.ADMINID
+			AND d.DRAFTID = #loginAdminID#
+		]]>
+		  	<isNotNull property="searchType">
+				<isEqual property="searchType" compareValue="t">
+					AND APPRNAME LIKE
+					'%' || #keyword# || '%'
+				</isEqual>
+			</isNotNull>    	
+	</select>
+
+
+	<!-- 자신이 결재할 문서 리스트 -->
+	<select id="apprListDAO.listApprAgree" parameterClass="tems.com.common.Criteria" resultClass="tems.com.edu.appr.model.ApprVO">
+		<![CDATA[
+			SELECT 
+		        APPRID, COSID, APPRNAME, APPRCONTENT, DRAFTID, NAME,
+	            to_char(DRAFTDATE,'yyyy.mm.dd') DRAFTDATE, APPRTYPEID, APPRTYPENAME, APPRSTATEID, APPRSTATENAME, ADMINID, MYAPPRSTATEID, MYAPPRSTATENAME,
+	            rnum
+
+			FROM             
+                
+       			(SELECT 
+	                APPRID, COSID, APPRNAME, APPRCONTENT, DRAFTID, NAME,
+	                DRAFTDATE, APPRTYPEID, APPRTYPENAME, APPRSTATEID, APPRSTATENAME, ADMINID, MYAPPRSTATEID, MYAPPRSTATENAME,
+	                ROWNUM rnum
+        		FROM
+                        
+                	(SELECT  
+	                     a.APPRID APPRID, COSID, APPRNAME, APPRCONTENT, 
+	                     DRAFTID, t.NAME NAME, DRAFTDATE, a.APPRTYPE APPRTYPEID, at.APPRTYPENAME APPRTYPENAME, a.APPRSTATE APPRSTATEID, s.APPRSTATENAME APPRSTATENAME,    
+	                     m.ADMINID ADMINID, m.APPRSTATE MYAPPRSTATEID, e.MYAPPRSTATENAME
+                                    
+                	FROM TND_APPR a, TND_APPR_MANAGER m, TCT_ADMIN t, TCD_APPR_STATE s, TCD_MYAPPR_STATE e, TCD_APPR_TYPE at  
+                
+	                WHERE a.APPRID = m.APPRID
+	                AND a.DRAFTID = t.ADMINID
+	                AND A.APPRSTATE = S.APPRSTATEID(+)
+	                AND m.APPRSTATE = e.MYAPPRSTATEID(+)
+	                AND a.APPRTYPE = at.APPRTYPEID(+)      
+			        AND m.ADMINID = #loginAdminID#
+			        AND ( m.APPRSTATE IN ('H', 'C' ,'R'))
+		]]>
+	                <isNotNull property="searchType">
+						<isEqual property="searchType" compareValue="t">
+					 		AND APPRNAME LIKE
+					 		'%' || #keyword# || '%'
+						</isEqual>
+					</isNotNull>    	
+		<![CDATA[	                         
+			        ORDER BY a.APPRID DESC
+			        )t_o
+       			)t_or        
+			WHERE t_or.rnum > #first# AND t_or.rnum <= #end#   
+		]]>
+	</select>
+	
+	<!-- 자신이 결재할 문서 토탈개수 -->
+ 	<select id="apprListDAO.selectApprAgreeTotCnt" parameterClass="tems.com.common.Criteria"  resultClass="java.lang.Integer">
+		<![CDATA[
+	 		SELECT COUNT(*)  
+	                                
+            FROM TND_APPR a, TND_APPR_MANAGER m, TCT_ADMIN t, TCD_APPR_STATE s, TCD_MYAPPR_STATE e  
+                
+            WHERE a.APPRID = m.APPRID
+            AND a.DRAFTID = t.ADMINID
+            AND A.APPRSTATE = S.APPRSTATEID(+)
+            AND m.APPRSTATE = e.MYAPPRSTATEID(+)
+      		AND m.ADMINID = #loginAdminID#
+      		AND ( m.APPRSTATE IN ('H', 'C' ,'R'))
+ 		]]>
+ 		 	<isNotNull property="searchType">
+				<isEqual property="searchType" compareValue="t">
+			 		AND APPRNAME LIKE
+			 		'%' || #keyword# || '%'
+				</isEqual>
+			</isNotNull>    	
+ 	</select>
+ 	
+ 	
+	
+</sqlMap>

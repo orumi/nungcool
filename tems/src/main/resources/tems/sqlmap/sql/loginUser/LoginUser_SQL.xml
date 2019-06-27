@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="loginUserDAO">
+
+
+    <select id="loginUserDAO.getLoginUser" resultClass="tems.com.login.model.LoginUserVO">
+        <![CDATA[
+        SELECT
+            a.adminid,
+            a.officeid,
+            b.name          officenm,
+            a.author_gpcode authorgpcode,
+            a.name,
+            a.adminpw,
+            a.uppofficeid,
+            a.empid,
+            a.ename,
+            a.cellphone,
+            a.telno,
+            a.extension,
+            a.email,
+            a.umjpname,
+            a.umjdname,
+            a.umpgname,
+            a.birthday,
+            a.skin
+        FROM TCT_ADMIN a, tct_office b
+        WHERE (ADMINID = #adminid# OR empid = #adminid#) AND ADMINPW = #adminpw#
+              AND a.officeid = b.officeid (+)
+              AND author_gpcode != '-1'
+        ]]>
+    </select>
+
+    <select id="loginUserDAO.getLoginMenu" parameterClass="tems.com.login.model.LoginUserVO"
+            resultClass="tems.com.login.model.UserMenuVO">
+        <![CDATA[
+        SELECT
+            menuno,
+            umenuno,
+            menunm,
+            url,
+            level                                                               lvl,
+            orderby,
+            (SELECT count(*)
+             FROM COMTNMENUINFO A, COMTNAUTHORGPINFO B, COMTNMENUCREATDTLS C
+             WHERE B.AUTHOR_GPCODE = TA.AUTHOR_GPCODE
+                   AND B.AUTHOR_CODE = C.AUTHOR_CODE
+                   AND A.MENU_NO = C.MENU_NO
+                   AND A.UPPER_MENU_NO = TA.menuno AND A.MENU_NO != 0)          mcnt,
+            substr(sys_connect_by_path(menunm, ' </li><li> '), 7) || '</li>' AS menutitle
+        FROM (
+                 SELECT DISTINCT
+                     CM.MENU_NO    menuno,
+                     MENU_NM       menunm,
+                     UPPER_MENU_NO umenuno,
+                     MENU_ORDR     orderby,
+                     URL           url,
+                     TA.AUTHOR_GPCODE
+                 FROM
+                     TCT_ADMIN TA
+                     , COMTNAUTHORGPINFO CA
+                     , COMTNMENUCREATDTLS CM
+                     , COMTNMENUINFO CI
+                     , COMTNPROGRMLIST CP
+                 WHERE
+                     TA.AUTHOR_GPCODE = CA.AUTHOR_GPCODE
+                     AND CA.AUTHOR_CODE = CM.AUTHOR_CODE
+                     AND CM.MENU_NO = CI.MENU_NO
+                     AND CI.PROGRM_FILE_NM = CP.PROGRM_FILE_NM
+                     AND TA.ADMINID = #adminid#
+             ) TA
+        START WITH (umenuno = 0)
+        CONNECT BY PRIOR menuno = umenuno
+        ORDER SIBLINGS BY orderby
+        ]]>
+    </select>
+
+    <update id="loginUserDAO.edtUserSkin" parameterClass="tems.com.login.model.LoginUserVO">
+        UPDATE tct_admin
+        SET skin = #skin#
+        WHERE adminid = #adminid#
+
+    </update>
+
+    <select id="LoginUserDAO.reqList" resultClass="tems.com.login.model.ReqListVO">
+    	<![CDATA[
+        SELECT
+            TA.reqid,
+            TA.requestcdate,
+            TA.comname,
+            TA.memname,
+            TA.statenm,
+            TA.smpcnt,
+            TB.rltcnt,
+            TA.rnum
+        FROM (
+                 SELECT
+                     A.requestcdate,
+                     A.comname,
+                     A.memname,
+                     A.statenm,
+                     A.smpcnt,
+                     A.reqid,
+                     rownum rnum
+                 FROM (
+                          SELECT
+                              c.name                                comname,
+                              d.name                                memname,
+                              e.statenm,
+                              to_char(b.requestcdate, 'yyyy.mm.dd') requestcdate,
+                              a.reqid,
+                              a.smpcnt
+                          FROM tne_request a, tne_report b, THT_COMPANY c, TNT_MEMBER d, tct_state e
+                          WHERE reqstate = 0
+                                AND a.reqid = b.reqid
+                                AND a.comid = c.comid
+                                AND a.ordinal = c.ordinal
+                                AND a.memid = d.memid
+                                AND A.REQSTATE = e.statecd
+                          ORDER BY b.requestcdate DESC
+                      ) A
+             ) TA
+            LEFT JOIN
+            (SELECT
+                 count(reqid) rltcnt,
+                 reqid
+             FROM tne_result
+             GROUP BY reqid
+            ) TB
+                ON TA.reqid = TB.reqid
+        WHERE TA.rnum < 9
+        ORDER BY requestcdate DESC
+        ]]>
+	</select>
+
+    <select id="LoginUserDAO.getFavoriteList"
+            parameterClass="tems.com.login.model.LoginUserVO"
+            resultClass="tems.com.login.model.FavoriteVO">
+        <![CDATA[
+        SELECT
+            A.ADMINID,
+            A.MENU_NO menuNo,
+            A.MAINVIEW,
+            A.ORDERBY,
+            A.REGID,
+            A.REGDATE,
+            A.MODIFYID,
+            A.MODIFYDATE,
+            B.MENU_NM menuName,
+            C.URL
+        FROM TCE_FAVORITE A, COMTNMENUINFO B, COMTNPROGRMLIST C
+        WHERE A.MENU_NO = B.MENU_NO
+              AND B.PROGRM_FILE_NM = C.PROGRM_FILE_NM
+              AND A.ADMINID = #adminid#
+        ORDER BY ORDERBY
+        ]]>
+    </select>
+
+    <insert id="LoginUserDAO.insertFavoriteList"
+            parameterClass="tems.com.login.model.FavoriteVO">
+
+        <![CDATA[
+        MERGE INTO TCE_FAVORITE A
+        USING (
+                  SELECT #menuNo# MENU_NO
+                  FROM dual
+              ) fvr
+        ON (
+            A.menu_NO = fvr.menu_NO
+        )
+        WHEN NOT MATCHED THEN
+        INSERT (A.ADMINID, A.MENU_NO, REGID, REGDATE, A.MAINVIEW)
+        VALUES (#adminID#, #menuNo#, #adminID#, sysdate, #mainView#)
+        ]]>
+    </insert>
+
+    <delete id="LoginUserDAO.deleteFavoriteList" parameterClass="tems.com.login.model.FavoriteVO">
+        DELETE FROM TCE_FAVORITE
+        WHERE (MENU_NO = #menuNo# AND ADMINID = #adminID#)
+    </delete>
+
+    <update id="LoginUserDAO.updateFavoriteList" parameterClass="tems.com.login.model.FavoriteVO">
+        UPDATE TCE_FAVORITE
+        SET MAINVIEW   = #mainView#,
+            ORDERBY    = #orderBy#,
+            MODIFYID   = #adminID#,
+            MODIFYDATE = #modifyDate#
+        WHERE adminid = #adminID# AND MENU_NO = #menuNo#
+    </update>
+
+    <select id="LoginUserDAO.checkMainViewCount" parameterClass="tems.com.login.model.FavoriteVO"
+            resultClass="tems.com.login.model.FavoriteVO">
+        SELECT
+            (SELECT count(mainView)
+             FROM tce_favorite
+             WHERE ADMINID = #adminID# AND MAINVIEW = 'Y') mainView,
+            (SELECT count(MENU_NO)
+             FROM TCE_FAVORITE
+             WHERE ADMINID = #adminID# AND MENU_NO = #menuNo#) menuNo
+        FROM DUAL
+
+    </select>
+
+
+</sqlMap>

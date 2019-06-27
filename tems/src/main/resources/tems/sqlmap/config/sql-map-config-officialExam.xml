@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+        "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+
+    <!-- 접수내역 시작 -->
+    <sqlMap resource="tems/sqlmap/sql/officialExam/officialReq/OfficialReq.xml"/>
+    <sqlMap resource="tems/sqlmap/sql/officialExam/officialReq/OfficialReqDetail.xml"/>
+    <!-- 접수내역 끝 -->
+
+    <!--=================================================================================================-->
+
+    <!-- 법정공인진행상태 시작 -->
+    <sqlMap resource="/tems/sqlmap/sql/officialExam/officialResult/OfficialResultDetail_SQL.xml"/>
+    <sqlMap resource="/tems/sqlmap/sql/officialExam/officialResult/OfficialResultList_SQL.xml"/>
+    <sqlMap resource="/tems/sqlmap/sql/officialExam/issue/ApproveIssue_SQL.xml"/>
+    <sqlMap resource="/tems/sqlmap/sql/officialExam/cooperation/Cooperation_SQL.xml"/>
+    <!-- 법정공인진행상태 끝 -->
+
+</sqlMapConfig>

@@ -1,0 +1,175 @@
+@charset "UTF-8";
+
+.pullout-left .pullout-item {
+	float: left;
+	margin-left: 0 !important;
+	_margin-right: 6px; 
+}
+.pullout-right .pullout-item {
+	float: right;
+	margin-right: 0 !important;
+	_margin-left: 6px; 
+}
+.left-125 .pullout-item { width: 200px; }
+.left-125>* { margin-left: 135px !important; }
+
+/*
+THEMES CSS	
+$Id: theme.css,v 1.72 2009/05/19 15:13:50 btapley Exp $
+*/
+html,
+body {
+padding: 0;
+margin: 0;
+}
+body { 
+	font: 75%/1 Arial, Helvetica, sans-serif;
+	color: #333333;
+	background-color: #FFFFFF;
+	background-color: #EAEAEA;
+	background-repeat: no-repeat;
+	position: relative;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+}
+body > div {
+position: relative;
+z-index: 2;
+}
+#layoutLogic {
+	padding: 0 6px 1px 0;
+	margin: 0;
+	width: 758px;
+	_width: 764px;
+	margin-top: 81px;
+	*margin-top:82px;
+	_margin-top: 84px;
+	background-repeat: repeat-y;
+	background-position: right top;
+	background-color:#FFF;
+}
+div[id="layoutLogic"] {
+	clear: both;
+	min-height: 1em;
+}
+p {
+	font-size: 1.083em;
+	line-height: 1.462;
+	margin-top: 0;
+	padding-bottom: 1px;
+	margin-bottom: 1.2em;
+}
+h1,
+h2 { font-weight: normal; }
+h2 { line-height: 1.31; }
+h1 {
+	font-size: 2.3em;
+	line-height: 1.1;
+}
+h2 {
+	margin-top: 0;
+	margin-bottom: 0.5em;
+	font-size: 1.667em;
+}
+/* DOWNLOAD BUTTON
+*/
+.download-button {
+	font-weight: bold;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #2b333c;
+	border: 1px solid;
+	border-color: #c4cccc #acb5b5 #6f7777 #acb5b5;
+	box-shadow: 0 1px 2px #AAA;
+	_width/**/:1px;
+	_white-space: nowrap;
+	overflow: visible; /* fix button width for IE 5.5 to 7 */
+	cursor: pointer;
+	_cursor: hand;
+	vertical-align: middle;
+	zoom: 1;
+	background-color:#FC0;
+}
+a.download-button {
+	padding: 9px 40px 9px 55px;
+	*padding: 8px 40px 7px 55px;
+	_padding: 7px 40px 8px 55px;
+	text-decoration: none;
+	background-color:#FC0;
+}
+button.download-button,
+input.download-button {
+	padding: 9px 40px 8px 55px;
+	*padding: 9px 40px 9px 55px;
+	_padding: 9px 40px 8px 55px;
+	background-color:#FC0;
+}
+p button.download-button {
+	padding: 8px 35px 7px 55px;
+	*padding: 6px 35px 6px 55px;
+	_padding: 7px 35px 6px 55px;
+	background-color:#FC0;
+}
+.download-button:hover, 
+.download-button:visited, 
+.download-button:visited:hover {
+	color: #2B333C;
+	text-decoration: none;
+	background-color:#FC0;
+}
+
+.p0 {
+	margin-bottom: 1em;
+	padding: 10px 8px;
+	zoom: 100%;
+	_height: 1em;
+}
+
+h1 {
+	padding-right: 120px;
+	padding-bottom: 12px;
+	padding-left: 16px;
+	padding-top: 37px;
+	margin:0 0 -1em;
+	height: 30px;
+	*height: 30px;
+	_height: 80px;
+	color:#FFFFFF;
+	display: -moz-inline-box;
+	display: inline-block;
+	position: absolute;
+	top: -78px;
+	*top: -79px;
+	_top: -80px;
+	left: 0;
+	background-repeat: repeat-y;
+	background-position: top right;
+}
+
+/*	GLOBAL FOOOTER
+$Id: gfooter.css,v 1.10 2008/04/29 00:17:35 dgasior Exp $
+@author btapley
+*/
+#globalfooter {
+	position: relative;
+	top:0;
+	left:0;
+	border: 0;
+	margin: 0;
+	font-size: .917em;
+	padding: 10px 22px 10px 16px;
+	color:#999;
+	width: 727px;
+	_width: 764px;
+	_margin-bottom: -15px; /* IE scrollbar */
+}
+
+#copyright { font-size: 1em; line-height: 1.3; margin-bottom: 0; }
+
+#globalfooter a,
+#globalfooter a:hover,
+#globalfooter a:visited {
+	color: #BBB;
+	text-decoration: none;
+}

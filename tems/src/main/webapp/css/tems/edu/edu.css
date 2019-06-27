@@ -1,0 +1,253 @@
+/*-----------------교육훈련 디테일 관련-----------------*/
+/*교육훈련 정보 위젯 위치*/
+.leftbox {
+	padding-left: 0px;
+	padding-right: 10px;
+}
+
+/*교육훈련 위젯하단 버튼영역*/
+.edu_wz_btn_box {
+	text-align: center;
+	border-top: 1px solid #B6B6B6;
+	padding: 8px 5px 8px 5px; /*--분리해야함--*/
+}
+
+
+/*첨부파일,내부결재 위젯 위치*/
+.rightbox {
+	padding-left: 0px;
+	padding-right: 0px;
+}
+
+
+/*-----------------위젯공통-----------------*/
+
+/*폼박스 초기화*/
+.edu_wz .form_box {
+	padding: 0px 6px 0px 13px !important;
+}
+
+/*폼박스의 인풋 초기화*/
+.edu_wz input {
+	height: 25px !important; 
+	padding: 1px 3px 1px 3px !important;
+	margin-top: 2px !important;
+}
+
+/*폼박스의 셀렉트 초기화*/
+.edu_wz select {
+	height: 25px !important;
+	padding: 1px 3px 1px 3px !important;
+	margin-top: 2px !important;
+}
+
+/*폼박스의 라디오 초기화*/
+.edu_wz .radio {
+	padding: 5px 0px 0px 20px !important;
+}
+
+
+/*위젯안쪽 선 없는 테이블*/
+.table-unborder td, .table-unborder th, .table-unborder tr{
+	border: 0px !important;
+}
+
+
+
+/*-----------------데이터 테이블 관련-----------------*/
+
+/*데이터 테이블 상단 툴바영역*/
+.dt-toolbar { padding-bottom: 3px; }
+.toolbar_group { margin-left: 17px; }
+
+
+/*데이타테이블의 인풋 초기화*/
+.dt-toolbar input {
+	height: 31px !important; 
+	padding: 1px 3px 1px 3px !important;
+}
+
+
+/*데이타테이블의 셀렉트 초기화*/
+.dt-toolbar select {
+	height: 31px !important;
+	padding: 1px 3px 1px 3px !important;
+	cursor:pointer  
+}
+
+/*데이타 테이블 여백*/
+.data_tbl  {
+    padding: 0px 0px 0px 0px !important;
+}
+
+
+/*데이타 테이블 표 모양*/
+.data_tbl th {
+    background: linear-gradient( to bottom, #F1F1F1, #E0E0E0 );
+    border:1px solid #B6B6B6 !important;  
+    font-size: 13px;
+    font-weight: normal;
+    color: #000000 !important;
+    text-align: center;
+    padding: 8px 2px 8px 2px !important;
+}
+
+.data_tbl td {
+	padding: 0px 7px 0px 7px !important;
+	height: 30px;
+	color: #000000 !important;
+	text-align: center;
+}
+
+/*테이타 테이블 해더 마우스오버*/
+.data_tbl th:hover { background: #E7E7E7; }
+
+
+
+/*데이터 테이블 첫째컬럼 체크박스*/
+.data_list label, .data_list input, .data_list span, .data_list span::before {
+	margin: 0px 0px 0px 0px !important;
+	padding: 0px 0px 0px 0px !important;
+}
+
+
+/*페이징 여백*/
+.pagination {
+	margin-top: 0px;
+}
+
+/*-----------------보기 테이블 관련-----------------*/
+
+.view_tbl th {
+    background: #E0E0E0;
+    border:1px solid #B6B6B6 !important;  
+    font-size: 13px;
+    font-weight: normal;
+    color: #000000 !important;
+    text-align: center;
+    padding: 8px 2px 8px 2px !important;
+}
+
+.view_tbl td {
+    
+    border:1px solid #B6B6B6 !important;  
+    font-size: 13px;
+    font-weight: normal;
+    color: #000000 !important;
+ 
+}
+
+
+/*-----------------학생별 교육훈련정보 (enrollinfo)-----------------*/
+
+.enrollwz {
+	margin-bottom: 35px;
+}
+
+.title-box {
+	height: 35px;
+	padding: 0px;
+}
+
+
+.enrollwz_header_btn {
+	height: 26px !important;
+	margin: 3px 9px 3px 0px !important;	
+}
+
+
+
+.btn-box {
+	text-align: center;
+	border-top: 1px solid #B6B6B6;
+	padding: 8px 5px 8px 5px;
+}
+
+
+/*-----------------내부결재보기-----------------*/
+.apprLine {
+	margin: 0px 0px 20px 0px !important;	
+	position: relative;
+}
+
+.apprName {
+	margin: 6px 10px 6px 10px !important;	
+	position: relative;
+}
+
+.apprContent {
+	margin: 6px 10px 6px 10px !important;	
+	position: relative;
+}
+
+.are  {
+	text-align: center;
+	margin: 20px 10px 20px 10px !important;	
+	position: relative;
+}
+
+.apprTable {
+	margin: 20px 10px 20px 10px !important;
+	position: relative;	
+}
+
+.apprList {
+	margin: 20px 10px 20px 10px !important;	
+	position: relative;
+}
+
+
+
+
+/*-----------------공통---------------------*/
+
+/*가로 사이즈*/
+.w50  { width: 50px  !important; }
+.w70  { width: 70px  !important; }
+.w100 { width: 100px !important; }
+.w150 { width: 150px !important; }
+.w200 { width: 200px !important; }
+.w300 { width: 300px !important; }
+.w400 { width: 400px !important; }
+
+
+
+
+
+    
+
+/*마진*/
+.ma_0 { margin: 0px !important;  }
+.mt_0 { margin-top: 0px !important;  }
+.mr_0 { margin-right: 0px !important;  }
+.ml_0 { margin-left: 0px !important;  }
+.mb_0 { margin-bottom: 0px !important;  }
+
+
+/*패딩*/
+.pa_0 { padding: 0px !important; }
+.pt_0 { padding-top: 0px !important; }
+.pr_0 { padding-right: 0px !important; }
+.pl_0 { padding-left: 0px !important; }
+.pl_5 { padding-left: 5px !important; }
+.pb_0 { padding-bottom: 0px !important; }
+
+
+input {
+	height: 25px !important; 
+	padding-right: 5px !important; 
+	padding-left: 5px !important; 
+	marign:0px 10px 0px 5px !important;
+}
+
+
+.hand {
+	cursor:pointer  
+}
+
+
+textarea {
+	width:100% ;
+}
+
+

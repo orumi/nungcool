@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+        "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+    <sqlMap resource="tems/sqlmap/sql/edu/common/Common_SQL.xml" />
+	<sqlMap resource="tems/sqlmap/sql/edu/pay/PayList_SQL.xml" />
+	<sqlMap resource="tems/sqlmap/sql/edu/course/CourseList_SQL.xml" />
+	<sqlMap resource="tems/sqlmap/sql/edu/appr/ApprList_SQL.xml" />
+</sqlMapConfig>
+

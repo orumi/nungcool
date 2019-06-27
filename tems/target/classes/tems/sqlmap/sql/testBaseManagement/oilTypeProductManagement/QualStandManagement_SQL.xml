@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="QualStandDAO">
+
+    <select id="QualStandDAO.selQualStandList"
+            parameterClass="String"
+            resultClass="tems.com.testBaseManagement.oilTypeProduct.qualStandManagement.model.QualStandListVO">
+        <![CDATA[
+        SELECT
+            a.specid,
+            a.mtitemid,
+            name,
+            unitid,
+            displaytype,
+            methodname,
+            specnm,
+            spec,
+            itemid,
+            itemPID
+
+        FROM (
+                 SELECT
+                     b.specid,
+                     a.mtitemid,
+                     c.name,
+                     d.unitid,
+                     d.displaytype,
+                     e.name methodname,
+                     b.specnm,
+                     c.itemID,
+                     c.itemPID
+                 FROM tce_master_item a
+                     , tne_spec b
+                     , tce_item c
+                     , tne_item_detail d
+                     , tce_method e
+                 WHERE
+                     a.masterid = b.masterid (+)
+                     AND a.itemid = c.itemid
+                     AND a.itemid = d.itemid (+)
+                     AND a.methodid = d.methodid (+)
+                     AND a.methodid = e.methodid (+)
+                     AND a.masterid = #masterID#
+             ) a
+            LEFT JOIN
+            (
+                SELECT
+                    specid,
+                    mtitemid,
+                    spec
+                FROM tne_spec_detail
+            ) b
+                ON a.specid = b.specid AND a.mtitemid = b.mtitemid
+        START WITH (ITEMPID = 0)
+        CONNECT BY PRIOR ITEMID = A.ITEMPID
+        ]]>
+    </select>
+
+    <update id="QualStandDAO.upQualStandList">
+        <![CDATA[
+        MERGE INTO tne_spec_detail A
+        USING (
+                  SELECT
+                      b.specid,
+                      a.mtitemid
+                  FROM tce_master_item a, tne_spec b
+                  WHERE a.masterid = b.masterid
+                        AND a.mtitemid = #mtitemid#
+                        AND b.specid = #specid#
+              ) tmp
+        ON (
+            A.specid = tmp.specid
+            AND A.mtitemid = tmp.mtitemid
+        )
+        WHEN MATCHED THEN
+        UPDATE
+        SET A.spec = #spec#
+            , A.MODIFYID = #modifyid#
+            , A.MODIFYDATE = SYSDATE
+        WHEN NOT MATCHED THEN
+        INSERT (A.SPECID, A.MTITEMID, A.SPEC, A.REGID, A.REGDATE)
+        VALUES (tmp.specid, tmp.mtitemid, #spec#, #modifyid#, sysdate)
+        ]]>
+    </update>
+
+    <insert id="QualStandDAO.insertPopUp"
+            parameterClass="tems.com.testBaseManagement.oilTypeProduct.qualStandManagement.model.QualPopVO">
+        <![CDATA[
+        INSERT INTO TNE_SPEC (SPECID, MASTERID, SPECNM, REGID, REGDATE)
+        VALUES (seq_tne_spec.nextval, #masterID#, #specNM#, #regID#, SYSDATE)
+        ]]>
+
+    </insert>
+
+    <update id="QualStandDAO.updatePopUp">
+        <![CDATA[
+        UPDATE TNE_SPEC
+        SET SPECNM     = #specNM#,
+            MODIFYID   = #modifyID#,
+            MODIFYDATE = SYSDATE
+        WHERE SPECID = #specID#
+        ]]>
+    </update>
+
+
+    <select id="QualStandDAO.selectStandPopList"
+            parameterClass="String"
+            resultClass="tems.com.testBaseManagement.oilTypeProduct.qualStandManagement.model.QualPopVO">
+		<![CDATA[
+        SELECT
+            SPECID,
+            MASTERID,
+            SPECNM,
+            REGID
+        FROM TNE_SPEC
+        WHERE MASTERID = #str#
+        ]]>
+	</select>
+
+    <delete id="QualStandDAO.deletePopUp"
+            parameterClass="tems.com.testBaseManagement.oilTypeProduct.qualStandManagement.model.QualPopVO">
+        <![CDATA[
+        DELETE FROM TNE_SPEC
+        WHERE specID = #specID#
+        ]]>
+    </delete>
+
+
+    <!-- 첫번째 상단 메뉴리스트 가져오기 -->
+    <select id="QualStandDAO.firstSelectList"
+            parameterClass="String"
+            resultClass="tems.com.testBaseManagement.oilTypeProduct.oilTypeProductManagement.model.OilTypeProductVO">
+        <![CDATA[
+        SELECT
+            A.CLASSID,
+            A.NAME,
+            A.ENAME,
+            A.ORDERBY,
+            A.USEFLAG,
+            A.REGID,
+            A.MODIFYID
+        FROM TEMS.TCE_CLASS A
+        ]]>
+    </select>
+
+    <select id="QualStandDAO.secondSelectList"
+            parameterClass="String"
+            resultClass="tems.com.testBaseManagement.oilTypeProduct.oilTypeProductManagement.model.OilTypeSecondVO">
+        <![CDATA[
+        SELECT
+            GROUPID,
+            CLASSID,
+            NAME,
+            ENAME,
+            OFFICEID,
+            ADMINID,
+            REMARK,
+            USEFLAG,
+            ORDERBY,
+            REGID,
+            REGDATE,
+            MODIFYID,
+            MODIFYDATE
+        FROM TCE_GROUP A
+        ORDER BY CLASSID
+        ]]>
+    </select>
+
+    <select id="QualStandDAO.thirdSelectList"
+            parameterClass="String"
+            resultClass="tems.com.testBaseManagement.oilTypeProduct.oilTypeProductManagement.model.OilTypeThirdVO">
+        <![CDATA[
+        SELECT
+            MASTERID,
+            GROUPID,
+            NAME,
+            ENAME,
+            REMARK,
+            USEFLAG,
+            ORDERBY,
+            SMPUNIT,
+            REGID,
+            REGDATE,
+            MODIFYID,
+            MODIFYDATE,
+            (SELECT count(ITEMID) from TCE_MASTER_ITEM WHERE MASTERID = A.MASTERID) CNT
+        FROM TCE_MASTER A
+        ]]>
+    </select>
+
+
+</sqlMap>

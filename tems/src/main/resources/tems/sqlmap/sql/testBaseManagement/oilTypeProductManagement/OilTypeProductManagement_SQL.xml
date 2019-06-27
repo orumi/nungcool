@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="oilTypeProductDAO">
+
+    <select id="oilTypeProductDAO.selectOilTypeProductList"
+            resultClass="tems.com.testBaseManagement.oilTypeProduct.oilTypeProductManagement.model.OilTypeProductVO">
+        <![CDATA[
+        SELECT
+            A.CLASSID,
+            A.NAME,
+            A.ENAME,
+            A.ORDERBY,
+            A.USEFLAG,
+            A.REGID,
+            A.MODIFYID,
+            (SELECT COUNT(*)
+             FROM TEMS.TCE_GROUP B
+             WHERE B.CLASSID = A.CLASSID) AS CNT
+        FROM TEMS.TCE_CLASS A
+        ORDER BY ORDERBY ASC
+        ]]>
+    </select>
+    <update id="oilTypeProductDAO.updateOilTypeProductDAO"
+            parameterClass="tems.com.testBaseManagement.oilTypeProduct.oilTypeProductManagement.model.OilTypeProductVO">
+
+        <![CDATA[
+        UPDATE TCE_CLASS A
+        SET
+            A.NAME = #name#,
+        A.ENAME      = #eName#,
+        A.ORDERBY    = #orderBy#,
+        A.USEFLAG    = #useFlag#,
+        A.MODIFYID   = #modifyID#,
+        A.MODIFYDATE = SYSDATE
+        WHERE A.CLASSID = #classID#
+        ]]>
+
+    </update>
+    <insert id="oilTypeProductDAO.insertOilTypeProductDAO"
+            parameterClass="tems.com.testBaseManagement.oilTypeProduct.oilTypeProductManagement.model.OilTypeProductVO">
+
+        <![CDATA[
+        INSERT INTO TCE_CLASS
+        (CLASSID,
+         NAME,
+         ENAME,
+         ORDERBY,
+         REGDATE,
+         REGID,
+         USEFLAG)
+        VALUES (SEQ_TCE_CLASS.nextval, #name#, #eName#, #orderBy#, SYSDATE, #regID#, #useFlag#)
+        ]]>
+
+    </insert>
+    <delete id="oilTypeProductDAO.deleteOilTypeProductDAO"
+            parameterClass="tems.com.testBaseManagement.oilTypeProduct.oilTypeProductManagement.model.OilTypeProductVO">
+
+        <![CDATA[
+        DELETE
+        FROM TCE_CLASS
+        WHERE CLASSID = #classID#
+        ]]>
+    </delete>
+
+    <!--secondList -->
+
+    <select id="oilTypeProductDAO.selectSecondList"
+            resultClass="tems.com.testBaseManagement.oilTypeProduct.oilTypeProductManagement.model.OilTypeSecondVO">
+        <![CDATA[
+        SELECT
+            A.GROUPID,
+            A.CLASSID,
+            A.NAME,
+            A.ENAME,
+            A.OFFICEID,
+            A.ADMINID,
+            A.REMARK,
+            A.USEFLAG,
+            A.ORDERBY,
+            A.REGID,
+            A.REGDATE,
+            A.MODIFYID,
+            A.MODIFYDATE,
+            B.NAME                           ADMINNAME,
+            C.NAME                           OFFICENAME,
+            (SELECT COUNT(*)
+             FROM TEMS.TCE_MASTER B
+             WHERE B.GROUPID = A.GROUPID) AS CNT
+        FROM TCE_GROUP A, TCT_ADMIN B, TCT_OFFICE C
+        WHERE A.ADMINID = B.ADMINID (+)
+              AND B.OFFICEID = C.OFFICEID (+)
+              AND A.CLASSID = #classID#
+        ORDER BY ORDERBY ASC
+        ]]>
+    </select>
+    <update id="oilTypeProductDAO.updateOilTypeSecondDAO"
+            parameterClass="tems.com.testBaseManagement.oilTypeProduct.oilTypeProductManagement.model.OilTypeSecondVO">
+
+        <![CDATA[
+        UPDATE TCE_GROUP A
+        SET
+            A.NAME = #name#,
+        A.ENAME      = #eName#,
+        A.ORDERBY    = #orderBy#,
+        A.USEFLAG    = #useFlag#,
+        A.OFFICEID   = #officeID#,
+        A.ADMINID    = #adminID#,
+        A.MODIFYDATE = SYSDATE,
+        A.MODIFYID   = #modifyID#
+        WHERE A.GROUPID = #groupID#
+        ]]>
+
+    </update>
+    <insert id="oilTypeProductDAO.insertOilTypeSecondDAO"
+            parameterClass="tems.com.testBaseManagement.oilTypeProduct.oilTypeProductManagement.model.OilTypeSecondVO">
+
+        <![CDATA[
+        INSERT INTO TCE_GROUP
+        (GROUPID,
+         CLASSID,
+         NAME,
+         ENAME,
+         USEFLAG,
+         ORDERBY,
+         REGID,
+         REGDATE,
+         MODIFYID)
+        VALUES (SEQ_TCE_GROUP.nextval,
+                #classID#,
+                #name#,
+                #eName#,
+                #useFlag#,
+                #orderBy#,
+                #regID#,
+                SYSDATE,
+                #modifyID#)
+        ]]>
+
+    </insert>
+    <delete id="oilTypeProductDAO.deleteOilTypeSecondDAO"
+            parameterClass="tems.com.testBaseManagement.oilTypeProduct.oilTypeProductManagement.model.OilTypeSecondVO">
+
+        <![CDATA[
+        DELETE
+        FROM TCE_GROUP
+        WHERE groupID = #groupID#
+        ]]>
+    </delete>
+
+
+    <!--ThirdList -->
+
+
+    <select id="oilTypeProductDAO.selectThirdList"
+            resultClass="tems.com.testBaseManagement.oilTypeProduct.oilTypeProductManagement.model.OilTypeThirdVO">
+        <![CDATA[
+        SELECT
+            MASTERID,
+            GROUPID,
+            NAME,
+            ENAME,
+            REMARK,
+            USEFLAG,
+            ORDERBY,
+            SMPUNIT,
+            REGID,
+            REGDATE,
+            MODIFYID,
+            MODIFYDATE
+        FROM TCE_MASTER
+        WHERE GROUPID = #groupID#
+        ORDER BY ORDERBY ASC
+        ]]>
+    </select>
+
+    <select id="oilTypeProductDAO.selectThirdJoinList"
+            resultClass="tems.com.testBaseManagement.oilTypeProduct.oilTypeProductManagement.model.OilTypeThirdVO">
+        <![CDATA[
+
+        SELECT
+            A.MASTERID,
+            A.GROUPID,
+            A.NAME,
+            A.ENAME,
+            A.REMARK,
+            A.USEFLAG,
+            A.ORDERBY,
+            A.SMPUNIT,
+            A.REGID,
+            A.REGDATE,
+            A.MODIFYID,
+            A.MODIFYDATE,
+            B.NAME,
+            (SELECT COUNT(*)
+             FROM TCE_MASTER_ITEM C, TCE_ITEM D
+             WHERE A.MASTERID = C.MASTERID
+                   AND C.ITEMID = D.ITEMID
+                   AND D.OLDYN ='N') CNT
+        FROM TCE_MASTER A, TCE_GROUP B
+        WHERE A.GROUPID = B.GROUPID
+              AND A.GROUPID = #groupID#
+
+        ]]>
+    </select>
+
+    <update id="oilTypeProductDAO.updateOilTypeThirdDAO"
+            parameterClass="tems.com.testBaseManagement.oilTypeProduct.oilTypeProductManagement.model.OilTypeThirdVO">
+
+        <![CDATA[
+        UPDATE TCE_MASTER A
+        SET
+            MASTERID = #masterID#,
+        GROUPID    = #groupID#,
+        NAME = #name#,
+        ENAME      = #eName#,
+        REMARK     = #remark#,
+        USEFLAG    = #useFlag#,
+        ORDERBY    = #orderBy#,
+        SMPUNIT    = #smpUnit#,
+        REGID      = #regID#,
+        REGDATE    = #regDate#,
+        MODIFYID   = #modifyID#,
+        MODIFYDATE = SYSDATE
+        WHERE MASTERID = #masterID#
+        ]]>
+
+    </update>
+    <insert id="oilTypeProductDAO.insertOilTypeThirdDAO"
+            parameterClass="tems.com.testBaseManagement.oilTypeProduct.oilTypeProductManagement.model.OilTypeThirdVO">
+
+        <![CDATA[
+        INSERT INTO TCE_MASTER
+        (MASTERID,
+         GROUPID,
+         NAME,
+         ENAME,
+         REMARK,
+         USEFLAG,
+         ORDERBY,
+         SMPUNIT,
+         REGID,
+         REGDATE,
+         MODIFYID,
+         MODIFYDATE)
+        VALUES
+            (SEQ_TCE_MASTER.nextval,
+                #groupID#,
+                #name#,
+                #eName#,
+                #remark#,
+                #useFlag#,
+                #orderBy#,
+                #smpUnit#,
+                #regID#,
+                SYSDATE,
+                #modifyID#,
+             #modifyDate#)
+        ]]>
+
+    </insert>
+    <delete id="oilTypeProductDAO.deleteOilTypeThirdDAO"
+            parameterClass="tems.com.testBaseManagement.oilTypeProduct.oilTypeProductManagement.model.OilTypeThirdVO">
+
+        <![CDATA[
+        DELETE
+        FROM TCE_MASTER
+        WHERE MASTERID = #masterID#
+        ]]>
+
+    </delete>
+
+    <select id="oilTypeProductDAO.selectFourthList"
+            resultClass="tems.com.testBaseManagement.oilTypeProduct.oilTypeProductManagement.model.OilTypeFourthVO">
+        <![CDATA[
+
+        ]]>
+    </select>
+    <update id="oilTypeProductDAO.updateOilTypeFourthDAO"
+            parameterClass="tems.com.testBaseManagement.oilTypeProduct.oilTypeProductManagement.model.OilTypeFourthVO">
+        <![CDATA[
+
+
+        ]]>
+
+    </update>
+    <insert id="oilTypeProductDAO.insertOilTypeFourthDAO"
+            parameterClass="tems.com.testBaseManagement.oilTypeProduct.oilTypeProductManagement.model.OilTypeFourthVO">
+        <![CDATA[
+
+        ]]>
+
+    </insert>
+    <delete id="oilTypeProductDAO.deleteOilTypeFourthDAO"
+            parameterClass="tems.com.testBaseManagement.oilTypeProduct.oilTypeProductManagement.model.OilTypeFourthVO">
+        <![CDATA[
+
+        ]]>
+    </delete>
+
+</sqlMap>

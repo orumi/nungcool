@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="FileAttachDAO">
+	
+    <select id="FileAttachDAO.getSampleFile" resultClass="tems.com.common.model.FileAttachVO">
+    	select reqid
+    			,smpfid
+		        ,smpid
+		        ,filepath
+		        ,orgname
+		        ,savename
+		        ,filesize
+		        ,regid
+		        ,regdate
+		from tne_sample_file
+		where reqid = #reqid#
+		and smpid = #smpid#
+		order by smpfid desc
+    </select>
+    
+	<insert id="FileAttachDAO.inSampleFile">
+		<selectKey resultClass="string" keyProperty="smpfid">
+		<![CDATA[
+    	    select nvl(max(to_number(smpfid)),0)+1 smpfid FROM tne_sample_file
+		]]>
+		</selectKey>
+	
+		insert into tne_sample_file(
+			smpfid
+			,reqid
+	        ,smpid
+	        ,filepath
+	        ,orgname
+	        ,savename
+	        ,filesize
+	        ,regid
+	        ,regdate)
+		values(
+			#smpfid#
+			,#reqid#
+	        ,#smpid#
+	        ,#filepath#
+	        ,#orgname#
+	        ,#savename#
+	        ,#filesize#
+	        ,#regid#
+	        ,#regdate#)
+	</insert>
+	
+	<delete id="FileAttachDAO.delSampleFile">
+		delete from tne_sample_file
+		where smpfid = #smpfid#
+		and   reqid = #reqid#
+		and   smpid = #smpid#
+	</delete>
+	
+    <select id="FileAttachDAO.getAdminSampleFile" resultClass="tems.com.common.model.FileAttachVO">
+		select a.reqid
+		        ,smpfid
+		        ,a.smpid
+		        ,a.smpnm
+		        ,a.masternm
+		        ,a.acceptno
+		        ,filepath
+		        ,orgname
+		        ,savename
+		        ,filesize
+		        ,regid
+		        ,regdate
+		from (        
+		        select c.reqid, c.smpid, b.name||'/'||g.name smpnm,  g.name masternm, d.acceptno  
+		            from TNE_ADMIN_ASSIGN a
+		                  , tne_sample b
+		                  , tne_result c
+		                  , tne_report d
+		                  , tce_master g                        
+		                  , tce_group h
+		                  , tce_class i 
+		            where a.adminid = #adminid#
+		            and a.resultid = c.resultid
+		            and c.reqid = b.reqid
+		            and c.smpid = b.smpid
+		            and b.reqid = d.reqid
+		            and b.masterid = g.masterid
+		            and g.groupid = h.groupid
+		            and h.classid = i.classid
+		            and d.type = 'O'
+		            and d.reportstate = '4'
+		            <isEqual property="chkstartdate1" compareValue="true">
+			        <![CDATA[	
+			        and d.receiptdate >= #startdate1#
+			        ]]>    
+			        </isEqual>
+				    <isEqual property="chkfinishdate1" compareValue="true">
+				    <![CDATA[
+			        and d.receiptdate <= #finishdate1#
+			        ]]>    
+			        </isEqual>
+			        <isNotEmpty property="firstOpt">
+			        and i.classid = #firstOpt#
+			        </isNotEmpty>
+			        <isNotEmpty property="secondOpt">
+			        and h.groupid = #secondOpt#
+			        </isNotEmpty>
+			        <isNotEmpty property="thirdOpt">
+			        and g.masterid = #thirdOpt#
+			        </isNotEmpty>
+			        <isNotEmpty property="smpname">
+			        and b.name like '%'||#smpname#||'%'
+			        </isNotEmpty>
+			        <isNotEmpty property="itemname">
+			        and c.itemname like '%'||#itemname#||'%'
+			        </isNotEmpty>
+			        <isNotEmpty property="acceptno">
+			        and d.acceptno like '%'||#acceptno#||'%'
+			        </isNotEmpty>
+			        <isNotEmpty property="dateplan">
+			        <![CDATA[
+			        and nvl(to_date(to_char(sysdate,'yyyy-mm-dd')) - issuedateplan,0) < #dateplan#
+			        ]]>
+			        </isNotEmpty>
+			        <isNotEmpty property="reqstate">
+			        and d.reportstate = #reqstate#
+			        </isNotEmpty>
+		            group by c.reqid, c.smpid, b.name,  g.name, d.acceptno                            
+		        ) a, tne_sample_file b
+		where a.reqid = b.reqid
+		and   a.smpid = b.smpid     
+		order by a.reqid, a.smpid   
+    </select>
+</sqlMap>

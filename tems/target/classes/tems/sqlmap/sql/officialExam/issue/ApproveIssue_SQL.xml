@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="officialApproveIssueDAO">
+
+	<select id="officialApproveIssueDAO.getRequestList" resultClass="tems.com.exam.issue.model.ApproveIssueListVO">
+       select
+            a.reqid
+            ,b.acceptno
+            ,E.APPRID
+            ,c.name comname
+            ,d.name memname              
+            ,to_char(b.requestcdate,'yyyy.mm.dd') requestcdate
+            ,to_char(b.receiptdate,'yyyy.mm.dd') receiptdate
+            ,UFN_GET_ENDDATE(b.receiptdate,TB.itemterm) issuedateplan
+            ,TB.itemterm
+            ,b.orgcnt||'/'||b.copycnt reportcnt            
+            ,b.orgcnt
+            ,b.copycnt
+            ,a.smpcnt
+            ,TB.rltcnt   
+            ,tb.nncnt
+            ,TC.approvalnm apprline
+            ,a.remark                        
+        from cne_request a, cne_report b, THT_COMPANY c, TNT_MEMBER d, cne_report_approval e, tct_code_detail f, tct_code_detail g
+                ,(select sum(case when resultvalue is null then 0 else 1 end) nncnt , count(reqid) rltcnt, nvl(max(ITEMTERM),0) itemterm, reqid from cne_result  
+                  group by reqid 
+                ) TB
+                ,(select reqid, replace(wm_concat(b.name),',',' / ') approvalnm from cne_approval a, tct_admin b
+                where a.apprid = b.adminid
+                group by reqid) TC
+        where reqstate = 6
+        and a.reqid = b.reqid
+        and a.comid = c.comid
+        and a.ordinal = c.ordinal
+        and a.memid = d.memid
+        and a.reqid = e.reqid
+        and b.pricechargetype = f.CODEID(+)
+        and b.pricetype = g.CODEID(+)
+        and a.reqid = TB.reqid
+        and a.reqid = TC.reqid(+)
+        and b.type = 'O'        
+        and E.apprstate = 'A'
+        and E.APPRID = #adminid#
+        <isEqual property="chkstartdate1" compareValue="true">
+        <![CDATA[	
+        and b.receiptdate >= #startdate1#
+        ]]>    
+        </isEqual>
+	    <isEqual property="chkfinishdate1" compareValue="true">
+	    <![CDATA[
+        and b.receiptdate <= #finishdate1#
+        ]]>    
+        </isEqual>
+        <isNotEmpty property="firstOpt">
+        and a.reqid in (select reqid from cne_sample a, tce_master g ,tce_group h ,tce_class i
+						 where a.masterid = g.masterid
+						   and g.groupid = h.groupid
+						   and h.classid = i.classid
+						   and i.classid = #firstOpt#
+						   <isNotEmpty property="secondOpt">
+					       and h.groupid = #secondOpt#
+					       </isNotEmpty>
+					       <isNotEmpty property="thirdOpt">
+					       and g.masterid = #thirdOpt#
+					       </isNotEmpty>
+						   )			  
+        </isNotEmpty>
+        <isNotEmpty property="smpname">
+        and a.reqid in (select reqid from cne_sample
+						 where name like '%'||#smpname#||'%')
+        </isNotEmpty>
+        <isNotEmpty property="acceptno">
+        and b.acceptno like '%'||#acceptno#||'%'
+        </isNotEmpty>
+        <isNotEmpty property="dateplan">
+        <![CDATA[
+        and nvl(to_date(to_char(sysdate,'yyyy-mm-dd')) - issuedateplan,0) < #dateplan#
+        ]]>
+        </isNotEmpty>
+        order by b.requestcdate desc     
+	</select>
+	
+	<select id="officialApproveIssueDAO.getRejectResultList" resultClass="tems.com.exam.issue.model.RejectResultVO">
+		select  case when connect_by_isleaf = 1 then substr(sys_connect_by_path(conitemid,'.'),2)||'_'||resultid else substr(sys_connect_by_path(conitemid,'.'),2) end as treefield
+		        ,resultid
+		        ,smpnm
+		        ,itemname
+		        ,smpitemnm
+		        ,displayunit
+		        ,resultvalue
+		        ,itemvalue
+		        ,conitemid
+		        ,conitempid
+		from (
+		    select a.resultid
+		            ,b.name smpnm
+		            ,a.itemname
+		            ,b.name||' / '||trim(a.itemname) smpitemnm
+		            ,a.displayunit
+		            ,a.resultvalue
+		            ,a.itemvalue
+		            ,b.reqid
+		            ,b.smpid
+		            ,a.itemid
+		            ,b.reqid||'_'||b.smpid||'_'||a.itemid conitemid
+		            ,b.reqid||'_'||b.smpid||'_'||a.itempid conitempid
+		            ,a.orderby
+		    from cne_result a               
+		           ,cne_sample b               
+		    where a.reqid = b.reqid
+		        and a.smpid = b.smpid             
+		        and a.reqid = #reqid#
+		    order by b.smpid, a.orderby, a.itemid
+		) tmp
+		start with (conitempid = reqid||'_'||smpid||'_'||'0' )
+		connect by prior conitemid = conitempid
+		ORDER SIBLINGS BY smpid, orderby, itemid     
+	</select>
+	
+	<insert	id="officialApproveIssueDAO.inResultReject">
+		<selectKey resultClass="string" keyProperty="rejordinal">
+		<![CDATA[
+    	    select nvl(max(to_number(rejordinal)),0)+1 rejordinal FROM cne_result_reject
+		]]>
+		</selectKey>
+		insert into cne_result_reject(reqid
+         ,rejordinal
+         ,rejdesc
+         ,rejdate
+         ,rejid)
+		values(#reqid#
+         ,#rejordinal#
+         ,#rejdesc#
+         ,sysdate
+         ,#adminid#)
+	</insert>
+	
+	<insert id="officialApproveIssueDAO.inResultRejectItem">
+		insert into cne_result_reject_item(reqid, rejordinal, resultid)
+		values(#reqid#, #rejordinal#, #resultid#)
+	</insert>
+	
+	
+	<update id="officialApproveIssueDAO.upReportApproval">
+    	update cne_REPORT_APPROVAL set apprstate = 'D', enddate = sysdate
+		where reqid = #reqid#
+		and apprid = #adminid#
+		and reportid = '1'
+    </update>
+    
+    <update id="officialApproveIssueDAO.upReportApprovalNext">
+    	update cne_REPORT_APPROVAL set apprstate = 'A'
+		where reqid = #reqid#
+		and ordinal = (select min(ordinal) from cne_approval where reqid = #reqid# and apprstate = '-')
+		and reportid = '1'
+    </update>
+    
+    <update id="officialApproveIssueDAO.upReportApprovalReq">
+    	update cne_request set 
+    		 issueappr = (select min(apprstate) from cne_REPORT_APPROVAL where reqid = #reqid# and apprstate != '-' and reportid = '1')
+    		,reqstate = (select case when min(apprstate) = 'D' then '7'
+                                     else  '6' end apprstate
+                     	 from cne_REPORT_APPROVAL where reqid = #reqid# and apprstate != '-' and reportid = '1')
+		where reqid = #reqid#
+    </update>
+    
+    <update id="officialApproveIssueDAO.upReportState">
+    	update cne_report set 
+    		 reportstate = (select case when min(apprstate) = 'D' then '7'
+                                     else  '6' end apprstate
+                     	 from cne_REPORT_APPROVAL where reqid = #reqid# and apprstate != '-' and reportid = '1')
+			,sendstype = 'E'               	 
+		where reqid = #reqid#
+		and type = 'O'  
+    </update>
+    
+    <update id="officialApproveIssueDAO.upReportRejectState">
+    	update cne_report set 
+    		 reportstate = 4                     	 
+		where reqid = #reqid#
+		and type = 'O'  
+		and reportid = '1'
+    </update>
+    
+    <update id="officialApproveIssueDAO.upRequestRejectState">
+    	update cne_request set 
+    		 reqstate = 4,
+    		 issueappr = 'R'                     	 
+		where reqid = #reqid#		
+    </update>
+	
+	<update id="officialApproveIssueDAO.upReportApprovalReject">
+    	update cne_REPORT_APPROVAL set apprstate = 'R', enddate = sysdate
+		where reqid = #reqid#
+		and apprid = #adminid#
+		and reportid = '1'
+    </update>
+	
+</sqlMap>

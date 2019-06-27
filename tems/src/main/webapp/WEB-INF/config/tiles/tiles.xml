@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+        "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+
+
+<tiles-definitions>
+
+    <definition name="mainTemplate" template="/WEB-INF/jsp/tiles/layout.jsp">
+        <put-attribute name="header" value="/WEB-INF/jsp/tiles/header.jsp"/>
+        <put-attribute name="left" value="/WEB-INF/jsp/tiles/left.jsp"/>
+        <put-attribute name="content" value="/WEB-INF/jsp/tiles/content.jsp"/>
+        <put-attribute name="footer" value="/WEB-INF/jsp/tiles/footer.jsp"/>
+    </definition>
+
+    <definition name="popupTemplate" template="/WEB-INF/jsp/tiles/poplayout.jsp">
+        <put-attribute name="content" value="/WEB-INF/jsp/tiles/content.jsp"/>
+    </definition>
+    
+    <definition name="nonTemplate" template="/WEB-INF/jsp/tiles/nonlayout.jsp">
+        <put-attribute name="content" value="/WEB-INF/jsp/tiles/content.jsp"/>
+    </definition>
+
+    <definition name="tems/*/*" extends="mainTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/tems/{1}/{2}.jsp"/>
+    </definition>
+
+    <definition name="tems/*/*/*" extends="mainTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/tems/{1}/{2}/{3}.jsp"/>
+    </definition>
+
+    <definition name="tems/*/*/*/*" extends="mainTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/tems/{1}/{2}/{3}/{4}.jsp"/>
+    </definition>
+
+    <definition name="tems/*/*/*/*/*" extends="mainTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/tems/{1}/{2}/{3}/{4}/{5}.jsp"/>
+    </definition>
+    
+    <!-- 팝업 및 스타일 제외 메뉴 -->
+    <definition name="pop/*/*" extends="popupTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/tems/{1}/{2}.jsp"/>
+    </definition>
+    
+    <definition name="pop/*/*/*" extends="popupTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/tems/{1}/{2}/{3}.jsp"/>
+    </definition>
+    
+    <definition name="pop/*/*/*/*" extends="popupTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/tems/{1}/{2}/{3}/{4}.jsp"/>
+    </definition>
+    
+    <definition name="pop/*/*/*/*/*" extends="popupTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/tems/{1}/{2}/{3}/{4}/{5}.jsp"/>
+    </definition>
+
+    <definition name="pop/*/*/*/*/*/*" extends="popupTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/tems/{1}/{2}/{3}/{4}/{5}/{6}.jsp"/>
+    </definition>
+    
+    <!-- 그냥 공백 -->
+    <definition name="non/*/*/*" extends="nonTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/tems/{1}/{2}/{3}.jsp"/>
+    </definition>
+    
+    <definition name="non/*/*/*/*" extends="nonTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/tems/{1}/{2}/{3}/{4}.jsp"/>
+    </definition>
+    
+    <definition name="non/*/*/*/*/*" extends="nonTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/tems/{1}/{2}/{3}/{4}/{5}.jsp"/>
+    </definition>
+
+    <!-- 그냥 공백2 -->
+    <definition name="non2/*/*/*" extends="popupTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/egovframework/{1}/{2}/{3}.jsp"/>
+    </definition>
+
+    <definition name="non2/*/*/*/*" extends="popupTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/egovframework/{1}/{2}/{3}/{4}.jsp"/>
+    </definition>
+
+    <definition name="non2/*/*/*/*/*" extends="popupTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/egovframework/{1}/{2}/{3}/{4}/{5}.jsp"/>
+    </definition>
+    
+
+    <!-- egov 메뉴관리 -->
+    <definition name="egovframework/*/*" extends="mainTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/egovframework/{1}/{2}.jsp"/>
+    </definition>
+
+    <definition name="egovframework/*/*/*" extends="mainTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/egovframework/{1}/{2}/{3}.jsp"/>
+    </definition>
+
+    <definition name="egovframework/*/*/*/*" extends="mainTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/egovframework/{1}/{2}/{3}/{4}.jsp"/>
+    </definition>
+
+    <definition name="egovframework/*/*/*/*/*" extends="mainTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/egovframework/{1}/{2}/{3}/{4}/{5}.jsp"/>
+    </definition>
+
+</tiles-definitions>
+
+
+
+
+
+
+

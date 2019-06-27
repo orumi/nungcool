@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="RcListDAO">
+
+	<select id="RcListDAO.getConfirmList" resultClass="tems.com.exam.requestConfirm.model.ReqConfirmListVO">
+        select
+            a.reqid
+            ,c.name comname
+            ,d.name memname              
+            ,to_char(b.requestcdate,'yyyy.mm.dd') requestcdate
+            ,UFN_GET_ENDDATE(b.receiptdate,TB.itemterm) issuedateplan
+            ,TB.itemterm            
+            ,a.smpcnt
+            ,TB.rltcnt   
+            ,TC.approvalnm apprline
+            ,a.remark            
+        from tne_request a, tne_report b, THT_COMPANY c, TNT_MEMBER d, tne_approval e, tct_code_detail f, tct_code_detail g
+                ,(select count(reqid) rltcnt, nvl(max(ITEMTERM),0) itemterm, reqid from tne_result  
+                  group by reqid 
+                ) TB
+                ,(select reqid, replace(wm_concat(b.name),',',' / ') approvalnm from tne_approval a, tct_admin b
+                where a.apprid = b.adminid
+                group by reqid) TC
+        where reqstate = 2
+        and a.reqid = b.reqid
+        and a.comid = c.comid
+        and a.ordinal = c.ordinal
+        and a.memid = d.memid
+        and a.reqid = e.reqid
+        and b.pricechargetype = f.CODEID(+)
+        and b.pricetype = g.CODEID(+)
+        and a.reqid = TB.reqid
+        and a.reqid = TC.reqid
+        and b.type = 'O'        
+        and E.apprstate = 'A'
+        and E.APPRID = #apprid#
+        <isEqual property="chkstartdate" compareValue="true">
+        <![CDATA[	
+        and b.requestcdate >= #startdate#
+        ]]>    
+        </isEqual>
+	    <isEqual property="chkfinishdate" compareValue="true">
+	    <![CDATA[
+        and b.requestcdate <= #finishdate#
+        ]]>    
+        </isEqual>
+        <isNotEmpty property="dateplan">
+        <![CDATA[
+        and nvl(to_date(to_char(sysdate,'yyyy-mm-dd')) - issuedateplan,0) < #dateplan#
+        ]]>
+        </isNotEmpty>
+        order by b.requestcdate desc
+	</select>
+    
+    <update id="RcListDAO.upApproval">
+    	update tne_approval set apprstate = 'D', enddate = sysdate
+		where reqid = #reqid#
+		and apprid = #apprid#
+    </update>
+    
+    <update id="RcListDAO.upApprovalNext">
+    	update tne_approval set apprstate = 'A'
+		where reqid = #reqid#
+		and ordinal = (select min(ordinal) from tne_approval where reqid = #reqid# and apprstate = '-')
+    </update>
+    
+    <update id="RcListDAO.upApprovalReq">
+    	update tne_request set 
+    		 signappr = (select min(apprstate) from tne_approval where reqid = #reqid# and apprstate != '-')
+    		,reqstate = (select case when min(apprstate) = 'D' then '4'
+                                     else  '2' end apprstate
+                     	 from tne_approval where reqid = #reqid# and apprstate != '-')
+		where reqid = #reqid#
+    </update>
+    
+    <update id="RcListDAO.upReportState">
+    	update tne_report set 
+    		 reportstate = (select case when min(apprstate) = 'D' then '4'
+                                     else  '2' end apprstate
+                     	 from tne_approval where reqid = #reqid# and apprstate != '-')
+    		,acceptno = (
+						    select case when apprstate = 'D' then (
+								                                 select 'TSC'||to_char(sysdate,'yyyy')||'-'||trim(to_char(nvl(max(substr(acceptno,9,4))+1,'1'),'0000')) dd
+								                                 from tne_report
+								                                 where substr(acceptno,0,7) = 'TSC'||to_char(sysdate,'yyyy')
+										                          )
+			                     else '' end acceptno
+						    from (                                                         
+						            select min(apprstate) apprstate                                                                                              
+						             from tne_approval 
+						             where reqid = #reqid# and apprstate != '-'
+						    )
+						)
+		where reqid = #reqid#
+		and type = 'O'  
+    </update>
+
+	<insert id="RcListDAO.inReject">
+		insert into tne_request_reject(reqid, rejdesc, rejdate, rejid, regid, regdate)
+		values(#reqid#,#rejdesc#,sysdate,#rejid#,#rejid#,sysdate)
+	</insert>
+	
+	<update id="RcListDAO.upApprovalReject">
+    	update tne_approval set apprstate = 'R', enddate = sysdate
+		where reqid = #reqid#
+		and apprid = #apprid#
+    </update>
+	
+	
+</sqlMap>

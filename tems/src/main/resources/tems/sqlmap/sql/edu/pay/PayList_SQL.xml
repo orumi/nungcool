@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="payListSql">
+	
+
+	<!-- 결제리스트 -->
+	<select id="payListDAO.listPayMember" parameterClass="tems.com.common.Criteria" resultClass="tems.com.edu.pay.model.PayMemberVO" >
+		<![CDATA[
+			SELECT
+                COSID COSID, SUBJECTID, COSNAME, COSPRICE, ENROLLID, MEMNAME,
+                TEL, HP, EMAIL, ENROLLSTATEID, ENROLLSTATENAME, 
+                to_char(ENROLLCMPLDATE,'yyyy.mm.dd HH24:MI:SS') ENROLLCMPLDATE,
+                PAYID, pENROLLID,
+                PAYSTATEID, PAYSTATENAME,
+                PAYPRICE,
+                PAYTYPEID, PAYTYPENAME, 
+                PAYTIMEID, PAYTIMENAME,
+                TAXTYPEID, TAXTYPENAME,                    
+                ENROLLID tENROLLID,         
+                TAXBILLCNT, rnum             
+
+            FROM
+                (SELECT 
+                    COSID, SUBJECTID, COSNAME, COSPRICE, ENROLLID, MEMNAME,
+                    TEL, HP, EMAIL, ENROLLSTATEID, ENROLLSTATENAME, ENROLLCMPLDATE,              
+                    PAYID, pENROLLID,
+                    PAYSTATEID, PAYSTATENAME,
+                    PAYPRICE,
+                    PAYTYPEID, PAYTYPENAME, 
+                    PAYTIMEID, PAYTIMENAME,
+                    TAXTYPEID, TAXTYPENAME,                    
+                    tENROLLID,         
+                    TAXBILLCNT, ROWNUM rnum               
+                 FROM
+                        (SELECT
+                                c.COSID COSID, SUBJECTID, COSNAME, COSPRICE, e.ENROLLID, MEMNAME,
+                                TEL, HP, EMAIL, ENROLLSTATEID, ENROLLSTATENAME, ENROLLCMPLDATE,            
+                                PAYID, p.ENROLLID pENROLLID,
+                                PAYSTATEID, PAYSTATENAME,
+                                PAYPRICE,
+                                PAYTYPEID, PAYTYPENAME, 
+                                PAYTIMEID, PAYTIMENAME,
+                                TAXTYPEID, TAXTYPENAME,                    
+                                t.ENROLLID tENROLLID,         
+                                TAXBILLCNT                   
+                        FROM TND_COURSE c, TND_ENROLL e, TND_PAY p, TCD_ENROLL_STATE es, TCD_PAY_TYPE py, TCD_PAY_TIME pi, TCD_PAY_STATE ps, TCD_TAX_TYPE ti,
+                             (SELECT ENROLLID , COUNT(*) TAXBILLCNT FROM TND_TAXBILL GROUP BY ENROLLID) t
+                        
+                        WHERE c.COSID = e.COSID
+                        AND e.ENROLLID = p.ENROLLID (+)   
+                        AND e.ENROLLID = t.ENROLLID(+)
+                        AND e.ENROLLSTATE = es.ENROLLSTATEID(+)
+                        AND p.PAYTYPE = py.PAYTYPEID(+)                      
+                        AND p.PAYTIME = pi.PAYTIMEID(+)
+                        AND p.PAYSTATE = ps.PAYSTATEID(+)
+                        AND p.TAXTYPE = ti.TAXTYPEID(+)
+						AND p.PAYSTATE != 1 
+                        AND e.ENROLLSTATE not in(1,3)           
+		]]>
+						<isNotNull property="searchType">
+							<isEqual property="searchType" compareValue="pst">
+								AND PAYSTATENAME LIKE
+								'%' || #keyword# || '%'
+							</isEqual>
+							<isEqual property="searchType" compareValue="pty">
+								AND PAYTYPENAME LIKE
+								'%' || #keyword# || '%'
+							</isEqual>
+						</isNotNull>    	
+    	<![CDATA[	
+                        
+                        ORDER BY ENROLLCMPLDATE DESC
+                        ) t_o    
+                )t_or
+            WHERE t_or.rnum > #first# AND t_or.rnum <= #end#
+		]]>
+	</select>
+	
+
+	<select id="payListDAO.selectPayMemberTotCnt" parameterClass="tems.com.common.Criteria" resultClass="int">
+		SELECT	COUNT(*)                 
+		FROM TND_COURSE c, TND_ENROLL e, TND_PAY p, TCD_PAY_STATE ps, TCD_PAY_TYPE py 
+		WHERE c.COSID = e.COSID
+		AND e.ENROLLID = p.ENROLLID (+)
+		AND p.PAYTYPE = py.PAYTYPEID(+)
+		AND p.PAYSTATE = ps.PAYSTATEID(+)     
+		AND e.ENROLLSTATE NOT IN ( '1','3')
+	
+		<isNotNull property="searchType">
+			<isEqual property="searchType" compareValue="pst">
+				AND PAYSTATENAME LIKE
+				'%' || #keyword# || '%'
+			</isEqual>
+			<isEqual property="searchType" compareValue="pty">
+				AND PAYTYPENAME LIKE
+				'%' || #keyword# || '%'
+			</isEqual>
+		</isNotNull>    
+		   
+	</select>
+	
+	
+	<!-- 결제 상태 변경 -->
+	<update id="payListDAO.updatePayState" parameterClass="tems.com.edu.pay.model.PayVO">
+	<![CDATA[
+		UPDATE TND_PAY
+		SET
+    		PAYSTATE = #payState#
+    	WHERE ENROLLID =#enrollID#	
+    ]]>
+	</update>
+	
+	
+	
+	
+	<!-- 결제 상태 일괄변경 -->
+	<update id="payListDAO.updatePayStateAll" parameterClass="tems.com.edu.common.model.AllChangeCodeVO">
+	<![CDATA[
+		UPDATE TND_PAY
+      	SET
+       		PAYSTATE = #codeID#
+    ]]>
+		<iterate prepend="WHERE ENROLLID IN" property="chkedList" open="("
+			close=")" conjunction=",">
+			#chkedList[]#
+		</iterate>
+
+	</update>
+
+
+
+	<!-- 결제정보관리 -->
+	<update id="payListDAO.updatePayInfo" parameterClass="tems.com.edu.pay.model.PayVO">
+		<![CDATA[
+			UPDATE TND_PAY
+        		SET
+    				PAYTYPE = #payType#,
+					PAYTIME = #payTime#,
+					TAXTYPE = #taxType#,
+					TAXEMAIL = #taxEmail#
+        		WHERE
+        			ENROLLID = #enrollID#
+        		AND
+        		    PAYID = #payID#
+		]]>
+	</update>
+	
+	
+	
+	<!-- 결재정보 -->
+	<select id="payListDAO.selectPay" parameterClass="java.lang.String" resultClass="tems.com.edu.pay.model.PayVO">
+		<![CDATA[
+			SELECT
+				PAYID,          
+				ENROLLID,       
+				PAYSTATE,       
+				PAYPRICE,       
+				PAYTYPE,        
+				PAYTIME,        
+				TAXTYPE,        
+				TAXCOMPANY,     
+				TAXCEO,         
+				TAXBIZNO,       
+				TAXBIZCONDITION,
+				TAXBIZTYPE,     
+				TAXZIPCODE,     
+				TAXADDR1,       
+				TAXADDR2,       
+				TAXMNGNAME,     
+				TAXTEAM,        
+				TAXTEL,         
+				TAXHP,          
+				TAXFAX,         
+				TAXEMAIL,       
+				to_char(REGDATE,'yyyy.mm.dd') REGDATE,       
+				REGID,          
+				to_char(MODIFYDATE,'yyyy.mm.dd') MODIFYDATE,      
+				MODIFYID,       
+				MAILPAYED,      
+				SMSPAYED,       
+				MAILREFUNDED,   
+				SMSREFUNDED
+			FROM TND_PAY
+			WHERE ENROLLID = #enrollID#  
+		]]>
+	</select>
+	
+		
+	<!-- 결재정보 -->
+	<select id="payListDAO.listRefundMember"  parameterClass="java.util.List" resultClass="tems.com.edu.pay.model.PayMemberVO">
+		<![CDATA[
+			SELECT
+				 c.COSID COSID, SUBJECTID, COSNAME, COSPRICE, e.ENROLLID ENROLLID, MEMNAME,
+                 TEL, HP, EMAIL, ENROLLSTATEID, ENROLLSTATENAME, to_char(ENROLLCMPLDATE,'yyyy.mm.dd HH24:MI:SS') ENROLLCMPLDATE,        
+                 PAYID, p.ENROLLID pENROLLID,
+                 PAYSTATEID, PAYSTATENAME,
+                 PAYPRICE,
+                 PAYTYPEID, PAYTYPENAME, 
+                 PAYTIMEID, PAYTIMENAME,
+                 TAXTYPEID, TAXTYPENAME,                    
+                 t.ENROLLID tENROLLID,         
+                 TAXBILLCNT
+			FROM TND_COURSE c, TND_ENROLL e, TND_PAY p, TCD_ENROLL_STATE es, TCD_PAY_TYPE py, TCD_PAY_TIME pi, TCD_PAY_STATE ps, TCD_TAX_TYPE ti,
+                 (SELECT ENROLLID , COUNT(*) TAXBILLCNT FROM TND_TAXBILL GROUP BY ENROLLID) t
+			
+			 WHERE c.COSID = e.COSID
+             AND e.ENROLLID = p.ENROLLID (+)   
+             AND e.ENROLLID = t.ENROLLID(+)
+             AND e.ENROLLSTATE = es.ENROLLSTATEID(+)
+             AND p.PAYTYPE = py.PAYTYPEID(+)                      
+             AND p.PAYTIME = pi.PAYTIMEID(+)
+             AND p.PAYSTATE = ps.PAYSTATEID(+)
+             AND p.TAXTYPE = ti.TAXTYPEID(+)
+		]]>
+		 	<iterate prepend="AND p.PAYID IN" open="(" close=")" conjunction="," >
+           		#chkedList[]#
+      		</iterate>
+      		
+		<![CDATA[   	
+			ORDER BY ENROLLCMPLDATE DESC
+		]]>
+
+	</select>
+
+
+
+
+
+</sqlMap>

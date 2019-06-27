@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ResultListDAO">
+
+	<select id="ResultListDAO.getRequestList" resultClass="tems.com.exam.result.model.ResultReqListVO">
+         select
+            a.reqid
+            ,b.acceptno
+            ,c.name comname            
+            ,d.name memname              
+            ,to_char(b.receiptdate,'yyyy.mm.dd') receiptdate
+            ,UFN_GET_ENDDATE(b.receiptdate,TB.itemterm) issuedateplan
+            ,TB.itemterm            
+            ,a.smpcnt
+            ,TB.rltcnt   
+            ,TC.nullcnt 
+            ,TD.coopercnt
+            ,a.remark            
+            ,h.statenm
+            ,i.statenm issustatenm
+            ,nvl(to_date(to_char(sysdate,'yyyy-mm-dd')) - issuedateplan,0) dday
+            ,b.reportid
+        from tne_request a
+               ,tne_report b
+               ,THT_COMPANY c
+               ,TNT_MEMBER d
+               ,tct_code_detail f
+               ,tct_code_detail g
+               ,TCT_STATE h
+               ,TCT_APPR_STATE i
+               ,tne_sample j
+               ,tce_master k
+               ,tce_group l
+                ,(select count(reqid) rltcnt, nvl(max(ITEMTERM),0) itemterm, reqid 
+                    from tne_result  
+                    where resultflag = 'Y'
+                  group by reqid 
+                ) TB                
+                ,(select sum(case when resultvalue is not null then 0 else 1 end)  nullcnt, nvl(max(ITEMTERM),0) itemterm, reqid 
+                    from tne_result  
+                    where resultflag = 'Y'
+                    group by reqid 
+                ) TC
+                ,(select sum(case when cooperyn = 'Y' then 1 else 0 end)  coopercnt, reqid 
+                    from tne_result   
+                    where resultflag = 'Y'
+                  group by reqid 
+                ) TD
+        where a.reqstate = 4
+        and a.issueappr != 'R'
+        and a.reqid = b.reqid
+        and a.comid = c.comid
+        and a.ordinal = c.ordinal
+        and a.memid = d.memid
+        and b.pricechargetype = f.CODEID(+)
+        and b.pricetype = g.CODEID(+)
+        and a.reqid = TB.reqid(+)
+        and a.reqid = TC.reqid(+)
+        and a.reqid = TD.reqid(+)
+        and a.reqstate = h.statecd
+        and a.ISSUEAPPR = i.statecd
+        and A.reqid = j.reqid
+        and b.type = 'O'        
+        and j.masterid = k.masterid     
+        and k.groupid = l.groupid
+        and l.adminid = #adminid#
+        <isEqual property="chkstartdate1" compareValue="true">
+        <![CDATA[	
+        and b.receiptdate >= #startdate1#
+        ]]>    
+        </isEqual>
+	    <isEqual property="chkfinishdate1" compareValue="true">
+	    <![CDATA[
+        and b.receiptdate <= #finishdate1#
+        ]]>    
+        </isEqual>
+        <isNotEmpty property="acceptno">
+        and b.acceptno like '%'||#acceptno#||'%'
+        </isNotEmpty>
+        <isNotEmpty property="dateplan">
+        <![CDATA[
+        and nvl(to_date(to_char(sysdate,'yyyy-mm-dd')) - issuedateplan,0) < #dateplan#
+        ]]>
+        </isNotEmpty>
+        <isNotEmpty property="reqstate">
+        and a.reqstate = #reqstate#
+        </isNotEmpty>
+        group by a.reqid
+                    , acceptno
+					, c.name
+                    , d.name
+                    , to_char(b.receiptdate,'yyyy.mm.dd') 
+                    , UFN_GET_ENDDATE(b.receiptdate,TB.itemterm)
+                    , TB.itemterm
+                    , smpcnt
+                    , rltcnt
+                    , nullcnt
+                    , coopercnt
+                    , a.remark
+                    , h.statenm
+                    , i.statenm
+                    , nvl(to_date(to_char(sysdate,'yyyy-mm-dd')) - issuedateplan,0)
+                    , reportid
+        order by to_char(b.receiptdate,'yyyy.mm.dd')  desc , acceptno desc 
+	</select>
+	
+	<insert id="ResultListDAO.inApprConf">
+		insert into TNE_REPORT_APPROVAL
+		(reqid, reportid, draftid, apprid, ordinal, apprstate, startdate, regid, regdate)
+		values(#reqid#, #reportid#, #draftid#, #apprid#, #ordinal#, #apprstate#, sysdate, #regid#, sysdate)
+	</insert>
+	
+	<update id="ResultListDAO.upApprState">
+		update tne_request 
+		set issueappr = (
+			select min(apprstate) from TNE_REPORT_APPROVAL
+			where apprstate != '-'
+			and reqid = #reqid#
+			and reportid = #reportid#
+		)
+		,reqstate = '6'
+		,testenddate = sysdate
+		where reqid = #reqid#
+	</update>
+	
+	<delete id="ResultListDAO.delApprConf">
+		delete from TNE_REPORT_APPROVAL where reqid = #reqid# and reportid = #reportid#
+	</delete>	
+	
+    <update id="ResultListDAO.upReportState">
+    	update tne_report set 
+    		 reportstate = 6
+		where reqid = #reqid#
+		and type = 'O'  
+    </update>
+	
+</sqlMap>

@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="officialReqDetailDAO">
+	
+
+	<select id="officialReqDetailDAO.selReqDetail" resultClass="tems.com.exam.req.model.ReqDetailVO">
+		select a.reqid
+				,c.name comname
+		  		,c.ceoname
+		  		,c.mngname
+		  		,c.mngdept
+		  		,c.mngemail
+		  		,c.mnghp
+		  		,c.mngphone
+		  		,c.fax
+		        ,(select codename from tct_code_detail where codeid = b.usage) usage
+		        ,langtype
+		        ,orgcnt
+		        ,copycnt
+		        ,smpcnt
+		        ,rcvcompany
+		        ,rcvdept
+		        ,rcvzipcode
+		        ,rcvaddr1
+		        ,rcvaddr2
+		        ,(select  codename from tct_code_detail where codeid = b.pricechargetype) pricechargetype
+		        ,taxcompany
+		        ,taxbizno
+		        ,taxmngname
+		        ,taxzipcode
+		        ,taxaddr1
+		        ,taxaddr2
+		        ,remark
+		        ,itemdesc
+		        ,signappr
+        		,reqstate
+        		,pricestate
+        		,pricedate   
+        		,(select codename from tct_code_detail where codeid = a.itemafter and codegroupid = '15') itemafter     		
+		from cne_request a
+		        ,cne_report b
+		        ,tht_company c
+		where 
+		      a.reqid = b.reqid
+		and b.type = 'O'       
+		and a.comid = c.comid
+		and a.ordinal = c.ordinal
+		and a.reqid = #reqid#
+	</select>
+	
+	<delete id="officialReqDetailDAO.delRequest">
+		delete from cne_request
+		where reqid = #reqid#
+	</delete>
+	
+	<delete id="officialReqDetailDAO.delSample">
+		delete from cne_sample
+		where reqid = #reqid#
+	</delete>
+	
+	<delete id="officialReqDetailDAO.delResult">
+		delete from cne_result
+		where reqid = #reqid#
+	</delete>
+	
+	<delete id="officialReqDetailDAO.delReport">
+		delete from cne_report
+		where reqid = #reqid#
+	</delete>
+    
+    <update id="officialReqDetailDAO.upReqRemark">
+    	update cne_request set remark = #remark#
+    	where reqid = #reqid#
+    </update>
+    
+    <select id="officialReqDetailDAO.getReqSmpList" resultClass="tems.com.exam.req.model.ReqSmpListVO">
+    	select a.name smpname
+	         ,B.NAME mname
+	         ,a.reqid        
+	         ,a.smpid        
+	         ,a.masterid    
+	         ,a.price        
+	         ,a.regid        
+	         ,a.regdate        
+	         ,a.modifyid    
+	         ,a.modifydate    
+	         ,a.officeid    
+	         ,c.name officenm
+	         ,a.adminid        
+	         ,d.name adminnm
+	         ,a.smpfid                   
+		from cne_sample a
+	        ,tce_master b
+	        ,tct_office c
+	        ,tct_admin d
+		where a.masterid = b.masterid       
+		and a.reqid = #reqid#
+		and a.adminid = d.adminid(+)
+		and a.officeid = c.officeid(+)
+		order by smpid
+    </select>
+    
+    <select id="officialReqDetailDAO.getReqResultList" resultClass="tems.com.exam.req.model.ReqResultVO">
+    	select case when connect_by_isleaf = 1 then substr(sys_connect_by_path(itemid,'.'),2)||'_'||resultid else substr(sys_connect_by_path(itemid,'.'),2) end as treefield 
+		        ,itemid
+		        ,itempid
+		        ,methodid
+		        ,itemname
+		        ,unitid
+		        ,orderby
+		        ,methodnm
+		        ,itemprice
+		        ,price
+		        ,pricecnt
+		        ,addprice
+		        ,addpricecond
+		        ,remark
+		        ,condid
+		        ,condetc
+		        ,tempercond
+		        ,tempunit
+		        ,timecond
+		        ,timecondunit
+		        ,etc
+		        ,etcunit
+		        ,itemterm
+		        ,adminnm
+		        ,resultid
+		        ,reqid
+		        ,smpid
+		        ,adminid
+		        ,basiccond
+                ,basicunit
+                ,basicunitnm 
+                ,reqspec
+		from (        
+		        select a.itemid
+		                ,a.itempid
+		                ,a.methodid
+		                ,a.itemname
+		                ,a.unitid
+		                ,a.orderby
+		                ,a.methodnm
+		                ,a.itemprice
+		                ,a.price
+		                ,nvl(a.pricecnt,0) pricecnt
+		                ,a.addprice
+		                ,a.addpricecond
+		                ,a.remark
+		                ,a.condid
+		                ,a.condetc
+		                ,a.tempercond
+		                ,a.tempunit
+		                ,a.timecond
+		                ,a.timecondunit
+		                ,a.etc
+		                ,a.etcunit
+		                ,a.itemterm
+		                ,b.adminnm
+		                ,a.resultid
+		                ,a.reqid
+		                ,a.smpid
+		                ,b.adminid
+		                ,a.basiccond
+                		,a.basicunit
+                		,d.codename basicunitnm
+                		,a.reqspec
+		        from cne_result a
+		                ,(select resultid, wm_concat(tb.name) adminnm, wm_concat(tb.adminid) adminid 
+		                    from cne_ADMIN_ASSIGN ta, tct_admin tb
+		                    where ta.adminid = tb.adminid
+		                    group by resultid
+		                ) b
+		                ,cne_condition c
+		                ,tct_code_detail d
+		        where reqid = #reqid#
+		        and smpid = #smpid#
+		        and A.RESULTID = b.resultid(+)
+		        and a.condid = c.condid(+)
+		        and a.basicunit = d.codeid(+)
+		) tmp 
+		start with (ITEMPID = 0)
+		connect by prior ITEMID = ITEMPID
+		ORDER SIBLINGS BY orderby        
+    </select>
+
+	<delete id="officialReqDetailDAO.delReqResult">
+		delete from cne_result
+		where resultid = #resultid#
+	</delete>
+	
+	<delete id="officialReqDetailDAO.delReqResultAll">
+		delete from cne_result
+		where (itemid = #itemid# or itempid = #itemid#)
+		and reqid = #reqid#
+	</delete>
+	
+	<select id="officialReqDetailDAO.getItemList" resultClass="tems.com.exam.req.model.ItemListVO">
+		select treefield 
+		        ,itemid
+		        ,itempid
+		        ,itemnm
+		        ,ename
+		        ,price
+		from (         
+		    select substr(sys_connect_by_path(itemid,'.'),2) as treefield 
+		            ,substr(sys_connect_by_path(name,'\'),2) as treename
+		            ,itemid
+		            ,itempid
+		            ,name itemnm
+		            ,ename
+		            ,price 
+		    from TCE_ITEM
+		    where oldyn != 'Y'
+		    and useflag = 'Y'
+		    start with (ITEMPID = 0)
+		    connect by prior ITEMID = ITEMPID
+		    ORDER SIBLINGS BY orderby 
+		) where treename like '%'||#itemnm#||'%'
+	</select>
+	
+	<insert id="officialReqDetailDAO.addResultItemParent">
+		merge into cne_result A
+		using (
+		    select itemid, itempid, price, basiccnt, calcbase, addprice, etc, level, name, ename, price itemprice
+		    from TCE_ITEM       
+		    where itemid != #itemid#
+		    start with (ITEMID = #itemid#)
+		    connect by ITEMID =  prior ITEMPID                          
+		) tmp
+		on (
+		          A.itemid = tmp.itemid
+		      and A.reqid = #reqid#
+		      and A.smpid = #smpid# 
+		)    
+		when not matched then 
+		    insert(resultid, reqid, smpid, itemid, itempid, price, pricecnt, addpricecond, addprice, remark, methodid, officeid, itemname, itemename, resultflag, itemprice)
+		    values(SEQ_cne_RESULT.NEXTVAL, #reqid#, #smpid#,tmp.itemid, tmp.itempid, tmp.price, tmp.basiccnt, tmp.calcbase, tmp.addprice, tmp.etc,'0', #officeid#, tmp.name, tmp.ename,'Y',tmp.itemprice)
+	</insert>
+	
+	<insert id="officialReqDetailDAO.addResultItem">
+		    insert into cne_result(resultid, reqid, smpid, itemid, itempid, price, pricecnt, addpricecond, addprice, remark, methodid, officeid, itemname, itemename, resultflag, itemprice)
+		    select SEQ_cne_RESULT.NEXTVAL, #reqid#, #smpid#,tmp.itemid, tmp.itempid, tmp.price, tmp.basiccnt, tmp.calcbase, tmp.addprice, tmp.etc,'0', #officeid#, tmp.name, tmp.ename, tmp.resultflag, tmp.price
+		    from tce_item tmp
+		    where tmp.itemid =  #itemid#
+	</insert>
+	
+	
+	<insert id="officialReqDetailDAO.addResultItemParentAll">
+		merge into cne_result A
+		using (
+		    select a.itemid, a.itempid, a.price, a.basiccnt, a.calcbase, a.addprice, a.etc, a.name, a.ename, b.reqid, b.smpid 
+			from (            
+			    select a.itemid, a.itempid, a.price, a.basiccnt, a.calcbase, a.addprice, a.etc, a.name, a.ename
+			    from TCE_ITEM a       
+			    where itemid != #itemid#
+			    start with (ITEMID = #itemid# )
+			    connect by ITEMID =  prior ITEMPID
+			) a,  (select reqid, smpid from cne_sample where reqid = #reqid# ) b                        
+		) tmp
+		on (
+		          A.itemid = tmp.itemid
+		      and A.reqid = tmp.reqid
+		      and A.smpid = tmp.smpid 
+		)    
+		when not matched then 
+		    insert(resultid, reqid, smpid, itemid, itempid, price, pricecnt, addpricecond, addprice, remark, methodid, officeid, itemname, itemename, resultflag, itemprice)
+		    values(SEQ_cne_RESULT.NEXTVAL, tmp.reqid, tmp.smpid,tmp.itemid, tmp.itempid, tmp.price, tmp.basiccnt, tmp.calcbase, tmp.addprice, tmp.etc,'0', #officeid#, tmp.name, tmp.ename,'Y', tmp.price)
+	</insert>
+	
+	<insert id="officialReqDetailDAO.addResultItemAll">
+			insert into cne_result(resultid, reqid, smpid, itemid, itempid, price, pricecnt, addpricecond, addprice, remark, methodid, officeid, itemname, itemename, resultflag, itemprice)
+		    select SEQ_cne_RESULT.NEXTVAL, b.reqid, b.smpid,tmp.itemid, tmp.itempid, tmp.price, tmp.basiccnt, tmp.calcbase, tmp.addprice, tmp.etc,'0', #officeid#, tmp.name, tmp.ename,'Y', tmp.price
+		    from tce_item tmp,  (select reqid, smpid from cne_sample where reqid = #reqid# ) b
+		    where tmp.itemid =  #itemid#
+	</insert>
+	
+	<select id="officialReqDetailDAO.getItemMethodDetail" resultClass="tems.com.exam.req.model.ItemMethodVO">
+		 select
+            b.itemid,
+            b.itempid,
+            c.name as methodname,
+            b.methodid,
+            b.unitid,
+            b.smpamount,
+            b.range,
+            b.ruleid,
+            b.displaytype,
+            b.displayscript,
+            b.repeat,
+            b.kolasflag,
+            b.cycle,
+            b.term,
+            b.calc,
+            b.regid,
+            b.regdate,
+            b.modifyid,
+            b.modifydate,
+            b.useflag,
+            d.admin,
+            d.adminid
+        from cne_item_detail b, tce_method c,
+            (
+                select
+                    d.itemid,
+                    d.methodid,
+                    d.itempid,
+                    replace(wm_concat(e.name), ',', ', ') as admin,
+                    wm_concat(e.adminid) as adminid
+                from cne_item_admin d, tct_admin e
+                where d.adminid = e.adminid (+)
+                group by d.itemid, d.methodid, d.itempid
+            ) d
+        where b.methodid = c.methodid (+)
+          and b.itemid = d.itemid (+)
+          and b.methodid = d.methodid (+)
+          and b.itempid = d.itempid (+)
+		  and b.itemid = #itemid#
+		  and b.methodid = #methodid#
+	</select>
+	
+	<select id="officialReqDetailDAO.getItemConditionDetail" resultClass="tems.com.exam.req.model.CondDetailVO">
+		select tempercond
+		       ,tempunit
+		       ,timecond
+		       ,timecondunit
+		       ,etc
+		       ,etcunit 
+		from cne_condition
+		where itemid = #itemid#
+		and condid = #condid#
+	</select>
+	
+	<update id="officialReqDetailDAO.upResultDetail">
+		update cne_result set
+			condid=		#condid#
+			,condetc=	#condetc#
+			,price=		#price#
+			,tempercond=	#tempercond#
+			,etcunit=	#etcunit#
+			,etc=		#etc#
+			,timecondunit=	#timecondunit#
+			,remark=		#remark#
+			,methodnm=	#methodnm#
+			,unitid=		#unitid#
+			,methodid=	#methodid#
+			,itemterm=	#itemterm#
+			,pricecnt=	#pricecnt#
+			,addprice=	#addprice#
+			,orderby=	#orderby#
+			,itemprice=	#itemprice#
+			,addpricecond=	#addpricecond#
+			,tempunit=	#tempunit#
+			,timecond=	#timecond#
+			,resulttype=	#resulttype#
+			,calc= #calc#
+			,reqspec = #reqspec#
+		where resultid = #resultid#			
+					
+	</update>
+	
+	<insert id="officialReqDetailDAO.inResultAssign">
+		insert into cne_admin_assign(resultid, adminid, regid, regdate)
+		values(#resultid#,#adminid#,#regid#,sysdate)
+	</insert>
+	
+	<insert id="officialReqDetailDAO.inResultAssignAll">
+		insert into cne_admin_assign(resultid, adminid, regid, regdate)
+        select b.resultid, a.adminid, regid, sysdate from cne_admin_assign a, (select resultid from cne_result
+        where itemid = #itemid#
+        and resultid != #resultid#
+        and reqid = #reqid#) b
+        where a.resultid = #resultid#
+	</insert>        
+	
+	<delete id="officialReqDetailDAO.delResultAssign">
+		delete from cne_admin_assign
+		where resultid = #resultid#
+	</delete>
+	
+	<delete id="officialReqDetailDAO.delResultAssignAll">
+		delete from cne_admin_assign
+		where resultid in (select resultid from cne_result
+        where itemid = #itemid#
+        and resultid != #resultid#
+        and reqid = #reqid#)
+	</delete>
+	
+	<update id="officialReqDetailDAO.upResultDetailAll">
+		merge into cne_result A
+		using (
+		    select  '$condid$'         condid
+	                ,'$condetc$'        condetc
+	                ,'$price$'          price
+	                ,'$tempercond$'     tempercond
+	                ,'$etcunit$'        etcunit
+	                ,'$etc$'            etc
+	                ,'$timecondunit$'   timecondunit
+	                ,'$remark$'         remark
+	                ,'$methodnm$'       methodnm
+	                ,'$unitid$'         unitid
+	                ,'$methodid$'       methodid
+	                ,'$itemterm$'       itemterm
+	                ,'$pricecnt$'       pricecnt
+	                ,'$addprice$'       addprice
+	                ,'$orderby$'        orderby
+	                ,'$itemprice$'      itemprice
+	                ,'$addpricecond$'   addpricecond
+	                ,'$tempunit$'       tempunit
+	                ,'$timecond$'       timecond
+	                ,'$resulttype$'     resulttype
+	                ,'$reqid$'     reqid
+	                ,'$itemid$'     itemid
+		        from dual                     
+		) tmp
+		on (
+		       A.itemid = tmp.itemid   
+		   and A.reqid = tmp.reqid    
+		)
+		when matched then 
+		    update 
+		        set A.condid=        #condid#
+		            ,A.condetc=    #condetc#            
+		            ,A.tempercond=    #tempercond#
+		            ,A.etcunit=    #etcunit#
+		            ,A.etc=        #etc#
+		            ,A.timecondunit=    #timecondunit#
+		            ,A.remark=        #remark#
+		            ,A.methodnm=    #methodnm#
+		            ,A.unitid=        #unitid#
+		            ,A.methodid=    #methodid#
+		            ,A.itemterm=    #itemterm#
+		            ,A.pricecnt=    #pricecnt#
+		            ,A.addprice=    #addprice#
+		            ,A.orderby=    #orderby#
+		            ,A.itemprice=    #itemprice#
+		            ,A.tempunit=    #tempunit#
+		            ,A.timecond=    #timecond#
+		            ,A.resulttype=    #resulttype#  
+	</update>
+	
+	<select id="officialReqDetailDAO.selReqPrice" resultClass="tems.com.exam.req.model.ReqPriceVO">
+		select sumprice
+		       , dcsumprice
+		       , dcrate
+		       , etcprice
+		       , dcprice
+		       , totalpricetemp
+		       , (dcsumprice+etcprice+orireportprice+copyreportprice+dcprice)   vatnotprice
+       		   , (dcsumprice+etcprice+orireportprice+copyreportprice+dcprice)/10   vatprice
+		       , (dcsumprice+etcprice+orireportprice+copyreportprice+dcprice) + (dcsumprice+etcprice+orireportprice+copyreportprice+dcprice)/10 totalprice 
+		       , pricedesc
+		       , reqid
+		       , orireportprice
+		       , copyreportprice
+		 from (       
+		         select nvl(sumprice,0) sumprice
+                         ,nvl((sumprice - (nvl(sumprice,0)*nvl(dcrate,0)/100)),0)  dcsumprice  
+                         ,nvl(dcrate,0)   dcrate  
+                         ,nvl(etcprice,0)  etcprice
+                         ,nvl(dcprice,0)   dcprice
+                         ,(nvl(orgcnt,0) *10000)  orireportprice
+                         ,(nvl(copycnt,0) *5000) copyreportprice
+                         ,nvl(totalpricetemp,0)   totalpricetemp  
+                         ,(nvl(sumprice,0)  + (orgcnt*10000) + (copycnt*5000)) + (sumprice + (orgcnt*10000) + (copycnt*5000))  / 10 totalprice    
+                         ,nvl(pricedesc,0)   pricedesc   
+                         ,a.reqid
+		        from cne_request a, cne_report b, (select reqid, sum(PRICE) sumprice from cne_sample where reqid = #reqid# group by reqid) c
+		        where a.reqid = c.reqid
+		        and a.reqid = b.reqid
+		        and b.type = 'O'
+		        and a.reqid = #reqid#
+		 ) TA
+	</select>
+		
+	<procedure id="officialReqDetailDAO.calPrice" resultClass="java.lang.String">
+		{call CAL_PRICE(#reqid#,#p_strResult,javaType=java.lang.String,jdbcType=VARCHAR,mode=OUT#)}
+	</procedure>
+	
+	<update id="officialReqDetailDAO.upReqPrice">
+		update cne_request set
+		     etcprice = replace(#etcprice#,',','') 
+		    ,dcprice = replace(#dcprice#,',','')
+		    ,pricedesc = #pricedesc#
+		    ,modifyid = #regid#
+		    ,modifydate = sysdate
+		where reqid = #reqid#
+	</update>
+		
+	<select id="officialReqDetailDAO.selReqAttach" resultClass="tems.com.exam.req.model.ReqAttachVO">
+		 select reqid, filepath, orgname   
+		  from cne_REQUEST_FILE
+ 		 where reqid = #reqid#
+	</select>		
+
+
+</sqlMap>

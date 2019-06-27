@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+        "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+    <sqlMap resource="tems/sqlmap/sql/testBaseManagement/testMethodManagement/TestMethodManagement_SQL.xml"/>
+    <sqlMap resource="tems/sqlmap/sql/testBaseManagement/oilTypeProductManagement/OilTypeProductManagement_SQL.xml"/>
+    <sqlMap resource="tems/sqlmap/sql/testBaseManagement/oilTypeProductManagement/ElementaryItem_SQL.xml"/>
+    <sqlMap resource="tems/sqlmap/sql/testBaseManagement/testItemManagement/GenReqTestItem_SQL.xml"/>
+    <sqlMap resource="tems/sqlmap/sql/testBaseManagement/testItemManagement/GenReqTestProp_SQL.xml"/>
+    <sqlMap resource="tems/sqlmap/sql/testBaseManagement/oilTypeProductManagement/QualStandManagement_SQL.xml"/>
+    
+</sqlMapConfig>

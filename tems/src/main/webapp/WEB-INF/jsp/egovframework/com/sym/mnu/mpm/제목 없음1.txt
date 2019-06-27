@@ -1,0 +1,1 @@
+ @RequestMapping(value="/sym/prm/EgovProgramListManageSelect.do") controller method name selectProgrmList

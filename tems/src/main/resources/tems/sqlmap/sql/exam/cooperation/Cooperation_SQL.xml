@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CooperationDAO">
+
+	<select id="CooperationDAO.getCooperationList" resultClass="tems.com.exam.cooperation.model.CooperationListVO">
+		 select
+            a.reqid
+            ,b.acceptno
+            ,c.name comname            
+            ,d.name memname              
+            ,to_char(b.receiptdate,'yyyy.mm.dd') receiptdate
+            ,UFN_GET_ENDDATE(b.receiptdate,TB.itemterm) issuedateplan
+            ,TB.itemterm            
+            ,a.smpcnt
+            ,TB.rltcnt   
+            ,TC.nullcnt 
+            ,TD.coopercnt
+            ,TD.officenm
+            ,TD.officeid
+            ,a.remark            
+            ,h.statenm
+            ,i.statenm issustatenm
+            ,nvl(to_date(to_char(sysdate,'yyyy-mm-dd')) - issuedateplan,0) dday
+            ,b.reportid
+        from tne_request a
+               ,tne_report b
+               ,THT_COMPANY c
+               ,TNT_MEMBER d
+               ,tct_code_detail f
+               ,tct_code_detail g
+               ,TCT_STATE h
+               ,TCT_APPR_STATE i
+               ,(
+                select reqid, apprid 
+                from TNE_COOPER_APPR
+                where apprstate = 'A'
+               ) TA
+                ,(select count(reqid) rltcnt, nvl(max(ITEMTERM),0) itemterm, reqid 
+                    from tne_result  
+                  group by reqid 
+                ) TB                
+                ,(select sum(case when resultvalue is not null then 0 else 1 end)  nullcnt, nvl(max(ITEMTERM),0) itemterm, reqid 
+                    from tne_result  
+                  group by reqid 
+                ) TC
+                ,(select sum(case when cooperyn = 'Y' then 1 else 0 end)  coopercnt, a.reqid, b.officeid, c.name officenm
+                    from tne_result a, tne_cooper_req b, tct_office c   
+                    where a.reqid = b.reqid
+                    and b.officeid = c.officeid
+                  group by a.reqid, c.name, b.officeid 
+                ) TD
+        where a.reqid = b.reqid
+        and a.comid = c.comid
+        and a.ordinal = c.ordinal
+        and a.memid = d.memid
+        and b.pricechargetype = f.CODEID(+)
+        and b.pricetype = g.CODEID(+)
+        and a.reqid = TA.reqid
+        and a.reqid = TB.reqid
+        and a.reqid = TC.reqid
+        and a.reqid = TD.reqid
+        and a.reqstate = h.statecd
+        and a.ISSUEAPPR = i.statecd
+        and b.type = 'O'
+        and TA.apprid = #adminid#        
+        <isEqual property="chkstartdate1" compareValue="true">
+        <![CDATA[	
+        and b.receiptdate >= #startdate1#
+        ]]>    
+        </isEqual>
+	    <isEqual property="chkfinishdate1" compareValue="true">
+	    <![CDATA[
+        and b.receiptdate <= #finishdate1#
+        ]]>    
+        </isEqual>
+        <isNotEmpty property="firstOpt">
+        and a.reqid in (select reqid from tne_sample a, tce_master g ,tce_group h ,tce_class i
+						 where a.masterid = g.masterid
+						   and g.groupid = h.groupid
+						   and h.classid = i.classid
+						   and i.classid = #firstOpt#
+						   <isNotEmpty property="secondOpt">
+					       and h.groupid = #secondOpt#
+					       </isNotEmpty>
+					       <isNotEmpty property="thirdOpt">
+					       and g.masterid = #thirdOpt#
+					       </isNotEmpty>
+						   )			  
+        </isNotEmpty>
+        <isNotEmpty property="smpname">
+        and a.reqid in (select reqid from tne_sample
+						 where name like '%'||#smpname#||'%')
+        </isNotEmpty>
+        <isNotEmpty property="itemname">
+        and a.reqid in (select reqid from tne_result
+						 where itemname like '%'||#itemname#||'%')
+        </isNotEmpty>
+        <isNotEmpty property="acceptno">
+        and b.acceptno like '%'||#acceptno#||'%'
+        </isNotEmpty>      
+        order by to_char(b.receiptdate,'yyyy.mm.dd')  desc 
+	</select>
+	
+	<update id="CooperationDAO.upCooperApproval">
+    	update TNE_COOPER_APPR set apprstate = 'D', enddate = sysdate
+		where reqid = #reqid#
+		and apprid = #adminid#
+		and officeid = #officeid#
+    </update>
+    
+    <update id="CooperationDAO.upCooperApprovalNext">
+    	update TNE_COOPER_APPR set apprstate = 'A'
+		where reqid = #reqid#
+		and officeid = #officeid#
+		and ordinal = (select min(ordinal) from TNE_COOPER_APPR where reqid = #reqid# and officeid = #officeid# and apprstate = '-')
+    </update>
+    
+    <update id="CooperationDAO.upCooperApprovalReq">
+    	update TNE_COOPER_REQ set 
+    		 resultstate = (select case when min(apprstate) = 'D' then '10'
+                                     else  '-1' end apprstate
+                     	 from TNE_COOPER_APPR where reqid = #reqid# and officeid = #officeid# and apprstate != '-')
+		where reqid = #reqid#
+		and officeid = #officeid#
+    </update>
+    
+    <select id="CooperationDAO.getCooperSmpList" resultClass="tems.com.exam.req.model.ReqSmpListVO">
+    	select a.name smpname
+	         ,B.NAME mname
+	         ,a.reqid        
+	         ,a.smpid        
+	         ,a.masterid    
+	         ,a.price        
+	         ,a.regid        
+	         ,a.regdate        
+	         ,a.modifyid    
+	         ,a.modifydate    
+	         ,a.officeid    
+	         ,a.adminid        
+	         ,a.smpfid                   
+		from tne_sample a
+	        ,tce_master b
+	        ,(select a.reqid, b.smpid 
+        		from TNE_COOPER_REQ a, tne_result b
+        		where a.reqid = b.reqid
+        		and B.COOPERYN = 'Y'
+        	) e
+		where a.masterid = b.masterid       
+		and a.reqid = #reqid#
+		and a.reqid = e.reqid
+		and a.smpid = e.smpid
+		order by smpid
+    </select>
+    
+    <select id="CooperationDAO.getCooperReqDetail" resultClass="tems.com.exam.cooperation.model.CooperReqDetailVO">
+		select a.reqid
+                ,a.comname
+                ,b.acceptno
+                ,to_char(b.receiptdate,'yyyy.mm.dd') receiptdate
+                ,to_char(b.issuedateplan,'yyyy.mm.dd') issuedateplan
+                ,c.officeid
+                ,d.NAME officenm
+                ,c.regdate                
+        from tne_request a
+                ,tne_report b   
+                ,TNE_COOPER_REQ c
+                ,tct_office d
+        where 
+              a.reqid = b.reqid       
+        and a.reqid = c.reqid
+        and c.officeid = d.officeid
+        and a.reqid = #reqid#
+    </select>
+    
+    <insert id="CooperationDAO.inCooperReject">
+		insert into TNE_COOPER_REJECT(reqid, rejflag, rejdesc, rejdate, rejid, officeid, regid, regdate)
+		values(#reqid#,'1',#rejdesc#,sysdate,#adminid#,#officeid#,#adminid#,sysdate)
+	</insert>
+	
+	<update id="CooperationDAO.upCooperRejApproval">
+    	update TNE_COOPER_APPR set apprstate = 'R'
+		where reqid = #reqid#
+		and apprid = #adminid#
+		and officeid = #officeid#
+    </update>	
+    
+    <update id="CooperationDAO.upCooperRejApprovalReq">
+    	update TNE_COOPER_REQ set 
+    		 resultstate = '19'
+		where reqid = #reqid#
+		and officeid = #officeid#
+    </update>
+    
+    <select id="CooperationDAO.getResultList" resultClass="tems.com.exam.result.model.ResultlVO">
+    	select case when connect_by_isleaf = 1 then substr(sys_connect_by_path(itemid,'.'),2)||'_'||resultid else substr(sys_connect_by_path(itemid,'.'),2) end as treefield 
+                ,itemid
+                ,itempid
+                ,methodid
+                ,itemname
+                ,unitid
+                ,orderby
+                ,methodnm
+                ,remark
+                ,condid
+                ,testcond
+                ,condetc
+                ,tempercond
+                ,tempunit
+                ,timecond
+                ,timecondunit
+                ,etc
+                ,etcunit
+                ,itemterm
+                ,adminnm
+                ,resultid
+                ,reqid
+                ,smpid
+                ,adminid
+                ,basiccond
+                ,basicunit
+                ,basicunitnm 
+                ,annotation
+                ,cooperyn
+                ,itemregid
+                ,resulttype
+                ,itemvalue
+                ,resultvalue
+                ,displaytype
+                ,displayunit
+                ,calc
+        from (        
+                select a.itemid
+                        ,a.itempid
+                        ,a.methodid
+                        ,a.itemname
+                        ,a.unitid
+                        ,a.orderby
+                        ,a.methodnm
+                        ,a.remark
+                        ,a.condid
+                        ,f.testcond
+                        ,a.condetc
+                        ,a.tempercond
+                        ,a.tempunit
+                        ,a.timecond
+                        ,a.timecondunit
+                        ,a.etc
+                        ,a.etcunit
+                        ,a.itemterm
+                        ,b.adminnm
+                        ,a.resultid
+                        ,a.reqid
+                        ,a.smpid
+                        ,b.adminid
+                        ,a.basiccond
+                        ,a.basicunit
+                        ,d.codename basicunitnm
+                        ,a.annotation
+                        ,a.itemregid
+                        ,a.resulttype
+                        ,a.itemvalue
+                        ,a.resultvalue
+                        ,a.calc
+                        ,case when a.displaytype is null then e.displaytype else a.displaytype end displaytype
+                        ,case when a.displayunit is null then a.unitid else a.displayunit end displayunit
+                        ,case when a.cooperyn is not null then (select name||'('||statenm||')' resultstate 
+                                                                                 from tne_cooper_req a, tct_office b, tct_state c 
+                                                                                   where #reqid# = a.reqid 
+                                                                                   and a.officeid = b.officeid
+                                                                                   and a.resultstate = c.statecd
+                                                                                 ) else '' end cooperyn 
+                from tne_result a
+                        ,(select resultid, wm_concat(tb.name) adminnm, wm_concat(tb.adminid) adminid 
+                            from TNE_ADMIN_ASSIGN ta, tct_admin tb
+                            where ta.adminid = tb.adminid
+                            group by resultid
+                        ) b
+                        ,tct_code_detail d
+                        ,tne_item_detail e
+                        ,(
+                            select
+                                a.itemid,
+                                a.condid,
+                                a.tempercond || b.codename || '/' || timecond || c.codename || '/' || etc || d.codename testcond
+                            from tne_condition a, tct_code_detail b, tct_code_detail c, tct_code_detail d
+                            where a.tempunit = b.codeid (+)
+                              and a.timecondunit = c.codeid (+)
+                              and a.etcunit = d.codeid (+)
+                        ) f
+                where reqid = #reqid#
+                and smpid = #smpid#
+                and A.RESULTID = b.resultid(+)
+                and a.basicunit = d.codeid(+)
+                and a.itemid = e.itemid(+)
+                and a.itempid = e.itempid(+)
+                and a.methodid = e.methodid(+)
+                and a.itemid = f.itemid(+)
+                and a.condid = f.condid(+)
+                and a.cooperyn = 'Y'
+        ) tmp 
+        start with (ITEMPID = 0)
+        connect by prior ITEMID = ITEMPID
+        ORDER SIBLINGS BY orderby      
+    </select>
+	
+</sqlMap>

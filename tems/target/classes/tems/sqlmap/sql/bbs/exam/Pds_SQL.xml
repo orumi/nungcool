@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="boardSql">
+
+
+	<!-- 리스트 -->
+	<select id="examPdsDAO.listBoard" parameterClass="tems.com.common.Criteria" resultClass="tems.com.bbs.exam.examPds.model.BoardVO">
+        <![CDATA[
+			SELECT
+				BID, REGID, to_char(REGDATE, 'yyyy.mm.dd HH24:MI') REGDATE, MODIFYID, to_char(MODIFYDATE,'yyyy.mm.dd HH24:MI') MODIFYDATE,
+    			TITLE, CONTENT, WRITER, CNT, GROUPNO, DEPTH, ORDERBY, PID, rnum
+			FROM
+				(SELECT 
+				 	BID, REGID, REGDATE, MODIFYID, MODIFYDATE,
+        			TITLE, CONTENT, WRITER, CNT, GROUPNO, DEPTH, ORDERBY, PID, ROWNUM rnum  
+				 FROM
+
+    				(SELECT 
+    					BID, REGID, REGDATE, MODIFYID, MODIFYDATE, TITLE, CONTENT, WRITER,
+						CNT, GROUPNO, DEPTH, ORDERBY, PID
+    				 
+    				 FROM TNE_PDS 
+    				 WHERE BID > 0
+   		]]>
+		<isNotNull property="searchType">
+			<isEqual property="searchType" compareValue="t">
+				AND TITLE LIKE
+				'%' || #keyword# || '%'
+			</isEqual>
+			<isEqual property="searchType" compareValue="c">
+				AND CONTENT LIKE
+				'%' || #keyword# || '%'
+			</isEqual>
+			<isEqual property="searchType" compareValue="tc">
+				AND ((TITLE LIKE
+				'%' || #keyword# || '%') OR (CONTENT LIKE '%' || #keyword# || '%'))
+			</isEqual>
+		</isNotNull>    	
+    	<![CDATA[			
+    						ORDER BY GROUPNO DESC, ORDERBY ASC
+    				) t_o
+
+    			) t_or
+			WHERE t_or.rnum > #first# AND t_or.rnum <= #end#
+        ]]>
+	</select>
+
+
+	<!-- 토탈카운트 -->
+	<select id="examPdsDAO.selectBoardTotCnt" parameterClass="tems.com.common.Criteria" resultClass="int">
+	    <![CDATA[
+			SELECT COUNT(*) FROM TNE_PDS WHERE BID > 0
+		]]>
+		<isNotNull property="searchType">
+			<isEqual property="searchType" compareValue="t">
+				AND TITLE LIKE '%' || #keyword# || '%'
+			</isEqual>
+			<isEqual property="searchType" compareValue="c">
+				AND CONTENT LIKE '%' || #keyword# || '%'
+			</isEqual>
+			<isEqual property="searchType" compareValue="tc">
+				AND ((TITLE LIKE '%' || #keyword# || '%') OR (CONTENT LIKE '%' || #keyword# || '%'))
+			</isEqual>
+		</isNotNull>
+
+	</select>
+
+
+
+	<!-- 읽기 -->
+	<select id="examPdsDAO.selectBoard" resultClass="tems.com.bbs.exam.examPds.model.BoardVO">
+    	<![CDATA[
+        	SELECT 
+				BID, REGID, to_char(REGDATE, 'yyyy.mm.dd HH24:MI') REGDATE, MODIFYID, to_char(MODIFYDATE,'yyyy.mm.dd HH24:MI') MODIFYDATE,
+    			TITLE, CONTENT, WRITER, CNT, GROUPNO, DEPTH, ORDERBY, PID
+			FROM TNE_PDS WHERE BID = #bID#
+        ]]>
+	</select>
+	
+	
+	<!-- 원글 저장 -->
+	<insert id="examPdsDAO.insertBoard" parameterClass="tems.com.bbs.exam.examPds.model.BoardVO">
+		<selectKey resultClass="int" keyProperty="bID">
+		<![CDATA[
+    	    SELECT TNE_PDS_SEQ.NEXTVAL as id FROM DUAL
+		]]>
+		</selectKey>
+		
+    	<![CDATA[
+            INSERT INTO TNE_PDS
+            (BID,
+             REGID,        
+             REGDATE,        
+             TITLE,
+             CONTENT,        
+             WRITER,        
+             CNT,
+             GROUPNO,
+             DEPTH,
+             ORDERBY,
+             PID
+             )
+            VALUES 
+            (#bID#,
+             #regID#,
+             SYSDATE,
+             #title#,
+             #content#,
+             #writer#,
+             #cnt#,
+             #bID#,
+             0,
+             0,
+             0
+             )
+        ]]>
+
+	</insert>
+	
+	
+
+	<!-- 답글 저장 -->
+	<insert id="examPdsDAO.insertReBoard" parameterClass="tems.com.bbs.exam.examPds.model.BoardVO">
+		<selectKey resultClass="int" keyProperty="bID">
+		<![CDATA[
+    	    SELECT TNE_PDS_SEQ.NEXTVAL as id FROM DUAL
+		]]>
+		</selectKey>
+    	<![CDATA[
+            INSERT INTO TNE_PDS
+            (BID,
+             REGID,        
+             REGDATE,        
+             TITLE,
+             CONTENT,        
+             WRITER,        
+             CNT,
+             GROUPNO,
+             DEPTH,
+             ORDERBY,
+             PID
+             )
+            VALUES 
+            (#bID#,
+             #regID#,
+             SYSDATE,
+             #title#,
+             #content#,
+             #writer#,
+             #cnt#,
+             #groupNO#,
+             #depth#+1,
+             #orderby#+1,
+             #pID#
+             )
+        ]]>
+
+	</insert>
+
+	
+	<!-- 답글 저장시 글정렬 -->
+	<update id="examPdsDAO.updateOrderby" parameterClass="tems.com.bbs.exam.examPds.model.BoardVO">
+    	<![CDATA[
+	    	UPDATE TNE_PDS 
+	    	SET ORDERBY= ORDERBY+1 
+	    	WHERE GROUPNO=#groupNO# 
+	    	AND ORDERBY>#orderby#   
+	    ]]>
+	</update>
+
+	
+	
+	<!-- 댓글카운트 -->
+	<select id="examPdsDAO.selectReBoardCnt" parameterClass="int" resultClass="int" >
+    	<![CDATA[
+	    	SELECT COUNT(*) 
+	    	FROM TNE_PDS
+	    	WHERE PID = #bID# 
+	    ]]>
+	</select>
+		
+	
+	<!-- 글삭제 -->
+	<delete id="examPdsDAO.deleteBoard" parameterClass="int">
+    	<![CDATA[
+	    	DELETE FROM TNE_PDS 
+	    	WHERE BID=#bID#
+	    ]]>
+	</delete>
+	
+	<!-- 수정 -->
+	<update id="examPdsDAO.updateBoard" parameterClass="tems.com.bbs.exam.examPds.model.BoardVO">
+    	<![CDATA[
+			UPDATE TNE_PDS
+			SET
+            	TITLE = #title#,
+            	CONTENT = #content#,        
+            	WRITER = #writer#,       
+            	MODIFYID = #modifyID#,
+            	MODIFYDATE = #modifyDate#   
+         	WHERE
+         		BID = #bID#
+        ]]>
+
+	</update>
+	
+	
+
+</sqlMap>

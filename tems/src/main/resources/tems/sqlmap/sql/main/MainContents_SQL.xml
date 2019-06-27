@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="mainContentsDAO">
+
+    <select id="mainContentsDAO.selectReqTestRegList" resultClass="tems.com.main.model.ReqTestRegVO">
+    	<![CDATA[
+        SELECT
+            C.REQID,
+            C.COMPNAME,
+            C.SAMPLECNT,
+            C.REGNAME,
+            C.REQSTATE,
+            TO_CHAR(C.REQUESTCDATE, 'YYYY-MM-DD') REQUESTCDATE,
+            C.ITEMCNT
+        FROM
+            (
+                SELECT
+                    A.REQID,
+                    A.COMPNAME,
+                    A.SAMPLECNT,
+                    A.REGNAME,
+                    A.REQSTATE,
+                    A.REQUESTCDATE,
+                    B.ITEMCNT
+                FROM
+                    (SELECT
+                         A.REQID,
+                         B.NAME    COMPNAME,
+                         D.STATENM REQSTATE,
+                         A.SMPCNT  SAMPLECNT,
+                         C.NAME    REGNAME,
+                         E.REQUESTCDATE
+                     FROM TNE_REQUEST A, THT_COMPANY B, TNT_MEMBER C, TCT_STATE D, TNE_REPORT E
+                     WHERE A.COMID = B.COMID
+                           AND A.MEMID = C.MEMID
+                           AND A.REQSTATE = D.STATECD
+                           AND A.ORDINAL = B.ORDINAL
+                           AND A.REQID = E.REQID
+                           AND A.REQSTATE = '0'
+                           AND E.TYPE = 'O'
+                     ORDER BY REQUESTCDATE DESC, REQID) A,
+                    (SELECT
+                         COUNT(REQID) ITEMCNT,
+                         REQID
+                     FROM TNE_RESULT
+                     GROUP BY REQID) B
+                WHERE A.REQID = B.REQID
+                ORDER BY REQUESTCDATE DESC
+            ) C
+        WHERE ROWNUM < 9
+        ]]>
+	</select>
+
+    <select id="mainContentsDAO.selectProgressStateList" resultClass="tems.com.main.model.ProgressStateVO">
+    	<![CDATA[
+        SELECT
+            ROWNUM,
+            REQID,
+            TO_CHAR(REQUESTCDATE,'YYYY-MM-DD'),
+            REPORTNO,
+            COMPNAME,
+            REGNAME,
+            SMPCNT,
+            ITEMCNT,
+            REQSTATE
+        FROM
+            (SELECT
+                 ROWNUM,
+                 A.REQID,
+                 REQUESTCDATE,
+                 REPORTNO,
+                 COMPNAME,
+                 REGNAME,
+                 SMPCNT,
+                 ITEMCNT,
+                 REQSTATE
+             FROM (
+                      SELECT
+                          A.REQID,
+                          B.REQUESTCDATE,
+                          B.REPORTNO,
+                          C.NAME COMPNAME,
+                          D.NAME REGNAME,
+                          A.SMPCNT,
+                          E.STATENM REQSTATE
+                      FROM TNE_REQUEST A, TNE_REPORT B, THT_COMPANY C, TNT_MEMBER D, TCT_STATE E
+                      WHERE A.REQID = B.REQID
+                            AND B.TYPE = 'O'
+                            AND A.COMID = C.COMID
+                            AND A.MEMID = D.MEMID
+                            AND A.REQSTATE = E.STATECD
+                      ORDER BY REQUESTCDATE DESC
+                  ) A,
+                 (SELECT
+                      COUNT(REQID) ITEMCNT,
+                      REQID
+                  FROM TNE_RESULT
+                  GROUP BY REQID) B
+             WHERE A.REQID = B.REQID)
+        WHERE ROWNUM < 9
+        ]]>
+    </select>
+
+    <select id="mainContentsDAO.selectProgressInfo"
+            parameterClass="tems.com.main.model.ProgressInfoVO"
+            resultClass="tems.com.main.model.ProgressInfoVO">
+        <![CDATA[
+
+        SELECT
+            (SELECT count(A.REQID) FROM TNE_REPORT A, TNE_SAMPLE B WHERE A.REQID = B.REQID AND A.TYPE = 'O' AND A.REPORTSTATE = '0' AND B.OFFICEID = (SELECT A.OFFICEID FROM TCT_ADMIN A WHERE A.ADMINID = 'admin1')) generalRegist,
+            (SELECT count(A.REQID) FROM TNE_REPORT A, TNE_SAMPLE B WHERE A.REQID = B.REQID AND A.TYPE = 'M' AND A.REPORTSTATE = '0' AND B.OFFICEID = (SELECT A.OFFICEID FROM TCT_ADMIN A WHERE A.ADMINID = 'admin1'))mergedRegist,
+            (SELECT count(A.REQID) FROM TNE_REPORT A, TNE_SAMPLE B WHERE A.REQID = B.REQID AND A.TYPE = 'C' AND A.REPORTSTATE = '0' AND B.OFFICEID = (SELECT A.OFFICEID FROM TCT_ADMIN A WHERE A.ADMINID = 'admin1'))copyRegist,
+            (SELECT count(A.REQID) FROM TNE_REPORT A, TNE_RESULT_REJECT B, TNE_SAMPLE C WHERE A.REQID = B.REQID AND A.TYPE = 'O' AND A.REQID = C.REQID AND C.OFFICEID = (SELECT OFFICEID FROM TCT_ADMIN A WHERE ADMINID = 'admin1'))  generalReject,
+            (SELECT count(A.REQID) FROM TNE_REPORT A, TNE_COOPER_REQ B, TNE_SAMPLE C WHERE A.REQID = B.REQID AND A.TYPE = 'O' AND A.REQID = C.REQID AND C.OFFICEID = (SELECT OFFICEID FROM TCT_ADMIN A WHERE ADMINID = 'admin1'))  generalCooperation,
+            (SELECT count(A.REQID) FROM TNE_REPORT A, TNE_RESULT_REJECT B, TNE_SAMPLE C WHERE A.REQID = B.REQID AND A.TYPE = 'M' AND A.REQID = C.REQID AND C.OFFICEID = (SELECT OFFICEID FROM TCT_ADMIN A WHERE ADMINID = 'admin1'))  mergedReject,
+            (SELECT count(SMPID) FROM ( SELECT SMPID FROM TNE_SAMPLE WHERE OFFICEID = (SELECT OFFICEID FROM TCT_ADMIN A WHERE ADMINID = 'admin1') GROUP BY SMPID )) resultUnregistedSample,
+            (SELECT count(SMPID) FROM ( SELECT B.SMPID FROM (( SELECT * FROM TNE_SAMPLE WHERE OFFICEID != (SELECT A.OFFICEID FROM TCT_ADMIN A WHERE A.ADMINID = 'admin1') ) ) A , TNE_RESULT B WHERE A.REQID = B.REQID GROUP BY B.SMPID )) resultUnregistedSampleCoo,
+            (SELECT count(ITEMID) FROM ( SELECT ITEMID FROM TNE_RESULT A, TNE_SAMPLE B WHERE A.REQID = B. REQID AND B.OFFICEID = (SELECT OFFICEID FROM TCT_ADMIN  WHERE ADMINID = 'admin1') GROUP BY ITEMID ))resultUnregisteredItem,
+            (SELECT count(ITEMID) FROM ( SELECT ITEMID FROM TNE_RESULT A, TNE_SAMPLE B WHERE A.REQID = B. REQID AND B.OFFICEID != (SELECT OFFICEID FROM TCT_ADMIN  WHERE ADMINID = 'admin1') GROUP BY ITEMID ))resultUnregisteredItemCoo,
+            (SELECT count(A.REQID) FROM TNE_REQUEST A, TNE_APPROVAL B, TNE_SAMPLE C WHERE A.REQID = B.REQID AND A.REQID = C.REQID AND A.REQSTATE = 2 AND B.APPRSTATE = 'A' AND C.OFFICEID = (SELECT A.OFFICEID FROM TCT_ADMIN A WHERE A.ADMINID = 'admin1')) paymentRecieved,
+            (SELECT count(A.REQID) FROM TNE_REQUEST A, TNE_APPROVAL B, TNE_SAMPLE C, TNE_REQUEST D WHERE A.REQID = B.REQID AND A.REQID = C.REQID AND A.REQSTATE = 2 AND C.REQID = D.REQID AND B.APPRSTATE = 'A' AND C.OFFICEID != (SELECT A.OFFICEID FROM TCT_ADMIN A WHERE A.ADMINID = 'admin1')) paymentIssued,
+            (SELECT count (A.REQID) FROM TNE_REPORT_APPROVAL A) etcPayment
+        FROM DUAL
+
+        ]]>
+    </select>
+
+    <select id="mainContentsDAO.selectBoardList" resultClass="tems.com.main.model.NoticeBoardVO">
+        <![CDATA[
+        SELECT
+            ROWNUM,
+            BID,
+            REGID,
+            TO_CHAR(REGDATE, 'YYYY-MM-DD') REGDATE,
+            MODIFYID,
+            TO_CHAR(MODIFYDATE, 'YYYY-MM-DD') MODIFYDATE,
+            TITLE,
+            CONTENT,
+            WRITER,
+            CNT,
+            GROUPNO,
+            DEPTH,
+            ORDERBY,
+            PID
+        FROM
+            (
+                SELECT
+                    BID,
+                    REGID,
+                    REGDATE,
+                    MODIFYID,
+                    MODIFYDATE,
+                    TITLE,
+                    CONTENT,
+                    WRITER,
+                    CNT,
+                    GROUPNO,
+                    DEPTH,
+                    ORDERBY,
+                    PID
+                FROM TNE_NOTICE
+                ORDER BY REGDATE DESC
+            )
+        WHERE ROWNUM <= 7
+
+        ]]>
+    </select>
+
+
+<!--    <select id="mainContentsDAO.selectBoardList" resultClass="tems.com.main.model.">
+        <![CDATA[
+
+          SELECT * FROM TNE_PDS
+
+        ]]>
+    </select>-->
+
+
+</sqlMap>

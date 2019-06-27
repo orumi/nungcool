@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="officialResultDetailDAO">
+
+	<select id="officialResultDetailDAO.getResultDetail" resultClass="tems.com.officialExam.officialResult.model.ResultDetailVO">
+
+		select a.reqid
+                ,c.name comname
+                ,b.acceptno
+                ,to_char(b.receiptdate,'yyyy.mm.dd') receiptdate
+                ,tb.smpcnt
+                ,tc.nullcnt
+                ,d.statenm
+                ,to_char(b.issuedateplan,'yyyy.mm.dd') issuedateplan
+                ,reportid
+				,itemdesc
+                ,(select codename from tct_code_detail where codeid = a.itemafter and codegroupid = '15') itemafter
+        from cne_request a
+                ,cne_report b
+                ,tht_company c
+                ,TCT_STATE d
+                ,(select count(reqid) smpcnt, reqid 
+                   from cne_sample a , tce_master k, tce_group l
+                   where a.masterid = k.masterid     
+        		   and k.groupid = l.groupid
+        		   and l.adminid = #adminid#          
+                  group by reqid 
+                ) TB
+                ,(select sum( case when resultvalue is null then 1 else 0 end) nullcnt, a.reqid 
+                   from cne_sample a, cne_result b, tce_master k, tce_group l
+                   where a.reqid = b.reqid
+                   and a.smpid = b.smpid            
+                   and a.masterid = k.masterid     
+        		   and k.groupid = l.groupid
+        		   and l.adminid = #adminid#                 
+                  group by a.reqid 
+                ) TC          
+        where 
+              a.reqid = b.reqid
+        and b.type = 'O'      
+        and a.comid = c.comid
+        and a.ordinal = c.ordinal 
+        and a.reqstate = d.statecd
+        and a.reqid = TB.reqid
+        and a.reqid = TC.reqid
+        and a.reqid = #reqid#    
+    </select>	
+    
+    <select id="officialResultDetailDAO.getResultSmpList" resultClass="tems.com.exam.req.model.ReqSmpListVO">
+    	select a.name smpname
+	         ,B.NAME mname
+	         ,a.reqid        
+	         ,a.smpid        
+	         ,a.masterid    
+	         ,a.price        
+	         ,a.regid        
+	         ,a.regdate        
+	         ,a.modifyid    
+	         ,a.modifydate    
+	         ,a.officeid    
+	         ,c.name officenm
+	         ,a.adminid        
+	         ,d.name adminnm
+	         ,a.smpfid                   
+		from cne_sample a
+	        ,tce_master b
+	        ,tct_office c
+	        ,tct_admin d
+	        ,tce_group e
+		where a.masterid = b.masterid       
+		and a.reqid = #reqid#
+		and a.adminid = d.adminid(+)
+		and a.officeid = c.officeid(+)
+		and b.groupid = e.groupid
+		and e.adminid = #adminid#
+		order by smpid
+    </select>
+    
+    <select id="officialResultDetailDAO.getResultList" resultClass="tems.com.exam.result.model.ResultlVO">
+    	select case when connect_by_isleaf = 1 then substr(sys_connect_by_path(itemid,'.'),2)||'_'||resultid else substr(sys_connect_by_path(itemid,'.'),2) end as treefield 
+                ,itemid
+                ,itempid
+                ,methodid
+                ,itemname
+                ,unitid
+                ,orderby
+                ,methodnm
+                ,remark
+                ,condid
+                ,testcond
+                ,condetc
+                ,tempercond
+                ,tempunit
+                ,timecond
+                ,timecondunit
+                ,etc
+                ,etcunit
+                ,itemterm
+                ,adminnm
+                ,resultid
+                ,reqid
+                ,smpid
+                ,adminid
+                ,basiccond
+                ,basicunit
+                ,basicunitnm 
+                ,annotation
+                ,cooperyn
+                ,itemregid
+                ,resulttype
+                ,itemvalue
+                ,resultvalue
+                ,displaytype
+                ,displayunit
+                ,calc
+                ,resultflag
+                ,reference 
+        from (        
+                select a.itemid
+                        ,a.itempid
+                        ,a.methodid
+                        ,a.itemname
+                        ,a.unitid
+                        ,a.orderby
+                        ,case when a.methodid = -1 then a.reqspec else a.methodnm end methodnm 
+                        ,a.remark
+                        ,a.condid
+                        ,f.testcond
+                        ,a.condetc
+                        ,a.tempercond
+                        ,a.tempunit
+                        ,a.timecond
+                        ,a.timecondunit
+                        ,a.etc
+                        ,a.etcunit
+                        ,a.itemterm
+                        ,b.adminnm
+                        ,a.resultid
+                        ,a.reqid
+                        ,a.smpid
+                        ,b.adminid
+                        ,a.basiccond
+                        ,a.basicunit
+                        ,d.codename basicunitnm
+                        ,a.annotation
+                        ,a.itemregid
+                        ,a.resulttype
+                        ,a.itemvalue
+                        ,a.resultvalue
+                        ,a.calc
+                        ,a.resultflag
+                        ,case when a.displaytype is null then e.displaytype else a.displaytype end displaytype
+                        ,case when a.displayunit is null then a.unitid else a.displayunit end displayunit
+                        ,case when a.cooperyn is not null then (select name||'('||statenm||')' resultstate 
+                                                                                 from cne_cooper_req a, tct_office b, tct_state c 
+                                                                                   where #reqid# = a.reqid 
+                                                                                   and a.officeid = b.officeid
+                                                                                   and a.resultstate = c.statecd
+                                                                                 ) else '' end cooperyn 
+						,e.reference                                                                                  
+                from cne_result a
+                        ,(select resultid, wm_concat(tb.name) adminnm, wm_concat(tb.adminid) adminid 
+                            from cne_ADMIN_ASSIGN ta, tct_admin tb
+                            where ta.adminid = tb.adminid
+                            group by resultid
+                        ) b
+                        ,tct_code_detail d
+                        ,cne_item_detail e
+                        ,(
+                            select
+                                a.itemid,
+                                a.condid,
+                                a.tempercond || b.codename || '/' || timecond || c.codename || '/' || etc || d.codename testcond
+                            from cne_condition a, tct_code_detail b, tct_code_detail c, tct_code_detail d
+                            where a.tempunit = b.codeid (+)
+                              and a.timecondunit = c.codeid (+)
+                              and a.etcunit = d.codeid (+)
+                        ) f
+                where reqid = #reqid#
+                and smpid = #smpid#
+                and A.RESULTID = b.resultid(+)
+                and a.basicunit = d.codeid(+)
+                and a.itemid = e.itemid(+)
+                and a.itempid = e.itempid(+)
+                and a.methodid = e.methodid(+)
+                and a.itemid = f.itemid(+)
+                and a.condid = f.condid(+)
+        ) tmp 
+        start with (ITEMPID = 0)
+        connect by prior ITEMID = ITEMPID
+        ORDER SIBLINGS BY orderby      
+    </select>
+    
+    <update id="officialResultDetailDAO.upResultDetail"> 
+    	update cne_result set
+		       displayunit = #displayunit#
+		      ,displaytype = #displaytype# 
+		      ,resulttype = #resulttype#
+		      ,itemvalue = #itemvalue#
+		      ,resultvalue = #resultvalue#           
+		      ,itemregid = case when #resultvalue# is null then '' else #itemregid# end  
+		      ,annotation = #annotation#
+		      ,condid = #condid#
+      		  ,condetc = #condetc#
+		where resultid = #resultid#      
+    </update>
+    
+    <select id="officialResultDetailDAO.getCalculation" resultClass="tems.com.exam.result.model.CalculationVO">
+    	select TA.resultid,TA.itemid, TA.itempid, TA.methodid, TA.calid, TA.calnm, TA.itemnm, TA.calc, TB.itemvalue 
+		from (
+		select a.resultid,b.itemid, b.itempid, b.methodid, b.calid, b.calnm, d.name itemnm, a.calc
+		from cne_result a
+		       ,cne_calculation_detail b
+		       ,tce_item d
+		where a.itemid = b.itemid
+		    and a.itempid = b.itempid
+		    and a.methodid = b.methodid
+		    and a.reqid = #reqid#
+		    and a.smpid = #smpid#
+		    and a.itemid = d.itemid
+		order by a.orderby, a.itemid, b.calid    
+		) TA
+		left join 
+		(select  resultid, calid, itemvalue 
+		from cne_calculation_result
+		) TB
+		on TA.RESULTID = TB.RESULTID
+		and TA.calid = TB.calid
+    </select>
+    
+    <insert id="officialResultDetailDAO.inCalResult">
+    	merge into cne_calculation_result A
+		using dual
+		on (
+		          A.resultid = #resultid# 
+		      and A.calid = #calid#
+		)    
+		when matched then
+		    update set
+		    itemvalue = #itemvalue#
+		    ,modifyid = #regid#
+		    ,modifydate = sysdate
+		when not matched then 
+		    insert(resultid, itemid, itempid, methodid, calid, itemvalue, regid, regdate)
+		    values(#resultid#,#itemid#,#itempid#, #methodid#, #calid#,#itemvalue#,#regid#,sysdate)
+    </insert>
+    
+    <select id="officialResultDetailDAO.getResultListAll" resultClass="tems.com.exam.resultAdmin.model.ResultAdminListVO">
+		select 
+            case when connect_by_isleaf = 1 then substr(sys_connect_by_path(conitemid,'.'),2)||'_'||resultid else substr(sys_connect_by_path(conitemid,'.'),2) end as treefield
+            ,reqid
+            ,smpid
+            ,resultid
+            ,smpnm
+            ,level lvl
+            ,masterid
+            ,masternm
+            ,acceptno
+            ,issuedateplan
+            ,conitemid
+            ,conitempid
+            ,itemid
+            ,itempid
+            ,itemname
+            ,unitid
+            ,displayunit
+            ,testcond
+            ,condid
+            ,condetc
+            ,resulttype
+            ,itemvalue
+            ,resultvalue
+            ,annotation
+            ,methodid
+            ,methodnm
+            ,itemregid
+            ,spec
+            ,testnote           
+            ,orderby
+            ,displaytype
+        from (
+                        select a.reqid
+                                ,b.smpid
+                                ,c.resultid
+                                ,b.name smpnm
+                                ,b.masterid
+                                ,g.name masternm
+                                ,a.acceptno
+                                ,a.issuedateplan
+                                ,a.reqid||'_'||b.smpid||'_'||c.itemid conitemid
+                                ,a.reqid||'_'||b.smpid||'_'||c.itempid conitempid
+                                ,c.itemid
+                                ,c.itempid
+                                ,c.itemname
+                                ,c.unitid
+                                ,case when c.displayunit is null then c.unitid else c.displayunit end displayunit
+                                ,testcond
+                                ,c.condid
+                                ,c.condetc
+                                ,c.resulttype
+                                ,c.itemvalue
+                                ,c.resultvalue
+                                ,c.annotation
+                                ,c.methodid
+                                ,c.methodnm
+                                ,c.itemregid
+                                ,'품질기준' spec
+                                ,'' testnote
+                                ,c.orderby     
+                                ,c.displaytype                                                                                                                               
+                        from cne_report a
+                                ,cne_sample b
+                                ,cne_result c
+                                ,(
+                                    select
+                                        a.itemid,
+                                        a.condid,
+                                        a.tempercond || b.codename || '/' || timecond || c.codename || '/' || etc || d.codename testcond
+                                    from cne_condition a, tct_code_detail b, tct_code_detail c, tct_code_detail d
+                                    where a.tempunit = b.codeid (+)
+                                      and a.timecondunit = c.codeid (+)
+                                      and a.etcunit = d.codeid (+)
+                                ) f
+                                ,tce_master g                        
+                                ,tce_group h
+                                ,tce_class i
+                        where a.reqid = b.reqid
+                        and b.reqid = c.reqid
+                        and b.smpid = c.smpid                        
+                        and c.itemid = f.itemid(+)
+                        and c.condid = f.condid(+)
+                        and b.masterid = g.masterid
+                        and g.groupid = h.groupid
+                        and h.classid = i.classid
+                        and a.type = 'O'
+                        and b.reqid = #reqid#
+                        and b.smpid = #smpid#
+        ) tmp 
+        start with (conitempid = reqid||'_'||smpid||'_'||'0' )
+        connect by prior conitemid = conitempid
+        ORDER SIBLINGS BY acceptno, orderby    
+	</select>
+	
+	<select id="officialResultDetailDAO.getSmpDetail" resultClass="tems.com.exam.result.model.SmpDetailVO">
+		select a.reqid
+		        , b.NAME smpnm
+		        , b.masterid
+		        , e.name masternm
+		        , d.adminid
+		        , d.name adminnm
+		        , a.acceptno   
+		        , to_char(a.receiptdate,'yyyy.mm.dd') receiptdate
+		        , a.reportstate
+		        , c.statenm
+		        , nvl(to_char(a.issuedateplan,'yyyy.mm.dd'),'') issuedateplan
+		from cne_report a, cne_sample b, TCT_STATE c, tct_admin d, tce_master e, tce_group f
+        where a.reqid = b.reqid        
+        and a.reportstate = c.statecd        
+        and b.masterid = e.masterid
+        and e.groupid = f.groupid
+        and f.adminid = d.adminid
+		and b.reqid = #reqid#
+		and b.smpid = #smpid#
+		and a.type = 'O'
+	</select>
+	
+	
+	
+	<delete id="officialResultDetailDAO.delApprConf">
+		delete from cne_COOPER_APPR where reqid = #reqid# and officeid = #officeid#
+	</delete>
+	
+	<insert id="officialResultDetailDAO.inApprConf">
+		insert into cne_COOPER_APPR
+		(reqid, draftid, apprid, ordinal, apprstate, startdate, regid, regdate, officeid)
+		values(#reqid#, #draftid#, #apprid#, #ordinal#, #apprstate#, sysdate, #regid#, sysdate, #officeid#)
+	</insert>
+	
+	<delete id="officialResultDetailDAO.delCoopReq">
+		delete from cne_cooper_req
+		where reqid = #reqid#
+		and officeid = #officeid#
+	</delete>
+	
+	<insert id="officialResultDetailDAO.inCoopReq">
+		insert into cne_cooper_req(reqid, officeid, resultstate, regdate, regid)
+		values(#reqid#,#officeid#,'-1',sysdate,#adminid#)
+	</insert>
+	
+	<update id="officialResultDetailDAO.upCoopResult">
+		update cne_result set cooperyn = 'Y'
+		where resultid = #resultid#
+	</update>
+	
+	
+</sqlMap>

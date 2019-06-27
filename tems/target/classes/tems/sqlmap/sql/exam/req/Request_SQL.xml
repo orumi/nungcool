@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="RequestDAO">
+
+	<select id="RequestDAO.selReqList" resultClass="tems.com.exam.req.model.RequestListVO">
+		select TA.comname
+	            ,TA.memname              
+	            ,TA.requestcdate
+	            ,TA.reqid
+	            ,TA.smpcnt   
+	            ,TA.mngphone
+	            ,TA.taxcompany
+	            ,TA.pricechargetype
+	            ,TA.pricechargetypenm    
+	            ,TA.pricedate
+	            ,TA.reportprice
+	            ,TA.pricetype
+	            ,TA.pricetypenm
+	            ,TA.taxissuedate
+	            ,TA.reqstate 
+	            ,TA.statenm            
+	            ,TA.signappr
+	            ,TA.apprstatenm
+	            ,TB.rltcnt                             
+		from (        
+		        select
+		            c.name comname
+		            ,d.name memname              
+		            ,to_char(b.requestcdate,'yyyy.mm.dd') requestcdate
+		            ,a.reqid
+		            ,a.smpcnt   
+		            ,a.mngphone
+		            ,b.taxcompany
+		            ,b.pricechargetype
+		            ,f.codename pricechargetypenm    
+		            ,to_char(b.pricedate,'yyyy.mm.dd') pricedate
+		            ,b.reportprice
+		            ,b.pricetype
+		            ,g.codename pricetypenm
+		            ,b.taxissuedate
+		            ,a.reqstate 
+		            ,e.statenm            
+		            ,a.signappr
+		            ,h.statenm apprstatenm
+		        from cne_request a
+		        	, cne_report b
+		        	, THT_COMPANY c
+		        	, TNT_MEMBER d
+		        	, tct_state e
+		        	, tct_code_detail f
+		        	, tct_code_detail g
+		        	, TCT_APPR_STATE h
+		        where reqstate in ('0','2')
+		        and a.reqid = b.reqid
+		        and a.comid = c.comid
+		        and a.ordinal = c.ordinal
+		        and a.memid = d.memid
+		        and a.reqstate = e.statecd
+		        and a.signappr = h.statecd(+)
+		        and b.pricechargetype = f.codeid(+)
+		        and b.pricetype = g.codeid(+)
+		        and b.type = 'O'
+		        <isEqual property="chkstartdate1" compareValue="true">
+		        <![CDATA[
+		        and b.requestcdate >= #startdate1#
+		        ]]>
+		        </isEqual>
+			    <isEqual property="chkfinishdate1" compareValue="true">
+			    <![CDATA[
+		        and b.requestcdate <= #finishdate1#
+		        ]]>
+		        </isEqual>
+		         <isEqual property="chkstartdate2" compareValue="true">
+		        <![CDATA[
+		        and b.pricedate >= #startdate2#
+		        ]]>
+		        </isEqual>
+			    <isEqual property="chkfinishdate2" compareValue="true">
+			    <![CDATA[
+		        and b.pricedate <= #finishdate2#
+		        ]]>
+		        </isEqual>
+		        <isNotEmpty property="memname">
+		        and d.name like '%'||#memname#||'%'
+		        </isNotEmpty>
+		        <isNotEmpty property="pricetype">
+		        and b.pricetype = #pricetype#
+		        </isNotEmpty>
+
+		        <isNotEmpty property="apprstate">
+		        and a.signappr = #apprstate#
+		        </isNotEmpty>
+
+		        <isNotEmpty property="reqstate">
+		        and a.reqstate = #reqstate#
+		        </isNotEmpty>
+
+		        <isNotEmpty property="comname">
+		        and c.name like '%'||#comname#||'%'
+		        </isNotEmpty>
+
+		        <isNotEmpty property="taxcompany">
+		        and b.taxcompany like '%'||#taxcompany#||'%'
+		        </isNotEmpty>
+		        order by b.requestcdate desc            
+		)TA
+		left join
+		(select count(reqid) rltcnt, reqid from tne_result  
+		group by reqid 
+		) TB
+		on TA.reqid = TB.reqid
+		order by requestcdate desc
+	</select>
+    
+
+	<update id="RequestDAO.edtReqList">
+		update tne_report set 
+			 pricetype = #pricetype#
+			,pricedate = #pricedate#
+			,issuedateplan = UFN_GET_ENDDATE(#pricedate#,(select nvl(max(ITEMTERM),0) itemterm from tne_result where reqid = #reqid#))
+			,modifydate = sysdate
+			,modifyid = #modifyid#
+		where reqid = #reqid#
+		and type = 'O'
+	</update>
+	
+	<select id="RequestDAO.selApprList" resultClass="tems.com.exam.req.model.ApprListVO">
+		select  
+		        a.apprlineid
+		        ,a.draftid
+		        ,SUBSTR(
+                    XMLAGG(
+                    XMLELEMENT(COL ,'/', b.name) ORDER BY a.ordinal).EXTRACT('//text()'
+                    ).GETSTRINGVAL()
+                , 2) apprnm
+		        ,a.name
+		        ,a.modifyid
+		        ,a.modifydate 
+		from (select apprlineid, draftid, apprid, name, modifyid, modifydate, ordinal  from TNT_APPR_LINE where draftid = #adminid# order by ordinal) a
+			 , tct_admin b
+		where a.apprid = b.adminid
+		group by a.apprlineid
+		        ,a.draftid
+		        ,a.name
+		        ,a.modifyid
+		        ,a.modifydate
+	</select>
+	
+	<select id="RequestDAO.selApprDetail" resultClass="tems.com.exam.req.model.ApprDetailVO">
+		select 
+		    apprlineid
+		    ,draftid       
+		    ,draftnm 
+		    ,max(fst) fst
+		    ,max(fstapprid) fstapprid
+		    ,max(snd) snd
+		    ,max(sndapprid) sndapprid
+		    ,max(trd) trd 
+		    ,max(trdapprid) trdapprid
+		    ,max(fth) fth
+		    ,max(fthapprid) fthapprid
+		from (
+		    select  
+		           a.apprlineid
+		            ,a.draftid
+		            ,c.name draftnm
+		            ,a.apprid
+		            ,case when ordinal = 1 then  b.name else '' end fst
+		            ,case when ordinal = 1 then  a.apprid else '' end fstapprid
+		            ,case when ordinal = 2 then  b.name else '' end snd
+		            ,case when ordinal = 2 then  a.apprid else '' end sndapprid
+		            ,case when ordinal = 3 then  b.name else '' end trd
+		            ,case when ordinal = 3 then  a.apprid else '' end trdapprid
+		            ,case when ordinal = 4 then  b.name else '' end fth
+		            ,case when ordinal = 4 then  a.apprid else '' end fthapprid
+		            ,a.regid
+		            ,a.regdate
+		            ,a.modifyid
+		            ,a.modifydate           
+		    from TNT_APPR_LINE a, tct_admin b, tct_admin c
+		    where apprlineid = #apprlineid#
+		    and a.apprid = b.adminid
+		    and a.draftid = c.adminid
+		)
+		group by apprlineid, draftid, draftnm
+
+	</select>
+	
+	<update id="RequestDAO.upReqState">
+		update tne_request set 
+			reqstate = #reqstate#
+			,modifyid = #modifyid#	
+			,modifydate = sysdate
+		where  reqid = #reqid#
+	</update>
+	
+	<update id="RequestDAO.upResultState">
+		update tne_result set 
+			itemstate = #reqstate#
+			,modifyid = #modifyid#	
+			,modifydate = sysdate
+		where  reqid = #reqid#
+		
+	</update>
+	
+	<update id="RequestDAO.upReportState">
+		update tne_report set 
+			 reportstate = #reqstate#
+			,receiptdate = sysdate
+			,modifyid = #modifyid#	
+			,modifydate = sysdate
+		where  reqid = #reqid#
+		and type = 'O'
+	</update>
+	
+	<select id="RequestDAO.selNextApprLine"  resultClass="java.lang.Integer">
+		select max(apprlineid)+1 apprlineid from tnt_appr_line
+		where draftid = #adminid# 
+	</select>
+	
+	<update id="RequestDAO.edtApprLine">
+		merge into tnt_appr_line A
+		using (
+		    select '$apprlineid$' apprlineid, '$draftid$' draftid, '$apprid$' apprid, '$ordinal$' ordinal 
+		    from dual          
+		) tmp
+		on (
+		          A.apprlineid = tmp.apprlineid   
+		   and A.draftid = tmp.draftid
+		   and A.ordinal = tmp.ordinal    
+		)
+		when matched then 
+		    update 
+		        set A.apprid = tmp.apprid
+		            ,A.MODIFYID = #modifyid#
+		            ,A.MODIFYDATE = SYSDATE        
+		when not matched then 
+		    insert(A.apprlineid, A.draftid,A.apprid,A.ordinal,regid,regdate)
+		    values(tmp.apprlineid, tmp.draftid, tmp.apprid, tmp.ordinal,#regid#,sysdate)    
+	</update>
+	
+	<insert id="RequestDAO.inApprConf">
+		insert into tne_approval
+		(reqid, draftid, apprid, ordinal, apprstate, startdate, regid, regdate)
+		values(#reqid#, #draftid#, #apprid#, #ordinal#, #apprstate#, sysdate, #regid#, sysdate)
+	</insert>
+	
+	<update id="RequestDAO.upApprState">
+		update tne_request set signappr = (
+			select min(apprstate) from tne_approval
+			where apprstate != '-'
+			and reqid = #reqid#
+		)
+		where reqid = #reqid#
+	</update>
+	
+	<delete id="RequestDAO.delApprConf">
+		delete from tne_approval where reqid = #reqid#
+	</delete>
+	
+	<select id="RequestDAO.selApprLineUp" resultClass="tems.com.exam.req.model.ApprLineUpVO">
+		select reqid, gubun, gian, fst, snd, trd, fth 
+		from (select reqid,'결재자' gubun , b.NAME apprid, c.NAME  gian, ordinal from  TNE_APPROVAL a, tct_admin b, tct_admin c where a.apprid = b.adminid and  a.draftid = c.adminid)
+		pivot (max(apprid) for ordinal in ('1' as fst,'2' as snd,'3' as trd,'4' as fth))
+		where reqid = #reqid#
+		union all
+		select reqid, gubun, gian, fst, snd, trd, fth 
+		from  (
+	        select reqid,'결재일자' gubun 
+		        ,case when b.statecd = 'D' then to_char(enddate,'yyyy.mm.dd') else b.STATENM end apprid
+		        ,to_char(a.regdate,'yyyy.mm.dd')  gian
+		        , ordinal 
+	        from  TNE_APPROVAL a, TCT_APPR_STATE b, tct_admin c where a.APPRSTATE = b.STATECD and  a.draftid = c.adminid
+        )
+		pivot (max(apprid) for ordinal in ('1' as fst,'2' as snd,'3' as trd,'4' as fth))
+		where reqid = #reqid#
+	</select>
+	
+	<select id="RequestDAO.selReject" resultClass="tems.com.exam.requestConfirm.model.ReqConfirmListVO">
+		select a.reqid
+		        ,a.rejid
+		        ,b.name rejnm
+		        ,a.rejdesc 
+		from tne_request_reject a, tct_admin b
+		where a.rejid = b.adminid 
+		and reqid = #reqid#
+	</select>
+	
+	<select id="RequestDAO.selRequestHistory" resultClass="tems.com.exam.req.model.RequestHistoryVO">
+		select
+		    c.name comname
+		    ,d.name memname              
+		    ,to_char(b.requestcdate,'yy.mm.dd') requestcdate
+		    ,a.reqid
+		    ,a.smpcnt   
+		    ,a.MNGPHONE
+		    ,b.TAXCOMPANY
+		    ,b.pricechargetype
+		    ,f.codename pricechargetypenm    
+		    ,b.pricedate
+		    ,b.reportprice
+		    ,b.pricetype
+		    ,g.codename pricetypenm
+		    ,b.taxissuedate
+		    ,a.reqstate 
+		    ,e.statenm            
+		    ,a.signappr
+		    ,h.statenm apprstatenm
+		    ,TB.rltcnt
+		    ,to_char(b.receiptdate,'yyyy.mm.dd') receiptdate
+    		,to_char(b.issuedatecmpl,'yyyy.mm.dd') issuedatecmpl
+		from tne_request a, tne_report b, THT_COMPANY c, TNT_MEMBER d, tct_state e, tct_code_detail f, tct_code_detail g, TCT_APPR_STATE h, tht_company i
+		       ,(select count(reqid) rltcnt, reqid from tne_result  
+		        group by reqid 
+		        ) TB
+		where a.reqstate != '-1'
+		and a.reqid = b.reqid
+		and a.comid = c.comid
+		and a.ordinal = c.ordinal
+		and a.memid = d.memid
+		and A.REQSTATE = e.statecd
+		and a.signappr = h.statecd(+)
+		and b.pricechargetype = f.CODEID(+)
+		and b.pricetype = g.CODEID(+)
+		and b.type = 'O'
+		and a.comid = i.comid
+		and a.ordinal = i.ordinal
+		and a.reqid = TB.reqid
+		and a.comid = (select comid from tne_request where reqid = #reqid#)
+		order by b.requestcdate desc
+	</select>
+		
+</sqlMap>

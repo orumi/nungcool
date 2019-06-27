@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ResultAdminListDAO">
+
+	<select id="ResultAdminListDAO.getResultAdminList" resultClass="tems.com.exam.resultAdmin.model.ResultAdminListVO">
+		select 
+			case when connect_by_isleaf = 1 then substr(sys_connect_by_path(conitemid,'.'),2)||'_'||resultid else substr(sys_connect_by_path(conitemid,'.'),2) end as treefield
+		    ,reqid
+		    ,smpid
+		    ,resultid
+		    ,smpnm
+		    ,level lvl
+		    ,masterid
+		    ,masternm
+		    ,acceptno
+		    ,issuedateplan
+		    ,conitemid
+		    ,conitempid
+		    ,itemid
+		    ,itempid
+		    ,itemname
+		    ,unitid
+		    ,displayunit
+		    ,testcond
+		    ,condid
+		    ,condetc
+		    ,resulttype
+		    ,itemvalue
+		    ,resultvalue
+		    ,annotation
+		    ,methodid
+		    ,methodnm
+		    ,itemregid
+		    ,spec
+		    ,testnote           
+		    ,orderby
+		    ,displaytype
+		    ,reference 
+		from (
+		                select a.reqid
+		                        ,b.smpid
+		                        ,c.resultid
+		                        ,b.name smpnm
+		                        ,b.masterid
+		                        ,g.name masternm
+		                        ,a.acceptno
+		                        ,a.issuedateplan
+		                        ,a.reqid||'_'||b.smpid||'_'||c.itemid conitemid
+		                        ,a.reqid||'_'||b.smpid||'_'||c.itempid conitempid
+		                        ,c.itemid
+		                        ,c.itempid
+		                        ,c.itemname
+		                        ,c.unitid
+		                        ,case when c.displayunit is null then c.unitid else c.displayunit end displayunit
+		                        ,testcond
+		                        ,c.condid
+		                        ,c.condetc
+		                        ,c.resulttype
+		                        ,c.itemvalue
+		                        ,c.resultvalue
+		                        ,c.annotation
+		                        ,c.methodid
+		                        ,c.methodnm
+		                        ,c.itemregid
+		                        ,'품질기준' spec
+		                        ,'' testnote
+		                        ,c.orderby     
+		                        ,c.displaytype   
+		                        ,e.reference                                                                                                               
+		                from tne_report a
+		                        ,tne_sample b
+		                        ,tne_result c
+		                        ,(select resultid 
+		                            from TNE_ADMIN_ASSIGN 
+		                            where adminid = #adminid#                       
+		                        ) d
+		                        ,tne_item_detail e
+		                        ,(
+		                            select
+		                                a.itemid,
+		                                a.condid,
+		                                a.tempercond || b.codename || '/' || timecond || c.codename || '/' || etc || d.codename testcond
+		                            from tne_condition a, tct_code_detail b, tct_code_detail c, tct_code_detail d
+		                            where a.tempunit = b.codeid (+)
+		                              and a.timecondunit = c.codeid (+)
+		                              and a.etcunit = d.codeid (+)
+		                        ) f
+		                        ,tce_master g                        
+		                        ,tce_group h
+		                        ,tce_class i
+		                where a.reqid = b.reqid
+		                and b.reqid = c.reqid
+		                and b.smpid = c.smpid
+		                and c.resultid = d.resultid		
+		                and c.itemid = e.itemid(+)
+		                and c.itempid = e.itempid(+)
+		                and c.methodid = e.methodid(+)                
+		                and c.itemid = f.itemid(+)
+		                and c.condid = f.condid(+)
+		                and b.masterid = g.masterid
+		                and g.groupid = h.groupid
+		                and h.classid = i.classid
+		                and a.type = 'O'
+		                and a.reportstate = '4'
+		                <isEqual property="chkstartdate1" compareValue="true">
+				        <![CDATA[	
+				        and a.receiptdate >= #startdate1#
+				        ]]>    
+				        </isEqual>
+					    <isEqual property="chkfinishdate1" compareValue="true">
+					    <![CDATA[
+				        and a.receiptdate <= #finishdate1#
+				        ]]>    
+				        </isEqual>
+				        <isNotEmpty property="firstOpt">
+				        and i.classid = #firstOpt#
+				        </isNotEmpty>
+				        <isNotEmpty property="secondOpt">
+				        and h.groupid = #secondOpt#
+				        </isNotEmpty>
+				        <isNotEmpty property="thirdOpt">
+				        and g.masterid = #thirdOpt#
+				        </isNotEmpty>
+				        <isNotEmpty property="smpname">
+				        and b.name like '%'||#smpname#||'%'
+				        </isNotEmpty>
+				        <isNotEmpty property="itemname">
+				        and c.itemname like '%'||#itemname#||'%'
+				        </isNotEmpty>
+				        <isNotEmpty property="acceptno">
+				        and a.acceptno like '%'||#acceptno#||'%'
+				        </isNotEmpty>
+				        <isNotEmpty property="dateplan">
+				        <![CDATA[
+				        and nvl(to_date(to_char(sysdate,'yyyy-mm-dd')) - issuedateplan,0) < #dateplan#
+				        ]]>
+				        </isNotEmpty>
+				        <isNotEmpty property="reqstate">
+				        and a.reportstate = #reqstate#
+				        </isNotEmpty>
+		) tmp 
+		start with (conitempid = reqid||'_'||smpid||'_'||'0' )
+		connect by prior conitemid = conitempid
+		ORDER SIBLINGS BY acceptno, orderby    
+	</select>
+	
+	<update id="ResultAdminListDAO.upResultAdminDetail">
+	update tne_result set
+	       displayunit = #displayunit#
+	      ,displaytype = #displaytype# 
+	      ,resulttype = #resulttype#
+	      ,itemvalue = #itemvalue#
+	      ,resultvalue = #resultvalue#           
+	      ,itemregid = case when #resultvalue# is null then '' else #itemregid# end  
+	      ,annotation = #annotation#
+	      ,condid = #condid#
+     	  ,condetc = #condetc#
+	where resultid = #resultid#      
+	</update>
+	
+    <insert id="ResultAdminListDAO.inCalResultAdmin">
+    	merge into tne_calculation_result A
+		using dual
+		on (
+		          A.resultid = #resultid# 
+		      and A.calid = #calid#
+		)    
+		when matched then
+		    update set
+		    itemvalue = #itemvalue#
+		    ,modifyid = #regid#
+		    ,modifydate = sysdate
+		when not matched then 
+		    insert(resultid, itemid, itempid, methodid, calid, itemvalue, regid, regdate)
+		    values(#resultid#,#itemid#,#itempid#, #methodid#, #calid#,#itemvalue#,#regid#,sysdate)
+    </insert>
+    
+    <select id="ResultAdminListDAO.getCalculationAdmin" resultClass="tems.com.exam.result.model.CalculationVO">
+		select ta.acceptno , ta.masternm,ta.smpnm, TA.resultid,TA.itemid, TA.itempid, TA.methodid, TA.calid, TA.calnm, TA.itemnm, TA.calc, TB.itemvalue 
+        from (
+        select c.acceptno , g.name masternm,f.name||'/'||g.name smpnm, a.resultid,b.itemid, b.itempid, b.methodid, b.calid, b.calnm, d.name itemnm, a.calc
+        from tne_result a
+               ,tne_calculation_detail b
+               ,tne_report c
+               ,tce_item d
+               ,(select resultid 
+                    from TNE_ADMIN_ASSIGN 
+                    where adminid = #adminid#               
+                ) e
+               ,tne_sample f
+               ,tce_master g                        
+               ,tce_group h
+               ,tce_class i
+        where a.itemid = b.itemid
+            and a.itempid = b.itempid
+            and a.methodid = b.methodid
+            and a.reqid = c.reqid
+            and a.resultid = e.resultid
+            and a.itemid = d.itemid
+            and a.reqid = f.reqid
+            and a.smpid = f.smpid
+            and f.masterid = g.masterid
+            and g.groupid = h.groupid
+            and h.classid = i.classid
+            and c.type = 'O'
+            and c.reportstate = '4'
+            <isEqual property="chkstartdate1" compareValue="true">
+	        <![CDATA[	
+	        and c.receiptdate >= #startdate1#
+	        ]]>    
+	        </isEqual>
+		    <isEqual property="chkfinishdate1" compareValue="true">
+		    <![CDATA[
+	        and c.receiptdate <= #finishdate1#
+	        ]]>    
+	        </isEqual>
+	        <isNotEmpty property="firstOpt">
+	        and i.classid = #firstOpt#
+	        </isNotEmpty>
+	        <isNotEmpty property="secondOpt">
+	        and h.groupid = #secondOpt#
+	        </isNotEmpty>
+	        <isNotEmpty property="thirdOpt">
+	        and g.masterid = #thirdOpt#
+	        </isNotEmpty>
+	        <isNotEmpty property="smpname">
+	        and f.name like '%'||#smpname#||'%'
+	        </isNotEmpty>
+	        <isNotEmpty property="itemname">
+	        and a.itemname like '%'||#itemname#||'%'
+	        </isNotEmpty>
+	        <isNotEmpty property="acceptno">
+	        and c.acceptno like '%'||#acceptno#||'%'
+	        </isNotEmpty>
+	        <isNotEmpty property="dateplan">
+	        <![CDATA[
+	        and nvl(to_date(to_char(sysdate,'yyyy-mm-dd')) - issuedateplan,0) < #dateplan#
+	        ]]>
+	        </isNotEmpty>
+	        <isNotEmpty property="reqstate">
+	        and c.reportstate = #reqstate#
+	        </isNotEmpty>
+        order by a.orderby, a.itemid, b.calid    
+        ) TA
+        left join 
+        (select  resultid, calid, itemvalue 
+        from tne_calculation_result
+        ) TB
+        on TA.RESULTID = TB.RESULTID
+        and TA.calid = TB.calid
+    </select>
+    
+    <insert id="ResultDetailDAO.inCalResultAdmin">
+    	merge into tne_calculation_result A
+		using dual
+		on (
+		          A.resultid = #resultid# 
+		      and A.calid = #calid#
+		)    
+		when matched then
+		    update set
+		    itemvalue = #itemvalue#
+		    ,modifyid = #regid#
+		    ,modifydate = sysdate
+		when not matched then 
+		    insert(resultid, itemid, itempid, methodid, calid, itemvalue, regid, regdate)
+		    values(#resultid#,#itemid#,#itempid#, #methodid#, #calid#,#itemvalue#,#regid#,sysdate)
+    </insert>
+    
+    <select id="ResultAdminListDAO.getReqList" resultClass="tems.com.exam.resultAdmin.model.ResultReqListVO">
+    	select a.reqid
+		        , b.acceptno
+		        , a.remark
+		        , a.itemdesc   
+		        , (select codename from tct_code_detail where codeid = a.itemafter and codegroupid = '15') itemafter
+		        , filepath
+        		, orgname
+		from tne_request a
+		      , tne_report b
+		      , tne_request_file c
+		where 
+		      a.reqid = b.reqid
+		and b.reportid = '1'
+		and a.reqid = c.reqid(+)
+		and a.reqid in ((  
+		    select b.reqid 
+		    from tne_admin_assign a, tne_result b  
+		    where adminid = #adminid#             
+		    and     a.resultid = b.resultid
+		    group by reqid  
+		))        
+		and a.reqstate = '4'           
+		<isEqual property="chkstartdate1" compareValue="true">
+        <![CDATA[	
+        and b.receiptdate >= #startdate1#
+        ]]>    
+        </isEqual>
+	    <isEqual property="chkfinishdate1" compareValue="true">
+	    <![CDATA[
+        and b.receiptdate <= #finishdate1#
+        ]]>    
+        </isEqual>
+        
+        <isNotEmpty property="firstOpt">
+        and a.reqid in (
+		    select reqid 
+		    from tne_sample a, tce_master b, tce_group c, tce_class d
+		    where a.masterid = b.masterid
+		    and    b.groupid = c.groupid
+		    and    c.classid = d.classid
+		    and    d.classid = #firstOpt#
+		    <isNotEmpty property="secondOpt">
+	        and    c.groupid = #secondOpt#
+	        </isNotEmpty>
+	        <isNotEmpty property="thirdOpt">
+	        and    b.masterid = #thirdOpt#
+	        </isNotEmpty>
+		    group by reqid
+		)   
+        </isNotEmpty>
+        
+        <isNotEmpty property="smpname">
+        and a.reqid in (
+		    select reqid 
+		    from tne_sample
+			where name like '%'||#smpname#||'%'    
+		    group by reqid
+		)   
+        </isNotEmpty>
+        
+        <isNotEmpty property="itemname">
+        and a.reqid in (
+		    select reqid 
+		    from tne_result
+			where itemname like '%'||#itemname#||'%'    
+		    group by reqid
+		)
+        </isNotEmpty>
+        <isNotEmpty property="acceptno">
+        and b.acceptno like '%'||#acceptno#||'%'
+        </isNotEmpty>
+        
+    </select>
+		
+</sqlMap>

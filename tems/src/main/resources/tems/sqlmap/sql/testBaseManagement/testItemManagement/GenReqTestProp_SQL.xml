@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="genReqServiceDAO">
+
+    <select id="genReqPropServiceDAO.selectGenReqPropServiceDAO"
+            resultClass="tems.com.testBaseManagement.testItemManagement.genReqTestProp.model.ReqPropVO">
+
+        <![CDATA[
+        SELECT
+            A.ITEMID,
+            A.ITEMPID,
+            A.NAME,
+            C.NAME AS METHODNAME,
+            B.METHODID,
+            B.UNITID,
+            B.SMPAMOUNT,
+            B.RANGE,
+            B.RULEID,
+            B.DISPLAYTYPE,
+            B.DISPLAYSCRIPT,
+            B.REPEAT,
+            B.KOLASFLAG,
+            B.CYCLE,
+            B.TERM,
+            B.CALC,
+            B.REGID,
+            B.REGDATE,
+            B.MODIFYID,
+            B.MODIFYDATE,
+            B.USEFLAG,
+            D.ADMIN
+        FROM TCE_ITEM A, TNE_ITEM_DETAIL B, TCE_METHOD C,
+            (
+                SELECT
+                    D.ITEMID,
+                    D.METHODID,
+                    D.ITEMPID,
+                    REPLACE(wm_concat(E.NAME), ',', ', ') AS ADMIN
+                FROM TNE_ITEM_ADMIN D, TCT_ADMIN E
+                WHERE D.ADMINID = E.ADMINID (+)
+                GROUP BY D.ITEMID, D.METHODID, D.ITEMPID
+            ) D
+        WHERE A.ITEMID = B.ITEMID (+)
+              AND B.METHODID = C.METHODID (+)
+              AND A.OLDYN = 'N'
+              AND B.ITEMID = D.ITEMID (+)
+              AND B.METHODID = D.METHODID (+)
+              AND B.ITEMPID = D.ITEMPID (+)
+        ORDER BY A.ITEMID
+        ]]>
+
+    </select>
+
+    <update id="genReqPropServiceDAO.updateGenReqPropServiceDAO"
+            parameterClass="tems.com.testBaseManagement.testItemManagement.genReqTestProp.model.ReqPropVO">
+
+        <![CDATA[
+        UPDATE TNE_ITEM_DETAIL A
+        SET
+            ITEMID        = #itemID#,
+            ITEMPID       = #itemPID#,
+            METHODID      = #methodID#,
+            UNITID        = #unitID#,
+            SMPAMOUNT     = #smpAmount#,
+            RANGE         = #range#,
+            RULEID        = #ruleID#,
+            DISPLAYTYPE   = #displayType#,
+            DISPLAYSCRIPT = #displayScript#,
+            REPEAT        = #repeat#,
+            KOLASFLAG     = #kolasFlag#,
+            CYCLE         = #cycle#,
+            TERM          = #term#,
+            CALC          = #calc#,
+            MODIFYID      = #modifyID#,
+            MODIFYDATE    = SYSDATE,
+            USEFLAG       = #useFlag#
+        WHERE A.ITEMID = #itemID#
+              AND A.ITEMPID = #itemPID#
+              AND A.METHODID = #methodID#
+        ]]>
+
+    </update>
+
+    <insert id="genReqPropServiceDAO.insertGenReqPropServiceDAO"
+            parameterClass="tems.com.testBaseManagement.testItemManagement.genReqTestProp.model.ReqPropVO">
+
+        <![CDATA[
+        INSERT INTO TNE_ITEM_DETAIL (ITEMID,
+                                     ITEMPID,
+                                     METHODID,
+                                     UNITID,
+                                     SMPAMOUNT,
+                                     RANGE,
+                                     RULEID,
+                                     DISPLAYTYPE,
+                                     DISPLAYSCRIPT,
+                                     REPEAT,
+                                     KOLASFLAG,
+                                     CYCLE,
+                                     TERM,
+                                     CALC,
+                                     REGID,
+                                     REGDATE,
+                                     MODIFYID,
+                                     USEFLAG)
+        VALUES (
+            #itemID#,
+            #itemPID#,
+            #methodID#,
+            #unitID#,
+            #smpAmount#,
+            #range#,
+            #ruleID#,
+            #displayType#,
+            #displayScript#,
+            #repeat#,
+            #kolasFlag#,
+            #cycle#,
+            #term#,
+            #calc#,
+            #regID#,
+            SYSDATE,
+            #modifyID#,
+            #useFlag#)
+        ]]>
+
+    </insert>
+
+    <delete id="genReqPropServiceDAO.deleteGenReqPropServiceDAO"
+            parameterClass="tems.com.testBaseManagement.testItemManagement.genReqTestProp.model.ReqPropVO">
+
+        <![CDATA[
+        DELETE
+        FROM TNE_ITEM_DETAIL A
+        WHERE A.ITEMID = #itemID#
+              AND A.ITEMPID = #itemPID#
+              AND A.METHODID = #methodID#
+        ]]>
+
+    </delete>
+
+    <select id="genReqPropServiceDAO.selectGroupList"
+            resultClass="tems.com.testBaseManagement.testItemManagement.genReqTestProp.model.GroupVO">
+        <![CDATA[
+        SELECT
+            officeid,
+            CASE WHEN level = 2
+                THEN '-' || NAME
+            WHEN level = 3
+                THEN '--' || NAME
+            WHEN level = 4
+                THEN '---' || NAME
+            WHEN level = 5
+                THEN '----' || NAME
+            ELSE name END                                    NAME,
+            level                                            LVL,
+            uppofficeid,
+            uppname,
+            substr(sys_connect_by_path(officeid, '.'), 2) AS treeview
+        FROM tct_office
+        START WITH (uppofficeid = 1)
+        CONNECT BY PRIOR officeid = uppofficeid
+        ]]>
+    </select>
+
+    <select id="genReqPropServiceDAO.selectAdminList"
+            parameterClass="tems.com.testBaseManagement.testItemManagement.genReqTestProp.model.AdminVO"
+            resultClass="tems.com.testBaseManagement.testItemManagement.genReqTestProp.model.AdminVO">
+        <![CDATA[
+        SELECT
+            A.ADMINID,
+            A.OFFICEID,
+            A.AUTHOR_GPCODE,
+            A.NAME,
+            A.ADMINPW,
+            A.REGID,
+            A.REGDATE,
+            A.MODIFYID,
+            A.MODIFYDATE,
+            A.USEFLAG,
+            A.UPPOFFICEID,
+            A.EMPID,
+            A.ENAME,
+            A.CELLPHONE,
+            A.TELNO,
+            A.EXTENSION,
+            A.EMAIL,
+            A.UMJPNAME,
+            A.UMJDNAME,
+            A.UMPGNAME,
+            A.BIRTHDAY,
+            A.SKIN,
+            B.NAME OFFICENAME
+        FROM TCT_ADMIN A, TCT_OFFICE B
+        WHERE A.OFFICEID = #officeID#
+              AND A.OFFICEID = B.OFFICEID
+        ]]>
+    </select>
+
+    <select id="genReqPropServiceDAO.selectSearchList"
+            parameterClass="tems.com.testBaseManagement.testItemManagement.genReqTestProp.model.SearchVO"
+            resultClass="tems.com.testBaseManagement.testItemManagement.genReqTestProp.model.ReqPropVO">
+        <![CDATA[
+        SELECT
+            A.ITEMID,
+            A.ITEMPID,
+            A.NAME,
+            C.NAME AS METHODNAME,
+            B.METHODID,
+            B.UNITID,
+            B.SMPAMOUNT,
+            B.RANGE,
+            B.RULEID,
+            B.DISPLAYTYPE,
+            B.DISPLAYSCRIPT,
+            B.REPEAT,
+            B.KOLASFLAG,
+            B.CYCLE,
+            B.TERM,
+            B.CALC,
+            B.REGID,
+            B.REGDATE,
+            B.MODIFYID,
+            B.MODIFYDATE,
+            B.USEFLAG,
+            D.ADMIN
+        FROM TCE_ITEM A, TNE_ITEM_DETAIL B, TCE_METHOD C,
+            (
+                SELECT
+                    D.ITEMID,
+                    D.METHODID,
+                    D.ITEMPID,
+                    REPLACE(wm_concat(E.NAME), ',', ', ') AS ADMIN
+                FROM TNE_ITEM_ADMIN D, TCT_ADMIN E
+                WHERE D.ADMINID = E.ADMINID (+)
+                GROUP BY D.ITEMID, D.METHODID, D.ITEMPID
+            ) D
+        WHERE A.ITEMID = B.ITEMID (+)
+              AND B.METHODID = C.METHODID (+)
+              AND A.OLDYN = 'N'
+              AND B.ITEMID = D.ITEMID (+)
+              AND B.METHODID = D.METHODID (+)
+              AND B.ITEMPID = D.ITEMPID (+)
+        ]]>
+        <dynamic>
+            <isNotEmpty property="itemName">
+                AND A.NAME LIKE '%'||#itemName# ||'%'
+            </isNotEmpty>
+            <isNotEmpty property="itemMethod">
+                AND C.NAME LIKE '%'||#itemMethod#||'%'
+            </isNotEmpty>
+            <isNotEmpty property="adminName">
+                AND D.ADMIN LIKE '%'||#adminName#||'%'
+            </isNotEmpty>
+        </dynamic>
+        ORDER BY A.ITEMID
+
+    </select>
+
+    <select id="genReqPropServiceDAO.selectPopUpRight"
+            parameterClass="tems.com.testBaseManagement.testItemManagement.genReqTestProp.model.AdminVO"
+            resultClass="tems.com.testBaseManagement.testItemManagement.genReqTestProp.model.AdminVO">
+        <![CDATA[
+        SELECT
+            A.METHODID,
+            A.ADMINID,
+            A.ITEMID,
+            A.ITEMPID,
+            B.NAME,
+            B.OFFICEID,
+            C.NAME OFFICENAME
+        FROM TNE_ITEM_ADMIN A, TCT_ADMIN B, TCT_OFFICE C
+        WHERE A.ADMINID = B.ADMINID
+              AND B.OFFICEID = C.OFFICEID
+              AND A.ITEMID = #itemID#
+              AND A.METHODID = #methodID#
+              AND A.ITEMPID = #itemPID#
+        ]]>
+    </select>
+
+    <insert id="genReqPropServiceDAO.insertAdmins"
+            parameterClass="tems.com.testBaseManagement.testItemManagement.genReqTestProp.model.AdminVO">
+
+    <![CDATA[
+        INSERT INTO TNE_ITEM_ADMIN (
+            METHODID,
+            ADMINID,
+            ITEMID,
+            ITEMPID,
+            REGID
+        )
+        VALUES (
+            #methodID#,
+            #adminID#,
+            #itemID#,
+            #itemPID#,
+            #userID#
+        )
+        ]]>
+    </insert>
+
+    <delete id="genReqPropServiceDAO.deleteAdmins"
+            parameterClass="tems.com.testBaseManagement.testItemManagement.genReqTestProp.model.AdminVO">
+
+        <![CDATA[
+        DELETE
+        FROM TNE_ITEM_ADMIN A
+        WHERE A.ITEMID = #itemID#
+              AND A.ITEMPID = #itemPID#
+              AND A.METHODID = #methodID#
+              AND A.ADMINID = #adminID#
+        ]]>
+
+    </delete>
+
+
+</sqlMap>

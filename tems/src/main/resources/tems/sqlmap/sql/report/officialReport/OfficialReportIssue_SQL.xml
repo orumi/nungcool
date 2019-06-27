@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="officialReportIssueListDAO">
+	
+	<select id="officialReportIssueListDAO.getReportIssueList" resultClass="tems.com.report.reportIssue.model.ReportIssueListVO">
+		 select a.reqid
+		        , b.acceptno
+		        , a.comname
+		        , to_char(b.receiptdate,'yyyy.mm.dd') receiptdate
+		        , to_char(b.issuedateplan,'yyyy.mm.dd') issuedateplan 
+		        , to_char(b.issuedatecmpl,'yyyy.mm.dd') issuedatecmpl 
+		        , b.reportno
+		        , b.langtype
+		        , case when b.langtype = 'K' then '국문'
+		                  when b.langtype = 'E' then '영문'
+		                  else ''
+		          end reportlang
+		        , b.copycnt
+		        , a.smpcnt
+		        , ta.rltcnt
+		        , tb.masternm
+		        , '' attachfile
+		        , c.statenm
+		        , '' openreport 
+		        , '' openemail
+		        , d.printflag
+		        , case when d.printflag = 'Y' then '인쇄완료'
+		                 when d.printflag = 'N' then '인쇄전' 
+		                 else ''
+		          end printyn
+		        , '' clearpirnt
+		        , b.reportid 
+		 from cne_request a
+		       , cne_report b
+		       , tct_state c
+		       , the_report d
+		       ,(select reqid, count(reqid) rltcnt from cne_result group by reqid) ta
+		       ,(select reqid, wm_concat(masternm) masternm from ( 
+		              select reqid
+		              		 , count(b.name)
+		              		 , b.name||case when count(b.name) > 1 then '('||count(b.name)||' 건)' else '' end masternm
+		              		 ,wm_concat(a.name) smpname 
+		              from cne_sample a, tce_master b, tce_group c, tce_class d 
+		              where a.masterid = b.masterid 
+		              and   b.groupid = c.groupid
+		              and   c.classid = d.classid
+		              <isNotEmpty property="firstOpt">
+			          and i.classid = #firstOpt#
+			          </isNotEmpty>
+			          <isNotEmpty property="secondOpt">
+			          and h.groupid = #secondOpt#
+			          </isNotEmpty>
+			          <isNotEmpty property="thirdOpt">
+			          and g.masterid = #thirdOpt#
+			          </isNotEmpty>
+		              group by reqid, b.name      
+		        ) 
+		        <isNotEmpty property="smpname">
+			    where smpname like '%'||#smpname#||'%'
+			    </isNotEmpty>
+		        group by reqid ) tb
+		 where a.reqid = b.reqid
+		 and b.type = 'O'
+		 and a.reqstate > 6
+		 and a.reqid = ta.reqid
+		 and a.reqid = tb.reqid
+		 and a.reqstate = c.statecd
+		 and b.reqid = d.reqid(+)
+		 and b.reportid = d.reportid(+)            
+		 <isEqual property="chkstartdate1" compareValue="true">
+         <![CDATA[	
+         and b.receiptdate >= #startdate1#
+         ]]>    
+         </isEqual>
+	     <isEqual property="chkfinishdate1" compareValue="true">
+	     <![CDATA[
+         and b.receiptdate <= #finishdate1#
+         ]]>    
+         </isEqual>
+         <isNotEmpty property="acceptno">
+         and b.acceptno like '%'||#acceptno#||'%'
+         </isNotEmpty>
+         <isNotEmpty property="reqstate">
+         and a.reqstate = #reqstate#
+         </isNotEmpty>
+		 order by b.acceptno desc, receiptdate
+	</select>
+	
+	<insert id="officialReportIssueListDAO.inTheReport">
+		insert into the_report(reqid, reportid, printflag)
+		values(#reqid#,#reportid#,'N')
+	</insert>    
+	
+	<update id="officialReportIssueListDAO.upRequestState">
+		update cne_request set
+    		reqstate = 8
+		where reqid = #reqid#
+	</update>
+	
+	<update id="officialReportIssueListDAO.upReportState">
+		update cne_report set 
+		     reportstate = 8
+		    ,sendstype = #sendstype#
+		    ,sendid = #adminid#
+		    ,issuedatecmpl = sysdate
+		where reqid = #reqid#
+		and reportid = #reportid#
+	</update>
+	
+</sqlMap>

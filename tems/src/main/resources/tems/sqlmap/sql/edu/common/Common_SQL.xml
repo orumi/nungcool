@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="commonSql">
+	
+	
+	<!-- 교육훈련 상태코드 -->
+	<select id="commonDAO.listCourseStateCode" resultClass="tems.com.edu.common.model.CodeVO">
+	<![CDATA[
+		SELECT 
+			COURSESTATEID CODEID,
+			COURSESTATENAME CODENAME
+		FROM TCD_COURSE_STATE
+	]]>
+	</select>
+	
+	
+	<!-- 개인별 접수 상태 가져오기 -->
+	<select id="commonDAO.listEnrollStateCode" resultClass="tems.com.edu.common.model.CodeVO">
+	<![CDATA[
+		SELECT ENROLLSTATEID CODEID, ENROLLSTATENAME CODENAME 
+		FROM TCD_ENROLL_STATE
+	]]>
+	</select>
+
+
+	<!-- 결제 상태 가져오기 -->
+	<select id="commonDAO.listPayStateCode" resultClass="tems.com.edu.common.model.CodeVO">
+	<![CDATA[
+		SELECT PAYSTATEID CODEID, PAYSTATENAME CODENAME
+		FROM TCD_PAY_STATE
+	]]>
+	</select>
+
+	
+	<!-- 결제 방법 가져오기 -->
+	<select id="commonDAO.listPayTypeCode" resultClass="tems.com.edu.common.model.CodeVO">
+	<![CDATA[
+		SELECT PAYTYPEID CODEID, PAYTYPENAME CODENAME
+		FROM TCD_PAY_TYPE
+	]]>
+	</select>
+
+	
+	<!-- 결제 시기 가져오기 -->
+	<select id="commonDAO.listPayTimeCode" resultClass="tems.com.edu.common.model.CodeVO">
+	<![CDATA[
+		SELECT PAYTIMEID CODEID, PAYTIMENAME CODENAME
+		FROM TCD_PAY_TIME
+	]]>
+	</select>
+
+	
+	<!-- 세금계산서 방식 가져오기 -->
+	<select id="commonDAO.listTaxTypeCode" resultClass="tems.com.edu.common.model.CodeVO">
+	<![CDATA[
+		SELECT TAXTYPEID CODEID, TAXTYPENAME CODENAME
+		FROM TCD_TAX_TYPE
+	]]>
+	</select>
+
+	
+	<!-- 수료유무 가져오기 -->
+	<select id="commonDAO.listPassCode" resultClass="tems.com.edu.common.model.CodeVO">
+	<![CDATA[
+		SELECT PASSID CODEID, PASSNAME CODENAME
+		FROM TCD_PASS
+	]]>
+	</select>
+
+
+	
+
+
+</sqlMap>

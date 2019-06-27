@@ -1,0 +1,412 @@
+html {
+		min-height: 100%;
+		position: relative
+	}
+
+body {
+		background-color: #e4e6e9;
+		min-height: 100%;
+		padding-bottom: 0;
+		font-size: 13px;
+		color: #393939;
+		line-height: 1.5
+	}
+
+th	{
+		background-color: #FFFFFF; 
+		text-align: right;  
+	}
+
+td	{
+		font-size: 12px; 
+		height:35px; 
+		vertical-align:middle !important; 
+		padding: 6px 4px 6px 4px !important 
+	}
+	
+.cutStringC {
+	overflow:hidden; 
+	text-overflow:ellipsis; 
+	white-space:nowrap;
+	text-align: center;
+}
+
+.cutStringL {
+	overflow:hidden; 
+	text-overflow:ellipsis; 
+	white-space:nowrap;
+	text-align: left;
+}
+
+.cutStringR {
+	overflow:hidden; 
+	text-overflow:ellipsis; 
+	white-space:nowrap;
+	text-align: right;
+}
+
+.user-info-left{
+	max-width: 100px;
+	display: inline-block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	text-align: left;
+	vertical-align: top;
+	line-height: 15px;
+	position: relative;
+	top: 4px;
+	color: white;
+	margin-left: 10px
+		
+}
+
+.user-info-right{
+	max-width: 100%;
+	display: inline-block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	float: right;
+	vertical-align: top;
+	line-height: 15px;
+	position: relative;
+	top: 4px;
+	color: white;
+	margin-right: 5px		
+}
+
+
+.skin-3 .navbar {
+	margin: 0;
+	padding-left: 0;
+	padding-right: 0;
+	border-width: 0;
+	border-radius: 0;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	min-height: 45px;
+	background: #80B943	
+}
+
+.skin-3 .page-content {
+	background-color: white
+}
+
+.skin-3 .main-container:before {
+	background: #FFF;
+	-moz-background-size: 100% 26px;
+	-webkit-background-size: 100% 26px;
+	-o-background-size: 100% 26px;
+	-ms-background-size: 100% 26px;
+	background-size: 100% 26px
+}
+
+.gridleft{
+	float: left; 	
+	padding-left: 5;
+	padding-right: 5
+}
+
+.gridright{
+	float: right; 	
+	padding-left: 5;
+	padding-right: 5 	
+}
+
+.tab-content>.active {
+	display: block
+}
+
+.right200{
+	position: relative;
+	margin-right: 200px
+}
+
+.right2{
+	position: relative;
+	margin-right: 2px
+}
+
+.fwhite{
+	color: white
+}
+
+
+.dropbtn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px;
+    font-size: 13px;
+    border: none;
+    cursor: pointer;
+}
+
+.dropdown {
+	float: right;
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown:hover .dropbtn {
+    background-color: #3e8e41;
+}
+
+
+.jarviswidget-color-01D2D4>header{
+	border-color:#B7AD8D!important;
+	background:#EFE1B3;
+	color:#424242;
+}
+
+.jarviswidget-color-1ABF20>header{
+		border-color:#D2D2D2!important;
+		background:#F4F4F4;
+		color:#1D1D1D
+}
+
+/*
+	top menu 즐겨찾기 메뉴 
+*/
+
+.top-menu{
+    padding-left: 1px;
+    padding-right: 1px;
+}
+
+.top-menu>a{
+    font-size: 13px !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    font-weight: 400 !important;
+}
+
+
+.smart-style-3 nav>ul>li>ul::before {
+	content: "";
+	display: block;
+	position: absolute;
+	z-index: 1;
+	left: 23px;
+	top: 0;
+	bottom: 0;
+	border-left: 1px solid #7A7A7A
+}
+
+.smart-style-3 nav>ul>li>ul>li::before {
+	content: "";
+	display: block;
+	position: absolute;
+	width: 8px;
+	left: 23px;
+	top: 16px;
+	border-top: 1px solid #7A7A7A;
+	z-index: 1
+}
+
+
+
+
+	
+	
+.width75{width:75px }
+.width45{width:45px }
+.width35{width:35px }
+.width130{width:130px }
+
+
+/* 황일영 해더작업 */
+/* 공통 */
+.top-infobox{
+	width: 100%;
+	height: 34px;
+	padding-top: 3px;
+	padding-left: 235px;
+	position:relative
+}
+
+.top_infobox_group {
+			height:auto;
+			weidth: auto;
+			padding: 1px 6px 1px 1px;
+			margin: 1px 7px 1px 0px;			
+			float: left;
+			
+			border-radius: 3px;
+			
+			font-size: 12px; 
+			font-weight: 700; 
+			
+}
+
+.top_infobox_text {
+			padding: 0px 0px 0px 9px
+}
+
+.top_infobox_title {
+			padding: 1px 4px 1px 4px;
+			font-size: 12px ;
+			border-radius: 2px;			
+}
+
+.top_user_btn {
+	margin: 0px 0px 0px 0px !important
+}
+
+.top_btn_margin0 {
+	margin: 0px 0px 0px 0px !important;
+}
+
+.top_more_padding {
+	padding: 0px 13px 0px 13px !important;
+}
+
+.top_btn {
+	margin: 0px 0px 0px 0px !important;
+}
+
+
+
+/*------ 스마트 기본(0) ------*/
+.smart-style-0 .group_color {
+    border: solid 1px;
+    border-color: #D0D0D0;
+}
+.smart-style-0 .title_color {
+	font-weight: 400;
+	background-color: rgba( 100, 152, 170, 1 );
+}
+.smart-style-0 .top_infobox_title {
+	font-weight: 100;
+	background-color: #707070   !important;
+}
+
+
+/*------ 다크 초콜릿(1) ------*/
+.smart-style-1 .group_color {
+    border: solid 1px;
+    border-color: #545454;
+    background: #CCCCCC;
+    color: #000000;
+    font-weight: 500;
+	/*
+	color:#242424;
+	background-color: rgba( 215, 215, 215, 0.85 );
+	*/
+}
+.smart-style-1 .title_color {
+    font-weight: 100;
+    background-color: #666D79;
+}
+.smart-style-1 .top_infobox_title {
+	font-weight: 500;
+    background-color: #797979 !important;
+    color: #E6E6E6;
+}
+
+
+/*------ 울트라 라이트(2) ------*/
+.smart-style-2 .group_color {
+    border: solid 1px;
+    border-color: #8F9CA9;
+    color: #FFFFFF;
+    font-weight: 300;
+    background: #6F8396;
+}
+.smart-style-2 .title_color {
+    font-weight: 300;
+    background-color: #546779;;
+}
+.smart-style-2 .top_infobox_title {
+    font-weight: 100;
+    background-color: #BD596D !important;
+}
+
+
+/*------ 스마트 구글(3) ------*/
+.smart-style-3 .group_color {
+    border: solid 1px;
+    border-color: #DC7329;
+    font-weight: 300;	
+	
+	color:#242424;
+	background-color: rgba(255, 203, 166, 0.6);
+}
+
+.smart-style-3 .title_color {
+	font-weight: 300;
+	background-color: rgb(189, 93, 25);
+}
+.smart-style-3 .top_infobox_title {
+    font-weight: 100;
+    background-color: #BD596D !important;
+    padding: 2px 4px 2px 4px !important;
+}
+
+/*------ 픽셀 스메쉬(4) ------*/
+.smart-style-4 .group_color {
+    border: solid 1px;
+    border-color: #c1c1c1;
+    font-weight: 300;	
+	
+	color:#242424;
+	background-color: rgba( 214, 214, 214, 0.6 );
+}
+
+.smart-style-4 .title_color {
+	font-weight: 300;
+	background-color: rgba( 140,140,140, 0.9 );
+}
+.smart-style-4 .top_infobox_title {
+    font-weight: 100;
+    background-color: #6D9868 !important;
+    padding: 2px 4px 2px 4px !important;
+}
+
+/* top logo images*/
+.logo_img {
+	width: 162px;
+    height: 19px;
+    padding-left: 3px;
+}
+.smart-style-0 .logo_img {
+    background: url(../../images/logo/logo.png);
+    background-repeat: no-repeat;
+}
+.smart-style-1 .logo_img {
+    background: url(../../images/logo/logo-white.png);
+    background-repeat: no-repeat;
+}
+.smart-style-2 .logo_img {
+    background: url(../../images/logo/logo-blue.png);
+    background-repeat: no-repeat;
+}
+.smart-style-3 .logo_img {
+    background: url(../../images/logo/logo-pale.png);
+    background-repeat: no-repeat;
+}
+.smart-style-4 .logo_img {
+    background: url(../../images/logo/logo-pale.png);
+    background-repeat: no-repeat;
+}

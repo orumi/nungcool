@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="genReqServiceDAO">
+
+    <select id="genReqServiceDAO.selectGenReqServiceDAO"
+            resultClass="tems.com.testBaseManagement.testItemManagement.genReqTestItem.model.GenReqVO">
+
+        SELECT
+            SUBSTR(sys_connect_by_path(A.itemID, '.'), 2) AS TREE,
+            A.ITEMID,
+            A.ITEMPID,
+            A.LVL,
+            A.NAME,
+            A.ENAME,
+            A.USEFLAG,
+            A.PRICE,
+            A.BASICCOND,
+            A.BASICUNIT,
+            A.BASICCNT,
+            A.CALCBASE,
+            A.ADDPRICE,
+            A.ETC,
+            A.REGID,
+            A.REGDATE,
+            A.MODIFYID,
+            A.MODIFYDATE,
+            A.OLDYN,
+            A.ORDERBY,
+            A.OLDID,
+            B.TESTCOND
+        FROM TCE_ITEM A,
+            (
+                WITH TESTCOND AS (
+                        SELECT
+                            ITEMID,
+                            A.TEMPERCOND || B.CODENAME || '/' || TIMECOND || C.CODENAME || '/' || ETC ||
+                            D.CODENAME TESTCOND
+                        FROM tne_condition a, tct_code_detail b, tct_code_detail c, tct_code_detail d
+                        WHERE a.TEMPUNIT = b.codeid (+)
+                              AND a.TIMECONDUNIT = c.codeid (+)
+                              AND a.ETCUNIT = d.codeid (+)
+                )
+                SELECT
+                    itemid,
+                    replace(wm_concat(TESTCOND), ',', ', ') AS TESTCOND
+                FROM TESTCOND
+                GROUP BY itemid
+            ) B
+        WHERE A.ITEMID = B.ITEMID (+)
+              AND A.OLDYN = 'N'
+        START WITH (A.ITEMPID = 0)
+        CONNECT BY PRIOR A.ITEMID = A.ITEMPID
+        ORDER SIBLINGS BY ORDERBY
+
+    </select>
+
+    <select id="genReqServiceDAO.searchGenReqServiceDAO"
+            resultClass="tems.com.testBaseManagement.testItemManagement.genReqTestItem.model.GenReqVO">
+
+        <![CDATA[
+        WITH item AS
+        (
+                SELECT
+                    rownum,
+                    substr(sys_connect_by_path(replace(name, '_', ''), '_'), 2) treeItemName,
+                    SUBSTR(sys_connect_by_path(itemID, '.'), 2)                 TREE,
+                    ITEMID, ITEMPID, LVL, NAME, ENAME, USEFLAG, PRICE, BASICCOND, BASICUNIT,
+                    BASICCNT, CALCBASE, ADDPRICE, ETC, REGID, REGDATE, MODIFYID, MODIFYDATE,
+                    OLDYN, ORDERBY, OLDID
+                FROM
+                    (
+                        SELECT
+                            i.ITEMID, i.ITEMPID, i.LVL, i.NAME, i.ENAME, i.USEFLAG, i.PRICE,
+                            i.BASICCOND, i.BASICUNIT, i.BASICCNT, i.CALCBASE, i.ADDPRICE,
+                            i.ETC, i.REGID, i.REGDATE, i.MODIFYID, i.MODIFYDATE, i.OLDYN,
+                            i.ORDERBY, i.OLDID
+                        FROM
+                            tce_item i,
+                            (SELECT
+                                 itemid, itempid, d.methodid, unitid, etc, m.name
+                             FROM tne_item_detail d, tce_method M
+                             WHERE D.methodid = m.methodid
+                            ) D
+                        WHERE i.oldyn != 'Y' AND i.useflag = 'Y'
+                              AND i.itemid = d.itemid (+)
+                              AND i.itempid = d.itempid (+)
+                    )
+                START WITH (itempid = 0)
+                CONNECT BY PRIOR itemid = itempid
+                ORDER SIBLINGS BY to_number(orderby), itemid
+        )
+        SELECT *
+        FROM (
+            item
+        )
+        WHERE itemid IN
+              (
+                  SELECT itemid
+                  FROM item
+                  WHERE treeitemname LIKE '%' || #name# || '%'
+                  UNION
+                  SELECT itempid
+                  FROM item
+                  WHERE treeItemname LIKE '%' || #name# || '%'
+                  UNION (select itempid from item where ITEMID in ( SELECT itempid
+                         FROM item
+                         WHERE treeItemname LIKE '%' || #name# || '%') )
+              )
+        ]]>
+
+    </select>
+
+
+    <select id="genReqServiceDAO.selectTNEResult"
+            parameterClass="tems.com.testBaseManagement.testItemManagement.genReqTestItem.model.GenReqVO"
+            resultClass="tems.com.testBaseManagement.testItemManagement.genReqTestItem.model.TneResultVO">
+
+        <![CDATA[
+        SELECT
+            RESULTID,
+            REQID,
+            SMPID,
+            ITEMID,
+            ITEMPID,
+            METHODID,
+            UNITID,
+            DISPLAYUNIT,
+            EQUIPID,
+            LVL,
+            ITEMREGID,
+            REPORTUNIT,
+            TEMPERCOND,
+            TIMECOND,
+            SMPAMOUNT,
+            ITEMTERM,
+            RESULTTYPE,
+            ITEMVALUE,
+            RESULTVALUE,
+            RESULTCONTENTS,
+            ANNOTATION,
+            REMARK,
+            ITEMPRICE,
+            ITEMSTATE,
+            ORDERBY,
+            ADDPRICE,
+            ADDPRICECOND,
+            FIXCNT,
+            RESULTSTATE,
+            COOPERYN,
+            REGID,
+            REGDATE,
+            MODIFYID,
+            MODIFYDATE,
+            METHODNM,
+            ITEMENAME,
+            OFFICEID,
+            ITEMNAME,
+            SCSEQN
+        FROM TNE_RESULT
+        WHERE ITEMID = #itemID#
+        ]]>
+
+    </select>
+
+
+    <update id="genReqServiceDAO.updateGenReqServiceDAO"
+            parameterClass="tems.com.testBaseManagement.testItemManagement.genReqTestItem.model.GenReqVO">
+
+        <![CDATA[
+        UPDATE TCE_ITEM A
+        SET
+            ITEMID     = #itemID#,
+            ITEMPID    = #itemPID#,
+            LVL        = #lvl#,
+            NAME       = #name#,
+            ENAME      = #eName#,
+            USEFLAG    = #useFlag#,
+            PRICE      = #price#,
+            BASICCOND  = #basicCond#,
+            BASICUNIT  = #basicUnit#,
+            BASICCNT   = #basicCnt#,
+            ADDPRICE   = #addPrice#,
+            CALCBASE   = #calcBase#,
+            ETC        = #etc#,
+            REGID      = #regID#,
+            MODIFYID   = #modifyID#,
+            MODIFYDATE = sysdate,
+            OLDYN      = 'N',
+            ORDERBY    = #orderBy#,
+            OLDID      = #oldID#
+        WHERE A.ITEMID = #itemID#
+        ]]>
+
+    </update>
+
+    <insert id="genReqServiceDAO.insertGenReqServiceDAO"
+            parameterClass="tems.com.testBaseManagement.testItemManagement.genReqTestItem.model.GenReqVO">
+
+        <![CDATA[
+        INSERT INTO TCE_ITEM
+        (ITEMID,
+         ITEMPID,
+         LVL,
+         NAME,
+         ENAME,
+         USEFLAG,
+         PRICE,
+         BASICCOND,
+         BASICUNIT,
+         BASICCNT,
+         CALCBASE,
+         ADDPRICE,
+         ETC,
+         REGID,
+         REGDATE,
+         MODIFYID,
+         MODIFYDATE,
+         OLDYN,
+         ORDERBY)
+        VALUES
+            (SEQ_TCE_ITEM.nextval,
+             #itemPID#,
+             #lvl#,
+             #name#,
+             #eName#,
+             #useFlag#,
+             #price#,
+             #basicCond#,
+             #basicUnit#,
+             #basicCnt#,
+             #calcBase#,
+             #addPrice#,
+             #etc#,
+             #regID#,
+             sysdate,
+             #modifyID#,
+             #modifyDate#,
+             'N',
+             #orderBy#
+            )
+        ]]>
+
+    </insert>
+
+    <delete id="genReqServiceDAO.deleteGenReqServiceDAO"
+            parameterClass="tems.com.testBaseManagement.testItemManagement.genReqTestItem.model.GenReqVO">
+
+        <![CDATA[
+        DELETE
+        FROM TCE_ITEM
+        WHERE ITEMID = #itemID#
+        ]]>
+
+    </delete>
+
+    <select id="genReqServiceDAO.selectTestConditionDAO"
+            parameterClass="tems.com.testBaseManagement.testItemManagement.genReqTestItem.model.PopUpVO"
+            resultClass="tems.com.testBaseManagement.testItemManagement.genReqTestItem.model.PopUpVO">
+
+        <![CDATA[
+        SELECT
+            CONDID,
+            ITEMID,
+            ITEMPID,
+            TEMPERCOND,
+            TEMPUNIT,
+            TIMECOND,
+            TIMECONDUNIT,
+            ETC,
+            REGID,
+            REGDATE,
+            MODIFYID,
+            MODIFYDATE,
+            ETCUNIT
+        FROM TNE_CONDITION
+        WHERE ITEMID = #itemID#
+        ]]>
+    </select>
+
+    <insert id="genReqServiceDAO.insertTestConditionDAO"
+            parameterClass="tems.com.testBaseManagement.testItemManagement.genReqTestItem.model.PopUpVO">
+
+        <![CDATA[
+        INSERT INTO TNE_CONDITION
+        (
+            CONDID,
+            ITEMID,
+            ITEMPID,
+            TEMPERCOND,
+            TEMPUNIT,
+            TIMECOND,
+            TIMECONDUNIT,
+            ETC,
+            REGID,
+            REGDATE,
+            MODIFYID,
+            MODIFYDATE,
+            ETCUNIT
+        )
+        VALUES
+            (SEQ_TNE_CONDITION.nextval,
+             #itemID#,
+             #itemPID#,
+             #temperCond#,
+             #tempUnit#,
+             #timeCond#,
+             #timeCondUnit#,
+             #etc#,
+             #regID#,
+             sysdate,
+             #modifyID#,
+             #modifyDate#,
+             #etcUnit#
+
+            )
+        ]]>
+
+    </insert>
+    <update id="genReqServiceDAO.updateTestConditionDAO"
+            parameterClass="tems.com.testBaseManagement.testItemManagement.genReqTestItem.model.PopUpVO">
+
+        <![CDATA[
+        UPDATE TNE_CONDITION A
+        SET
+            ITEMID       = #itemID#,
+            ITEMPID      = #itemPID#,
+            TEMPERCOND   = #temperCond#,
+            TEMPUNIT     = #tempUnit#,
+            TIMECOND     = #timeCond#,
+            TIMECONDUNIT = #timeCondUnit#,
+            ETC          = #etc#,
+            MODIFYID     = #modifyID#,
+            MODIFYDATE   = sysdate,
+            ETCUNIT      = #etcUnit#
+        WHERE A.condID = #condID#
+        ]]>
+
+    </update>
+
+    <delete id="genReqServiceDAO.deleteTestConditionDAO"
+            parameterClass="tems.com.testBaseManagement.testItemManagement.genReqTestItem.model.PopUpVO">
+
+        <![CDATA[
+        DELETE
+        FROM TNE_CONDITION
+        WHERE CONDID = #condID#
+        ]]>
+
+    </delete>
+
+
+    <select id="genReqServiceDAO.selectTestUnitDAO"
+            resultClass="tems.com.testBaseManagement.testItemManagement.genReqTestItem.model.LoadUnitVO">
+
+        <![CDATA[
+        SELECT
+            A.CODEGROUPID,
+            A.CODEID,
+            A.CODENAME,
+            A.USEFLAG,
+            A.REGID,
+            A.REGDATE,
+            A.MODIFYID,
+            A.MODIFYDATE,
+            B.CODEGROUPNAME
+        FROM TCT_CODE_DETAIL A LEFT JOIN TCT_CODE_GROUP B ON A.CODEGROUPID = B.CODEGROUPID
+        WHERE A.USEFLAG = 'Y'
+        ]]>
+    </select>
+
+    <select id="genReqPropServiceDAO.selectSubPropertyCheck" parameterClass="tems.com.testBaseManagement.testItemManagement.genReqTestItem.model.GenReqVO"
+            resultClass="int">
+
+        SELECT count(ITEMID)
+        FROM (
+            SELECT ITEMID
+            FROM TCE_ITEM
+            START WITH ITEMID = (SELECT ITEMID
+                                 FROM TCE_ITEM
+                                 WHERE ITEMID = #itemID#) CONNECT BY PRIOR ITEMID = ITEMPID)
+
+    </select>
+
+
+</sqlMap>

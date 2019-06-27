@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CooperateReceiveDAO">
+
+	<select id="CooperateReceiveDAO.getReceiveList" resultClass="tems.com.cooperate.receive.model.CooperateReceiveListVO">
+		  select
+                a.reqid
+                ,b.acceptno
+                ,c.name comname                      
+                ,to_char(b.receiptdate,'yyyy.mm.dd') receiptdate
+                ,UFN_GET_ENDDATE(b.receiptdate,TB.itemterm) issuedateplan
+                ,TB.itemterm            
+                ,TC.smpcnt
+                ,TB.rltcnt   
+                ,TB.nullcnt 
+                ,TA.officenm
+                ,a.remark            
+                ,nvl(to_date(to_char(sysdate,'yyyy-mm-dd')) - issuedateplan,0) dday
+                ,b.reportid
+                ,TB.coopercnt
+        from tne_request a
+               ,tne_report b
+               ,THT_COMPANY c
+               ,TCT_STATE d
+               ,TNE_COOPER_REQ e
+               ,(
+                select aa.reqid, aa.OFFICEID, bb.name officenm
+                from tne_sample aa, tct_office bb
+                where aa.officeid = bb.officeid
+                group by aa.reqid, aa.officeid, bb.name
+               ) TA
+               ,(select count(reqid) rltcnt
+                           ,sum(case when cooperyn = 'Y' then 1 else 0 end)  coopercnt
+                           ,sum(case when resultvalue is not null then 0 else 1 end)  nullcnt
+                           ,nvl(max(ITEMTERM),0) itemterm
+                           ,reqid 
+                    from tne_result  
+                    where resultflag = 'Y'
+                    and     cooperyn = 'Y'
+                  group by reqid 
+               ) TB         
+               ,(
+               	 select reqid, count(smpid) smpcnt from (  
+               	   select reqid, smpid from tne_result
+	               where cooperyn = 'Y'
+	               group by reqid, smpid
+	             ) group by reqid           
+               ) TC                    
+        where a.reqid = b.reqid
+        and a.comid = c.comid
+        and a.ordinal = c.ordinal
+        and a.reqid = e.reqid
+        and a.reqid = TA.reqid
+        and a.reqid = TB.reqid
+        and a.reqid = TC.reqid
+        and a.reqstate = d.statecd
+        and b.type = 'O'         
+        and e.resultstate = '10'                          
+		and (e.officeid = (select officeid from tct_admin
+		                          where adminid = #adminid#) 
+	        or 
+	         e.officeid = (select uppofficeid from tct_admin
+	                         where adminid = #adminid#)
+	        )        
+        <isEqual property="chkstartdate1" compareValue="true">
+        <![CDATA[	
+        and b.receiptdate >= #startdate1#
+        ]]>    
+        </isEqual>
+	    <isEqual property="chkfinishdate1" compareValue="true">
+	    <![CDATA[
+        and b.receiptdate <= #finishdate1#
+        ]]>    
+        </isEqual>
+        <isNotEmpty property="firstOpt">
+        and a.reqid in (select reqid from tne_sample a, tce_master g ,tce_group h ,tce_class i
+						 where a.masterid = g.masterid
+						   and g.groupid = h.groupid
+						   and h.classid = i.classid
+						   and i.classid = #firstOpt#
+						   <isNotEmpty property="secondOpt">
+					       and h.groupid = #secondOpt#
+					       </isNotEmpty>
+					       <isNotEmpty property="thirdOpt">
+					       and g.masterid = #thirdOpt#
+					       </isNotEmpty>
+						   )			  
+        </isNotEmpty>
+        <isNotEmpty property="smpname">
+        and a.reqid in (select reqid from tne_sample
+						 where name like '%'||#smpname#||'%')
+        </isNotEmpty>
+        <isNotEmpty property="itemname">
+        and a.reqid in (select reqid from tne_result
+						 where itemname like '%'||#itemname#||'%')
+        </isNotEmpty>
+        <isNotEmpty property="acceptno">
+        and b.acceptno like '%'||#acceptno#||'%'
+        </isNotEmpty>      
+        order by to_char(b.receiptdate,'yyyy.mm.dd')  desc , acceptno 
+	</select>
+	
+	<update id="CooperateReceiveDAO.upReceive">
+		update tne_cooper_req set 
+		     resultstate = '14'
+		    ,confirmid = #adminid#
+		    ,modifydate = sysdate
+		    ,modifyid = #adminid#
+		where reqid = #reqid#   
+	</update>
+	
+	<select id="CooperateReceiveDAO.getCoopSmpList" resultClass="tems.com.exam.req.model.ReqSmpListVO">
+    	select a.name smpname
+	         ,B.NAME mname
+	         ,a.reqid        
+	         ,a.smpid        
+	         ,a.masterid    
+	         ,a.price        
+	         ,a.regid        
+	         ,a.regdate        
+	         ,a.modifyid    
+	         ,a.modifydate    
+	         ,a.officeid    
+	         ,a.adminid        
+	         ,a.smpfid                   
+		from tne_sample a
+	        ,tce_master b
+	        ,(select a.reqid, b.smpid 
+        		from TNE_COOPER_REQ a, tne_result b
+        		where a.reqid = b.reqid
+        		and B.COOPERYN = 'Y'
+        		group by a.reqid, b.smpid
+        	) e
+		where a.masterid = b.masterid       
+		and a.reqid = #reqid#
+		and a.reqid = e.reqid
+		and a.smpid = e.smpid
+		order by smpid
+    </select>
+    
+    <select id="CooperateReceiveDAO.getCoopReqDetail" resultClass="tems.com.exam.cooperation.model.CooperReqDetailVO">
+		select a.reqid
+                ,a.comname
+                ,b.acceptno
+                ,to_char(b.receiptdate,'yyyy.mm.dd') receiptdate
+                ,to_char(b.issuedateplan,'yyyy.mm.dd') issuedateplan
+                ,c.officeid
+                ,d.NAME officenm
+                ,c.regdate                
+        from tne_request a
+                ,tne_report b   
+                ,TNE_COOPER_REQ c
+                ,tct_office d
+                ,(
+               	 	select reqid, count(smpid) smpcnt from (  
+	               	   select reqid, smpid from tne_result
+		               where cooperyn = 'Y'
+		               group by reqid, smpid
+	             	) group by reqid           
+               	) TA                
+        where 
+              a.reqid = b.reqid       
+        and a.reqid = c.reqid
+        and c.officeid = d.officeid
+        and a.reqid = TA.reqid
+        and a.reqid = #reqid#
+    </select>
+    
+    <insert id="CooperateReceiveDAO.inCoopReject">
+		insert into TNE_COOPER_REJECT(reqid, rejflag, rejdesc, rejdate, rejid, officeid, regid, regdate)
+		values(#reqid#,'2',#rejdesc#,sysdate,#adminid#,#officeid#,#adminid#,sysdate)
+	</insert>
+	
+	<update id="CooperateReceiveDAO.upCoopReqReject">
+    	update TNE_COOPER_REQ set 
+    		 resultstate = '19'
+		where reqid = #reqid#
+		and officeid = #officeid#
+    </update>
+	
+</sqlMap>

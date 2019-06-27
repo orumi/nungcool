@@ -1,0 +1,700 @@
+<%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ page import="java.util.Calendar" %>
+<%@ page import="java.text.SimpleDateFormat" %>
+<%
+	Calendar date = Calendar.getInstance();
+	SimpleDateFormat today = new SimpleDateFormat("yyyy.mm.dd");
+	
+%>
+<script>
+
+</script>
+
+		<div class="row">
+			<article class="col-sm-12 col-md-12 col-lg-10 sortable-grid ui-sortable">
+				<div class="jarviswidget jarviswidget-sortable" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false" role="widget" style="position: relative; opacity: 1;">
+
+				<header role="heading">
+					<ul class="nav nav-tabs pull-left in" id="myTab">
+						<li class="active">
+							<a data-toggle="tab" href="#s1" aria-expanded="true"><i class="fa fa-flask"></i> <span class="hidden-mobile hidden-tablet">시험</span></a>
+						</li>
+
+						<li class="">
+							<a data-toggle="tab" href="#s2" aria-expanded="false"><i class="fa fa-gavel"></i> <span class="hidden-mobile hidden-tablet">법정(공인)</span></a>
+						</li>
+
+						<li class="">
+							<a data-toggle="tab" href="#s3" aria-expanded="false"><i class="fa fa-mortar-board"></i> <span class="hidden-mobile hidden-tablet">교육</span></a>
+						</li>
+						
+						<li class="">
+							<a data-toggle="tab" href="#s4" aria-expanded="false"><i class="fa fa-inbox"></i> <span class="hidden-mobile hidden-tablet">e-KOLAS</span></a>
+						</li>
+					</ul>
+
+				<span class="jarviswidget-loader"><i class="fa fa-refresh fa-spin"></i></span></header>
+
+				<!-- widget div-->
+				<div class="no-padding" role="content">
+					<div class="widget-body">
+						<!-- content -->
+						<div id="myTabContent" class="tab-content">
+							<div class="tab-pane fade padding-10 no-padding-bottom active in" id="s1">
+								<div class="row">
+									
+									<article class="col-sm-12 col-md-12 col-lg-7 sortable-grid ui-sortable">
+							
+										<!-- Widget ID (each widget will need unique ID)-->
+										<div class="jarviswidget jarviswidget-color-gradient jarviswidget-sortable" id="wid-id-1" data-widget-editbutton="false" role="widget">
+
+										<header role="heading">
+											<span class="widget-icon"> <i class="fa fa-table"></i>
+											</span>
+											<h2>의뢰시험 접수내역</h2>
+										</header>
+
+										<!-- widget div-->
+												<div role="content">
+								
+													<!-- widget edit box -->
+													<div class="jarviswidget-editbox">
+														<!-- This area used as dropdown edit box -->
+								
+													</div>
+													<!-- end widget edit box -->
+								
+													<!-- widget content -->
+													<div class="widget-body no-padding">
+								
+														<div class="table-responsive">
+																
+															<table class="table table-bordered table-striped" style="table-layout:fixed ">
+																<thead>
+																	<tr>
+																		<th style="width:15%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">신청일자</th>
+																		<th style="width:30%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">업체명</th>
+																		<th style="width:13%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">신청자</th>
+																		<th style="width:12%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">진행상태</th>
+																		<th style="width:10%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">시료건수</th>
+																		<th style="width:10%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">항목건수</th>
+																		<th style="width:10%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">견적서</th>
+																	</tr>
+																</thead>
+																<tbody>
+																<c:forEach var="ReqList" items="${ReqList}">
+																<c:choose>
+																<c:when test="${ReqList.requestcdate eq '2015.10.06'}">
+																	<tr>
+																		<td class="cutStringC"><c:out value="${ReqList.requestcdate}"/></td>
+																		<td class="cutStringL"><span class="label label-danger">기간초과</span><c:out value="${ReqList.comname}"/></td>
+																		<td class="cutStringC"><c:out value="${ReqList.memname}"/></td>
+																		<td class="cutStringC"><c:out value="${ReqList.statenm}"/></td>
+																		<td class="cutStringC"><c:out value="${ReqList.smpcnt}"/></td>
+																		<td class="cutStringC"><c:out value="${ReqList.rltcnt}"/></td>
+																		<td class="cutStringC"></td>
+																	</tr>	
+																</c:when>
+																<c:otherwise>
+																	<tr>
+																		<td class="cutStringC"><c:out value="${ReqList.requestcdate}"/></td>
+																		<td class="cutStringL"><c:out value="${ReqList.comname}"/></td>
+																		<td class="cutStringC"><c:out value="${ReqList.memname}"/></td>
+																		<td class="cutStringC"><c:out value="${ReqList.statenm}"/></td>
+																		<td class="cutStringC"><c:out value="${ReqList.smpcnt}"/></td>
+																		<td class="cutStringC"><c:out value="${ReqList.rltcnt}"/></td>
+																		<td class="cutStringC"></td>
+																	</tr>
+																</c:otherwise>
+																</c:choose>
+																</c:forEach>
+																</tbody>
+															</table>
+															
+														</div>
+													</div>
+													<!-- end widget content -->
+								
+												</div>
+												<!-- end widget div -->
+							
+										</div>
+										<!-- end widget -->
+										
+										<!-- Widget ID (each widget will need unique ID)-->
+										<div class="jarviswidget jarviswidget-color-gradient jarviswidget-sortable" id="wid-id-1" data-widget-editbutton="false" role="widget">
+
+										<header role="heading">
+											<span class="widget-icon"> <i class="fa fa-table"></i>
+											</span>
+											<h2>진행상태 현황</h2>
+										</header>
+
+										<!-- widget div-->
+												<div role="content">
+								
+													<!-- widget edit box -->
+													<div class="jarviswidget-editbox">
+														<!-- This area used as dropdown edit box -->
+								
+													</div>
+													<!-- end widget edit box -->
+								
+													<!-- widget content -->
+													<div class="widget-body no-padding">
+								
+														<div class="table-responsive">
+																
+															<table class="table table-bordered table-striped">
+																<thead>
+																	<tr>
+																		<th>접수번호</th>
+																		<th>접수일자</th>
+																		<th>업체명</th>
+																		<th>신청자</th>
+																		<th>담당지사</th>
+																		<th>진행상태</th>
+																	</tr>
+																</thead>
+																<tbody>
+																	<tr>
+																		<td class="cutStringC">TSC2015-00001</td>
+																		<td class="cutStringC">2015.01.01</td>
+																		<td class="cutStringC">(주)티젠</td>
+																		<td class="cutStringC">이태의</td>
+																		<td class="cutStringC">연구소</td>
+																		<td class="cutStringC">분석진행</td>
+																	</tr>
+																	<tr>
+																		<td class="cutStringC">TSC2015-00002</td>
+																		<td class="cutStringC">2015.01.01</td>
+																		<td class="cutStringC">(주)티젠</td>
+																		<td class="cutStringC">이태의</td>
+																		<td class="cutStringC">연구소</td>
+																		<td class="cutStringC">분석진행</td>
+																	</tr>
+																	<tr>
+																		<td class="cutStringC">TSC2015-00003</td>
+																		<td class="cutStringC">2015.01.01</td>
+																		<td class="cutStringC">(주)티젠</td>
+																		<td class="cutStringC">이태의</td>
+																		<td class="cutStringC">연구소</td>
+																		<td class="cutStringC">분석진행</td>
+																	</tr>
+																	<tr>
+																		<td class="cutStringC">TSC2015-00004</td>
+																		<td class="cutStringC">2015.01.01</td>
+																		<td class="cutStringC">(주)티젠</td>
+																		<td class="cutStringC">이태의</td>
+																		<td class="cutStringC">연구소</td>
+																		<td class="cutStringC">분석진행</td>
+																	</tr>
+																</tbody>
+															</table>
+															
+														</div>
+													</div>
+													<!-- end widget content -->
+								
+												</div>
+												<!-- end widget div -->
+							
+										</div>
+										<!-- end widget -->
+										
+										<!-- Widget ID (each widget will need unique ID)-->
+										<div class="jarviswidget jarviswidget-color-gradient jarviswidget-sortable" id="wid-id-1" data-widget-editbutton="false" role="widget">
+
+										<header role="heading">
+											<span class="widget-icon"> <i class="fa fa-table"></i>
+											</span>
+											<h2>품질검사 접수내역</h2>
+										</header>
+
+										<!-- widget div-->
+												<div role="content">
+								
+													<!-- widget edit box -->
+													<div class="jarviswidget-editbox">
+														<!-- This area used as dropdown edit box -->
+								
+													</div>
+													<!-- end widget edit box -->
+								
+													<!-- widget content -->
+													<div class="widget-body no-padding">
+								
+														<div class="table-responsive">
+																
+															<table class="table table-bordered table-striped">
+																<thead>
+																	<tr>
+																		<th>신청일자</th>
+																		<th>업체명</th>
+																		<th>신청자</th>
+																		<th>담당지사</th>
+																		<th>진행상태</th>
+																		<th>시료건수</th>
+																		<th>비고</th>
+																	</tr>
+																</thead>
+																<tbody>
+																	<tr>
+																		<td class="cutStringC">2015.12.01</td>
+																		<td class="cutStringC">대광특수유리공업(주)</td>
+																		<td class="cutStringC">홍길동</td>
+																		<td class="cutStringC">연구소</td>
+																		<td class="cutStringC">접수대기</td>
+																		<td class="cutStringC">1</td>
+																		<td class="cutStringC"></td>
+																	</tr>
+																	<tr>
+																		<td class="cutStringC">2015.12.01</td>
+																		<td class="cutStringC">(주)티젠</td>
+																		<td class="cutStringC">홍길동</td>
+																		<td class="cutStringC">연구소</td>
+																		<td class="cutStringC">접수대기</td>
+																		<td class="cutStringC">1</td>
+																		<td class="cutStringC"></td>
+																	</tr>
+																	<tr>
+																		<td class="cutStringC">2015.12.01</td>
+																		<td class="cutStringC">선업무역</td>
+																		<td class="cutStringC">홍길동</td>
+																		<td class="cutStringC">연구소</td>
+																		<td class="cutStringC">접수대기</td>
+																		<td class="cutStringC">1</td>
+																		<td class="cutStringC"></td>
+																	</tr>
+																	<tr>
+																		<td class="cutStringC">2015.12.01</td>
+																		<td class="cutStringC">(주)워켐</td>
+																		<td class="cutStringC">홍길동</td>
+																		<td class="cutStringC">연구소</td>
+																		<td class="cutStringC">접수대기</td>
+																		<td class="cutStringC">1</td>
+																		<td class="cutStringC"></td>
+																	</tr>
+																</tbody>
+															</table>
+															
+														</div>
+													</div>
+													<!-- end widget content -->
+								
+												</div>
+												<!-- end widget div -->
+							
+										</div>
+										<!-- end widget -->
+							
+									</article>
+									
+									<article class="col-sm-12 col-md-12 col-lg-5 sortable-grid ui-sortable">
+							
+										<!-- Widget ID (each widget will need unique ID)-->
+										<div class="jarviswidget jarviswidget-color-gradient jarviswidget-sortable" id="wid-id-1" data-widget-editbutton="false" role="widget">
+
+										<header role="heading">
+											<span class="widget-icon"> <i class="fa fa-table"></i>
+											</span>
+											<h2>진행현황 정보</h2>
+										</header>
+
+										<!-- widget div-->
+												<div role="content">
+								
+													<!-- widget edit box -->
+													<div class="jarviswidget-editbox">
+														<!-- This area used as dropdown edit box -->
+								
+													</div>
+													<!-- end widget edit box -->
+								
+													<!-- widget content -->
+													<div class="widget-body no-padding">
+								
+														<div class="table-responsive">
+																
+															<table class="table table-bordered table-striped" align="center">
+																<thead>
+																	<tr>
+																		<th>진행구분</th>
+																		<th>구분</th>
+																		<th>건수</th>
+																		<th>반려</th>
+																	</tr>
+																</thead>
+																<tbody>
+																	<tr>
+																		<td class="cutStringC"rowspan="3" style="background-color: #fff;">접수</td>
+																		<td class="cutStringC">일반(협조)</td>
+																		<td class="cutStringC">28(2)</td>
+																		<td class="cutStringC">0</td>
+																	</tr>
+																	<tr>
+																		<td class="cutStringC">등본</td>
+																		<td class="cutStringC">3</td>
+																		<td class="cutStringC">0</td>
+																	</tr>
+																	<tr>
+																		<td class="cutStringC">통합</td>
+																		<td class="cutStringC">0</td>
+																		<td class="cutStringC">0</td>
+																	</tr>
+																	<tr>
+																		<td class="cutStringC" rowspan="2">결과미등록</td>
+																		<td class="cutStringC">시료(협조)</td>
+																		<td class="cutStringC">10(0)</td>
+																		<td class="cutStringC">0</td>
+																	</tr>
+																	<tr>
+																		<td class="cutStringC">항목(협조)</td>
+																		<td class="cutStringC">17</td>
+																		<td class="cutStringC">0</td>
+																	</tr>
+																	<tr>
+																		<td class="cutStringC" rowspan="3">결재</td>
+																		<td class="cutStringC">접수(협조)</td>
+																		<td class="cutStringC">16</td>
+																		<td class="cutStringC">1</td>
+																	</tr>
+																	<tr>
+																		<td class="cutStringC">발급</td>
+																		<td class="cutStringC">34</td>
+																		<td class="cutStringC">1</td>
+																	</tr>
+																	<tr>
+																		<td class="cutStringC">기타</td>
+																		<td class="cutStringC">1</td>
+																		<td class="cutStringC">0</td>
+																	</tr>
+																</tbody>
+															</table>
+															
+														</div>
+													</div>
+													<!-- end widget content -->
+								
+												</div>
+												<!-- end widget div -->
+							
+										</div>
+										<!-- end widget -->
+										
+										<!-- Widget ID (each widget will need unique ID)-->
+										<div class="jarviswidget jarviswidget-color-gradient jarviswidget-sortable" id="wid-id-1" data-widget-editbutton="false" role="widget">
+
+										<header role="heading">
+											<span class="widget-icon"> <i class="fa fa-table"></i>
+											</span>
+											<h2>회원제 현황</h2>
+										</header>
+
+										<!-- widget div-->
+												<div role="content">
+								
+													<!-- widget edit box -->
+													<div class="jarviswidget-editbox">
+														<!-- This area used as dropdown edit box -->
+								
+													</div>
+													<!-- end widget edit box -->
+								
+													<!-- widget content -->
+													<div class="widget-body no-padding">
+								
+														<div class="table-responsive">
+																
+															<table class="table table-bordered table-striped">
+																<thead>
+																	<tr>
+																		<th>회원번호</th>
+																		<th>업체명</th>
+																		<th>가입일</th>
+																		<th>종료일</th>
+																		<th>상태</th>
+																		<th>승인지사</th>
+																	</tr>
+																</thead>
+																<tbody>
+																	<tr>
+																		<td class="cutStringC">회-1</td>
+																		<td class="cutStringC">기업1</td>
+																		<td class="cutStringC">15.01.01</td>
+																		<td class="cutStringC">15.12.31</td>
+																		<td class="cutStringC"><span class="label label-success">진행</span></td>
+																		<td class="cutStringC">연구소</td>
+																	</tr>
+																	<tr>
+																		<td class="cutStringC">회-1</td>
+																		<td class="cutStringC">기업1</td>
+																		<td class="cutStringC">15.01.01</td>
+																		<td class="cutStringC">15.12.31</td>
+																		<td class="cutStringC"><span class="label label-success">진행</span></td>
+																		<td class="cutStringC">연구소</td>
+																	</tr>
+																	<tr>
+																		<td class="cutStringC">회-1</td>
+																		<td class="cutStringC">기업1</td>
+																		<td class="cutStringC">15.01.01</td>
+																		<td class="cutStringC">15.12.31</td>
+																		<td class="cutStringC"><span class="label label-success">진행</span></td>
+																		<td class="cutStringC">연구소</td>
+																	</tr>
+																	<tr>
+																		<td class="cutStringC">회-1</td>
+																		<td class="cutStringC">기업1</td>
+																		<td class="cutStringC">15.01.01</td>
+																		<td class="cutStringC">15.12.31</td>
+																		<td class="cutStringC"><span class="label label-success">진행</span></td>
+																		<td class="cutStringC">연구소</td>
+																	</tr>
+																</tbody>
+															</table>
+															
+														</div>
+													</div>
+													<!-- end widget content -->
+								
+												</div>
+												<!-- end widget div -->
+							
+										</div>
+										<!-- end widget -->
+										
+										<!-- Widget ID (each widget will need unique ID)-->
+										<div class="jarviswidget jarviswidget-color-gradient jarviswidget-sortable" id="wid-id-1" data-widget-editbutton="false" role="widget">
+
+										<header role="heading">
+											<span class="widget-icon"> <i class="fa fa-table"></i>
+											</span>
+											<h2>설비계약 현황</h2>
+										</header>
+
+										<!-- widget div-->
+												<div role="content">
+								
+													<!-- widget edit box -->
+													<div class="jarviswidget-editbox">
+														<!-- This area used as dropdown edit box -->
+								
+													</div>
+													<!-- end widget edit box -->
+								
+													<!-- widget content -->
+													<div class="widget-body no-padding">
+								
+														<div class="table-responsive">
+																
+															<table class="table table-bordered table-striped">
+																<thead>
+																	<tr>
+																		<th>계약번호</th>
+																		<th>업체명</th>
+																		<th>가입일</th>
+																		<th>종료일</th>
+																		<th>상태</th>
+																		<th>승인지사</th>
+																	</tr>
+																</thead>
+																<tbody>
+																	<tr>
+																		<td class="cutStringC">제209-1</td>
+																		<td class="cutStringC">한국산업</td>
+																		<td class="cutStringC">15.01.01</td>
+																		<td class="cutStringC">15.12.31</td>
+																		<td class="cutStringC"><span class="label label-success">진행</span></td>
+																		<td class="cutStringC">연구소</td>
+																	</tr>
+																	<tr>
+																		<td class="cutStringC">제209-1</td>
+																		<td class="cutStringC">한국산업</td>
+																		<td class="cutStringC">15.01.01</td>
+																		<td class="cutStringC">15.12.31</td>
+																		<td class="cutStringC"><span class="label label-success">진행</span></td>
+																		<td class="cutStringC">연구소</td>
+																	</tr>
+																	<tr>
+																		<td class="cutStringC">제209-1</td>
+																		<td class="cutStringC">한국산업</td>
+																		<td class="cutStringC">14.01.01</td>
+																		<td class="cutStringC">14.12.31</td>
+																		<td class="cutStringC"><span class="label label-default">미진행</span></td>
+																		<td class="cutStringC">연구소</td>
+																	</tr>
+																	<tr>
+																		<td class="cutStringC">제209-2</td>
+																		<td class="cutStringC">한국산업</td>
+																		<td class="cutStringC">14.01.01</td>
+																		<td class="cutStringC">14.12.31</td>
+																		<td class="cutStringC"><span class="label label-default">미진행</span></td>
+																		<td class="cutStringC">연구소</td>
+																	</tr>
+																</tbody>
+															</table>
+															
+														</div>
+													</div>
+													<!-- end widget content -->
+								
+												</div>
+												<!-- end widget div -->
+							
+										</div>
+										<!-- end widget -->
+							
+									</article>
+									
+									
+
+								</div>
+							</div>
+							<!-- end s1 tab pane -->
+
+							<div class="tab-pane fade" id="s2">
+								<div class="widget-body-toolbar bg-color-white">
+
+									<form class="form-inline" role="form">
+
+										<div class="form-group">
+											<label class="sr-only" for="s123">Show From</label>
+											<input type="email" class="form-control input-sm" id="s123" placeholder="Show From">
+										</div>
+										<div class="form-group">
+											<input type="email" class="form-control input-sm" id="s124" placeholder="To">
+										</div>
+
+										<div class="btn-group hidden-phone pull-right hidden-xs">
+											<a class="btn dropdown-toggle btn-xs btn-default" data-toggle="dropdown"><i class="fa fa-cog"></i> More <span class="caret"> </span> </a>
+											<ul class="dropdown-menu pull-right">
+												<li>
+													<a href="javascript:void(0);"><i class="fa fa-file-text-alt"></i> Export to PDF</a>
+												</li>
+												<li>
+													<a href="javascript:void(0);"><i class="fa fa-question-sign"></i> Help</a>
+												</li>
+											</ul>
+										</div>
+
+									</form>
+
+								</div>
+								<div class="padding-10">
+									<div id="statsChart" class="chart-large has-legend-unique" style="padding: 0px; position: relative;"><canvas class="flot-base" width="983" height="235" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 983px; height: 235px;"></canvas><div class="flot-text" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; font-size: smaller; color: rgb(84, 84, 84);"><div class="flot-x-axis flot-x1-axis xAxis x1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 7px; top: 235px; left: 10px; text-align: center;">JAN</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 7px; top: 235px; left: 90px; text-align: center;">FEB</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 7px; top: 235px; left: 171px; text-align: center;">MAR</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 7px; top: 235px; left: 251px; text-align: center;">APR</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 7px; top: 235px; left: 331px; text-align: center;">MAY</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 7px; top: 235px; left: 411px; text-align: center;">JUN</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 7px; top: 235px; left: 492px; text-align: center;">JUL</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 7px; top: 235px; left: 572px; text-align: center;">AUG</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 7px; top: 235px; left: 652px; text-align: center;">SEP</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 7px; top: 235px; left: 732px; text-align: center;">OCT</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 7px; top: 235px; left: 813px; text-align: center;">NOV</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 7px; top: 235px; left: 893px; text-align: center;">DEC</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 7px; top: 235px; left: 973px; text-align: center;">JAN+1</div></div><div class="flot-y-axis flot-y1-axis yAxis y1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; top: 225px; left: 0px; text-align: right;">0</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 171px; left: 0px; text-align: right;">20</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 118px; left: 0px; text-align: right;">40</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 64px; left: 0px; text-align: right;">60</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 10px; left: 0px; text-align: right;">80</div></div></div><canvas class="flot-overlay" width="983" height="235" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 983px; height: 235px;"></canvas><div class="legend"><div style="position: absolute; width: 141px; height: 15px; top: -22px; right: 5px; opacity: 1;"> </div><table style="position:absolute;top:-22px;right:5px;;font-size:smaller;color:#545454"><tbody><tr><td class="legendColorBox"><div style=""><div style="border:2px solid rgb(86,138,137);overflow:hidden"></div></div></td><td class="legendLabel"><span>Twitter</span></td><td class="legendColorBox"><div style=""><div style="border:2px solid rgb(50,118,177);overflow:hidden"></div></div></td><td class="legendLabel"><span>Facebook</span></td></tr></tbody></table></div></div>
+								</div>
+
+							</div>
+							<!-- end s2 tab pane -->
+
+							<div class="tab-pane fade" id="s3">
+
+								<div class="widget-body-toolbar bg-color-white smart-form" id="rev-toggles">
+
+									<div class="inline-group">
+
+										<label for="gra-0" class="checkbox">
+											<input type="checkbox" name="gra-0" id="gra-0" checked="checked">
+											<i></i> Target </label>
+										<label for="gra-1" class="checkbox">
+											<input type="checkbox" name="gra-1" id="gra-1" checked="checked">
+											<i></i> Actual </label>
+										<label for="gra-2" class="checkbox">
+											<input type="checkbox" name="gra-2" id="gra-2" checked="checked">
+											<i></i> Signups </label>
+									</div>
+
+									<div class="btn-group hidden-phone pull-right hidden-xs">
+										<a class="btn dropdown-toggle btn-xs btn-default" data-toggle="dropdown"><i class="fa fa-cog"></i> More <span class="caret"> </span> </a>
+										<ul class="dropdown-menu pull-right">
+											<li>
+												<a href="javascript:void(0);"><i class="fa fa-file-text-alt"></i> Export to PDF</a>
+											</li>
+											<li>
+												<a href="javascript:void(0);"><i class="fa fa-question-sign"></i> Help</a>
+											</li>
+										</ul>
+									</div>
+
+								</div>
+
+								<div class="padding-10">
+									<div id="flotcontainer" class="chart-large has-legend-unique" style="padding: 0px; position: relative;"><canvas class="flot-base" width="983" height="235" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 983px; height: 235px;"></canvas><div class="flot-text" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; font-size: smaller; color: rgb(84, 84, 84);"><div class="flot-x-axis flot-x1-axis xAxis x1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 109px; top: 220px; left: 38px; text-align: center;">Jan 2013</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 109px; top: 220px; left: 168px; text-align: center;">Jul 2013</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 109px; top: 220px; left: 297px; text-align: center;">Jan 2014</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 109px; top: 220px; left: 427px; text-align: center;">Jul 2014</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 109px; top: 220px; left: 556px; text-align: center;">Jan 2015</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 109px; top: 220px; left: 686px; text-align: center;">Jul 2015</div><div class="flot-tick-label tickLabel" style="position: absolute; max-width: 109px; top: 220px; left: 815px; text-align: center;">Jan 2016</div></div><div class="flot-y-axis flot-y1-axis yAxis y1Axis" style="position: absolute; top: 0px; left: 0px; bottom: 0px; right: 0px; display: block;"><div class="flot-tick-label tickLabel" style="position: absolute; top: 10px; left: 0px; text-align: right;">1250</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 210px; left: 0px; text-align: right;">0</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 170px; left: 0px; text-align: right;">250</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 130px; left: 0px; text-align: right;">500</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 90px; left: 0px; text-align: right;">750</div><div class="flot-tick-label tickLabel" style="position: absolute; top: 50px; left: 0px; text-align: right;">1000</div></div></div><canvas class="flot-overlay" width="983" height="235" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 983px; height: 235px;"></canvas><div class="legend"><div style="position: absolute; width: 283px; height: 15px; top: -22px; right: 17px; opacity: 1;"> </div><table style="position:absolute;top:-22px;right:17px;;font-size:smaller;color:#545454"><tbody><tr><td class="legendColorBox"><div style=""><div style="border:2px solid rgb(147,19,19);overflow:hidden"></div></div></td><td class="legendLabel"><span>Target Profit</span></td><td class="legendColorBox"><div style=""><div style="border:2px solid #3276B1;overflow:hidden"></div></div></td><td class="legendLabel"><span>Actual Profit</span></td><td class="legendColorBox"><div style=""><div style="border:2px solid #71843F;overflow:hidden"></div></div></td><td class="legendLabel"><span>Actual Signups</span></td></tr></tbody></table></div></div>
+								</div>
+							</div>
+							<!-- end s3 tab pane -->
+							
+							<!-- s4 tab -->
+							<div class="tab-pane fade" id="s4">
+							</div>
+							<!-- end -->
+						</div>
+
+						<!-- end content -->
+					</div>
+
+				</div>
+				<!-- end widget div -->
+			</div>
+				
+			</article>
+			
+			
+			<article class="col-sm-12 col-md-12 col-lg-2 sortable-grid ui-sortable" >
+				<div class="well well-sm well-light" style="height:350px">
+					<h3>공지사항</h3>
+					<div id="accordion" class="ui-accordion ui-widget ui-helper-reset" role="tablist">
+						<div class="">
+							<h4 class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all cutStringL" role="tab" id="ui-accordion-accordion-header-0" aria-controls="ui-accordion-accordion-panel-0" aria-selected="false" tabindex="0"><span class="ui-accordion-header-icon ui-icon fa fa-plus"></span>공지사항1</h4>
+							<div class="padding-10 ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom cutStringL" id="ui-accordion-accordion-panel-0" aria-labelledby="ui-accordion-accordion-header-0" role="tabpanel" aria-expanded="false" aria-hidden="true" style="display: none;">
+								공지사항입니다...
+								이것은 공지사항 입니다!!!
+							</div>
+						</div>
+		
+						<div class="">
+							<h4 class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all cutStringL" role="tab" id="ui-accordion-accordion-header-1" aria-controls="ui-accordion-accordion-panel-1" aria-selected="false" tabindex="0"><span class="ui-accordion-header-icon ui-icon fa fa-plus"></span>공지사항2</h4>
+							<div class="padding-10 ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom cutStringL" id="ui-accordion-accordion-panel-1" aria-labelledby="ui-accordion-accordion-header-1" role="tabpanel" aria-expanded="false" aria-hidden="true" style="display: none;">
+								2번글의 내용입니다.....
+							</div>
+						</div>
+						<div class="">
+							<h4 class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all cutStringL" role="tab" id="ui-accordion-accordion-header-2" aria-controls="ui-accordion-accordion-panel-2" aria-selected="false" tabindex="0"><span class="ui-accordion-header-icon ui-icon fa fa-plus"></span>공지사항3</h4>
+							<div class="padding-10 ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom cutStringL" id="ui-accordion-accordion-panel-2" aria-labelledby="ui-accordion-accordion-header-2" role="tabpanel" aria-expanded="false" aria-hidden="true" style="display: none;">
+								3번글 내용!
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="well well-sm well-light"  style="height:350px">
+					<h3>자료실</h3>
+					<div id="accordion2" class="ui-accordion ui-widget ui-helper-reset" role="tablist">
+						<div class="">
+							<h4 class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all" role="tab" id="ui-accordion-accordion-header-10" aria-controls="ui-accordion-accordion-panel-0" aria-selected="false" tabindex="0"><span class="ui-accordion-header-icon ui-icon fa fa-plus"></span>자료실1</h4>
+							<div class="padding-10 ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom" id="ui-accordion-accordion-panel-10" aria-labelledby="ui-accordion-accordion-header-0" role="tabpanel" aria-expanded="false" aria-hidden="true" style="display: none;">
+								1번글의 내용입니다.....
+							</div>
+						</div>
+		
+						<div class="">
+							<h4 class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all" role="tab" id="ui-accordion-accordion-header-11" aria-controls="ui-accordion-accordion-panel-1" aria-selected="false" tabindex="0"><span class="ui-accordion-header-icon ui-icon fa fa-plus"></span>자료실2</h4>
+							<div class="padding-10 ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom" id="ui-accordion-accordion-panel-11" aria-labelledby="ui-accordion-accordion-header-1" role="tabpanel" aria-expanded="false" aria-hidden="true" style="display: none;">
+								2번글의 내용입니다.....
+							</div>
+						</div>
+						<div class="">
+							<h4 class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-corner-all" role="tab" id="ui-accordion-accordion-header-12" aria-controls="ui-accordion-accordion-panel-2" aria-selected="false" tabindex="0"><span class="ui-accordion-header-icon ui-icon fa fa-plus"></span>자료실3</h4>
+							<div class="padding-10 ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom" id="ui-accordion-accordion-panel-12" aria-labelledby="ui-accordion-accordion-header-2" role="tabpanel" aria-expanded="false" aria-hidden="true" style="display: none;">
+								3번글 내용!
+							</div>
+						</div>
+					</div>
+				</div>
+			</article>
+		</div>
+				

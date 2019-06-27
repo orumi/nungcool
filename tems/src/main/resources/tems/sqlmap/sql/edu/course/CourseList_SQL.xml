@@ -1,0 +1,715 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="courseListSql">
+<!--****************************************************************************** 
+	*** 과목 관련	
+	******************************************************************************-->
+	
+	<!-- 과목 리스트(팝업) -->
+	<select id="courseListDAO.listSubject" resultClass="tems.com.edu.course.model.SubjectVO">
+		<![CDATA[
+			SELECT 
+     			SUBJECTID,
+    			SUBJECTNAME, 
+    			SUBJECTDESC, 
+    			SUBJECTPRICE, 
+    			REGID, 
+    			REGDATE, 
+    			MODIFYID, 
+    			MODIFYDATE
+			FROM TCD_SUBJECT
+			WHERE SUBJECTID > 0
+		]]>
+	</select>
+	
+	
+<!--****************************************************************************** 
+	*** 교육훈련 관련	
+	******************************************************************************-->
+	
+	<!-- 교육훈련저장 -->
+	<insert id="courseListDAO.insertCourse" parameterClass="tems.com.edu.course.model.CourseVO">
+		<![CDATA[
+			INSERT INTO TND_COURSE
+			(  COSID,
+			   SUBJECTID,
+			   COSNAME,
+			   ENROLLSTARTDATE,
+			   ENROLLSTARTHOUR,
+			   ENROLLENDDATE,
+			   ENROLLENDHOUR,
+			   COSSTARTDATE,
+			   COSENDDATE,
+			   COSPRICE,
+			   COSPLACE,
+			   COSSTATE,
+			   REGID,
+			   REGDATE
+			)
+			VALUES
+			(  SEQ_TND_COURSE.NEXTVAL,
+			   #subjectID#,
+			   #cosName#,
+			   #enrollStartDate#,
+			   #enrollStartHour#,
+			   #enrollEndDate#,
+			   #enrollEndHour#,
+			   #cosStartDate#,
+			   #cosEndDate#,
+			   #cosPrice#,
+			   #cosPlace#,
+			   #cosState#,
+			   #regID#,
+			   SYSDATE 
+			)
+		 ]]>
+	</insert>
+	
+	
+	<!-- 교육훈련 리스트 -->
+	<select id="courseListDAO.listCourse" parameterClass="tems.com.common.Criteria" resultClass="tems.com.edu.course.model.CourseVO">
+        <![CDATA[
+			SELECT 
+				COSID, SUBJECTID, COSNAME,
+				to_char(ENROLLSTARTDATE,'yyyy.mm.dd') ENROLLSTARTDATE,
+				ENROLLSTARTHOUR,
+				to_char(ENROLLENDDATE,'yyyy.mm.dd') ENROLLENDDATE,
+				ENROLLENDHOUR,
+				to_char(COSSTARTDATE,'yyyy.mm.dd') COSSTARTDATE,
+				to_char(COSENDDATE,'yyyy.mm.dd') COSENDDATE,
+				COSPRICE, COSPLACE, COSSTATE, CODEID, CODENAME, 
+				REGID,
+				to_char(REGDATE,'yyyy.mm.dd') REGDATE,
+				MODIFYID,
+				to_char(MODIFYDATE,'yyyy.mm.dd') MODIFYDATE,
+				ECOSID,
+				MEMCNT,	
+				RNUM
+ 			FROM
+                (SELECT 
+					COSID, SUBJECTID, COSNAME, ENROLLSTARTDATE, ENROLLSTARTHOUR, ENROLLENDDATE, ENROLLENDHOUR,
+					COSSTARTDATE, COSENDDATE, COSPRICE, COSPLACE,
+					COSSTATE, CODEID, CODENAME, 
+					REGID, REGDATE, MODIFYID, MODIFYDATE,
+					ECOSID, MEMCNT,	
+					ROWNUM rnum
+				FROM
+                        (SELECT 
+                       		COSID, SUBJECTID, COSNAME, ENROLLSTARTDATE, ENROLLSTARTHOUR, ENROLLENDDATE, ENROLLENDHOUR,
+							COSSTARTDATE, COSENDDATE, COSPRICE, COSPLACE, 
+							COSSTATE, CODEID, CODENAME,
+							REGID, REGDATE, MODIFYID, MODIFYDATE,
+							ECOSID,MEMCNT
+                        FROM 
+							(SELECT 
+                                COSID, SUBJECTID, COSNAME, ENROLLSTARTDATE, ENROLLSTARTHOUR, ENROLLENDDATE, ENROLLENDHOUR,
+                                COSSTARTDATE, COSENDDATE, COSPRICE, COSPLACE,
+                                COSSTATE, COURSESTATEID CODEID, COURSESTATENAME CODENAME, 
+                                REGID, REGDATE, MODIFYID, MODIFYDATE   
+                             FROM TND_COURSE A, TCD_COURSE_STATE B
+                             WHERE A.COSSTATE = B.COURSESTATEID(+)) course,
+							 (SELECT 
+							 	COSID ecosid,
+							 	COUNT(*) memCnt 
+      						 FROM TND_ENROLL GROUP BY COSID) enroll
+						 WHERE course.COSID = enroll.ecosid(+)
+        ]]>
+		<isNotNull property="searchType">
+			<isEqual property="searchType" compareValue="s">
+				AND CODENAME LIKE
+				'%' || #keyword# || '%'
+			</isEqual>
+			<isEqual property="searchType" compareValue="n">
+				AND COSNAME LIKE
+				'%' || #keyword# || '%'
+			</isEqual>
+		</isNotNull>    	
+    	<![CDATA[	
+						 ORDER BY course.COSID DESC
+                        ) t_o
+                    ) t_or
+			WHERE t_or.rnum > #first# AND t_or.rnum <= #end#
+        ]]>
+	</select>
+
+
+	<!-- 교육훈련 카운트 -->
+	<select id="courseListDAO.selectCourseTotCnt" parameterClass="tems.com.common.Criteria"	resultClass="java.lang.Integer">
+	    <![CDATA[
+			SELECT COUNT(*) 
+			FROM TND_COURSE A, TCD_COURSE_STATE B 
+			WHERE COSID > 0
+			AND A.COSSTATE = B.COURSESTATEID(+)
+		]]>
+		<isNotNull property="searchType">
+			<isEqual property="searchType" compareValue="s">
+				AND COURSESTATEID LIKE
+				'%' || #keyword# || '%'
+			</isEqual>
+			<isEqual property="searchType" compareValue="n">
+				AND COSNAME LIKE
+				'%' || #keyword# || '%'
+			</isEqual>
+		</isNotNull>
+	</select>
+
+
+	<!-- 교육훈련 삭제 -->
+	<delete id="courseListDAO.deleteCourse" parameterClass="java.lang.String">
+		<![CDATA[
+			DELETE FROM TND_COURSE
+			WHERE cosID = #cosID#
+		]]>
+	</delete>			
+	
+	
+	<!-- 교육훈련 상태 일괄변경 -->
+	<update id="courseListDAO.updateCourseStateAll" parameterClass="tems.com.edu.common.model.AllChangeCodeVO">
+		<![CDATA[
+			UPDATE TND_COURSE
+       		SET
+       			COSSTATE = #codeID#,
+       			MODIFYID = #adminID#,
+       			MODIFYDATE = sysdate
+    	]]>
+		<iterate prepend="WHERE COSID IN" property="chkedList" open="(" close=")" conjunction=",">
+			#chkedList[]#
+		</iterate>
+	</update>
+	
+	
+	
+	
+	<!-- 교육훈련 수정 -->
+	<update id="courseListDAO.updateCourse" parameterClass="tems.com.edu.course.model.CourseVO">
+    	<![CDATA[
+        	UPDATE TND_COURSE
+       		SET
+       			COSNAME = #cosName#,
+       			ENROLLSTARTDATE = #enrollStartDate#,
+       			ENROLLSTARTHOUR = #enrollStartHour#,
+       			ENROLLENDDATE = #enrollEndDate#,
+       			ENROLLENDHOUR = #enrollEndHour#,
+       			COSSTARTDATE = #cosStartDate#,
+       			COSENDDATE = #cosEndDate#,
+       			COSPRICE = #cosPrice#,
+       			COSPLACE = #cosPlace#,
+       			COSSTATE = #cosState#,
+       			MODIFYID = #modifyID#,
+       			MODIFYDATE = SYSDATE	
+       		WHERE	
+       			COSID = #cosID#
+        ]]>
+	</update>
+	
+
+
+	<!-- 교육훈련 상세(읽기) -->
+	<select id="courseListDAO.selectCourse" parameterClass="java.lang.String" resultClass="tems.com.edu.course.model.CourseVO">
+    	<![CDATA[
+        	SELECT
+        		COSID,
+			   	SUBJECTID,
+			   	COSNAME,
+			   	to_char(ENROLLSTARTDATE,'yyyy.mm.dd') ENROLLSTARTDATE,
+			   	ENROLLSTARTHOUR,
+			   	to_char(ENROLLENDDATE,'yyyy.mm.dd') ENROLLENDDATE,
+			   	ENROLLENDHOUR,
+			   	to_char(COSSTARTDATE,'yyyy.mm.dd') COSSTARTDATE,
+			   	to_char(COSENDDATE,'yyyy.mm.dd') COSENDDATE,
+			   	COSPRICE,
+			   	COSPLACE,
+			   	COSSTATE,
+			   	REGID,
+			   	to_char(REGDATE,'yyyy.mm.dd') REGDATE
+        	FROM TND_COURSE
+        	WHERE COSID = #cosID#
+        ]]>
+	</select>
+
+
+
+<!--****************************************************************************** 
+	*** 접수자별 세부관리	
+	******************************************************************************-->
+
+	<!-- 접수자별 접수정보 -->
+	<select id="courseListDAO.selectCourseEnroll" parameterClass="java.lang.String"	resultClass="tems.com.edu.course.model.CourseEnrollVO">
+		<![CDATA[
+			SELECT 
+                c.COSID COSID,
+                c.SUBJECTID,
+                c.COSNAME,
+                to_char(c.ENROLLSTARTDATE,'yyyy.mm.dd') ENROLLSTARTDATE,
+                c.ENROLLSTARTHOUR,
+                to_char(c.ENROLLENDDATE,'yyyy.mm.dd') ENROLLENDDATE,
+                c.ENROLLENDHOUR,
+                to_char(c.COSSTARTDATE,'yyyy.mm.dd') COSSTARTDATE,
+                to_char(c.COSENDDATE,'yyyy.mm.dd') COSENDDATE,
+                c.COSPRICE,
+                c.COSPLACE,
+                c.COSSTATE,
+                
+                e.ENROLLID,
+                e.COSID ECOSID,
+                e.MEMID,
+                e.MEMNAME,
+                e.HP,
+                e.EMAIL,
+                e.COMNAME,
+                e.COMCEO,
+                
+                e.ENROLLSTATE,
+                e.MAILESTIMATE,
+                e.SMSESTIMATE
+                
+            FROM TND_COURSE c, TND_ENROLL e
+            WHERE c.COSID = e.COSID
+			AND e.ENROLLID = #enrollID#    
+		]]>
+	</select>
+
+
+
+	<!-- 접수상태관리 -->
+	<update id="courseListDAO.updateEnrollState" parameterClass="tems.com.edu.course.model.EnrollStateVO">
+		<![CDATA[
+			UPDATE TND_ENROLL
+        		SET
+    				ENROLLSTATE = #enrollState#,
+					MAILESTIMATE = #mailEstimate#,
+					SMSESTIMATE = #smsEstimate#
+        		WHERE
+        			ENROLLID = #enrollID#
+		]]>
+	</update>
+	
+	
+	<!-- 결제상태관리 -->
+	<update id="courseListDAO.updatePayState" parameterClass="tems.com.edu.pay.model.PayVO">
+		<![CDATA[
+			UPDATE TND_PAY
+        		SET
+    				PAYSTATE = #payState#,
+					MAILPAYED = #mailPayed#,
+					SMSPAYED = #smsPayed#
+        		WHERE
+        			ENROLLID = #enrollID#
+        		AND
+        		    PAYID = #payID#
+		]]>
+	</update>
+	
+
+	<!-- **************************************************************************************************************  -->
+	
+	<!-- 평가 등록 -->
+	<insert id="courseListDAO.insertGrade" parameterClass="tems.com.edu.course.model.GradeVO">
+		<![CDATA[
+			INSERT INTO TND_GRADE
+			(   gradeID,	
+				enrollID,	
+				pass,
+				score,
+				regDate,
+				regID
+			)
+			VALUES
+			(  SEQ_TND_GRADE.NEXTVAL,
+			   #enrollID#,
+			   #pass#,
+			   #score#,
+			   sysdate,
+			   #adminID#
+			)
+		 ]]>
+	</insert>
+	
+	<!-- 평가 수정 -->
+	<update id="courseListDAO.updateGrade" parameterClass="tems.com.edu.course.model.GradeVO">
+		<![CDATA[
+			UPDATE TND_GRADE
+       		SET
+   				PASS = #pass#,
+				SCORE = #score#,
+				modifyDate = sysdate,
+				modifyID = #adminID#
+       		WHERE ENROLLID = #enrollID#
+       		AND GRADEID = #gradeID#
+		]]>
+	</update>
+	
+	
+	<!-- 평가상세 보기-->
+	<select id="courseListDAO.selectGrade" parameterClass="java.lang.String" resultClass="tems.com.edu.course.model.GradeVO">
+		<![CDATA[
+			SELECT
+				GRADEID,
+  				ENROLLID,
+  				PASS,
+  				SCORE,
+  				to_char(REGDATE,'yyyy.mm.dd') REGDATE,
+  				REGID,
+  				to_char(MODIFYDATE,'yyyy.mm.dd') MODIFYDATE,
+  				MODIFYID
+			FROM TND_GRADE
+			WHERE ENROLLID = #enrollID#
+		]]>
+	</select>
+	
+	
+<!--****************************************************************************** 
+	*** 접수증 관련	
+	******************************************************************************-->
+
+	<!-- 접수증발급 -->
+	<insert id="courseListDAO.insertReceipt" parameterClass="tems.com.edu.course.model.ReceiptVO">
+		<![CDATA[
+			INSERT INTO 
+            TND_RECEIPT(receiptID, enrollID, issueDate, issueID, receiptNO)
+            VALUES(
+                SEQ_TND_RECEIPT.nextval,
+                #rEnrollID#, 
+                sysdate, 
+                #issueID#,
+                (select 'KPETRO-T-'||to_char(sysdate,'yyyy')||trim(to_char(nvl(max(substr(receiptNO,14,3))+1,'1'),'000')) dd
+                from TND_RECEIPT
+                where substr(receiptNO,0,13) = 'KPETRO-T-'||to_char(sysdate,'yyyy'))
+            )  
+		]]>	
+	</insert>
+
+
+	<!-- 접수증보기  -->
+	<select id="courseListDAO.selectReceipt" parameterClass="java.lang.String" resultClass="tems.com.edu.course.model.ReceiptVO">
+		<![CDATA[
+			SELECT 
+				RECEIPTID,
+  				r.ENROLLID rENROLLID,
+  				to_char(ISSUEDATE,'yyyy.mm.dd') ISSUEDATE,   
+  				ISSUEID,
+  				RECEIPTNO,
+  				
+  				r.ENROLLID rENROLLID,
+  				MAILRECEIPT,
+  			    SMSRECEIPT  	
+			FROM TND_RECEIPT r, TND_ENROLL e
+			WHERE r.ENROLLID(+) = e.ENROLLID
+			AND e.ENROLLID = #enrollID#
+		]]>
+	</select>
+
+
+	<!-- 접수증발급여부  -->
+	<select id="courseListDAO.selectReceiptCntByID" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		<![CDATA[
+			SELECT 
+				COUNT(*)  	
+			FROM TND_RECEIPT
+			WHERE ENROLLID(+) = #enrollID#
+		]]>
+	</select>
+
+
+
+<!--****************************************************************************** 
+	*** 수료증 관련	
+	******************************************************************************-->
+
+	<!-- 수료증발급 -->
+	<insert id="courseListDAO.insertCertificate" parameterClass="tems.com.edu.course.model.CertificateVO">
+		<![CDATA[
+			insert into 
+			TND_CERTIFICATE ( certificateID, enrollID, issueDate, issueID, certificateNO)
+			values (
+   				SEQ_TND_CERTIFICATE.nextval,
+   				#cEnrollID#,
+   				sysdate,
+   				#issueID#,
+   				(select receiptNo from tnd_receipt where enrollid = #cEnrollID#)
+			)    
+		]]>	
+	</insert>
+
+
+
+
+	<!-- 수료증 보기 -->
+	<select id="courseListDAO.selectCertificate" parameterClass="java.lang.String" resultClass="tems.com.edu.course.model.CertificateVO">
+		<![CDATA[
+			SELECT
+                CERTIFICATEID,
+                c.ENROLLID cENROLLID,
+                CERTIFICATENO,
+                to_char(ISSUEDATE,'yyyy.mm.dd') ISSUEDATE,
+                ISSUEID,
+          
+                e.ENROLLID eENROLLID,
+                MAILCERTIFICATE,
+                SMSCERTIFICATE,
+                CERTIFICATEISSUE
+            FROM TND_CERTIFICATE c, TND_ENROLL e 
+            WHERE c.ENROLLID(+) = e.ENROLLID 
+            AND e.ENROLLID = #enrollID#
+		]]>
+	</select>
+
+	
+	<!-- 수료증발급여부  -->
+	<select id="courseListDAO.selectCertificateCntByID" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+		<![CDATA[
+			SELECT 
+				COUNT(*)  	
+			FROM TND_CERTIFICATE
+			WHERE ENROLLID(+) = #enrollID#
+		]]>
+	</select>
+	
+
+
+
+
+
+
+<!--****************************************************************************** 
+	*** 교육훈련 관련	
+	******************************************************************************-->
+
+
+
+
+	<!-- 훈련생별 접수정보 삭제예정 -->
+	<select id="courseListDAO.selectEnrollInfo" parameterClass="java.lang.String" resultClass="tems.com.edu.course.model.EnrollInfoVO">
+		<![CDATA[
+			SELECT 
+				course.COSID CCOSID,
+				course.SUBJECTID,
+			    course.COSNAME,
+			    to_char(course.ENROLLSTARTDATE,'yyyy.mm.dd') ENROLLSTARTDATE,
+			    course.ENROLLSTARTHOUR,
+			    to_char(course.ENROLLENDDATE,'yyyy.mm.dd') ENROLLENDDATE,
+			    course.ENROLLENDHOUR,
+			    to_char(course.COSSTARTDATE,'yyyy.mm.dd') COSSTARTDATE,
+			    to_char(course.COSENDDATE,'yyyy.mm.dd') COSENDDATE,
+			    course.COSPRICE,
+			    course.COSPLACE,
+			    course.COSSTATE,
+			    
+			    enroll.ENROLLID,
+			    enroll.COSID ECOSID,
+			    enroll.MEMID,
+			    enroll.MEMNAME,
+			    enroll.HP,
+			    enroll.EMAIL,
+			    enroll.COMNAME,
+			    enroll.COMCEO,
+			    enroll.INFOAGREE,
+			    enroll.MEMO,
+			    enroll.ENROLLSTATE,
+			    enroll.REGID ENROLLREGID,
+			    to_char(enroll.REGDATE,'yyyy.mm.dd') ENROLLREGDATE,
+			    enroll.MODIFYID ENROLLMODIFYID,
+			    to_char(enroll.MODIFYDATE,'yyyy.mm.dd') ENROLLMODIFYDATE,
+			    enroll.MAILESTIMATE,
+			    enroll.SMSESTIMATE,
+			    enroll.MAILRECEIPT,
+			    enroll.SMSRECEIPT,
+			    enroll.MAILCERTIFICATE,
+			    enroll.SMSCERTIFICATE,
+			    enroll.CERTIFICATEISSUE,
+			    
+			    pay.PAYID,
+				pay.ENROLLID PENROLLID,
+				pay.PAYSTATE,
+				pay.PAYTYPE,
+				pay.PAYTIME,
+				pay.TAXTYPE,
+				pay.TAXEMAIL,
+				pay.MAILPAYED,
+				pay.SMSPAYED
+				
+			FROM TND_COURSE course, TND_ENROLL enroll, TND_PAY pay
+			WHERE course.COSID = enroll.COSID
+			AND enroll.ENROLLID = pay.ENROLLID
+			AND enroll.ENROLLID = #enrollID#    
+		]]>
+	</select>
+
+
+<!--****************************************************************************** 
+	*** 교육훈련생 관련	
+	******************************************************************************-->
+	<!-- 접수한 훈련생 리스트 -->
+	<select id="courseListDAO.listEnrollMember" parameterClass="java.util.HashMap" resultClass="tems.com.edu.course.model.EnrollMemberVO">
+		<![CDATA[
+            SELECT 
+                en.ENROLLID ENROLLID,
+                COSID,
+                MEMID,
+                MEMNAME,
+                HP,
+                EMAIL, 
+                ENROLLSTATEID,
+                ENROLLSTATENAME,
+                CERTIFICATEISSUE,
+               
+                PAYID,
+                pa.ENROLLID paENROLLID,
+                PAYTYPE,
+                PAYTIME,
+                
+                PAYSTATEID,
+                PAYSTATENAME,
+                
+                PAYTYPEID,
+                PAYTYPENAME,
+                
+                PAYTIMEID,
+                PAYTIMENAME,
+                
+                TAXTYPEID,
+                TAXTYPENAME,
+                
+                es.ENROLLID esENROLLID,
+                ESTIMATECNT,
+                 
+                ta.ENROLLID taENROLLID,         
+                TAXBILLCNT,
+                
+                re.ENROLLID reENROLLID,         
+                RECEIPTCNT,
+                
+                GRADEID,
+                gr.ENROLLID grENROLLID,
+                
+                PASSID,
+                PASSNAME,
+                
+                SCORE,
+                
+                ce.ENROLLID ceENROLLID,
+                CERTIFICATECNT
+                
+                
+            FROM  
+                TND_ENROLL en,
+                TCD_ENROLL_STATE,     
+                TND_PAY pa,
+                TCD_PAY_STATE,
+                TCD_PAY_TYPE,
+                TCD_PAY_TIME,
+                TCD_TAX_TYPE,
+                TCD_PASS,
+                (SELECT ENROLLID , COUNT(*) ESTIMATECNT FROM TND_ESTIMATE GROUP BY ENROLLID) es,
+                (SELECT ENROLLID , COUNT(*) TAXBILLCNT FROM TND_TAXBILL GROUP BY ENROLLID) ta,
+                (SELECT ENROLLID , COUNT(*) RECEIPTCNT FROM TND_RECEIPT GROUP BY ENROLLID) re,    
+                TND_GRADE gr,
+                (SELECT ENROLLID , COUNT(*) CERTIFICATECNT FROM TND_CERTIFICATE GROUP BY ENROLLID) ce  
+            WHERE 1=1
+            AND en.ENROLLSTATE = ENROLLSTATEID(+)
+            AND en.ENROLLID = pa.ENROLLID(+)
+            AND pa.PAYSTATE = PAYSTATEID(+)
+            AND pa.PAYTYPE = PAYTYPEID(+)
+            AND pa.PAYTIME = PAYTIMEID(+)
+            AND pa.TAXTYPE = TAXTYPEID(+)
+            AND gr.PASS = PASSID(+)
+            AND en.ENROLLID = es.ENROLLID(+)
+            AND en.ENROLLID = ta.ENROLLID(+)
+            AND en.ENROLLID = re.ENROLLID(+)
+            AND en.ENROLLID = gr.ENROLLID(+)
+            AND en.ENROLLID = ce.ENROLLID(+)
+			AND EN.COSID= #cosID#
+		
+		]]>	
+		
+			<isNotNull property="cri.searchType">
+				<isEqual property="cri.searchType" compareValue="ens">
+					AND ENROLLSTATENAME LIKE
+					'%' || #cri.keyword# || '%'
+				</isEqual>
+				<isEqual property="cri.searchType" compareValue="pas">
+					AND PAYSTATENAME LIKE
+					'%' || #cri.keyword# || '%'
+				</isEqual>
+			</isNotNull>
+			
+		<![CDATA[		
+			ORDER BY en.ENROLLID DESC
+  		]]>
+	</select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<!-- 교육훈련 접수 상태 일괄변경 -->
+	<update id="courseListDAO.updateEnrollStateAll" parameterClass="tems.com.edu.common.model.AllChangeCodeVO">
+	<![CDATA[
+			UPDATE TND_ENROLL
+	       		SET
+	       			ENROLLSTATE = #codeID#
+	    ]]>
+			<iterate prepend="WHERE ENROLLID IN" property="chkedList" open="(" close=")" conjunction=",">
+				#chkedList[]#
+			</iterate>
+	</update>
+
+
+
+	<!-- 견적서 발급되었는지 조회 -->
+	<select id="courseListDAO.listEstimate" resultClass="java.lang.String">
+		<![CDATA[
+			SELECT 
+     			ESTIMATEID,
+			   	ENROLLID,
+			   	ISSUEDATE,
+			   	ISSUEID
+			FROM TND_ESTIMATE
+			WHERE ENROLLID = #enrollID#
+		]]>
+	</select>
+	
+
+
+	<!-- 견적서 발급(저장) -->
+	<insert id="courseListDAO.insertEstimate" parameterClass="tems.com.edu.course.model.EstimateVO">
+		<![CDATA[
+			INSERT INTO TND_ESTIMATE
+			(  ESTIMATEID,
+			   ENROLLID,
+			   ISSUEDATE,
+			   ISSUEID
+			)
+			VALUES
+			(  SEQ_TND_ESTIMATE.NEXTVAL,
+			   #enrollID#,
+			   SYSDATE,
+			   #issueID#
+			)
+		 ]]>
+	</insert>
+
+
+
+
+
+	
+
+</sqlMap>

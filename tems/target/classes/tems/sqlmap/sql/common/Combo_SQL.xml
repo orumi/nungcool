@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ComboDAO">
+	
+    <select id="ComboDAO.getCodeDetailList" resultClass="tems.com.common.model.ComboVO">
+        select codegroupid
+        	  ,codeid
+		      ,codename 
+		from tct_code_detail
+		where codegroupid = #codegroupid#
+    </select>
+    
+    <select id="ComboDAO.getApprStateCodeList" resultClass="tems.com.common.model.ComboVO">
+        select statecd codeid
+		      ,statenm codename 
+		from TCT_APPR_STATE
+		where statecd in ($statecd$)
+		order by statecd
+    </select>
+    
+    <select id="ComboDAO.getStateCodeList" resultClass="tems.com.common.model.ComboVO">
+        select statecd codeid
+		      ,statenm codename 
+		from TCT_STATE
+		where statecd in ($statecd$)
+    </select>
+    
+    <select id="ComboDAO.getMethodComboList" resultClass="tems.com.common.model.MethodComboVO">
+		select
+		    a.itemid,
+		    a.itempid,
+		    c.methodid,
+		    c.name
+		from tne_result a, tne_item_detail b, tce_method c
+		where a.itemid = b.itemid
+		  and b.methodid = c.methodid          
+		  and a.reqid = #reqid#
+		  and a.smpid = #smpid#
+		union all    
+    	select
+            a.itemid,
+            a.itempid,
+            -1 methodid,
+            '의뢰자요구' name
+        from tne_result a, tne_item_detail b, tce_method c
+        where a.itemid = b.itemid
+          and b.methodid = c.methodid          
+		  and a.reqid = #reqid#
+		  and a.smpid = #smpid#    
+     group by a.itemid, a.itempid      		  
+    </select>
+    
+    <select id="ComboDAO.getCondComboList" resultClass="tems.com.common.model.CondComboVO">
+		select
+		    a.itemid,
+		    a.condid,
+		    a.tempercond || b.codename || '/' || a.timecond || c.codename || '/' || a.etc || d.codename testcond
+		from tne_condition a, tct_code_detail b, tct_code_detail c, tct_code_detail d, tne_result e 
+		        ,(select resultid 
+		            from TNE_ADMIN_ASSIGN 
+		            where adminid = #adminid#
+		        ) f
+		where a.tempunit = b.codeid (+)
+		  and a.timecondunit = c.codeid (+)
+		  and a.etcunit = d.codeid (+)
+		  and e.itemid = a.itemid
+		  and f.resultid = e.resultid
+    </select>
+    
+    <select id="ComboDAO.getUnitComboList" resultClass="tems.com.common.model.UnitComboVO">
+    	select  
+		        a.itemid
+		       ,b.unitid             
+		from tne_result a, TNE_ITEM_DETAIL b         
+		where a.itemid = b.itemid
+		  and a.reqid = #reqid#
+		  and a.smpid = #smpid#
+		order by a.itemid, b.unitid
+    </select>
+    
+    <select id="ComboDAO.getSmpCondComboList" resultClass="tems.com.common.model.CondComboVO">
+    	select
+		    a.itemid,
+		    a.condid,
+		    a.tempercond || b.codename || '/' || a.timecond || c.codename || '/' || a.etc || d.codename testcond
+		from tne_condition a, tct_code_detail b, tct_code_detail c, tct_code_detail d, tne_result e
+		where a.tempunit = b.codeid (+)
+		  and a.timecondunit = c.codeid (+)
+		  and a.etcunit = d.codeid (+)
+		  and e.itemid = a.itemid
+		  and e.reqid = #reqid#
+		  and e.smpid = #smpid#
+    </select>
+    
+    <select id="ComboDAO.getDeptComboList" resultClass="tems.com.common.model.DeptListVO">
+    	select 
+		     officeid 
+		    ,deptnm        
+		from VCT_DEPT 
+		order by deptnm
+    </select>
+
+</sqlMap>
