@@ -55,7 +55,7 @@
 						<ul id="sparks" class="">
 							<li class="sparks-info">
 								<h5 style="font-size:14px;margin:0px;text-align:right;width:100%;padding-right: 6px;"> 체계 버전 
-								<span class="txt-color-blue" style="font-size:17px;"><i class="fa fa-check-circle-o"></i> 2</span></h5>
+								<span class="txt-color-blue" style="font-size:17px;"><i class="fa fa-check-circle-o"></i> 12</span></h5>
 							</li>
 							<li class="sparks-info">
 								<h5 style="font-size:14px;margin:0px;text-align:right;width:100%;padding-right: 6px;"> 점검 분야 
