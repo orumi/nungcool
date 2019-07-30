@@ -1,19 +1,19 @@
 	/* Angular app */
 	var regulationTstApp = angular.module("regulationTstApp", []);
-	
+
 	regulationTstApp.controller("regulationTstController", function($scope, $http, $q, httpService){
-		
+
 		$scope.entity = {
 				 selVers     : []
 				,selVerId    : null
 				,selFields   : []
 				,selFieldId  : null
-				
+
 				,regulationTsts : []
 		}
-		
-		
-		
+
+
+
 		$(function(){
 			/*init select infor */
 			console.log("regulationTstController Init Starting ... ");
@@ -23,25 +23,25 @@
 							reloadGrid();
 						},1000);
 					},function(error){});
-			
-			
+
+
 		});
-		
-		
+
+
 		$scope.selectInitInfo = function(){
 			var deferred = $q.defer();
 			httpService._httpPost(regulationTstInitURL, null, null).then(
 					function(data){
 						$scope.entity.selVers = data.listVersion;
 						$scope.entity.selFields = data.listField;
-						
+
 						if($scope.entity.selVers[0]) {
 							$scope.entity.selVerId = $scope.entity.selVers[0].verid;
 						}
 						if($scope.entity.selFields[0]) {
 							$scope.entity.selFieldId = $scope.entity.selFields[0].fldid;
 						}
-						
+
 						deferred.resolve(true);
 					},
 					function(error){
@@ -49,14 +49,14 @@
 						deferred.reject("failed to selectInitInfo");
 					}
 				);
-			
+
 			return deferred.promise ;
 		}
-		
+
 		/* action performed */
-		
+
 		$scope.actionPerformed = function(pm){
-				
+
 			httpService._httpPost(regulationTstDetailURL, pm, $scope.entity.regulationTsts).then(
 				function(data){
 					if(data.reVal == "ok_resend"){
@@ -66,14 +66,14 @@
 					} else if(data.reVal == "failure_resend") {
 						alert("저장하는데 오류가 발생되었습니다. 관리자에게 문의바랍니다.")
 					}
-					
+
 				},
 				function(error){
 					console.log("actionPerformed error: "+error);
 				}
 			);
 1		}
-		
+
 		$scope.actionSelectDetail = function(tstDtlcd){
 			$scope.entity.wkTstDtl.astgrpid = $scope.entity.selAstGroupId;
 			$scope.entity.wkTstDtl.tstDtlcd = tstDtlcd;
@@ -83,11 +83,11 @@
 					//$scope.entity.wkTstDtl.astgrpid = data.reDetail.astgrpid;
 					/* set field */
 					$scope.entity.wkTstDtl = data.reDetail;
-					
+
 					/* update delete key */
 					$scope.entity.wkTstDtl.oldAstgrpid = $scope.entity.wkTstDtl.astgrpid;
 					$scope.entity.wkTstDtl.oldTstDtlcd = $scope.entity.wkTstDtl.tstDtlcd;
-					
+
 					/*$scope.$apply();*/
 					console.log("$scope.regulationTst tstDtlcd:"+$scope.entity.wkTstDtl.tstDtlcd);
 				},
@@ -96,12 +96,12 @@
 				}
 			);
 		}
-		
-		
-		
-		
-	});	
-	
+
+
+
+
+	});
+
 	regulationTstApp.factory("httpService", function($http, $q){
 		var factory = {
 				_httpPost:function(url, params, data){
@@ -111,11 +111,11 @@
 						url:url,
 						data:data,
 						params:params,
-						headers: {'Content-Type': 'application/json'}
+						headers: {'Content-Type': 'application/json','X-CSRF-TOKEN': token}
 					}).then(
 						function successCallback(response) {
 							deferred.resolve(response.data);
-						}, 
+						},
 						function errorCallback(data) {
 							console.log("failed to httpPost  ");
 							deferred.reject("failed to select");
@@ -130,11 +130,11 @@
 						url:url,
 						data:data,
 						params:params,
-						headers: {'Content-Type': 'application/json'}
+						headers: {'Content-Type': 'application/json','X-CSRF-TOKEN': token}
 					}).then(
 						function successCallback(response) {
 							deferred.resolve(response.data);
-						}, 
+						},
 						function errorCallback(data) {
 							console.log("failed to httpGet ");
 							deferred.reject("failed to select");
@@ -143,10 +143,9 @@
 					return deferred.promise ;
 				}
 		}
-		
+
 		return factory;
 	})
-	
-	
-	
-	
+
+
+

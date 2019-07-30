@@ -1,36 +1,43 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<sec:csrfMetaTags />
+
 		<style>
-		
+
 			.ui-jqgrid .ui-jqgrid-htable th {
 			    background-color: #403f3d;
 			    color: #ddd;
 			    background-image: none !important;;
-			    
+
 			}
-			
-			.overlay {position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: 999; background: #eaeaea; opacity: 1.0; -ms- filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)"; } 
+
+			.overlay {position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: 999; background: #eaeaea; opacity: 1.0; -ms- filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)"; }
             .popup {position: absolute; top: 8px; left: 0%; z-index: 999999; width: 98%;}
-		
+
 		</style>
- 
+
 
 		<script src="<c:url value='/bootstrap/js/plugin/jqgrid/jquery.jqGrid.min.js'/>"></script>
 		<script src="<c:url value='/bootstrap/js/plugin/jqgrid/grid.locale-en.min.js'/>"></script>
-		
+
 		<script type="text/javascript">
 		var regulationDetialInfoURL = "<c:url value='/hierarchy/regulationDetialInfo.json'/>";
 		var inspectDetialURL = "<c:url value='/inspect/inspectDetial.json'/>";
 		var regulationFieldURL = "<c:url value='/hierarchy/regulationField.json'/>";
 		var regulationURL = "<c:url value='/hierarchy/regulation.json'/>";
 		var versionURL = "<c:url value='/hierarchy/version.json'/>";
+
+		var header = $("meta[name='_csrf_header']").attr("content");
+		var token = $("meta[name='_csrf']").attr("content");
+
 		</script>
 
 		<script src="<c:url value='/js/ajax/libs/angularjs/1.6.7/angular.min.js'/>"></script>
 		<script src="<c:url value='/js/ncsys/isms/hierarchy/inspectMngModule.js'/>"></script>
-	
-	
+
+
 <!-- MAIN CONTENT -->
 <div class="wrap" id="inspectMngApp" ng-app="inspectMngApp" ng-controller="inspectMngController">
 <div id="content" >
@@ -39,13 +46,13 @@
 				<!-- widget grid -->
 				<section id="widget-base" class="" >
 
-					<!-- row --> 
+					<!-- row -->
 					<div class="row">
 
 						<!-- NEW WIDGET START -->
 						<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
-							<div class="jarviswidget" id="wid-id-1" >								
+							<div class="jarviswidget" id="wid-id-1" >
 
 								<header>
 									<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
@@ -60,7 +67,7 @@
 									<!-- end widget edit box -->
 									<!-- widget content -->
 									<div class="widget-body">
-				
+
 											<fieldset>
 												<div class="form-group">
 													<label class="control-label col-md-1" for="prepend">체계버전</label>
@@ -70,7 +77,7 @@
 										                    	<option ng-repeat="option in version" value="{{option.verid}}">{{option.vernm}}</option>
 										                    </select>
 										                </div>
-										            </div>    
+										            </div>
 												</div>
 											</fieldset>
 											<fieldset>
@@ -83,31 +90,31 @@
 										                        <option  ng-repeat="option in field" value="{{option.fldid}}">{{option.fldnm}}</option>
 										                    </select>
 										                </div>
-										            </div>    
-										            <div class="col-md-1" style="padding-left:0px;">    
+										            </div>
+										            <div class="col-md-1" style="padding-left:0px;">
 										                <a type="submit" class="btn btn-primary" style="width:68px;" onclick="javascript:reloadGrid();">
 															조 회
 														</a>
 													</div>
 												</div>
 											</fieldset>
-											
+
 											<legend></legend>
-											
+
 											<div id="jqgridContent" style="" >
 											    <table id="jqgrid"><tr><td /></tr></table>
 											    <div id="pjqgrid"></div>
 											</div>
 
-											
-											
+
+
 									</div>
 									<!-- end widget content -->
-									
+
 								</div>
 								<!-- end widget div-->
-								
-												
+
+
 							</div>
 
 						</article>
@@ -117,8 +124,8 @@
 
 				</section>
 				<!-- end widget grid -->
-				
-				
+
+
 				</form>
 
 
@@ -126,7 +133,7 @@
 				<!-- DETAIL CONTENT -->
  					<popup-inspect-detail></popup-inspect-detail>
 			   	</div>
-			   	
+
 
 
 
@@ -148,7 +155,16 @@
                           }
                           return result;
             };
-        
+
+
+            /* csrf */
+            $.ajaxSetup({
+			    headers : {
+			    	'X-CSRF-TOKEN': token
+			    }
+			});
+
+
             $("#jqgrid").jqGrid({
                 url : 'inspectList.json',
             	datatype: 'local',
@@ -182,34 +198,34 @@
                 beforeSelectRow: function () {
                     return false;
                 },
-                jsonReader: {  
-	                root : 'inspectList',  
-	                id   : 'rgldtlid', 
+                jsonReader: {
+	                root : 'inspectList',
+	                id   : 'rgldtlid',
 /* 	                page : 'pageMaker.cri.crtPage',
 	                total: 'pageMaker.endPage',
 	                records: 'pageMaker.totCnt', */
-	                repeatitems: true  
+	                repeatitems: true
 	            },
 	            gridComplete : function() {
 	            	resizeGrid();
                 }
             });
-            
-            
+
+
             function btnFormatter(cellValue, options, rowObject){
             	var btn = "<div class='btn btn-xs btn-default' data-original-title='Edit Row' onclick=\"javascript:actionAddItem('" + cellValue + "');\"><i class='fa fa-pencil'></i> 항목추가</div>";
-            	
+
             	return btn;
             }
             function btnFormatterEdit(cellValue, options, rowObject){
-            	
+
             	var btn = "";
             	if(cellValue!=""){
             		btn = "<div class='btn btn-xs btn-default' data-original-title='Edit Row' onclick=\"javascript:actionEditItem('" + rowObject.rgldtlid + "','" + cellValue + "');\"><i class='fa fa-pencil'></i> 수정</div>";
             	}
             	return btn;
             }
-            
+
          // remove classes
 			$(".ui-jqgrid").removeClass("ui-widget ui-widget-content");
 			$(".ui-jqgrid-view").children().removeClass("ui-widget-header ui-state-default");
@@ -221,10 +237,10 @@
 			$(".ui-jqgrid-htable").addClass("table table-bordered table-hover");
 			$(".ui-jqgrid-btable").addClass("table table-bordered table-striped");
 
-			
+
 			$("#selVersion").change(function(){ reloadGrid(); });
 			$("#selField").change(function(){ reloadGrid(); });
-			
+
         });
 
 		$(window).on('resize.jqGrid', function() {
@@ -234,7 +250,7 @@
 		function resizeGrid(){
 			$("#jqgrid").jqGrid('setGridWidth', $("#jqgridContent").width());
 		}
-		
+
 		function reloadGrid(){
 			$("#jqgrid").jqGrid('setGridParam',{
 				datatype: 'json',
@@ -242,28 +258,28 @@
 			$("#jqgrid").trigger("reloadGrid");
 		}
 		function actionAddItem(rgldtlid){
-            
+
 			$("#form_list").hide();
 			$("#div_detail").show();
-  	   
+
 			$(".wrap").after("<div class='overlay'></div>");
-			
+
 			var scope = angular.element(document.getElementById("inspectMngApp")).scope();
-			
+
 			scope.actionSelectDetail(rgldtlid, 0);
 			$("#btn_insert").show();
 			$("#btn_update").hide();
 			$("#btn_delete").hide();
 
       	}
-		
+
 		function actionEditItem(rgldtlid, itemSeq){
-            
+
 			$("#form_list").hide();
 			$("#div_detail").show();
-  	   
+
 			$(".wrap").after("<div class='overlay'></div>");
-			
+
 			var scope = angular.element(document.getElementById("inspectMngApp")).scope();
 
 			scope.actionSelectDetail(rgldtlid, itemSeq);
@@ -271,18 +287,18 @@
 			$("#btn_update").show();
 			$("#btn_delete").show();
       	}
-		
+
 		function actionClose(){
     	   	$("#form_list").show();
 	    	$("#div_detail").hide();
-    	   
+
     	   	$(".overlay").remove();
-    	   	
+
     	   	resizeGrid();
 		}
-	       
 
-		
+
+
     </script>
 
 

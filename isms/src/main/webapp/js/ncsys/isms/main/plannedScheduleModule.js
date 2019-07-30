@@ -1,8 +1,8 @@
 	/* Angular app */
 	var plannedScheduleApp = angular.module("plannedScheduleApp", []);
-	
+
 	plannedScheduleApp.controller("plannedScheduleController", function($scope, $http, $q, httpService){
-		
+
 		$scope.entity = {
 				plannedSchedule : {
 					"planid":"",
@@ -16,26 +16,26 @@
 					"actionmode":""
 				}
 		};
-		
-		
-		
+
+
+
 		$(function(){
 			/*init select infor */
 			console.log("plannedScheduleController Init Starting ... ");
 			reloadGrid();
-			
+
 		});
-		
-		
+
+
 		$scope.selectInitInfo = function(){
 			var deferred = $q.defer();
-			
+
 			return deferred.promise ;
 		}
-		
-		
-		
-		
+
+
+
+
 		//plannedScheduleDetailURL
 		$scope.actionSelectDetail = function(detailId){
 			$scope.entity.plannedSchedule.planid = detailId;
@@ -49,11 +49,11 @@
 				}
 			);
 		}
-		
-		
-		
+
+
+
 		/* action performed */
-		
+
 		/* action performed */
 		$scope.actionPerformed = function(tag){
 			if(tag == "insertDetail"){
@@ -108,13 +108,13 @@
 				}
 			}
 		}
-		
-		
+
+
 		$scope.setClearDetail = function(){
-			
+
 			$scope.entity.plannedSchedule.planid="";
 			$scope.entity.plannedSchedule.plandt="";
-			
+
 			$scope.entity.plannedSchedule.remain="";
 			$scope.entity.plannedSchedule.remaintype="";
 			$scope.entity.plannedSchedule.plantitle="";
@@ -122,13 +122,13 @@
 			$scope.entity.plannedSchedule.period="";
 			$scope.entity.plannedSchedule.completeyn="";
 			$scope.entity.plannedSchedule.actionmode="";
-			
+
 			$scope.$apply();
 		};
-		
-		
-	});	
-	
+
+
+	});
+
 	plannedScheduleApp.factory("httpService", function($http, $q){
 		var factory = {
 				_httpPost:function(url, params, data){
@@ -138,11 +138,11 @@
 						url:url,
 						data:data,
 						params:params,
-						headers: {'Content-Type': 'application/json'}
+						headers: {'Content-Type': 'application/json','X-CSRF-TOKEN': token}
 					}).then(
 						function successCallback(response) {
 							deferred.resolve(response.data);
-						}, 
+						},
 						function errorCallback(data) {
 							console.log("failed to httpPost  ");
 							deferred.reject("failed to select");
@@ -157,11 +157,11 @@
 						url:url,
 						data:data,
 						params:params,
-						headers: {'Content-Type': 'application/json'}
+						headers: {'Content-Type': 'application/json','X-CSRF-TOKEN': token}
 					}).then(
 						function successCallback(response) {
 							deferred.resolve(response.data);
-						}, 
+						},
 						function errorCallback(data) {
 							console.log("failed to httpGet ");
 							deferred.reject("failed to select");
@@ -170,19 +170,19 @@
 					return deferred.promise ;
 				}
 		}
-		
+
 		return factory;
 	})
-	
-	
+
+
 		/* angular directive */
 	plannedScheduleApp.directive("popupPlannedscheduleDetail", function(){
 		return {
 			templateUrl : "plannedScheduleDetail.do"
 	    };
 	});
-	
-	
+
+
 	plannedScheduleApp.directive("datepicker", ['$parse', function($parse) {
 		  return {
 		    restrict: "A",
@@ -195,8 +195,8 @@
 					,showOtherMonths: true   //빈 공간에 현재월의 앞뒤월의 날짜를 표시
 	                ,showMonthAfterYear:true //년도 먼저 나오고, 뒤에 월 표시
 	                ,changeYear: true        //콤보박스에서 년 선택 가능
-	                ,changeMonth: true //콤보박스에서 월 선택 가능                
-	                ,buttonText: "선택" //버튼에 마우스 갖다 댔을 때 표시되는 텍스트                
+	                ,changeMonth: true //콤보박스에서 월 선택 가능
+	                ,buttonText: "선택" //버튼에 마우스 갖다 댔을 때 표시되는 텍스트
 	                ,yearSuffix: "년"  //달력의 년도 부분 뒤에 붙는 텍스트
 	                ,monthNamesShort: ['1','2','3','4','5','6','7','8','9','10','11','12'] //달력의 월 부분 텍스트
 	                ,monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'] //달력의 월 부분 Tooltip 텍스트
@@ -213,4 +213,3 @@
 		    }
 		  }
 	}]);
-	

@@ -1,8 +1,8 @@
 	/* Angular app */
 	var criteriaItemApp = angular.module("criteriaItemApp", []);
-	
+
 	criteriaItemApp.controller("criteriaItemController", function($scope, $http, $q, httpService){
-		
+
 		$scope.entity = {
 				 selCriteriaVers     : []
 				,selCriteriaVerId    : null
@@ -12,7 +12,7 @@
 					,sortby : null
 					,actionmode : null
 				}
-		
+
 				,criteriaItem :{
 					 ctrverid : null
 					,ctritemid : null
@@ -29,9 +29,9 @@
 					,actionmode : null
 				}
 		}
-		
-		
-		
+
+
+
 		$(function(){
 			/*init select infor */
 			console.log("criteriaItemController Init Starting ... ");
@@ -41,21 +41,21 @@
 							reloadGrid();
 						},1000);
 					},function(error){});
-			
-			
+
+
 		});
-		
-		
+
+
 		$scope.selectInitInfo = function(){
 			var deferred = $q.defer();
 			httpService._httpPost(criteriaItemInitURL, null, null).then(
 					function(data){
 						$scope.entity.selCriteriaVers = data.reCriteriaVersion;
-						
+
 						if($scope.entity.selCriteriaVers[0]) {
 							$scope.entity.selCriteriaVerId = $scope.entity.selCriteriaVers[0].ctrverid;
 						}
-						
+
 						deferred.resolve(true);
 					},
 					function(error){
@@ -63,12 +63,12 @@
 						deferred.reject("failed to selectInitInfo");
 					}
 				);
-			
+
 			return deferred.promise ;
 		}
-		
+
 		/* action performed */
-		
+
 		$scope.actionPerformed = function(tag){
 			if($scope.form_detail.$valid){
 				var pm = {mode:"modify"};
@@ -84,7 +84,7 @@
 						return;
 					}
 				}
-				
+
 				httpService._httpPost(criteriaItemDetailURL, pm, $scope.entity.criteriaItem).then(
 					function(data){
 						if(data.reVal == "ok_resend"){
@@ -95,7 +95,7 @@
 						} else if(data.reVal == "failure_resend") {
 							alert("저장하는데 오류가 발생되었습니다. 관리자에게 문의바랍니다.")
 						}
-						
+
 					},
 					function(error){
 						console.log("actionPerformed error: "+error);
@@ -103,11 +103,11 @@
 				);
 			} else {
 				alert("입력하지 않는 정보가 있습니다.");
-			}	
+			}
 1		}
-		
+
 		$scope.actionSelectDetail = function(ctritemid){
-			
+
 			$scope.entity.criteriaItem.ctritemid = ctritemid;
 			$scope.entity.criteriaItem.actionmode = "S";
 			httpService._httpPost(criteriaItemDetailURL, {"mode":"select"}, $scope.entity.criteriaItem).then(
@@ -121,9 +121,9 @@
 				}
 			);
 		}
-		
+
 		$scope.setClearDetail = function(){
-			
+
 			$scope.entity.criteriaItem.ctrverid = null;
 			$scope.entity.criteriaItem.ctritemid = null;
 			$scope.entity.criteriaItem.currentstate = null;
@@ -137,11 +137,11 @@
 			$scope.entity.criteriaItem.rmk = null;
 			$scope.entity.criteriaItem.sortby = null;
 			$scope.entity.criteriaItem.actionmode = null;
-			
+
 			$scope.$apply();
 		};
-		
-		
+
+
 		$scope.actionPerformedVersion = function(tag){
 			if($scope.form_version.$valid){
 				if(tag == "insertVersion"){
@@ -169,22 +169,22 @@
 				);
 			} else {
 				alert("입력하지 않는 정보가 있습니다.");
-			}	
+			}
 		}
-		
-		
+
+
 		$scope.actionShowVersion = function(ver){
 			$("#btn_insert_version").hide();
 			$("#btn_update_version").show();
 			$("#btn_delete_version").show();
 			$scope.entity.criteriaVer = ver;
 		}
-		
-		
-		
-		
-	});	
-	
+
+
+
+
+	});
+
 	criteriaItemApp.factory("httpService", function($http, $q){
 		var factory = {
 				_httpPost:function(url, params, data){
@@ -194,11 +194,11 @@
 						url:url,
 						data:data,
 						params:params,
-						headers: {'Content-Type': 'application/json'}
+						headers: {'Content-Type': 'application/json','X-CSRF-TOKEN': token}
 					}).then(
 						function successCallback(response) {
 							deferred.resolve(response.data);
-						}, 
+						},
 						function errorCallback(data) {
 							console.log("failed to httpPost  ");
 							deferred.reject("failed to select");
@@ -213,11 +213,11 @@
 						url:url,
 						data:data,
 						params:params,
-						headers: {'Content-Type': 'application/json'}
+						headers: {'Content-Type': 'application/json','X-CSRF-TOKEN': token}
 					}).then(
 						function successCallback(response) {
 							deferred.resolve(response.data);
-						}, 
+						},
 						function errorCallback(data) {
 							console.log("failed to httpGet ");
 							deferred.reject("failed to select");
@@ -226,21 +226,20 @@
 					return deferred.promise ;
 				}
 		}
-		
+
 		return factory;
 	})
-	
-	
+
+
 		/* angular directive */
 	criteriaItemApp.directive("popupCriteriaitemDetail", function(){
 		return {
 			templateUrl : "criteriaItemDetail.do"
 	    };
 	});
-	
+
 	criteriaItemApp.directive("popupCriteriaVersion", function(){
 		return {
 			templateUrl : "criteriaVersion.do"
 	    };
 	});
-	

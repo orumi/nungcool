@@ -1,37 +1,40 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<sec:csrfMetaTags />
 		<style>
-		
+
 			.ui-jqgrid .ui-jqgrid-htable th {
 			    background-color: #403f3d;
 			    color: #ddd;
 			    background-image: none !important;;
-			    
+
 			}
-			
-			.overlay {position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: 999; background: #eaeaea; opacity: 1.0; -ms- filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)"; } 
+
+			.overlay {position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: 999; background: #eaeaea; opacity: 1.0; -ms- filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)"; }
             .popup {position: absolute; top: 8px; left: 0%; z-index: 999999; width: 98%;}
-		
+
 		</style>
- 
- 
+
+
 		<script src="<c:url value='/bootstrap/js/plugin/jqgrid/jquery.jqGrid.min.js'/>"></script>
 		<script src="<c:url value='/bootstrap/js/plugin/jqgrid/grid.locale-en.min.js'/>"></script>
-		
+
 		<script type="text/javascript">
 		var regulationTstInitURL = "<c:url value='/concern/regulationTstInit.json'/>";
-		
-		
+
+
 		var regulationTstDetailURL = "<c:url value='/concern/regulationTstDetail.json'/>";
-		
-		
-		
+
+		var header = $("meta[name='_csrf_header']").attr("content");
+		var token = $("meta[name='_csrf']").attr("content");
+
 		</script>
 
 		<script src="<c:url value='/js/ajax/libs/angularjs/1.6.7/angular.min.js'/>"></script>
 		<script src="<c:url value='/js/ncsys/isms/concern/regulationTstModule.js'/>"></script>
-	
+
 <!-- MAIN CONTENT -->
 <div class="wrap" id="regulationTstApp" ng-app="regulationTstApp" ng-controller="regulationTstController">
 <div id="content" >
@@ -40,13 +43,13 @@
 				<!-- widget grid -->
 				<section id="widget-base" class="" >
 
-					<!-- row --> 
+					<!-- row -->
 					<div class="row">
 
 						<!-- NEW WIDGET START -->
 						<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
-							<div class="jarviswidget" id="wid-id-1" >								
+							<div class="jarviswidget" id="wid-id-1" >
 
 								<header>
 									<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
@@ -61,7 +64,7 @@
 									<!-- end widget edit box -->
 									<!-- widget content -->
 									<div class="widget-body">
-				
+
 											<fieldset>
 												<div class="form-group">
 													<label class="control-label col-md-1" for="prepend">체계버전</label>
@@ -71,7 +74,7 @@
 										                    	<option ng-repeat="option in entity.selVers" value="{{option.verid}}">{{option.vernm}}</option>
 										                    </select>
 										                </div>
-										            </div>    
+										            </div>
 												</div>
 											</fieldset>
 											<fieldset>
@@ -84,17 +87,17 @@
 										                        <option  ng-repeat="option in entity.selFields" value="{{option.fldid}}">{{option.fldnm}}</option>
 										                    </select>
 										                </div>
-										            </div>    
-										            <div class="col-md-1" style="padding-left:0px;">    
+										            </div>
+										            <div class="col-md-1" style="padding-left:0px;">
 										                <a type="submit" class="btn btn-primary" style="width:68px;" onclick="javascript:reloadGrid();">
 															조 회
 														</a>
 													</div>
 												</div>
 											</fieldset>
-											
+
 											<legend></legend>
-											
+
 											<div id="jqgridContent" style="" >
 											    <table id="jqgrid"><tr><td /></tr></table>
 											    <div id="pjqgrid"></div>
@@ -103,32 +106,32 @@
 											<div class="widget-body">
 											<fieldset>
 												<div class="form-group" style="float:right;padding-top: 12px;">
-													<div class="col-md-1" style="padding-left:0px;">    
+													<div class="col-md-1" style="padding-left:0px;">
 										                <a class="btn btn-primary" id="btnSubmit" style="width:88px;" >
 															등록
 														</a>
 													</div>
 												</div>
 											</fieldset>
-											
+
 											<legend></legend>
-											
+
 											<div id="jqgridContent" style="" >
 											    <table id="jqgrid"><tr><td /></tr></table>
 											    <div id="pjqgrid"></div>
 											</div>
 
-											
-											
+
+
 									</div>
-											
+
 									</div>
 									<!-- end widget content -->
-									
+
 								</div>
 								<!-- end widget div-->
-								
-												
+
+
 							</div>
 
 						</article>
@@ -138,8 +141,8 @@
 
 				</section>
 				<!-- end widget grid -->
-				
-				
+
+
 				</form>
 
 
@@ -154,16 +157,16 @@
        $(document).ready(function() {
 			'use strict';
 
-			
+
 			$(window).on("click", function(evt) {
  		    	if (!$(event.target).closest('#jqgrid').length) {
 		    		renderAfterEdit(lastsel)
 		    		lastsel = null;
-				} 
-		    	
+				}
+
 		    });
-			
-			
+
+
 			var arrtSetting = function (rowId, val, rawObject, cm) {
                           var attr = rawObject.attr[cm.name], result;
                           if (attr.rowspan) {
@@ -173,8 +176,16 @@
                           }
                           return result;
             };
-        
+
             var lastsel;
+
+            /* csrf */
+            $.ajaxSetup({
+			    headers : {
+			    	'X-CSRF-TOKEN': token
+			    }
+			});
+
             $("#jqgrid").jqGrid({
                 url : 'regulationTstList.json',
             	datatype: 'local',
@@ -208,7 +219,7 @@
                 caption : "통제목록 정보",
                 rowNum  : 10000,
                 beforeSelectRow: function () {
-                	return true;  // editable 
+                	return true;  // editable
                 },
                 onSelectRow: function(id){
                 	if(id && id!==lastsel){
@@ -219,24 +230,24 @@
             			lastsel = id;
             		}
             	},
-                jsonReader: {  
-	                root : 'reRegulationTstList',  
-	                id   : 'rgldtlid', 
-	                repeatitems: true  
+                jsonReader: {
+	                root : 'reRegulationTstList',
+	                id   : 'rgldtlid',
+	                repeatitems: true
 	            },
 	            gridComplete : function() {
 					$("#jqgrid").jqGrid('setGridWidth', $("#jqgridContent").width()-5);
                 }
             });
-            
-            
+
+
             function btnFormatter(cellValue, options, rowObject){
             	var btn = "<div class='btn btn-xs btn-default' data-original-title='Edit Row' onclick=\"javascript:actionEdit('" + cellValue + "');\"><i class='fa fa-pencil'></i> 수정</div>";
-            	
+
             	return btn;
             }
-            
-            
+
+
          // remove classes
 			$(".ui-jqgrid").removeClass("ui-widget ui-widget-content");
 			$(".ui-jqgrid-view").children().removeClass("ui-widget-header ui-state-default");
@@ -248,30 +259,30 @@
 			$(".ui-jqgrid-htable").addClass("table table-bordered table-hover");
 			$(".ui-jqgrid-btable").addClass("table table-bordered table-striped");
 
-			
+
 			$("#selVerId").change(function(){ reloadGrid(); });
 			$("#selFieldId").change(function(){ reloadGrid(); });
 			$("#btnSubmit").click(function(){ actionPerformed(); });
-			
+
 	        function renderAfterEdit(rowIdx){
 				if(rowIdx){
 					$('#jqgrid').jqGrid('saveRow',rowIdx);
-		    		
+
 					//var rowData = $('#jqgridDtl').jqGrid('getRowData',rowIdx);
 		    		//$("#jqgridDtl").jqGrid("setCell",lastsel,"tstresult", resultCalculator(rowData));
 	    		}
 			}
-	        
+
 	        function actionPerformed(){
 	        	renderAfterEdit(lastsel);
-	        	
+
 	        	var scope = angular.element(document.getElementById("regulationTstApp")).scope();
 	        	scope.entity.regulationTsts = $("#jqgrid").getRowData();
 	        	var pm = {"actionmode":"modify", "verid":scope.entity.selVerId , "fldid":scope.entity.selFieldId };
 	        	scope.actionPerformed(pm);
-	        	
+
 	        }
-			
+
         });
 
 		$(window).on('resize.jqGrid', function() {
@@ -284,11 +295,11 @@
 			 });
 			$("#jqgrid").trigger("reloadGrid");
 		}
-		
-		
 
-        
-		
+
+
+
+
     </script>
 
 

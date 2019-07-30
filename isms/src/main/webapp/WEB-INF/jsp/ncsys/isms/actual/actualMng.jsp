@@ -1,46 +1,53 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<sec:csrfMetaTags />
 		<style>
-		
+
 			.ui-jqgrid .ui-jqgrid-htable th {
 			    background-color: #403f3d;
 			    color: #ddd;
 			    background-image: none !important;;
-			    
+
 			}
-			
-			.overlay {position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: 999; background: #eaeaea; opacity: 1.0; -ms- filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)"; } 
+
+			.overlay {position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: 999; background: #eaeaea; opacity: 1.0; -ms- filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)"; }
             .popup {position: absolute; top: 8px; left: 0%; z-index: 999999; width: 98%;}
-		
+
 		</style>
 
 		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value='/bootstrap/css/your_style.css'/> ">
 		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value='/css/fileupload/jquery.fileupload.css'/> ">
 		<link rel="stylesheet" type="text/css" media="screen" href="<c:url value='/css/fileupload/jquery.fileupload-ui.css'/> ">
-		 
+
 		<script src="<c:url value='/bootstrap/js/plugin/jqgrid/jquery.jqGrid.min.js'/>"></script>
 		<script src="<c:url value='/bootstrap/js/plugin/jqgrid/grid.locale-en.min.js'/>"></script>
-		
+
 		<script type="text/javascript">
 			var regulationDetialInfoURL = "<c:url value='/hierarchy/regulationDetialInfo.json'/>";
 			var actualDetailURL = "<c:url value='/actual/actualDetail.json'/>";
 			var regulationFieldURL = "<c:url value='/hierarchy/regulationField.json'/>";
 			var regulationURL = "<c:url value='/hierarchy/regulation.json'/>";
 			var versionURL = "<c:url value='/hierarchy/version.json'/>";
-			  
+
 			var commonCdURL = "<c:url value='/certification/commonCd.json'/>";
-			
+
 			var uploadFileURL = "<c:url value='/actual/uploadFile.json'/>";
 			var deleteFileURL = "<c:url value='/actual/deleteFile.json'/>";
-			
+
 			var attachURL = "<c:url value='/cmm/fms/AttachFileDown.do'/>";
+
+			var header = $("meta[name='_csrf_header']").attr("content");
+			var token = $("meta[name='_csrf']").attr("content");
+
+
 		</script>
 
 		<script src="<c:url value='/js/ajax/libs/angularjs/1.6.7/angular.min.js'/>"></script>
 		<script src="<c:url value='/js/ncsys/isms/actual/actualManageModule.js'/>"></script>
-	
-	
+
+
 <!-- MAIN CONTENT -->
 <div class="wrap" id="actualMngApp" ng-app="actualMngApp" ng-controller="actualMngController">
 <div id="content" >
@@ -49,13 +56,13 @@
 				<!-- widget grid -->
 				<section id="widget-base" class="" >
 
-					<!-- row --> 
+					<!-- row -->
 					<div class="row">
 
 						<!-- NEW WIDGET START -->
 						<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
-							<div class="jarviswidget" id="wid-id-1" >								
+							<div class="jarviswidget" id="wid-id-1" >
 
 								<header>
 									<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
@@ -70,8 +77,8 @@
 									<!-- end widget edit box -->
 									<!-- widget content -->
 									<div class="widget-body">
-				
-											<fieldset> 
+
+											<fieldset>
 												<div class="form-group">
 													<label class="control-label col-md-1" for="prepend">년도</label>
 													<div class="col-md-1" style="padding-right: 1px;;">
@@ -79,7 +86,7 @@
 										                    <select  class="form-control" id="selYear" ng-model="selYear" ng-options="opt.value for opt in years" >
 										                    </select>
 										                </div>
-										            </div>     
+										            </div>
 										            <label class="control-label col-md-1" for="prepend">체계버전</label>
 										            <div class="col-md-4" style="padding-right: 1px;;">
 										                <div class="icon-addon addon-md" >
@@ -87,7 +94,7 @@
 										                    	<option ng-repeat="option in version" value="{{option.verid}}">{{option.vernm}}</option>
 										                    </select>
 										                </div>
-										            </div> 
+										            </div>
 												</div>
 											</fieldset>
 											<fieldset>
@@ -100,31 +107,31 @@
 										                        <option  ng-repeat="option in field" value="{{option.fldid}}">{{option.fldnm}}</option>
 										                    </select>
 										                </div>
-										            </div>    
-										            <div class="col-md-1" style="padding-left:0px;">    
+										            </div>
+										            <div class="col-md-1" style="padding-left:0px;">
 										                <a type="submit" class="btn btn-primary" style="width:68px;" onclick="javascript:reloadGrid();">
 															조 회
 														</a>
 													</div>
 												</div>
 											</fieldset>
-											
+
 											<legend></legend>
-											
+
 											<div id="jqgridContent" style="" >
 											    <table id="jqgrid"><tr><td /></tr></table>
 											    <div id="pjqgrid"></div>
 											</div>
 
-											
-											
+
+
 									</div>
 									<!-- end widget content -->
-									
+
 								</div>
 								<!-- end widget div-->
-								
-												
+
+
 							</div>
 
 						</article>
@@ -134,8 +141,8 @@
 
 				</section>
 				<!-- end widget grid -->
-				
-				
+
+
 				</form>
 
 
@@ -143,7 +150,7 @@
 				<!-- DETAIL CONTENT -->
  					<popup-actual-detail></popup-actual-detail>
 			   	</div>
-			   	
+
 
 
 
@@ -165,12 +172,20 @@
                           }
                           return result;
             };
-        
+
+
+            /* csrf */
+            $.ajaxSetup({
+			    headers : {
+			    	'X-CSRF-TOKEN': token
+			    }
+			});
+
             $("#jqgrid").jqGrid({
                 url : 'actualList.json',
             	datatype: 'local',
             	mtype: "POST",
-            	postData : { "versionId":function() { return $("#selVersion").val(); }, "fieldId":function() { return $("#selField").val(); }, 
+            	postData : { "versionId":function() { return $("#selVersion").val(); }, "fieldId":function() { return $("#selField").val(); },
             		"year":function() { return angular.element(document.getElementById("actualMngApp")).scope().selYear.value; } },
                 colNames: ['순번','분야','ISMS기준','수행자료[계획]','수행주기','구분','1','2','3','4','5','6','7','8','9','10','11','12'],
                 colModel: [
@@ -210,30 +225,30 @@
                 beforeSelectRow: function () {
                     return false;
                 },
-                jsonReader: {  
-	                root : 'actualList',  
-	                id   : 'rgldtlid', 
+                jsonReader: {
+	                root : 'actualList',
+	                id   : 'rgldtlid',
 /* 	                page : 'pageMaker.cri.crtPage',
 	                total: 'pageMaker.endPage',
 	                records: 'pageMaker.totCnt', */
-	                repeatitems: true  
+	                repeatitems: true
 	            },
 	            gridComplete : function() {
 	            	resizeGrid();
                 }
             });
-            
-            
+
+
             function btnFormatter(cellValue, options, rowObject){
-            	
+
             	var colNm = options.colModel.name;
             	var month = colNm.replace("a","");
             	var frq = rowObject.frequency;
-            	
+
             	var writer = "";
-            	
+
             	if(isWritable(rowObject.frequency,options.colModel.name)){
-            		
+
             		if(cellValue!=""){
             			if(cellValue == 1){
             				writer = "<div class='btn btn-xs btn-default score_green' data-original-title='Edit Row' onclick=\"javascript:actionEditActual('" + rowObject.year + "','" + month + "','" +rowObject.proofid+ "','" +rowObject.rgldtlid+ "','U');\">"+cellValue+"</div>";
@@ -244,10 +259,10 @@
             			writer = "<div class='btn btn-xs btn-default' data-original-title='Edit Row' onclick=\"javascript:actionEditActual('" + rowObject.year + "','" + month + "','" +rowObject.proofid+ "','" +rowObject.rgldtlid+ "','C');\"><i class='fa fa-pencil'></i>"+cellValue+"</div>";
             		}
             	}
-            	
+
             	return writer;
             }
-            
+
             function isWritable(frq, mth){
             	if(frq=="월") {
             		return true;
@@ -262,9 +277,9 @@
             		else return false;
             	}
             }
-            
-            
-            
+
+
+
             // remove classes
 			$(".ui-jqgrid").removeClass("ui-widget ui-widget-content");
 			$(".ui-jqgrid-view").children().removeClass("ui-widget-header ui-state-default");
@@ -276,11 +291,11 @@
 			$(".ui-jqgrid-htable").addClass("table table-bordered table-hover");
 			$(".ui-jqgrid-btable").addClass("table table-bordered table-striped");
 
-			
+
 			$("#selVersion").change(function(){ reloadGrid(); });
 			$("#selField").change(function(){ reloadGrid(); });
 			$("#selYear").change(function(){ reloadGrid(); });
-			
+
         });
 
 		$(window).on('resize.jqGrid', function() {
@@ -290,7 +305,7 @@
 		function resizeGrid(){
 			$("#jqgrid").jqGrid('setGridWidth', $("#jqgridContent").width());
 		}
-		
+
 		function reloadGrid(){
 			$("#jqgrid").jqGrid('setGridParam',{
 				datatype: 'json',
@@ -298,35 +313,35 @@
 			$("#jqgrid").trigger("reloadGrid");
 		}
 		function actionEditActual(year,month,proofid,rgldtlid, crud){
-            
+
 			$("#form_list").hide();
 			$("#div_detail").show();
-  	   
+
 			$(".wrap").after("<div class='overlay'></div>");
-			
+
 			var scope = angular.element(document.getElementById("actualMngApp")).scope();
-			
+
 			scope.actionSelectDetail(year,month,proofid,rgldtlid);
 			$("#btn_update").show();
-			
+
 			if("C" == crud){
 				$("#btn_delete").hide();
 			} else {
 				$("#btn_delete").show();
 			}
 
-      	} 
-		
+      	}
+
 		function actionClose(){
     	   	$("#form_list").show();
 	    	$("#div_detail").hide();
-    	   
+
     	   	$(".overlay").remove();
-    	   	
+
     	   	resizeGrid();
 		}
-	       
-		
+
+
     </script>
 
 

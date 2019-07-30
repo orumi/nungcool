@@ -1,28 +1,28 @@
 	/* Angular app */
 	var regulationDetailApp = angular.module("regulationDetailApp", []);
-	
+
 	regulationDetailApp.controller("regulationDetailController", function($scope, $http, $q, regulationDetailService){
-		
+
 		$scope.verid;
-		
+
 		$scope.version = [];
 		$scope.selVersion ;
-		
+
 		$scope.field = [];
-		$scope.selField ; 
-		
+		$scope.selField ;
+
 		$scope.regulation = [];
 		$scope.selRegulation ;
-		
+
 		$scope.regulationDetail = {
-				"rgldtlid":"", 
-				"verid":"", 
-				"fldid":"", 
-				"rglid":"", 
-				"rglnm":"", 
+				"rgldtlid":"",
+				"verid":"",
+				"fldid":"",
+				"rglid":"",
+				"rglnm":"",
 				"sortby":"",
-				"dsort":"", 
-				"rgldtlnm":"", 
+				"dsort":"",
+				"rgldtlnm":"",
 				"mgrgoal":"",
 				"ismsstd":"",
 				"referdoc":"",
@@ -31,9 +31,9 @@
 				"adjustcnt":"",
 				"actionmode":""
 		}
-		
-		
-		
+
+
+
 		$(function(){
 			/*init select infor */
 			console.log("regulationDetailController Init Starting ... ");
@@ -43,11 +43,11 @@
 							reloadGrid();
 						},1000);
 					},function(error){});
-			
-			
+
+
 		});
-		
-		
+
+
 		$scope.selectInitInfo = function(){
 			var deferred = $q.defer();
 			regulationDetailService._selectInitInfo().then(
@@ -55,7 +55,7 @@
 						$scope.version = data.listVersion;
 						$scope.field = data.listField;
 						$scope.regulation = data.listRegulation;
-						
+
 						if($scope.version[0]) {$scope.verid = $scope.version[0].verid; }
 						deferred.resolve(true);
 					},
@@ -64,12 +64,12 @@
 						deferred.reject("failed to selectInitInfo");
 					}
 				);
-			
+
 			return deferred.promise ;
 		}
-		
+
 		/* action performed */
-		
+
 		$scope.actionPerformed = function(tag){
 			if(tag == "insertDetail"){
 				$scope.regulationDetail.rgldtlid = "0";
@@ -118,7 +118,7 @@
 				}
 			}
 		}
-		
+
 		$scope.actionSelectDetail = function(detailId){
 			$scope.regulationDetail.rgldtlid = detailId;
 			$scope.regulationDetail.verid = $scope.verid;
@@ -133,15 +133,15 @@
 				}
 			);
 		}
-		
+
 		$scope.setClearDetail = function(){
-			$scope.regulationDetail.rgldtlid=""; 
+			$scope.regulationDetail.rgldtlid="";
 			$scope.regulationDetail.verid="";
 			$scope.regulationDetail.fldid="";
-			$scope.regulationDetail.rglid=""; 
+			$scope.regulationDetail.rglid="";
 			$scope.regulationDetail.rglnm="";
 			$scope.regulationDetail.sortby="";
-			$scope.regulationDetail.dsort=""; 
+			$scope.regulationDetail.dsort="";
 			$scope.regulationDetail.rgldtlnm="";
 			$scope.regulationDetail.mgrgoal="";
 			$scope.regulationDetail.ismsstd="";
@@ -149,12 +149,12 @@
 			$scope.regulationDetail.referpds="";
 			$scope.regulationDetail.adjustyn="";
 			$scope.regulationDetail.adjustcnt="";
-			
+
 			$scope.$apply();
 		}
-		
-		
-		
+
+
+
 		$scope.actionPerformedField = function(tag){
 			if(tag == "insertField"){
 				$scope.selField.fldid = "0";
@@ -200,7 +200,7 @@
 				}
 			}
 		}
-		
+
 		$scope.actionPerformedRegulation = function(tag){
 			if(tag == "insertRegulation"){
 				$scope.selRegulation.rglid = "0";
@@ -246,8 +246,8 @@
 				}
 			}
 		}
-		
-		
+
+
 		$scope.actionPerformedVersion = function(tag){
 			if(tag == "insertVersion"){
 				$scope.selVersion.verid = "0";
@@ -293,33 +293,33 @@
 				}
 			}
 		}
-		
+
 		$scope.actionShowYieldDetail = function(yield){
-			
+
 			$("#btn_insert_field").hide();
 			$("#btn_update_field").show();
 			$("#btn_delete_field").show();
 			$scope.selField = yield;
 		}
-		
+
 		$scope.actionShowRegulation = function(rgl){
 			$("#btn_insert_regulation").hide();
 			$("#btn_update_regulation").show();
 			$("#btn_delete_regulation").show();
 			$scope.selRegulation = rgl;
 		}
-		
+
 		$scope.actionShowVersion = function(ver){
 			$("#btn_insert_version").hide();
 			$("#btn_update_version").show();
 			$("#btn_delete_version").show();
 			$scope.selVersion = ver;
 		}
-		
-	});	
-	
+
+	});
+
 	regulationDetailApp.factory("regulationDetailService", function($http, $q){
-		
+
 		var factory = {
 				_selectInitInfo:function(pm){
 					var deferred  = $q.defer();
@@ -327,11 +327,11 @@
 						method:'POST',
 						url:regulationDetialInfoURL,
 						data:pm,
-						headers: {'Content-Type': 'application/json'}
+						headers: {'Content-Type': 'application/json','X-CSRF-TOKEN': token}
 					}).then(
 						function successCallback(response) {
 							deferred.resolve(response.data);
-						}, 
+						},
 						function errorCallback(data) {
 							console.log("failed to http ");
 							deferred.reject("failed to select");
@@ -346,11 +346,11 @@
 						url:regulationDetialURL,
 						params:{"mode":"modify"},
 						data:detail,
-						headers: {'Content-Type': 'application/json'}
+						headers: {'Content-Type': 'application/json','X-CSRF-TOKEN': token}
 					}).then(
 						function successCallback(response) {
 							deferred.resolve(response.data);
-						}, 
+						},
 						function errorCallback(data) {
 							console.log("failed to http ");
 							deferred.reject("failed to select");
@@ -365,11 +365,11 @@
 						url:regulationDetialURL,
 						params:{"mode":"select"},
 						data:detail,
-						headers: {'Content-Type': 'application/json'}
+						headers: {'Content-Type': 'application/json','X-CSRF-TOKEN': token}
 					}).then(
 						function successCallback(response) {
 							deferred.resolve(response.data);
-						}, 
+						},
 						function errorCallback(data) {
 							console.log("failed to http ");
 							deferred.reject("failed to select");
@@ -384,11 +384,11 @@
 						url:regulationFieldURL,
 						params:{"mode":"modify"},
 						data:field,
-						headers: {'Content-Type': 'application/json'}
+						headers: {'Content-Type': 'application/json','X-CSRF-TOKEN': token}
 					}).then(
 						function successCallback(response) {
 							deferred.resolve(response.data);
-						}, 
+						},
 						function errorCallback(data) {
 							console.log("failed to http ");
 							deferred.reject("failed to select");
@@ -403,11 +403,11 @@
 						url:regulationURL,
 						params:{"mode":"modify"},
 						data:regulation,
-						headers: {'Content-Type': 'application/json'}
+						headers: {'Content-Type': 'application/json','X-CSRF-TOKEN': token}
 					}).then(
 						function successCallback(response) {
 							deferred.resolve(response.data);
-						}, 
+						},
 						function errorCallback(data) {
 							console.log("failed to http ");
 							deferred.reject("failed to select");
@@ -422,11 +422,11 @@
 						url:versionURL,
 						params:{"mode":"modify"},
 						data:version,
-						headers: {'Content-Type': 'application/json'}
+						headers: {'Content-Type': 'application/json','X-CSRF-TOKEN': token}
 					}).then(
 						function successCallback(response) {
 							deferred.resolve(response.data);
-						}, 
+						},
 						function errorCallback(data) {
 							console.log("failed to http ");
 							deferred.reject("failed to select");
@@ -434,17 +434,17 @@
 					);
 					return deferred.promise ;
 				}
-				
-				
-				
-				
+
+
+
+
 		}
-		
+
 		return factory;
-		
-	});	
-	
-	
+
+	});
+
+
 	/* angular directive */
 	regulationDetailApp.directive("popupRegulationDetail", function(){
 		return {
@@ -458,5 +458,4 @@
 			templateUrl : "version.do"
 	    };
 	});
-	
-	
+

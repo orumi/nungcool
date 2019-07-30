@@ -1,34 +1,34 @@
 	/* Angular app */
 	var actualMngApp = angular.module("actualMngApp", []);
-	
+
 	actualMngApp.controller("actualMngController", function($scope, $http, $q, actualMngService){
-		
+
 		$scope.selYear ;
 		$scope.years = [] ;
-		
-		
+
+
 		$scope.verid;
-		
+
 		$scope.version = [];
 		$scope.selVersion ;
-		
+
 		$scope.field = [];
-		$scope.selField ; 
-		
+		$scope.selField ;
+
 		$scope.opProe = [{"val":"P"},{"val":"R"},{"val":"O"},{"val":"E"}];
-		
+
 		/* 담당자 구분 공통코드 */
 		$scope.ownerType = [];
-		
+
 		/* 수행 주기 */
 		$scope.opFrequency = [{"val":"월"},{"val":"분기"},{"val":"반기"},{"val":"년"}];
-		
+
 		$scope.actualDetail = {
 				"year":"",
 				"month":"",
 				"rgldtlid":"",
-				"proofid":"", 
-				"proofitem":"", 
+				"proofid":"",
+				"proofitem":"",
 				"frequency":"",
 				"ownertype":"",
 				"ownertypenm":"",
@@ -44,9 +44,9 @@
 				"actualdetail":"",
 				"verid":""
 		}
-		
+
 		$scope.attachFiles = [];
-		
+
 		$scope.actualFile = {
 				"year":"",
 				"month":"",
@@ -57,8 +57,8 @@
 				"storedfilepath":"",
 				"fileext":""
 		}
-		
-		
+
+
 		$(function(){
 			/*init select infor */
 			console.log("actualMngController Init Starting ... ");
@@ -68,12 +68,12 @@
 							reloadGrid();
 						},1000);
 					},function(error){});
-			
+
 			/* 초기 설정 */
 			$scope.init();
-			
+
 		});
-		
+
 		$scope.selectInitInfo = function(){
 			var deferred = $q.defer();
 			actualMngService._selectInitInfo().then(
@@ -81,7 +81,7 @@
 						$scope.version = data.listVersion;
 						$scope.field = data.listField;
 						$scope.regulation = data.listRegulation;
-						
+
 						if($scope.version[0]) {$scope.verid = $scope.version[0].verid; }
 						deferred.resolve(true);
 					},
@@ -90,23 +90,23 @@
 						deferred.reject("failed to selectInitInfo");
 					}
 				);
-			
+
 			return deferred.promise ;
 		}
-		
+
 		$scope.init = function(){
 			var date = new Date();
 			var fYear = date.getFullYear();
-			
+
 			for(var y=10; y>0; y--){
 				$scope.years[$scope.years.length] = {"value":(fYear-y+3)};
 			}
 			$scope.selYear = $scope.years[7];
 		}
-		
+
 		$scope.actionPerformed = function(tag){
 			//console.log("tag : "+tag);
-			
+
 			if(tag == "updateDetail"){
 				if($scope.form_actualDetail.$valid){
 					$scope.actualDetail.actionmode = "U";
@@ -142,20 +142,20 @@
 				}
 			}
 		}
-		
-		
+
+
 		$scope.actionSelectDetail = function(year,month,proofid,rgldtlid){
 			$scope.actualDetail.year = year;
 			$scope.actualDetail.month = month;
 			$scope.actualDetail.rgldtlid = rgldtlid;
 			$scope.actualDetail.proofid = proofid;
 			$scope.actualDetail.actionmode = "R";
-			
+
 			actualMngService._selectDetail($scope.actualDetail).then(
 				function(data){
 					$scope.actualDetail = data.actualDetail;
 					$scope.attachFiles = data.actualFiles;
-					
+
 					//console.log("$scope.attachFiles file length:"+$scope.attachFiles.length);
 					//console.log("data actualDetail year :"+data.actualDetail.year);
 				},
@@ -164,17 +164,17 @@
 				}
 			);
 		}
-		
+
 		$scope.actionDeleteFile = function(actualFile) {
 			/*$scope.actualFile.year = year;
 			$scope.actualFile.month = month;
 			$scope.actualFile.proofid = proofid;
 			$scope.actualFile.attachseq = attachseq;*/
-			
+
 			$scope.actualFile = actualFile;
-			
+
 			console.log("$scope.actualFile.attachseq : "+$scope.actualFile.attachseq);
-			
+
 			actualMngService._deleteFile($scope.actualFile).then(
 					function(data){
 						$scope.attachFiles = data.actualFiles;
@@ -183,47 +183,47 @@
 						console.log("actionPerformed error: "+error);
 					}
 				);
-			
+
 		}
-		
+
 		// fileUpload
 	    $scope.fileUpload = function (event) {
 	    	//var fileId = $(event.target).attr("id");
-	    	
+
 	        var files = event.target.files;
 	        for (var i = 0; i < files.length; i++) {
 	        	var file = files[i];
 	        	var reader = new FileReader();
-	        	
+
         		reader.onload = _fileIsLoaded;
 	        	reader.readAsDataURL(file);
 	        }
-	        
+
 	    }
-	    
+
 	    $scope.fileDown = function(actualFile) {
 	    	var aURL = attachURL+"?atchFileId="+actualFile.proofid+"&fileSn="+actualFile.attachseq;
-	    	
+
 	    	console.log(aURL);
-	    			
+
 	    	window.open(aURL);
 	    }
-	    
-	    
+
+
 	    _fileIsLoaded = function (e) {
 	        $scope.$apply(function () {
-	        	
+
 	        	var file = $scope.myFile;
 	        	/*console.log('file is ' );
 	        	console.dir(file);*/
-	        	
+
 	        	var data = new FormData();
 	        	data.append('file', file);
 	        	data.append('year', $scope.actualDetail.year);
 	            data.append('month', $scope.actualDetail.month);
 	            data.append('rgldtlid', $scope.actualDetail.rgldtlid);
 	            data.append('proofid', $scope.actualDetail.proofid);
-	            
+
 	            var config = {
 	         	   	transformRequest: angular.identity,
 	         	   	transformResponse: angular.identity,
@@ -231,7 +231,7 @@
 	     	   			'Content-Type': undefined
 	     	   	    }
 	            }
-	            
+
 	            $http.post(uploadFileURL, data, config).then(function (response) {
 	            	var reJson = $.parseJSON(response.data)
 	            	$scope.attachFiles = reJson.actualFiles;
@@ -241,20 +241,20 @@
 	    			console.log("upload failure");
 	    			//$scope.uploadResult=response.data;
 	    		});
-	        	
-	        	
+
+
 	        });
 	    }
-	    
-	    
-	    
+
+
+
 	    /* actual validate */
-		
+
 		$scope.isActualDetailRequired = function(){
 			var tmpAct = $scope.actualDetail.actual;
 			if($.isNumeric(tmpAct)){
 				if(0 <= tmpAct && tmpAct <=1){
-					
+
 				} else {
 					alert("실적은 0.0에서 1사이 입력가능합니다. (예:0.5)");
 					$scope.actualDetail.actual = "";
@@ -265,11 +265,11 @@
 			//console.log("$scope.actualDetail.actual  : "+ $scope.actualDetail.actual);
 			return true;
 		}
-		
-	});	
-	
+
+	});
+
 	actualMngApp.factory("actualMngService", function($http, $q){
-		
+
 		var factory = {
 				_selectInitInfo:function(pm){
 					var deferred  = $q.defer();
@@ -277,11 +277,11 @@
 						method:'POST',
 						url:regulationDetialInfoURL,
 						data:pm,
-						headers: {'Content-Type': 'application/json'}
+						headers: {'Content-Type': 'application/json','X-CSRF-TOKEN': token}
 					}).then(
 						function successCallback(response) {
 							deferred.resolve(response.data);
-						}, 
+						},
 						function errorCallback(data) {
 							console.log("failed to http ");
 							deferred.reject("failed to select");
@@ -296,11 +296,11 @@
 						url:actualDetailURL,
 						params:{"mode":"modify"},
 						data:detail,
-						headers: {'Content-Type': 'application/json'}
+						headers: {'Content-Type': 'application/json','X-CSRF-TOKEN': token}
 					}).then(
 						function successCallback(response) {
 							deferred.resolve(response.data);
-						}, 
+						},
 						function errorCallback(data) {
 							console.log("failed to http ");
 							deferred.reject("failed to select");
@@ -315,11 +315,11 @@
 						url:actualDetailURL,
 						params:{"mode":"select"},
 						data:detail,
-						headers: {'Content-Type': 'application/json'}
+						headers: {'Content-Type': 'application/json','X-CSRF-TOKEN': token}
 					}).then(
 						function successCallback(response) {
 							deferred.resolve(response.data);
-						}, 
+						},
 						function errorCallback(data) {
 							console.log("failed to http ");
 							deferred.reject("failed to select");
@@ -334,11 +334,11 @@
 						url:deleteFileURL,
 						params:{"mode":"delete"},
 						data:actualFile,
-						headers: {'Content-Type': 'application/json'}
+						headers: {'Content-Type': 'application/json','X-CSRF-TOKEN': token}
 					}).then(
 						function successCallback(response) {
 							deferred.resolve(response.data);
-						}, 
+						},
 						function errorCallback(data) {
 							console.log("failed to http ");
 							deferred.reject("failed to select");
@@ -348,17 +348,17 @@
 				}
 		}
 		return factory;
-		
-	});	
-	
-	
+
+	});
+
+
 	actualMngApp.directive('fileModel', ['$parse', function ($parse) {
 	    return {
 	        restrict: 'A',
 	        link: function(scope, element, attrs) {
 	            var model = $parse(attrs.fileModel);
 	            var modelSetter = model.assign;
-	            
+
 	            element.bind('change', function(){
 	                scope.$apply(function(){
 	                    modelSetter(scope, element[0].files[0]);
@@ -367,16 +367,16 @@
 	        }
 	    };
 	}]);
-	
-	
+
+
 	/* angular directive */
 	actualMngApp.directive("popupActualDetail", function(){
 		return {
 			templateUrl : "actualDetail.do"
 	    };
 	});
-	
-	
+
+
 	actualMngApp.directive('numbersOnly', function() {
 	    return {
 	        require: 'ngModel',
@@ -394,4 +394,3 @@
 	        }
 	    };
 	 });
-	

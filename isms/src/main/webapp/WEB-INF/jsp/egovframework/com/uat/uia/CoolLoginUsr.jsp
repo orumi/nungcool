@@ -38,12 +38,12 @@
 	<link rel="stylesheet" href="<c:url value='/css/login/theme-all.min.css'/>">
 	<link rel="stylesheet" href="<c:url value='/css/login/demo.min.css'/>">
 	<!-- / Style Sheets -->
-    
+
     <!-- Style Sheets -->
     <link rel="stylesheet" href="<c:url value='/css/login/login.min.css' />">
     <!-- / Style Sheets -->
-    
-    
+
+
 <%-- <script type="text/javaScript" language="javascript" src="<c:url value='/js/egovframework/com/uat/uia/EgovGpkiVariables.js' />"></script>
 <script type="text/javaScript" language="javascript" src="<c:url value='/js/egovframework/com/uat/uia/EgovGpkiInstall.js' />"></script>
 <script type="text/javaScript" language="javascript" src="<c:url value='/js/egovframework/com/uat/uia/EgovGpkiFunction.js' />"></script>
@@ -190,6 +190,7 @@ function fnInit() {
             </header>
             <div class="body">
                 <form name="loginForm" action ="<c:url value='/uat/uia/actionLogin.do'/>" method="post">
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                 	<input name="userSe" type="hidden" value="USR"/>
                 	<input name="j_username" type="hidden"/>
                     <fieldset>
@@ -198,7 +199,7 @@ function fnInit() {
                                 <span class="input-group-addon">
                                     <i class="fa fa-user"></i>
                                 </span>
-                                <input type="text" name="id" id="id" class="form-control"  style="ime-mode: disabled;" tabindex="4" maxlength="10"/>       
+                                <input type="text" name="id" id="id" class="form-control"  style="ime-mode: disabled;" tabindex="4" maxlength="10"/>
                             </div>
                         </div>
                         <div class="form-group">
@@ -206,7 +207,7 @@ function fnInit() {
                                 <span class="input-group-addon">
                                     <i class="fa fa-lock" style="width:11px;"></i>
                                 </span>
-                                <input type="password" name="password" id="password" class="form-control" style="ime-mode: disabled;" maxlength="12" tabindex="5" onKeyDown="javascript:if (event.keyCode == 13) { actionLogin(); }"/>       
+                                <input type="password" name="password" id="password" class="form-control" style="ime-mode: disabled;" maxlength="12" tabindex="5" onKeyDown="javascript:if (event.keyCode == 13) { actionLogin(); }"/>
                             </div>
                         </div>
                     </fieldset>
@@ -225,7 +226,7 @@ function fnInit() {
                     </div>
                 </form>
             </div>
-           
+
         </section>
     </div>
 

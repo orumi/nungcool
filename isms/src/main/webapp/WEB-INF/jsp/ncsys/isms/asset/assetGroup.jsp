@@ -1,34 +1,41 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<sec:csrfMetaTags />
 		<style>
-		
+
 			.ui-jqgrid .ui-jqgrid-htable th {
 			    background-color: #403f3d;
 			    color: #ddd;
 			    background-image: none !important;;
-			    
+
 			}
-			
-			.overlay {position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: 999; background: #eaeaea; opacity: 1.0; -ms- filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)"; } 
+
+			.overlay {position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: 999; background: #eaeaea; opacity: 1.0; -ms- filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)"; }
             .popup {position: absolute; top: 8px; left: 0%; z-index: 999999; width: 98%;}
-		
-			
+
+
 		</style>
- 
- 
+
+
 		<script src="<c:url value='/bootstrap/js/plugin/jqgrid/jquery.jqGrid.min.js'/>"></script>
 		<script src="<c:url value='/bootstrap/js/plugin/jqgrid/grid.locale-en.min.js'/>"></script>
-		
+
 		<script type="text/javascript">
 		var assetGrpInitURL = "<c:url value='/asset/assetGrpInit.json'/>";
 		var assetGrpDetailURL = "<c:url value='/asset/assetGrpDetail.json'/>";
-		
+
+
+		var header = $("meta[name='_csrf_header']").attr("content");
+		var token = $("meta[name='_csrf']").attr("content");
+
+
 		</script>
 
 		<script src="<c:url value='/js/ajax/libs/angularjs/1.6.7/angular.min.js'/>"></script>
 		<script src="<c:url value='/js/ncsys/isms/asset/assetGrpModule.js'/>"></script>
-	
+
 <!-- MAIN CONTENT -->
 <div class="wrap" id="assetGrplApp" ng-app="assetGrpApp" ng-controller="assetGrpController">
 <div id="content" >
@@ -37,13 +44,13 @@
 				<!-- widget grid -->
 				<section id="widget-base" class="" >
 
-					<!-- row --> 
+					<!-- row -->
 					<div class="row">
 
 						<!-- NEW WIDGET START -->
 						<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 
-							<div class="jarviswidget" id="wid-id-1" >								
+							<div class="jarviswidget" id="wid-id-1" >
 
 								<header>
 									<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
@@ -58,7 +65,7 @@
 									<!-- end widget edit box -->
 									<!-- widget content -->
 									<div class="widget-body">
-				
+
 											<fieldset>
 												<div class="form-group">
 													<label class="control-label col-md-2" for="prepend">자산관리버전</label>
@@ -68,24 +75,24 @@
 										                    	<option ng-repeat="option in entity.selAstVers" value="{{option.astverid}}">{{option.astvernm}}</option>
 										                    </select>
 										                </div>
-										            </div>    
-										            <div class="col-md-1" style="padding-left:0px;">    
+										            </div>
+										            <div class="col-md-1" style="padding-left:0px;">
 										                <a type="submit" class="btn btn-primary" style="width:68px;" onclick="javascript:reloadGrid();">
 															조 회
 														</a>
 													</div>
-													<div class="col-md-1" style="padding-left:0px;">    
+													<div class="col-md-1" style="padding-left:0px;">
 										                <a class="btn btn-primary" style="width:140px;" onclick="javascript:actionEdit(0);">
 															자산분류 기준 등록
 														</a>
 													</div>
 												</div>
 											</fieldset>
-											
-											
+
+
 											<legend></legend>
-											
-											<div id="jqgridDiv" class="col-md-12" style="padding-left:0px; padding-bottom: 32px;">    
+
+											<div id="jqgridDiv" class="col-md-12" style="padding-left:0px; padding-bottom: 32px;">
 												<div id="jqgridContent" style="float:left;" >
 												    <table id="jqgrid"><tr><td /></tr></table>
 												    <div id="pjqgrid"></div>
@@ -96,15 +103,15 @@
 												</div>
 											</div>
 
-											
-											
+
+
 									</div>
 									<!-- end widget content -->
-									
+
 								</div>
 								<!-- end widget div-->
-								
-												
+
+
 							</div>
 
 						</article>
@@ -114,8 +121,8 @@
 
 				</section>
 				<!-- end widget grid -->
-				
-				
+
+
 				</form>
 
 
@@ -132,6 +139,14 @@
     <script type="text/javascript">
        $(document).ready(function() {
 			'use strict';
+
+
+			/* csrf */
+            $.ajaxSetup({
+			    headers : {
+			    	'X-CSRF-TOKEN': token
+			    }
+			});
 
             $("#jqgrid").jqGrid({
                 url : 'assetAstCntList.json',
@@ -163,17 +178,17 @@
                 beforeSelectRow: function () {
                     return false;
                 },
-                jsonReader: {  
-	                root : 'reAssetGrpCnt',  
-	                id   : 'astgrpkind', 
-	                repeatitems: true  
+                jsonReader: {
+	                root : 'reAssetGrpCnt',
+	                id   : 'astgrpkind',
+	                repeatitems: true
 	            },
 	            gridComplete : function() {
 	            	$("#jqgrid").jqGrid('setGridWidth', 400);
                 }
             });
-            
-            
+
+
             var arrtSetting = function (rowId, val, rawObject, cm) {
                 var attr = rawObject.attr[cm.name], result;
                 if (attr.rowspan) {
@@ -183,8 +198,8 @@
                 }
                 return result;
   			};
-  
-  
+
+
             $("#jqgridGrp").jqGrid({
                 url : 'assetGrpList.json',
             	datatype: 'local',
@@ -216,26 +231,26 @@
                 beforeSelectRow: function () {
                     return false;
                 },
-                jsonReader: {  
-	                root : 'reAssetGroupList',  
-	                id   : 'assetgrpid', 
+                jsonReader: {
+	                root : 'reAssetGroupList',
+	                id   : 'assetgrpid',
 /* 	                page : 'pageMaker.cri.crtPage',
 	                total: 'pageMaker.endPage',
 	                records: 'pageMaker.totCnt', */
-	                repeatitems: true  
+	                repeatitems: true
 	            },
 	            gridComplete : function() {
 	            	gridReSize();
                 }
             });
-            
+
             function btnFormatter(cellValue, options, rowObject){
             	var btn = "<div class='btn btn-xs btn-default' data-original-title='Edit Row' onclick=\"javascript:actionEdit('" + cellValue + "');\"><i class='fa fa-pencil'></i> 수정</div>";
-            	
+
             	return btn;
             }
-            
-            
+
+
             // remove classes
 			$(".ui-jqgrid").removeClass("ui-widget ui-widget-content");
 			$(".ui-jqgrid-view").children().removeClass("ui-widget-header ui-state-default");
@@ -247,13 +262,13 @@
 			$(".ui-jqgrid-htable").addClass("table table-bordered table-hover");
 			$(".ui-jqgrid-btable").addClass("table table-bordered table-striped");
 
-			
+
 			$("#selVersion").change(function(){ reload(); });
-			
-			
-		// end of document ready	
+
+
+		// end of document ready
         });
-       
+
 
 		$(window).on('resize.jqGrid', function() {
 			gridReSize();
@@ -262,42 +277,42 @@
 		function gridReSize(){
 			$("#jqgridGrp").jqGrid('setGridWidth', $("#jqgridDiv").width()-420);
 		}
-		
-		
+
+
 		function reload(){
 			reloadGrid();
 			reloadGridGrp();
 		}
-		
+
 		function reloadGrid(){
 			$("#jqgrid").jqGrid('setGridParam',{
 				datatype: 'json',
 			 });
 			$("#jqgrid").trigger("reloadGrid");
 		}
-		
+
 		function reloadGridGrp(){
 			$("#jqgridGrp").jqGrid('setGridParam',{
 				datatype: 'json',
 			 });
 			$("#jqgridGrp").trigger("reloadGrid");
 		}
-		
+
 		function actionEdit(astgrpid){
 			$("#form_list").hide();
 			$("#div_detail").show();
-  	   
+
 			$(".wrap").after("<div class='overlay'></div>");
-			
+
 			var scope = angular.element(document.getElementById("assetGrplApp")).scope();
-			  
+
 			if(astgrpid != 0){
 				scope.actionSelectDetail(astgrpid);
 				$("#btn_insert").hide();
 				$("#btn_update").show();
 				$("#btn_delete").show();
 			} else {
-				//set clear; 
+				//set clear;
 				scope.setClearDetail();
 				$("#btn_insert").show();
 				$("#btn_update").hide();
@@ -305,18 +320,18 @@
 			}
 
       	}
-		
+
 		function actionClose(){
     	   	$("#form_list").show();
 	    	$("#div_detail").hide();
-    	   
+
     	   	$(".overlay").remove();
-    	   	
+
     	   	gridReSize();
 		}
-	       
-		
-		
+
+
+
     </script>
 
 

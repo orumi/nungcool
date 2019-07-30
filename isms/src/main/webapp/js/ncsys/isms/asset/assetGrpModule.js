@@ -1,12 +1,12 @@
 	/* Angular app */
 	var assetGrpApp = angular.module("assetGrpApp", []);
-	
+
 	assetGrpApp.controller("assetGrpController", function($scope, $http, $q, assetGrpService){
 
 		$scope.entity = {
 				 selAstVerId : null
 				,selAstVers : []
-				
+
 				,selAstGrps : []
 				,assetGrp : {
 					"astgrpid":"",
@@ -22,7 +22,7 @@
 				,selAstKinds : []
 				,selAstKindId : null
 		};
-		
+
 		$(function(){
 			/*init select infor */
 			console.log("assetGrpController Init Starting ... ");
@@ -32,20 +32,20 @@
 							reload();
 						},1000);
 					},function(error){});
-			
-			
+
+
 		});
-		
+
 		$scope.selectInitInfo = function(){
 			var deferred = $q.defer();
 			assetGrpService._selectInitInfo().then(
 					function(data){
 						$scope.entity.selAstVers = data.assetVersionList;
 						if($scope.entity.selAstVers[0]) {$scope.entity.selAstVerId = $scope.entity.selAstVers[0].astverid; }
-						
+
 						$scope.entity.selAstKinds = data.assetKind;
 						if($scope.entity.selAstKinds[0]) {$scope.entity.selAstKindId = $scope.entity.selAstKinds[0].astgrpkind; }
-						
+
 						deferred.resolve(true);
 					},
 					function(error){
@@ -53,15 +53,15 @@
 						deferred.reject("failed to selectInitInfo");
 					}
 				);
-			
+
 			return deferred.promise ;
 		};
-		
+
 		/* action performed */
 		$scope.actionPerformed = function(tag){
 			if(tag == "insertDetail"){
 				if($scope.form_detail.$valid){
-				
+
 					$scope.entity.assetGrp.astgrpid = "0";
 					$scope.entity.assetGrp.astgrpkind = $scope.entity.selAstKindId;
 					$scope.entity.assetGrp.actionmode = "I";
@@ -116,7 +116,7 @@
 			}
 		};
 
-		
+
 		$scope.actionSelectDetail = function(detailId){
 			$scope.entity.assetGrp.astgrpid = detailId;
 			$scope.entity.assetGrp.actionmode = "S";
@@ -129,10 +129,10 @@
 				}
 			);
 		}
-		
-		
+
+
 		$scope.setClearDetail = function(){
-			
+
 			$scope.entity.assetGrp.astgrpid="";
 			$scope.entity.assetGrp.astgrpkind="";
 			$scope.entity.assetGrp.astgrpkindnm="";
@@ -142,16 +142,16 @@
 			$scope.entity.assetGrp.delyn="N";
 			$scope.entity.assetGrp.sortby="";
 			$scope.entity.assetGrp.actionmode="";
-			
+
 			$scope.$apply();
 		};
-		
-		
-		
-	});	
-	
+
+
+
+	});
+
 	assetGrpApp.factory("assetGrpService", function($http, $q){
-		
+
 		var factory = {
 				_selectInitInfo:function(pm){
 					var deferred  = $q.defer();
@@ -159,11 +159,11 @@
 						method:'POST',
 						url:assetGrpInitURL,
 						data:pm,
-						headers: {'Content-Type': 'application/json'}
+						headers: {'Content-Type': 'application/json','X-CSRF-TOKEN': token}
 					}).then(
 						function successCallback(response) {
 							deferred.resolve(response.data);
-						}, 
+						},
 						function errorCallback(data) {
 							console.log("failed to http ");
 							deferred.reject("failed to select");
@@ -178,11 +178,11 @@
 						url:assetGrpDetailURL,
 						params:{"mode":"select"},
 						data:detail,
-						headers: {'Content-Type': 'application/json'}
+						headers: {'Content-Type': 'application/json','X-CSRF-TOKEN': token}
 					}).then(
 						function successCallback(response) {
 							deferred.resolve(response.data);
-						}, 
+						},
 						function errorCallback(data) {
 							console.log("failed to http ");
 							deferred.reject("failed to select");
@@ -197,11 +197,11 @@
 						url:assetGrpDetailURL,
 						params:{"mode":"modify"},
 						data:detail,
-						headers: {'Content-Type': 'application/json'}
+						headers: {'Content-Type': 'application/json','X-CSRF-TOKEN': token}
 					}).then(
 						function successCallback(response) {
 							deferred.resolve(response.data);
-						}, 
+						},
 						function errorCallback(data) {
 							console.log("failed to http ");
 							deferred.reject("failed to select");
@@ -209,14 +209,14 @@
 					);
 					return deferred.promise ;
 				}
-				
+
 		}
-		
+
 		return factory;
-		
-	});	
-	
-	
+
+	});
+
+
 	/* angular directive */
 	assetGrpApp.directive("popupAssetgrpDetail", function(){
 		return {
@@ -224,4 +224,3 @@
 	    };
 	});
 
-	

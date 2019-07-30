@@ -1,21 +1,21 @@
 	/* Angular app */
 	var inspectMngApp = angular.module("inspectMngApp", []);
-	
+
 	inspectMngApp.controller("inspectMngController", function($scope, $http, $q, inspectMngService){
 		$scope.verid;
-		
+
 		$scope.version = [];
 		$scope.selVersion ;
-		
+
 		$scope.field = [];
-		$scope.selField ; 
-		
-		
+		$scope.selField ;
+
+
 		$scope.inspectDetail = {
-				"rgldtlid":"", 
-				"itemseq":"", 
-				"inspectitem":"", 
-				"inspectdetail":"", 
+				"rgldtlid":"",
+				"itemseq":"",
+				"inspectitem":"",
+				"inspectdetail":"",
 				"actionmode":"",
 				"fldid":"",
 				"fldnm":"",
@@ -25,8 +25,8 @@
 				"rglnm":"",
 				"verid":""
 		}
-		
-		
+
+
 		$(function(){
 			/*init select infor */
 			console.log("inspectMngController Init Starting ... ");
@@ -36,10 +36,10 @@
 							reloadGrid();
 						},1000);
 					},function(error){});
-			
-			
+
+
 		});
-		
+
 		$scope.selectInitInfo = function(){
 			var deferred = $q.defer();
 			inspectMngService._selectInitInfo().then(
@@ -47,7 +47,7 @@
 						$scope.version = data.listVersion;
 						$scope.field = data.listField;
 						$scope.regulation = data.listRegulation;
-						
+
 						if($scope.version[0]) {$scope.verid = $scope.version[0].verid; }
 						deferred.resolve(true);
 					},
@@ -56,11 +56,11 @@
 						deferred.reject("failed to selectInitInfo");
 					}
 				);
-			
+
 			return deferred.promise ;
 		}
-		
-		
+
+
 		$scope.actionPerformed = function(tag){
 			if(tag == "insertDetail"){
 				$scope.inspectDetail.itemseq = "0";
@@ -106,13 +106,13 @@
 				}
 			}
 		}
-		
-		
+
+
 		$scope.actionSelectDetail = function(detailId, itemseq){
 			$scope.inspectDetail.rgldtlid = detailId;
 			$scope.inspectDetail.itemseq = itemseq;
 			$scope.inspectDetail.actionmode = "R";
-			
+
 			inspectMngService._selectDetail($scope.inspectDetail).then(
 				function(data){
 					$scope.inspectDetail = data.inspectDetail;
@@ -123,12 +123,12 @@
 				}
 			);
 		}
-		
-		
-	});	
-	
+
+
+	});
+
 	inspectMngApp.factory("inspectMngService", function($http, $q){
-		
+
 		var factory = {
 				_selectInitInfo:function(pm){
 					var deferred  = $q.defer();
@@ -136,11 +136,11 @@
 						method:'POST',
 						url:regulationDetialInfoURL,
 						data:pm,
-						headers: {'Content-Type': 'application/json'}
+						headers: {'Content-Type': 'application/json','X-CSRF-TOKEN': token}
 					}).then(
 						function successCallback(response) {
 							deferred.resolve(response.data);
-						}, 
+						},
 						function errorCallback(data) {
 							console.log("failed to http ");
 							deferred.reject("failed to select");
@@ -155,11 +155,11 @@
 						url:inspectDetialURL,
 						params:{"mode":"modify"},
 						data:detail,
-						headers: {'Content-Type': 'application/json'}
+						headers: {'Content-Type': 'application/json','X-CSRF-TOKEN': token}
 					}).then(
 						function successCallback(response) {
 							deferred.resolve(response.data);
-						}, 
+						},
 						function errorCallback(data) {
 							console.log("failed to http ");
 							deferred.reject("failed to select");
@@ -174,11 +174,11 @@
 						url:inspectDetialURL,
 						params:{"mode":"select"},
 						data:detail,
-						headers: {'Content-Type': 'application/json'}
+						headers: {'Content-Type': 'application/json','X-CSRF-TOKEN': token}
 					}).then(
 						function successCallback(response) {
 							deferred.resolve(response.data);
-						}, 
+						},
 						function errorCallback(data) {
 							console.log("failed to http ");
 							deferred.reject("failed to select");
@@ -188,16 +188,15 @@
 				}
 		}
 		return factory;
-		
-	});	
-	
-	
-	
+
+	});
+
+
+
 	/* angular directive */
 	inspectMngApp.directive("popupInspectDetail", function(){
 		return {
 			templateUrl : "inspectDetail.do"
 	    };
 	});
-	
-	
+
