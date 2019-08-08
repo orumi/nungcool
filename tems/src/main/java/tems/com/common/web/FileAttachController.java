@@ -30,9 +30,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.apache.commons.lang.time.FastDateFormat;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONValue;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
 
 import egovframework.com.cmm.service.EgovProperties;
 import egovframework.com.cmm.service.FileVO;
@@ -54,22 +54,22 @@ import tems.com.exam.req.service.ReqDetailService;
 
 @Controller
 public class FileAttachController {
-	
-	
+
+
 	@Resource(name = "FileAttachService")
     private FileAttachService fileAttachService;
-	
+
 	/**
-     * 
+     *
      * @exception Exception
      */
 	@RequestMapping("/common/fileattach.json")
     public void fileAttach(HttpServletRequest req, HttpServletResponse resp, FileAttachVO fileAttachVO) throws Exception {
-		
 
-		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) req;   
-		MultipartFile file = (MultipartFile) multipartRequest.getFile("attach");   
-		
+
+		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) req;
+		MultipartFile file = (MultipartFile) multipartRequest.getFile("attach");
+
 		String newFileName = System.currentTimeMillis() + UUID.randomUUID().toString() +file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
 		Date date = new Date();
 		//SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMM");
@@ -77,7 +77,7 @@ public class FileAttachController {
 
 		String osname = System.getProperty("os.name");
 		String saveDir = dateFormat.format(date);
-		
+
 		//저장할 디렉토리	임시
 		if(osname.equals("Windows 7")){
 			saveDir = EgovProperties.getProperty("Globals.WinfilePath")+saveDir+"\\";
@@ -85,18 +85,18 @@ public class FileAttachController {
 			saveDir = EgovProperties.getProperty("Globals.LinuxfilePath")+saveDir+"/";
 		}
 		String filePath = saveDir + newFileName;
-		
+
 		File target = new File(saveDir, newFileName);
 		target.mkdirs();
         file.transferTo(target);
-        
+
         fileAttachVO.setFilepath(filePath);
         fileAttachVO.setFilesize(Long.toString(file.getSize()));
         fileAttachVO.setOrgname(new String(file.getOriginalFilename().getBytes("8859_1"),"UTF-8"));
         fileAttachVO.setSavename(newFileName);
-        
+
         JSONObject nJson = new JSONObject();
-        
+
         try{
         	fileAttachService.inSampleFile(fileAttachVO);
     		nJson.put("RESULT_YN"     ,"Y");
@@ -105,41 +105,41 @@ public class FileAttachController {
 			nJson.put("RESULT_YN"     ,"N");
 			nJson.put("RESULT_MESSAGE",e.getMessage());
 		}
-		
-        String jsonText = nJson.toJSONString();  
-        PrintWriter out = resp.getWriter(); 
-        out.print(jsonText); 
+
+        String jsonText = nJson.toString();
+        PrintWriter out = resp.getWriter();
+        out.print(jsonText);
         out.flush();
         out.close();
 	}
-	
+
     @RequestMapping(value="/common/getSampleFile.json")
     public @ResponseBody List<FileAttachVO>   getSampleFile(
     		HttpServletRequest req,
     		SearchVO searchVO) throws Exception {
-    	
+
     	List<FileAttachVO> FileAttachList = fileAttachService.getSampleFile(searchVO);
-    	
+
         return FileAttachList;
     }
-    
+
     @RequestMapping(value="/common/getAdminSampleFile.json")
     public @ResponseBody List<FileAttachVO>   getAdminSampleFile(
     		HttpServletRequest req,
     		SearchVO searchVO) throws Exception {
-    	
+
     	List<FileAttachVO> FileAttachList = fileAttachService.getAdminSampleFile(searchVO);
-    	
+
         return FileAttachList;
     }
-    
+
 	@RequestMapping("/common/delSampleFile.json")
     public void delSampleFile(HttpServletRequest req, HttpServletResponse resp, FileAttachVO fileAttachVO) throws Exception {
-		
+
 		JSONObject nJson = new JSONObject();
         try{
         	fileAttachService.delSampleFile(fileAttachVO);
-        	
+
         	File target = new File(fileAttachVO.getFilepath());
     		target.delete();
     		nJson.put("RESULT_YN"     ,"Y");
@@ -148,15 +148,15 @@ public class FileAttachController {
 			nJson.put("RESULT_YN"     ,"N");
 			nJson.put("RESULT_MESSAGE",e.getMessage());
 		}
-		
-        String jsonText = nJson.toJSONString();  
-        PrintWriter out = resp.getWriter(); 
-        out.print(jsonText); 
+
+        String jsonText = nJson.toString();
+        PrintWriter out = resp.getWriter();
+        out.print(jsonText);
         out.flush();
         out.close();
 	}
-	
-	
+
+
 	/**
 	 * 브라우저 구분 얻기.
 	 *
@@ -275,16 +275,16 @@ public class FileAttachController {
 				response.setContentType("application/x-msdownload");
 
 				PrintWriter printwriter = response.getWriter();
-				
+
 				printwriter.println("<html>");
 				printwriter.println("<br><br><br><h2>Could not get file name:<br>" + fileName + "</h2>");
 				printwriter.println("<br><br><br><center><h3><a href='javascript: history.go(-1)'>Back</a></h3></center>");
 				printwriter.println("<br><br><br>&copy; webAccess");
 				printwriter.println("</html>");
-				
+
 				printwriter.flush();
 				printwriter.close();
 			}
 	}
-	
+
 }
