@@ -13,7 +13,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
-import org.json.simple.JSONValue;
+import net.sf.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -27,16 +27,16 @@ import tems.com.system.model.AuthorGrpVO;
 import tems.com.system.model.AuthorListVO;
 import tems.com.system.model.OfficeListVO;
 import tems.com.system.model.OfficeUserListVO;
-import tems.com.system.service.UserInfoService; 
+import tems.com.system.service.UserInfoService;
 
 @Controller
 public class UserInfoController {
-	
+
 	@Resource(name = "UserInfoService")
     private UserInfoService UserInfoService;
-	
+
 	/**
-     * 
+     *
      * @exception Exception
      */
     @RequestMapping(value="/system/userInfoList.do")
@@ -46,41 +46,41 @@ public class UserInfoController {
 
       	return "tems/com/system/UserInfoList";
     }
-    
+
     @RequestMapping(value="/system/selOfficeList.json")
     public @ResponseBody List<OfficeListVO>  selOfficeList(
     		) throws Exception{
     	List<OfficeListVO> UserInfoList = UserInfoService.getUserInfoList();
         return UserInfoList;
     }
-    
-    
+
+
     @RequestMapping(value="/system/selOfficeUserList.json")
     public @ResponseBody List<OfficeUserListVO>  selOfficeUserList(
     		HttpServletRequest req
     		) throws Exception{
-    	
+
     	String officeid  = StringUtils.nvl(req.getParameter("officeid"),"");
-    	
+
     	List<OfficeUserListVO> UserInfoList = UserInfoService.getOfficeUserList(officeid);
-    	
+
         return UserInfoList;
     }
-    
-    
+
+
     @RequestMapping(value="/system/edtOfficeUser.json")
     public void edtOfficeUser(
     		OfficeUserListVO officeUserListVO,
     		HttpServletRequest req,
     		HttpServletResponse response
     		) throws Exception{
-    	
+
     	LoginUserVO user = (LoginUserVO)req.getSession().getAttribute("loginUserVO");
-    	
+
     	JSONObject nJson = new JSONObject();
     	String data              = StringUtils.nvl(req.getParameter("data"),"");
     	JSONArray jarray = JSONArray.fromObject(JSONSerializer.toJSON(data));
-    	
+
     	try{
 	        for(int i = 0; i < jarray.size(); i++){
 	        	OfficeUserListVO vo = (OfficeUserListVO)JSONObject.toBean(jarray.getJSONObject(i), OfficeUserListVO.class);
@@ -90,7 +90,7 @@ public class UserInfoController {
 	        		nJson.put("RESULT_YN"     ,"Y");
 	        		nJson.put("RESULT_MESSAGE","");
 	        	}
-	            
+
 	        }
     	}catch(Exception e){
       	  nJson.put("RESULT_YN"     ,"N");
@@ -101,6 +101,6 @@ public class UserInfoController {
       out.flush();
       out.close();
     }
-    
-    
+
+
 }

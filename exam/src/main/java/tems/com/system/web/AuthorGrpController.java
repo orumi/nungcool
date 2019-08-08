@@ -12,7 +12,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
-import org.json.simple.JSONValue;
+import net.sf.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -32,12 +32,12 @@ import egovframework.com.cmm.ComDefaultCodeVO;
 
 @Controller
 public class AuthorGrpController {
-	
+
 	@Resource(name = "AuthorGrpService")
     private AuthorGrpService authorGrpService;
-	
+
 	/**
-     * 
+     *
      * @exception Exception
      */
     @RequestMapping(value="/system/AuthorGrpList.do")
@@ -47,7 +47,7 @@ public class AuthorGrpController {
 
       	return "tems/com/system/AuthorGrpList";
     }
-    
+
     @RequestMapping(value="/system/selAuthorGrpList.json")
     public @ResponseBody List<AuthorGrpVO>  selAuthorGrpList(
     		AuthorGrpVO authorGrpVO
@@ -55,38 +55,38 @@ public class AuthorGrpController {
     	List<AuthorGrpVO> authorGrpList = authorGrpService.getAuthorGrpList(authorGrpVO);
         return authorGrpList;
     }
-    
+
     @RequestMapping(value="/system/delAuthorGrpList.json")
     public @ResponseBody List<AuthorGrpVO>  delAuthorGrpList(
     		AuthorGrpVO authorGrpVO,
     		HttpServletRequest req
     		) throws Exception{
-        
+
         String data              = StringUtils.nvl(req.getParameter("data"),"");
     	JSONArray jarray = JSONArray.fromObject(JSONSerializer.toJSON(data));
-    	
+
         for(int i = 0; i < jarray.size(); i++){
         	AuthorGrpVO vo = (AuthorGrpVO)JSONObject.toBean(jarray.getJSONObject(i), AuthorGrpVO.class);
         	authorGrpService.delAuthorGrpList(vo);
         }
-        
+
 
     	List<AuthorGrpVO> authorGrpList = authorGrpService.getAuthorGrpList(authorGrpVO);
         return authorGrpList;
     }
-    
+
     @RequestMapping(value="/system/edtAuthorGrpList.json")
     public @ResponseBody List<AuthorGrpVO>  edtAuthorGrpList(
     		AuthorGrpVO authorGrpVO,
     		HttpServletRequest req
     		) throws Exception{
-    	
+
     	LoginUserVO user = (LoginUserVO)req.getSession().getAttribute("loginUserVO");
-    	
+
     	String data              = StringUtils.nvl(req.getParameter("data"),"");
     	JSONArray jarray = JSONArray.fromObject(JSONSerializer.toJSON(data));
-    	
-    	
+
+
         for(int i = 0; i < jarray.size(); i++){
         	AuthorGrpVO vo = (AuthorGrpVO)JSONObject.toBean(jarray.getJSONObject(i), AuthorGrpVO.class);
         	vo.setRegid(user.getAdminid());
@@ -95,50 +95,50 @@ public class AuthorGrpController {
         	} else if(vo.getState().equals("updated")){
         		authorGrpService.upAuthorGrpList(vo);
         	}
-            
+
         }
-         
+
     	List<AuthorGrpVO> authorGrpList = authorGrpService.getAuthorGrpList(authorGrpVO);
         return authorGrpList;
     }
-    
-    
-    
+
+
+
     @RequestMapping(value="/system/selAuthorList.json")
     public @ResponseBody List<AuthorListVO>  selAuthorList(
     		AuthorListVO authorListVO,
     		HttpServletRequest req
     		) throws Exception{
-    	
+
     	authorListVO.setAuthorgpcode(StringUtils.nvl(req.getParameter("gpcode"),""));
     	List<AuthorListVO> authorList = authorGrpService.getAuthorList(authorListVO);
         return authorList;
     }
-    
-    
+
+
     @RequestMapping(value="/system/edtAuthorList.json")
     public @ResponseBody List<AuthorListVO>  edtAuthorList(
     		AuthorListVO authorListVO,
     		HttpServletRequest req
     		) throws Exception{
-    	
+
     	LoginUserVO user = (LoginUserVO)req.getSession().getAttribute("loginUserVO");
-    	
+
     	String data              = StringUtils.nvl(req.getParameter("data"),"");
     	String gpcode = StringUtils.nvl(req.getParameter("gpcode"),"");
     	JSONArray jarray = JSONArray.fromObject(JSONSerializer.toJSON(data));
-    	
-    	
+
+
     	authorListVO.setAuthorgpcode(gpcode);
     	authorGrpService.delAuthorList(authorListVO);
-    	
+
         for(int i = 0; i < jarray.size(); i++){
         	AuthorListVO vo = (AuthorListVO)JSONObject.toBean(jarray.getJSONObject(i), AuthorListVO.class);
         	vo.setRegid(user.getAdminid());
         	vo.setAuthorgpcode(gpcode);
         		authorGrpService.inAuthorList(vo);
         }
-         
+
         authorListVO.setAuthorgpcode(StringUtils.nvl(req.getParameter("gpcode"),""));
     	List<AuthorListVO> authorList = authorGrpService.getAuthorList(authorListVO);
         return authorList;

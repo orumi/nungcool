@@ -12,7 +12,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
-import org.json.simple.JSONValue;
+import net.sf.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -34,12 +34,12 @@ import egovframework.com.cmm.ComDefaultCodeVO;
 
 @Controller
 public class ReqDetailController {
-	
+
 	@Resource(name = "ReqDetailService")
     private ReqDetailService reqDetailService;
-	
+
 	/**
-     * 
+     *
      * @exception Exception
      */
     @RequestMapping(value="/exam/req/ReqListDetail.do")
@@ -50,7 +50,7 @@ public class ReqDetailController {
     	if(req.getParameter("req_menuNo") != null){
     		req.getSession().setAttribute("menuId", req.getParameter("req_menuNo"));
     	}
-    	
+
     	LoginUserVO nLoginVO = (LoginUserVO)req.getSession().getAttribute("loginUserVO");
  		if(nLoginVO != null){
  			if(!MenuAuthCheck.AuthCheck(req)){
@@ -61,17 +61,17 @@ public class ReqDetailController {
  			model.addAttribute("resultMsg", "사용자 정보가 없습니다.");
  			return "forward:/login/userLogout.do";
  		}
- 		
+
       	return "tems/com/exam/req/ReqListDetail";
     }
-    
+
     @RequestMapping(value="/exam/req/ReqItemList.json")
     public @ResponseBody List<RequestItemDetailVO>  selAuthorGrpList(
     		RequestItemDetailVO reqItemDetailVO
     		) throws Exception{
     	List<RequestItemDetailVO> reqItemDetailList = reqDetailService.getReqItemList(reqItemDetailVO);
-    	
+
         return reqItemDetailList;
     }
-    
+
 }

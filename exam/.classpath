@@ -28,20 +28,39 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="D:/eGovFrameDev-3.7.0-64bit/workspace/exam/src/main/webapp/WEB-INF/lib/commons-httpclient-3.0.jar"/>
-	<classpathentry kind="lib" path="D:/eGovFrameDev-3.7.0-64bit/workspace/exam/src/main/webapp/WEB-INF/lib/ExecureCrypto_v1.0_jdk14.jar"/>
-	<classpathentry kind="lib" path="D:/eGovFrameDev-3.7.0-64bit/workspace/exam/src/main/webapp/WEB-INF/lib/INIpay50.jar"/>
-	<classpathentry kind="lib" path="D:/eGovFrameDev-3.7.0-64bit/workspace/exam/src/main/webapp/WEB-INF/lib/log4j-1.2.14.jar"/>
-	<classpathentry kind="lib" path="D:/eGovFrameDev-3.7.0-64bit/workspace/exam/src/main/webapp/WEB-INF/lib/xalan.jar"/>
+	<classpathentry kind="lib" path="D:/github/workspace/nungcool/exam/src/main/webapp/WEB-INF/lib/commons-httpclient-3.0.jar"/>
+	<classpathentry kind="lib" path="D:/github/workspace/nungcool/exam/src/main/webapp/WEB-INF/lib/ExecureCrypto_v1.0_jdk14.jar"/>
+	<classpathentry kind="lib" path="D:/github/workspace/nungcool/exam/src/main/webapp/WEB-INF/lib/INIpay50.jar"/>
+	<classpathentry kind="lib" path="D:/github/workspace/nungcool/exam/src/main/webapp/WEB-INF/lib/log4j-1.2.14.jar"/>
+	<classpathentry kind="lib" path="D:/github/workspace/nungcool/exam/src/main/webapp/WEB-INF/lib/xalan.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.server.core.container/org.eclipse.jst.server.tomcat.runtimeTarget/Apache Tomcat v8.0">
 		<attributes>
 			<attribute name="owner.project.facets" value="jst.web"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_20">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<attributes>
-			<attribute name="owner.project.facets" value="java"/>
+			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="D:/github/workspace/nungcool/exam/src/main/webapp/WEB-INF/lib/eform-1.0.jar"/>
+	<classpathentry kind="lib" path="D:/github/workspace/nungcool/exam/src/main/webapp/WEB-INF/lib/gpkisecureweb-1.0.4.9.jar"/>
+	<classpathentry kind="lib" path="D:/github/workspace/nungcool/exam/src/main/webapp/WEB-INF/lib/libgpkiapi_jni-1.4.0.0.jar"/>
+	<classpathentry kind="lib" path="D:/github/workspace/nungcool/exam/src/main/webapp/WEB-INF/lib/reportexpress-3.5.4_jdk1.6.jar"/>
+	<classpathentry kind="lib" path="D:/github/workspace/nungcool/exam/src/main/webapp/WEB-INF/lib/reportexpress-commons-jdk15.jar"/>
+	<classpathentry kind="lib" path="D:/github/workspace/nungcool/exam/src/main/webapp/WEB-INF/lib/reportexpress-fonts-utf-8-3.5.0.jar"/>
+	<classpathentry kind="lib" path="D:/github/workspace/nungcool/exam/src/main/webapp/WEB-INF/lib/RXBarcodeLibs-jdk15.jar"/>
+	<classpathentry kind="lib" path="D:/github/workspace/nungcool/exam/src/main/webapp/WEB-INF/lib/rxcode-write1.0_jdk1.5.jar"/>
+	<classpathentry kind="lib" path="D:/github/workspace/nungcool/exam/src/main/webapp/WEB-INF/lib/RXEnterpriseLibs.jar"/>
+	<classpathentry kind="lib" path="D:/github/workspace/nungcool/exam/src/main/webapp/WEB-INF/lib/RXHDBarcodeLibs-1.0.0-jdk15.jar"/>
+	<classpathentry kind="lib" path="D:/github/workspace/nungcool/exam/src/main/webapp/WEB-INF/lib/RXImageConverter-jdk15-3.0.0.jar"/>
+	<classpathentry kind="lib" path="D:/github/workspace/nungcool/exam/src/main/webapp/WEB-INF/lib/RXPDFLibs-5.5.0-jdk15.jar"/>
+	<classpathentry kind="lib" path="D:/github/workspace/nungcool/exam/src/main/webapp/WEB-INF/lib/RXPdfSignUtils-5.5.1-jdk16.jar"/>
+	<classpathentry kind="lib" path="D:/github/workspace/nungcool/exam/src/main/webapp/WEB-INF/lib/rxpoi-3.9.jar"/>
+	<classpathentry kind="lib" path="D:/github/workspace/nungcool/exam/src/main/webapp/WEB-INF/lib/rx-scprov-147-jdk15.jar"/>
+	<classpathentry kind="lib" path="D:/github/workspace/nungcool/exam/src/main/webapp/WEB-INF/lib/RXSmartCodeM.jar"/>
+	<classpathentry kind="lib" path="D:/github/workspace/nungcool/exam/src/main/webapp/WEB-INF/lib/serializer.jar"/>
+	<classpathentry kind="lib" path="D:/github/workspace/nungcool/exam/src/main/webapp/WEB-INF/lib/smeapi_2_7.jar"/>
+	<classpathentry kind="lib" path="D:/github/workspace/nungcool/exam/src/main/webapp/WEB-INF/lib/tsa-relay-socket-client-1.1.3-jdk16.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

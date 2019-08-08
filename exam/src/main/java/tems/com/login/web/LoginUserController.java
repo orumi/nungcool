@@ -1,6 +1,5 @@
 package tems.com.login.web;
 
-import org.json.simple.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -18,6 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.util.List;
+
+import net.sf.json.JSONObject;
 
 /**
  * Created by yongwoo on 2015-11-09.
@@ -47,7 +48,7 @@ public class LoginUserController {
                                    ModelMap model, HttpServletRequest req, HttpServletResponse response)
             throws Exception {
 
-        JSONObject nJson = new JSONObject();
+    	JSONObject nJson = new JSONObject();
 
         List<UserMenuVO> list;
         UserMenuVO loginMenuVO = new UserMenuVO();
@@ -70,13 +71,13 @@ public class LoginUserController {
                 nJson.put("RESULT_YN", "N");
                 nJson.put("RESULT_MESSAGE", URLEncoder.encode("인증되지 않은 아이디 또는 비밀번호 입니다.", "UTF-8"));
             }
-            jsonText = nJson.toJSONString();
+            //jsonText = nJson.toJSONString();
         } catch (Exception e) {
             nJson.put("RESULT_YN", "N");
             nJson.put("RESULT_MESSAGE", e.getMessage());
         }
         PrintWriter out = response.getWriter();
-        out.print(jsonText);
+        out.print(nJson.toString());
         out.flush();
         out.close();
         return null;

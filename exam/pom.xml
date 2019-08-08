@@ -1,15 +1,17 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>exam</groupId>
-	<artifactId>exam</artifactId>
+	<groupId>EXAM</groupId>
+	<artifactId>EXAM</artifactId>
 	<packaging>war</packaging>
 	<version>1.0.0</version>
-	<name>exam</name>
+	<name>EXAM</name>
 	<url>http://www.egovframe.go.kr</url>
 
 	<properties>
-	    <spring.maven.artifact.version>4.0.9.RELEASE</spring.maven.artifact.version>
-		<egovframework.rte.version>3.5.0</egovframework.rte.version>
+		<spring.maven.artifact.version>4.2.4.RELEASE</spring.maven.artifact.version>
+		<egovframework.rte.version>3.7.0</egovframework.rte.version>
 		<org.apache.tiles-version>3.0.3</org.apache.tiles-version>
 	</properties>
 
@@ -34,12 +36,16 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
-		
 		<repository>
-		<id>mesir-repo</id>          
-		<url>http://mesir.googlecode.com/svn/trunk/mavenrepo</url>
-		</repository>        
-						
+			<id>egovframe2</id>
+			<url>http://maven.egovframe.kr:8080/maven/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
 	</repositories>
 
 	<dependencies>
@@ -85,22 +91,10 @@
         </dependency>
 
         <dependency>
-		    <groupId>commons-dbcp</groupId>
-		    <artifactId>commons-dbcp</artifactId>
-		    <version>1.4</version>
-        </dependency>
-
-        <dependency>
 		    <groupId>taglibs</groupId>
 		    <artifactId>standard</artifactId>
 		    <version>1.1.2</version>
         </dependency>
-
-		<dependency>
-			<groupId>org.hsqldb</groupId>
-			<artifactId>hsqldb</artifactId>
-			<version>2.3.2</version>
-		</dependency>
 
 		<dependency>
 	        <groupId>org.antlr</groupId>
@@ -108,25 +102,70 @@
 	        <version>3.5</version>
    		</dependency>
 
-	
+		<dependency>
+			<groupId>org.hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>2.3.2</version>
+		</dependency>
+
+   		<!-- mysql이나 oracle DB 사용시 아래 설정 추가
+        <dependency>
+            <groupId>com.googlecode.log4jdbc</groupId>
+            <artifactId>log4jdbc</artifactId>
+            <version>1.2</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.31</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ojdbc</groupId>
+            <artifactId>ojdbc</artifactId>
+            <version>14</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/ojdbc-14.jar</systemPath>
+        </dependency>
+        -->
+
 	<dependency>
             <groupId>egovframework.rte</groupId>
             <artifactId>egovframework.rte.fdl.security</artifactId>
             <version>${egovframework.rte.version}</version>
         </dependency>
-	
+
 	<dependency>
             <groupId>egovframework.rte</groupId>
             <artifactId>egovframework.rte.fdl.excel</artifactId>
             <version>${egovframework.rte.version}</version>
         </dependency>
-	
+
 	<dependency>
             <groupId>egovframework.rte</groupId>
             <artifactId>egovframework.rte.bat.core</artifactId>
             <version>${egovframework.rte.version}</version>
         </dependency>
-	
+
+	<dependency>
+            <groupId>egovframework.rte</groupId>
+            <artifactId>egovframework.rte.fdl.crypto</artifactId>
+            <version>${egovframework.rte.version}</version>
+        </dependency>
+
 	<dependency>
             <groupId>com.googlecode.log4jdbc</groupId>
             <artifactId>log4jdbc</artifactId>
@@ -138,31 +177,37 @@
                 </exclusion>
             </exclusions>
         </dependency>
-	
+
+	<dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.4</version>
+        </dependency>
+
 	<dependency>
             <groupId>org.jasypt</groupId>
             <artifactId>jasypt</artifactId>
             <version>1.9.2</version>
         </dependency>
-	
+
 	<dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
             <version>3.1</version>
         </dependency>
-	
+
 	<dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
             <version>1.8.1</version>
         </dependency>
-	
+
 	<dependency>
             <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
             <version>2.11.0</version>
         </dependency>
-	
+
 	<dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache-core</artifactId>
@@ -174,13 +219,13 @@
                 </exclusion>
             </exclusions>
         </dependency>
-	
+
 	<dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache-terracotta</artifactId>
             <version>2.1.1</version>
         </dependency>
-	
+
 	<dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
@@ -192,56 +237,56 @@
                 </exclusion>
             </exclusions>
         </dependency>
-	
+
 	<dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz-jobs</artifactId>
             <version>2.2.1</version>
         </dependency>
-	
+
 	<dependency>
             <groupId>oro</groupId>
             <artifactId>oro</artifactId>
             <version>2.0.8</version>
         </dependency>
-	
+
 	<dependency>
             <groupId>com.ibm.icu</groupId>
             <artifactId>icu4j</artifactId>
             <version>53.1</version>
         </dependency>
-	
+
 	<dependency>
             <groupId>commons-net</groupId>
             <artifactId>commons-net</artifactId>
             <version>3.3</version>
         </dependency>
-	
+
 	<dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-email</artifactId>
             <version>1.3.2</version>
         </dependency>
-	
+
 	<dependency>
             <groupId>egovframework.com.ems</groupId>
             <artifactId>sndng-mail</artifactId>
             <version>1.0</version>
         </dependency>
-	
+
 	<dependency>
             <groupId>javax.servlet.jsp</groupId>
             <artifactId>javax.servlet.jsp-api</artifactId>
             <version>2.3.1</version>
             <scope>provided</scope>
         </dependency>
-	
+
 	<dependency>
             <groupId>ldapsdk</groupId>
             <artifactId>ldapsdk</artifactId>
             <version>4.1</version>
         </dependency>
-	
+
 	<dependency>
             <groupId>com.artofsolving</groupId>
             <artifactId>jodconverter</artifactId>
@@ -257,13 +302,13 @@
                 </exclusion>
             </exclusions>
         </dependency>
-	
+
 	<dependency>
             <groupId>xmlbeans</groupId>
             <artifactId>xbean</artifactId>
             <version>2.2.0</version>
         </dependency>
-	
+
 	<dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
@@ -275,43 +320,43 @@
                 </exclusion>
             </exclusions>
         </dependency>
-	
+
 	<dependency>
             <groupId>org.twitter4j</groupId>
             <artifactId>twitter4j-core</artifactId>
             <version>4.0.2</version>
         </dependency>
-	
+
 	<dependency>
             <groupId>net.sourceforge.ajaxtags</groupId>
             <artifactId>ajaxtags-resources</artifactId>
             <version>1.5.7</version>
         </dependency>
-	
+
 	<dependency>
             <groupId>com.ckeditor</groupId>
             <artifactId>ckeditor-java-core</artifactId>
             <version>3.5.3</version>
         </dependency>
-	
+
 	<dependency>
             <groupId>org.apache.xmlgraphics</groupId>
             <artifactId>batik-ext</artifactId>
             <version>1.7</version>
         </dependency>
-	
+
 	<dependency>
             <groupId>org.springframework.social</groupId>
             <artifactId>spring-social-facebook-web</artifactId>
             <version>1.1.1.RELEASE</version>
         </dependency>
-	
+
 	<dependency>
             <groupId>org.springframework.social</groupId>
             <artifactId>spring-social-twitter</artifactId>
             <version>1.1.0.RELEASE</version>
         </dependency>
-	
+
 	<dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
@@ -323,13 +368,13 @@
                 </exclusion>
             </exclusions>
         </dependency>
-	
+
 	<dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>1.4.180</version>
         </dependency>
-	
+
 	<dependency>
             <groupId>org.springframework.social</groupId>
             <artifactId>spring-social-security</artifactId>
@@ -341,20 +386,20 @@
                 </exclusion>
             </exclusions>
         </dependency>
-	
+
 	<dependency>
             <groupId>javax.websocket</groupId>
             <artifactId>javax.websocket-api</artifactId>
             <version>1.0</version>
             <scope>provided</scope>
         </dependency>
-	
+
 	<dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.json</artifactId>
             <version>1.0.4</version>
         </dependency>
-	
+
 	<dependency>
             <groupId>org.springframework.ldap</groupId>
             <artifactId>spring-ldap-core</artifactId>
@@ -382,255 +427,141 @@
                 </exclusion>
             </exclusions>
         </dependency>
-	
-	<dependency>        
-	    <groupId>net.sf.json-lib</groupId>        
-	    <artifactId>json-lib</artifactId>        
-	    <version>2.4</version>        
-	    <classifier>jdk15</classifier>    
-	</dependency> 
-	
-	
-	<dependency>
-	            <groupId>org.codehaus.jackson</groupId>
-	            <artifactId>jackson-core-asl</artifactId>
-	            <version>1.9.7</version>
-	</dependency>
-	        
-	<dependency>  
-	            <groupId>org.codehaus.jackson</groupId>  
-	            <artifactId>jackson-mapper-asl</artifactId>  
-	            <version>1.9.7</version>  
-	</dependency>
 
-	
+	<dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.2</version>
+        </dependency>
+
 	<dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.31</version>
-    </dependency>
-	
-	<dependency>
-            <groupId>kr.go.gpki</groupId>
-            <artifactId>gpkisecureweb</artifactId>
-            <version>1.0.4.9</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/gpkisecureweb-1.0.4.9.jar</systemPath>
-    </dependency>
-	
-	<dependency>
-            <groupId>kr.go.gpki</groupId>
-            <artifactId>libgpkiapi_jni</artifactId>
-            <version>1.4.0.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/libgpkiapi_jni-1.4.0.0.jar</systemPath>
-   	</dependency>
-        
-    <!-- cabsoft eform start -->
-    <dependency>
-            <groupId>com.cabsoft</groupId>
-            <artifactId>eform</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/eform-1.0.jar</systemPath>
-    </dependency>
-    <dependency>
-            <groupId>com.cabsoft</groupId>
-            <artifactId>reportexpress</artifactId>
-            <version>3.5.4</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/reportexpress-3.5.4_jdk1.6.jar</systemPath>
-    </dependency>
-        <dependency>
-            <groupId>com.cabsoft</groupId>
-            <artifactId>reportexpress-commons</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/reportexpress-commons-jdk15.jar</systemPath>
-    </dependency>
-    <dependency>
-            <groupId>com.cabsoft</groupId>
-            <artifactId>reportexpress-fonts-utf-8</artifactId>
-            <version>3.5.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/reportexpress-fonts-utf-8-3.5.0.jar</systemPath>
-    </dependency>
-        <dependency>
-            <groupId>com.cabsoft</groupId>
-            <artifactId>rx-scprov-147</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/rx-scprov-147-jdk15.jar</systemPath>
-    </dependency>
-    <dependency>
-            <groupId>com.cabsoft</groupId>
-            <artifactId>RXBarcodeLibs</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/RXBarcodeLibs-jdk15.jar</systemPath>
-    </dependency>
-        <dependency>
-            <groupId>com.cabsoft</groupId>
-            <artifactId>rxcode-write</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/rxcode-write1.0_jdk1.5.jar</systemPath>
-    </dependency>
-    <dependency>
-            <groupId>com.cabsoft</groupId>
-            <artifactId>RXEnterpriseLibs</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/RXEnterpriseLibs.jar</systemPath>
-    </dependency>
-        <dependency>
-            <groupId>com.cabsoft</groupId>
-            <artifactId>RXHDBarcodeLibs</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/RXHDBarcodeLibs-1.0.0-jdk15.jar</systemPath>
-    </dependency>
-    <dependency>
-            <groupId>com.cabsoft</groupId>
-            <artifactId>RXImageConverter</artifactId>
-            <version>3.0.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/RXImageConverter-jdk15-3.0.0.jar</systemPath>
-    </dependency>
-    <dependency>
-            <groupId>com.cabsoft</groupId>
-            <artifactId>RXPDFLibs</artifactId>
-            <version>5.5.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/RXPDFLibs-5.5.0-jdk15.jar</systemPath>
-    </dependency>
-    <dependency>
-            <groupId>com.cabsoft</groupId>
-            <artifactId>RXPdfSignUtils</artifactId>
-            <version>5.5.1</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/RXPdfSignUtils-5.5.1-jdk16.jar</systemPath>
-    </dependency>
-    <dependency>
-            <groupId>com.cabsoft</groupId>
-            <artifactId>rxpoi</artifactId>
-            <version>3.9</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/rxpoi-3.9.jar</systemPath>
-    </dependency>
-    <dependency>
-            <groupId>com.cabsoft</groupId>
-            <artifactId>RXSmartCodeM</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/RXSmartCodeM.jar</systemPath>
-    </dependency>
-    <dependency>
-            <groupId>com.cabsoft</groupId>
-            <artifactId>tsa-relay-socket-client</artifactId>
-            <version>1.1.3</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/tsa-relay-socket-client-1.1.3-jdk16.jar</systemPath>
-    </dependency>
-	<dependency>
-			<groupId>xalan</groupId>
-			<artifactId>xalan</artifactId>
-			<version>2.7.1</version>
-	</dependency>
-    <dependency>
-            <groupId>org.apache</groupId>
-            <artifactId>serializer</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/src/main/webapp/WEB-INF/lib/serializer.jar</systemPath>
-    </dependency>
-    <!-- cabsoft eform end -->
-        
-	
-	
+        </dependency>
 
-		
-	
-<!-- jsp titles -->
-        <dependency>
+
+
+
+
+
+
+
+
+
+	<!-- jsp titles -->
+	<dependency>
 		<groupId>org.apache.tiles</groupId>
 		<artifactId>tiles-core</artifactId>
 		<version>${org.apache.tiles-version}</version>
-		
+
 		<!-- needed to exclude slf4j which causes incompatibilities -->
 		<exclusions>
-		<exclusion>
-		<groupId>org.slf4j</groupId>
-		<artifactId>slf4j-nop</artifactId>
-		</exclusion>
-		<exclusion>
-		<groupId>org.slf4j</groupId>
-		<artifactId>slf4j-api</artifactId>
-		</exclusion>
-		<exclusion>
-		<groupId>org.slf4j</groupId>
-		<artifactId>jcl-over-slf4j</artifactId>
-		</exclusion>
+			<exclusion>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-nop</artifactId>
+			</exclusion>
+			<exclusion>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+			</exclusion>
+			<exclusion>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+			</exclusion>
 		</exclusions>
+	</dependency>
+
+
+	<dependency>
+		<groupId>org.apache.tiles</groupId>
+		<artifactId>tiles-servlet</artifactId>
+		<version>${org.apache.tiles-version}</version>
+
+		<!-- needed to exclude slf4j which causes incompatibilities -->
+		<exclusions>
+			<exclusion>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-nop</artifactId>
+			</exclusion>
+			<exclusion>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+			</exclusion>
+			<exclusion>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+			</exclusion>
+		</exclusions>
+	</dependency>
+
+	<dependency>
+		<groupId>org.apache.tiles</groupId>
+		<artifactId>tiles-extras</artifactId>
+		<version>${org.apache.tiles-version}</version>
+
+		<!-- needed to exclude slf4j which causes incompatibilities -->
+		<exclusions>
+			<exclusion>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-nop</artifactId>
+			</exclusion>
+			<exclusion>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+			</exclusion>
+			<exclusion>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+			</exclusion>
+		</exclusions>
+	</dependency>
+
+
+		<dependency>
+		      <groupId>org.mybatis</groupId>
+		      <artifactId>mybatis</artifactId>
+		      <version>3.2.4</version>
 		</dependency>
-		
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-            <version>1.0.0.GA</version>
-        </dependency>
-				
-        
-<dependency>
-<groupId>org.apache.tiles</groupId>
-<artifactId>tiles-servlet</artifactId>
-<version>${org.apache.tiles-version}</version>
 
-<!-- needed to exclude slf4j which causes incompatibilities -->
-<exclusions>
-<exclusion>
-<groupId>org.slf4j</groupId>
-<artifactId>slf4j-nop</artifactId>
-</exclusion>
-<exclusion>
-<groupId>org.slf4j</groupId>
-<artifactId>slf4j-api</artifactId>
-</exclusion>
-<exclusion>
-<groupId>org.slf4j</groupId>
-<artifactId>jcl-over-slf4j</artifactId>
-</exclusion>
-</exclusions>
-</dependency>
+		<dependency>
+		      <groupId>org.mybatis</groupId>
+		      <artifactId>mybatis-spring</artifactId>
+		      <version>1.2.2</version>
+		</dependency>
 
-<dependency>
-<groupId>org.apache.tiles</groupId>
-<artifactId>tiles-extras</artifactId>
-<version>${org.apache.tiles-version}</version>
+		<dependency>
+		    <groupId>net.sf.json-lib</groupId>
+		    <artifactId>json-lib</artifactId>
+		    <version>2.4</version>
+		    <classifier>jdk15</classifier>
+		</dependency>
 
-<!-- needed to exclude slf4j which causes incompatibilities -->
-<exclusions>
-<exclusion>
-<groupId>org.slf4j</groupId>
-<artifactId>slf4j-nop</artifactId>
-</exclusion>
-<exclusion>
-<groupId>org.slf4j</groupId>
-<artifactId>slf4j-api</artifactId>
-</exclusion>
-<exclusion>
-<groupId>org.slf4j</groupId>
-<artifactId>jcl-over-slf4j</artifactId>
-</exclusion>
-</exclusions>
-</dependency>
-        
-	  	<dependency>
-			<groupId>com.googlecode.json-simple</groupId>
-			<artifactId>json-simple</artifactId>
-			<version>1.1</version>
-  		</dependency>
-	
+		<dependency>
+		    <groupId>com.fasterxml.jackson.core</groupId>
+		    <artifactId>jackson-core</artifactId>
+		    <version>2.8.7</version>
+		</dependency>
+
+		<dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-core-asl</artifactId>
+            <version>1.9.7</version>
+		</dependency>
+
+		<dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.7</version>
+		</dependency>
+
+
+
+
+
+
+
+
 	</dependencies>
 
 	<build>
@@ -655,8 +586,8 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <configuration>
-                        <source>1.6</source>
-                        <target>1.6</target>
+                        <source>1.8</source>
+                        <target>1.8</target>
                         <encoding>UTF-8</encoding>
                     </configuration>
                 </plugin>

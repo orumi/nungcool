@@ -9,19 +9,6 @@
         <context:exclude-filter expression="org.springframework.stereotype.Repository" type="annotation"/>
     </context:component-scan>
 
-    <bean id="jacksonMessageConverter"
-          class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter"></bean>
-    <bean id="jsonHttpMessageConverter"
-          class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"></bean>
-
-    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
-        <property name="messageConverters">
-            <list>
-                <ref bean="jacksonMessageConverter"/>
-                <ref bean="jsonHttpMessageConverter"/>
-            </list>
-        </property>
-    </bean>
 
     <!-- For Pagination Tag -->
     <bean class="egovframework.com.cmm.ImagePaginationRenderer" id="imageRenderer"/>
@@ -52,8 +39,8 @@
             <mvc:exclude-mapping path="/member/*.do"/>
             <mvc:exclude-mapping path="/member/*/*.do"/>
             <mvc:exclude-mapping path="/member/*/*/*.do"/>
-            
-            <!-- 견적서 로그인 없이   --> 
+
+            <!-- 견적서 로그인 없이   -->
             <mvc:exclude-mapping path="/support/*.do"/>
             <mvc:exclude-mapping path="/support/*/*.do"/>
             <mvc:exclude-mapping path="/support/*/*/*.do"/>
@@ -76,7 +63,7 @@
             <mvc:exclude-mapping path="/member/*.json"/>
             <mvc:exclude-mapping path="/member/*/*.json"/>
             <mvc:exclude-mapping path="/member/*/*/*.json"/>
-            
+
             <!-- without session 견적서   -->
             <mvc:exclude-mapping path="/support/*.json"/>
             <mvc:exclude-mapping path="/support/*/*.json"/>
@@ -124,6 +111,11 @@
 
     <!-- for JFile -->
     <bean class="org.springframework.web.servlet.view.BeanNameViewResolver" p:order="0"/>
+
+    <!-- json  -->
+    <bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" id="jsonView">
+	    <property name="contentType" value="application/json;charset=UTF-8"></property>
+	</bean>
 
     <bean class="org.springframework.web.servlet.view.UrlBasedViewResolver" p:order="2" p:prefix="/WEB-INF/jsp/"
           p:suffix=".jsp"
