@@ -33,13 +33,13 @@ import net.sf.json.JSONObject;
 @RequestMapping("/cool/bbs")
 public class BoardController {
 
-	
+
 	@Resource(name="boardService")
 	private  BoardService boardService;
-	
-	
+
+
     /**
-     * 목록창 
+     * 목록창
      *
      * @return
      * @throws Exception
@@ -53,9 +53,9 @@ public class BoardController {
     	//return "isms/bbs/board.tiles";
     }
 
-    
+
     /**
-     * 상세창 
+     * 상세창
      *
      * @return
      * @throws Exception
@@ -66,13 +66,13 @@ public class BoardController {
     	mv.setViewName("isms/bbs/boardDetail.popup");
     	mv.addObject("boardVO", boardVO);
     	return mv;
-    	
+
     	//return "isms/bbs/boardDetail.popup";
     }
-    
-    
+
+
     /**
-     * 초기정보 
+     * 초기정보
      *
      * @return
      * @throws Exception
@@ -82,25 +82,25 @@ public class BoardController {
 	public void boardInit(HttpServletRequest request, HttpServletResponse response)  {
     	try{
 	    	System.out.println("boardInit.json");
-	    	
+
 	    	JSONObject nJson = new JSONObject();
-			
+
 	    	/*List<AssetGroupList> reAssetGroupList =  assetService.selectAssetGroupList();
 	    	nJson.put("reAssetGroupList", reAssetGroupList);*/
-	    	
+
 	        PrintWriter out = response.getWriter();
 	        out.write(nJson.toString());
 	        out.flush();
 	        out.close();
-	        
+
     	} catch (Exception e ){
     		System.out.println(e);
     	}
-	}    
-    
+	}
+
     /*week test item List */
     /**
-     * 목록정보 
+     * 목록정보
      *
      * @return
      * @throws Exception
@@ -111,35 +111,35 @@ public class BoardController {
     	try{
 
     		System.out.println(cri);
-    		
+
 	    	JSONObject nJson = new JSONObject();
-			
-	    	/* first paget current page */ 
+
+	    	/* first paget current page */
 	    	boardVO.setFirstIndex(cri.getFirst());
-	    	
+
 	    	/* rowcount */
 	    	boardVO.setRecordCountPerPage(cri.getRows());
-	    	
+
 			List<BoardVO> reBoardVO = boardService.selectBoardArticleList(boardVO);
 			int totCnt = boardService.selectBoardArticleListCnt(boardVO);
-			
+
 			PageMaker pageMaker = new PageMaker(cri, totCnt);
-			
-			
+
+
 			nJson.put("reBoardVO", reBoardVO);
 			nJson.put("pageMaker", pageMaker);
 			nJson.put("cri", cri);
-			
+
 	        PrintWriter out = response.getWriter();
 	        out.write(nJson.toString());
 	        out.flush();
 	        out.close();
-	        
+
     	} catch (Exception e ){
     		System.out.println(e);
     	}
-	}    
-    
+	}
+
     /*week test item detail */
     /**
      * 상세 정보
@@ -152,16 +152,16 @@ public class BoardController {
 	public void boardArticleDetail(HttpServletRequest request, HttpServletResponse response, String mode, @RequestBody String json )  {
     	JSONObject nJson = new JSONObject();
     	try{
-    		
+
     		LoginVO loginVO =  (LoginVO)request.getSession().getAttribute("loginVO");
-    		
+
     		BoardVO detail = new ObjectMapper().readValue(json, BoardVO.class);
     		detail.setFrstRegisterId(loginVO.getId());
     		detail.setNtcrId(loginVO.getId());
     		detail.setNtcrNm(loginVO.getName());
-    		
+
 	    	if("modify".equals(mode)){
-	    		
+
 	    		if("I".equals(detail.getActionmode()) ){
 	    			boardService.insertBoardArticle(detail);
 	    		} else if("D".equals(detail.getActionmode()) ){
@@ -169,15 +169,15 @@ public class BoardController {
 	    		} else if("U".equals(detail.getActionmode())){
 	    			boardService.updateBoardArticle(detail);
 	    		}
-	
+
 	    	} else if("select".equals(mode)){
-	    		
-	    		BoardVO reDetail = boardService.selectBoardArticle(detail); 
+
+	    		BoardVO reDetail = boardService.selectBoardArticle(detail);
 	    		nJson.put("reDetail", reDetail);
 	    	}
-	    	
+
 	    	nJson.put("reVal", "ok_resend");
-	    	
+
     	} catch (Exception e ){
     		nJson.put("reVal", "failure_resend");
     		System.out.println(e);
@@ -190,5 +190,5 @@ public class BoardController {
     		} catch (Exception e){ }
     	}
 	}
-    
+
 }
