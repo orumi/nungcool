@@ -1,0 +1,175 @@
+/*
+ * It is advised not to edit the smartadmin_production.css
+ * as this will override any changes you make in the 
+ * later versions of this theme. 
+ * 
+ * We advise that you use use this CSS to override 
+ * SmartAdmin styles. 
+ * 
+ * Rename the stylesheet to whatever your liking so it will stay
+ * unique to you with each update of SmartAdmin.
+ */
+
+/*
+ * INDEX
+ * 
+ * - HTML
+ * - BODY
+ * - CUSTOM STYLES
+ */
+ 
+ .fuelux .wizard ul li {
+    padding: 0 30px 0 40px;
+ }
+ .fuelux .wizard ul li:first-child {
+    padding-left: 40px;
+}
+ 
+ .jarviswidget>header {
+/*     color: #333; */
+    border: 1px solid #bbbbbb;
+    background: #e2e2e2;
+}
+
+ .jarviswidget>div {
+    background-color: #f7f7f7 !important;
+}
+ 
+.form-control{
+    background-color: #fff !important;
+    border: 1px solid #a9a9a9;
+} 
+
+.form-control:focus{
+    background-color: #e1efff !important;
+    /* border: 1px solid #c0dbfb; */
+}  
+.form-control:hover{
+    background-color: #e1efff !important;
+    /* border: 1px solid #c0dbfb; */
+}  
+
+
+.form-horizontal label {
+	font-weight: 900;
+	font-size:13px;
+}
+
+.form-horizontal .checkbox, .form-horizontal .checkbox-inline, .form-horizontal .radio, .form-horizontal .radio-inline {
+   font-weight: 400;
+}
+
+.form-horizontal .form-group{
+	margin-bottom: 10px;
+}  
+
+
+.form-horizontal .col-lg-1, .form-horizontal .col-lg-10, .form-horizontal .col-lg-11, 
+.form-horizontal .col-lg-12, .form-horizontal .col-lg-2, .form-horizontal .col-lg-3, 
+.form-horizontal .col-lg-4, .form-horizontal .col-lg-5, .form-horizontal .col-lg-6, 
+.form-horizontal .col-lg-7, .form-horizontal .col-lg-8, .form-horizontal .col-lg-9, 
+.form-horizontal .col-md-1, .form-horizontal .col-md-10, .form-horizontal .col-md-11, 
+.form-horizontal .col-md-12, .form-horizontal .col-md-2, .form-horizontal .col-md-3, 
+.form-horizontal .col-md-4, .form-horizontal .col-md-5, .form-horizontal .col-md-6, 
+.form-horizontal .col-md-7, .form-horizontal .col-md-8, .form-horizontal .col-md-9, 
+.form-horizontal .col-sm-1, .form-horizontal .col-sm-10, .form-horizontal .col-sm-11, 
+.form-horizontal .col-sm-12, .form-horizontal .col-sm-2, .form-horizontal .col-sm-3, 
+.form-horizontal .col-sm-4, .form-horizontal .col-sm-5, .form-horizontal .col-sm-6, 
+.form-horizontal .col-sm-7, .form-horizontal .col-sm-8, .form-horizontal .col-sm-9, 
+.form-horizontal .col-xs-1, .form-horizontal .col-xs-10, .form-horizontal .col-xs-11, 
+.form-horizontal .col-xs-12, .form-horizontal .col-xs-2, .form-horizontal .col-xs-3, 
+.form-horizontal .col-xs-4, .form-horizontal .col-xs-5, .form-horizontal .col-xs-6, 
+.form-horizontal .col-xs-7, .form-horizontal .col-xs-8, .form-horizontal .col-xs-9 
+{
+    position: relative;
+    min-height: 1px;
+    padding-left: 6px;
+    padding-right: 6px;
+}
+
+.form-horizontal .checkbox, .form-horizontal .checkbox-inline, .form-horizontal .radio, .form-horizontal .radio-inline {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 4px !important;
+}
+
+
+
+/* table css  */
+.table-responsive {
+    overflow-x: auto;
+    min-height: .01%;
+    padding: 0 14px;
+}
+
+.cellinTable {
+	padding: 0px !important;
+}
+.table .table {
+    background: transparent;
+    margin-bottom: 0px; 
+    border: 0px;
+}
+.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+    padding: 8px 6px 4px 4px;
+}
+
+.table-responsive table{
+	font-size: 13px !important;
+}
+
+.btn-label {
+    padding: 3px 12px 9px 12px;
+}
+
+.table {
+    margin-bottom: 0px;
+}
+
+.ui-jqgrid .ui-jqgrid-htable th {
+    background-color: #eee;
+    text-align: center;
+    color:#fff;
+    background-image: -webkit-gradient(linear,0 0,0 100%,from(#f2f2f2),to(#fafafa));
+    background-image: -webkit-linear-gradient(top,#676767 0,#737373 100%);
+}
+
+
+ 
+/*  invalid  */ 
+.form-group .ng-invalid {
+  border: 2px solid #ffa37a;
+}
+
+
+
+.thumb {
+	width: 200px;
+	height: 200px;
+}
+
+/* 이미지 옵션 (hover) */
+.form-group .img-upload {position: relative;}
+.form-group .img-upload ul.img-option-wrap {display: none; overflow: hidden; position: absolute; top: 50%; left: 50%; z-index: 100;  margin-top: -28px; margin-left: -82px;}  
+.form-group .img-upload ul.img-option-wrap li {float: left; width: 84px; height: 25px; line-height: 25px; margin-left: 6px; border-radius: 5px; background: #fff; opacity: 1.0; font-size: 11px;font-weight:700; text-align: center; cursor: pointer}  
+.form-group .img-upload ul.img-option-wrap li:nth-child(odd) {margin-left: 0;}
+.form-group .img-upload ul.img-option-wrap li:nth-child(3) {clear: both;}
+.form-group .img-upload ul.img-option-wrap li:nth-child(3),  
+.form-group .img-upload ul.img-option-wrap li:nth-child(4) {margin-top: 6px;}  
+.form-group .img-upload .layer-wrap {display: none; position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: 99; background: #000; opacity: 0.5; -ms- filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=30)"; }
+
+
+.ui-jqgrid .ui-jqgrid-view button, .ui-jqgrid .ui-jqgrid-view input, .ui-jqgrid .ui-jqgrid-view select, .ui-jqgrid .ui-jqgrid-view textarea {
+    margin-right: 2px;
+}
+
+.ui-jqgrid .ui-jqgrid-bdiv{ overflow-x:auto; }
+
+#extr-page h4.paragraph-header {
+    width: 380px;
+}
+
+#extr-page .login-app-icons {
+    margin-top: 36px;
+    width: 380px;
+}

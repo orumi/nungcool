@@ -1,0 +1,12 @@
+[version]
+signature="$CHICAGO$"
+AdvancedINF=2.0
+
+[Add.Code]
+ExcelExport.ocx=ExcelExport.ocx
+
+[ExcelExport.ocx]           
+file-win32-x86=thiscab
+clsid={178E9062-BA7B-4769-B0DC-AD8A013A2E6B}
+FileVersion=1,2,0,1
+RegisterServer=yes

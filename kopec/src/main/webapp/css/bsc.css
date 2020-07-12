@@ -1,0 +1,124 @@
+/* ÆäÀÌÁö ÀüÃ¼ CSS Á¤ÀÇ*/
+body, table, tr, td, select, textarea, input{ 
+ 		font-family:µ¸¿ò, seoul, arial, helvetica;
+ 		font-size: 12px;
+ 		color: #000000;
+		   scrollbar-3dlight-color:#A4BEE3;
+           scrollbar-arrow-color:#FFFFFF;
+           scrollbar-base-color:#C0D3EC;
+           scrollbar-darkshadow-color:#A4BEE3;
+           scrollbar-face-color:#C0D3EC;
+           scrollbar-track-color:#EBF0F7;
+           scrollbar-highlight-color:#C0D3EC;
+           scrollbar-shadow-color:#C0D3EC 
+		 }
+
+/*   Gray scrollbar Color //
+         scrollbar-face-color:#DDDDDD;
+		 scrollbar-highlight-color:#DDDDDD;
+		 scrollbar-shadow-color:#DDDDDD;
+		 scrollbar-3dlight-color:#CCCCCC;
+		 scrollbar-arrow-color:#FFFFFF;
+		 scrollbar-track-color:#FBFBFB;
+		 scrollbar-darkshadow-color:#CCCCCC;
+		 scrollbar-base-color:#DDDDDD; */
+
+			
+/*¹è°æ*/			
+img{border:none}			
+.bg	{background: url(/images/bg.gif) no-repeat}
+.bg1	{background-color:#FFFFFF; 
+         background-attachment:fixed; 
+         background-image:url(../images/page_bg_01.gif); 
+		 background-repeat:no-repeat; 
+         background-position:right bottom;
+		 }
+			
+
+
+/* ±âº»¸µÅ©*/ 
+		
+a:link { text-decoration: none; color: #0066FF; font-family: "Arial", "Helvetica", "sans-serif","µ¸¿ò"; font-size: 12px}
+a:visited { text-decoration: none; color: #0066FF; font-family: "Arial", "Helvetica", "sans-serif","µ¸¿ò"; font-size: 12px}
+a:active { text-decoration: underline; color: #3399FF; font-family: "Arial", "Helvetica", "sans-serif","µ¸¿ò"; font-size: 12px}
+a:hover {  text-decoration:underline; color:#3399FF; font-family: "Arial", "Helvetica", "sans-serif","µ¸¿ò"; font-size: 12px}
+
+/*Á¦Ç°¼Ò°³ ¼­ºê¸Þ´º¸µÅ©*/
+.pds:link { text-decoration: none; color: #003399; font-family: "Arial"; font-size: 11px}
+.pds:visited { text-decoration: none; color: #003399; font-family: "Arial"; font-size: 11px}
+.pds:active { text-decoration: none; color: #0066CC; font-family: "Arial"; font-size: 11px}
+.pds:hover {  text-decoration:none; color:#0066CC; font-family: "Arial"; font-size: 11px}
+
+
+/*¼­ºê¸Þ´ºº° ¸µÅ©»ö»ó*/
+.sub1:link { text-decoration: none; color: #333333; font-family: "µ¸¿ò"; font-size: 12px}
+.sub1:visited { text-decoration: none; color: #333333; font-family:"µ¸¿ò"; font-size: 12px}
+.sub1:active { text-decoration: none; color: #0099CC; font-family: "µ¸¿ò"; font-size: 12px}
+.sub1:hover {  text-decoration:none; color:#0099CC; font-family: "µ¸¿ò"; font-size: 12px}
+
+
+/*ÀÔ·ÂÆû input, textarea*/
+.input_box {
+	border: 1px solid #CCCCCC;
+	color: #333333;
+	font-family: "µ¸¿ò";
+	font-size: 12px;
+	text-decoration: none;
+
+}
+
+.input_loginbox {
+	border: 1px solid #006699;
+	color: #333333;
+	font-family: "µ¸¿ò";
+	font-size: 12px;
+	text-decoration: none;
+
+}
+
+.input_box2 {
+	border: 1px solid #CCCCCC;
+	color: #333333;
+	font-family: "µ¸¿ò";
+	font-size: 12px;
+	text-decoration: none;
+	background-color:#F0F0F0; 
+
+}
+
+.textarea_box{
+font-size:12px;
+color:#333333;
+border-width:1;
+border-color:#CCCCCC;
+border-style:solid;
+overflow-y:auto
+}
+/* ¼ýÀÚ ¹× ±ÛÀÚ*/
+.font_nu {
+	font-family: "verdana";
+	font-size: 11px;
+	text-decoration: none;
+	letter-spacing:-1;
+	color: #0099CC;
+}
+
+/*º»¹® ±ÛÀÚ Å©±â */
+.big_text {  font-family: "verdana","µ¸¿ò"; font-size: 14px; text-decoration: none}
+
+.font_11 {font-family: "verdana","µ¸¿ò";	font-size: 11px;text-decoration: none}
+
+.font_10 {font-family: "verdana","µ¸¿ò";	font-size: 10px;text-decoration: none}
+
+.font_footer {font-family: "µ¸¿ò";	font-size: 11px;text-decoration: none; letter-spacing:0;}
+
+/*º»¹®°£°Ý*/
+.height_18 {font-family: "Arial", "Helvetica", "sans-serif","µ¸¿ò"; font-size: 12px; line-height: 18px; color: #666666;}
+.under_text {  font-family: "µ¸¿ò"; font-size: 12px; color: #996600; text-decoration: underline}
+
+/*Å×ÀÌºí */
+.hand{  cursor:hand}
+
+.border_table{  border:1px solid #cccccc}
+
+.td_all{  word-break:break-all;}

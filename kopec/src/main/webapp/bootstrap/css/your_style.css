@@ -1,0 +1,104 @@
+/*
+ * It is advised not to edit the smartadmin_production.css
+ * as this will override any changes you make in the
+ * later versions of this theme.
+ *
+ * We advise that you use use this CSS to override
+ * SmartAdmin styles.
+ *
+ * Rename the stylesheet to whatever your liking so it will stay
+ * unique to you with each update of SmartAdmin.
+ */
+
+/*
+ * INDEX
+ *
+ * - HTML
+ * - BODY
+ * - CUSTOM STYLES
+ */
+
+i {
+	padding-top:3px;
+}
+
+article header i {
+	padding-top:9px;
+}
+
+#main {
+    margin-left: 0px !important;
+    padding: 0;
+    padding-bottom: 52px;
+    min-height: 500px;
+    position: relative;
+}
+
+#ribbon {
+    float: right;
+    width: 100%;
+    margin-top: -4px;
+}
+#content{
+	float:right !important;
+	width: 100%;
+}
+
+#pjqgrid table {
+    white-space: nowrap;
+    line-height: 1.42857143;
+    font-weight: normal;
+    font-size: 12px;
+    font-style: normal;
+    color: #333;
+    text-align: start;
+    font-variant: normal normal;
+    height:31px !important;
+}
+
+.form-button {
+	margin: 6px 0;
+	border:1px solid #D3D3D3;
+}
+
+
+
+
+/* bsc solution   */
+
+
+
+/*테이블색상*/
+.bg_blue00 {background-color:5397b3;color:#fff;text-align:center;font-weight:normal !important;};
+.bg_blue01 {background-color:#4d96d6};
+.bg_blue02 {background-color:#e2f0ff;text-align:center;font-size:11px};
+.bg_gray01 {background-color:#e7e7e7};
+.bg_gray02 {background-color:#f7f7f7;text-align:center;font-size:11px};
+.bg_wt {background-color:#ffffff;padding:0 5 0 5};
+.bg_wtg {background-color:#f7f7f7;padding:0 0 0 10};
+.bg_wtb {background-color:#e2f0ff;padding:0 5 0 5};
+.bg_wtc {background-color:#ffffff;padding:0 0 0 0;text-align:center};
+.bg_wts {background-color:#4E7BB4;padding:0 0 0 0;font-size:11px;color:#FFFFFF};
+.bg_wtp {background-color:#CED8E6;padding:0 5 0 5;font-size:11px;color:#FFFFFF};
+.bg_bluesky {background-color:#AAC8EE;padding:0 5 0 5;font-size:11px;color:#FFFFFF;};
+
+.bg_blue00 th {
+	font-weight: normal;
+}
+
+
+/*테이블디자인*/
+.ta_td01 {background-color: #E9F6FF; color:0067A9;font-weight:bold;padding:2};
+.ta_td02 {background-color: #0067A9; height:3px};
+.ta_td03 {background-color: #e7e7e7; height:3px};
+.ta_td04 {background-color: #dcf8fb; color:#1d9cbb;font-weight:bold;padding:2};
+.ta_td05 {background-color: #e5f9f7; color:#0eb7a9;font-weight:bold;padding:2};
+.ta_td06 {background-color: #DFE2F1; color:#555555;font-weight:bold;padding:2};
+.ta_td07 {background-color: #ebfdfc; color:#00736a;font-weight:bold;padding:2;font-size:14px};
+.ta_td08 {background-color: #f5f5f5; color:#686868;font-weight:;padding:2 2 2 7;font-size:11px};
+
+.nc_th {
+	height:28px;text-align:center;border:1px solid #c1c1c1;background-color:#1b4388;color:#fff;
+}
+
+

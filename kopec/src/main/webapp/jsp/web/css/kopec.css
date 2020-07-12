@@ -1,0 +1,70 @@
+/* 페이지 전체 CSS 정의*/
+body {
+ margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+	font-family:돋움; font-size:12px; color:#666666;}
+
+table, tr, td, select, textarea, input{ 
+ 		font-family:돋움;
+ 		font-size: 12px;
+ 		
+}
+			
+/*배경*/			
+img{border:none}			
+
+
+
+
+
+/* 기본링크*/ 
+		
+a:link { text-decoration: none; color: #666666; font-family: 돋움; font-size:12px}
+a:visited { text-decoration: none; color: #666666; font-family: 돋움; font-size: 12px}
+a:active { text-decoration: none; color: #FF6600; font-family: 돋움; font-size: 12px}
+a:hover {  text-decoration: none; color:#FF6600; font-family: 돋움; font-size: 12px}
+
+
+/*서브메뉴별 링크색상*/
+.sub1:link { text-decoration: none; color: #FFFFFF; font-family: 돋움; font-size: 12px; font-weight:bolder}
+.sub1:visited { text-decoration: none; color: #FFFFFF; font-family:돋움; font-size: 12px;font-weight:bolder}
+.sub1:active { text-decoration: none; color: #FFFF00; font-family: 돋움; font-size: 12px;font-weight:bolder}
+.sub1:hover {  text-decoration:none; color:#FFFF00; font-family: 돋움; font-size: 12px;font-weight:bolder}
+
+
+
+/*본문 글자 크기 */
+.big_text {  font-family: verdana,돋움,Arial; font-size: 14px; text-decoration: none}
+.font_11 {font-family: "돋움";	font-size: 11px;text-decoration: none}
+.font_10 {font-family: "verdana","돋움";	font-size: 10px;text-decoration: none}
+.font_footer {font-family: "돋움";	font-size: 11px;text-decoration: none; letter-spacing:0;}
+
+.f8{font-size: 0.9em; }
+
+.visitor{font-size: 0.9em; }
+
+
+
+/*글자 색상*/
+.fc_w{ color:#ffffff}
+.fc_c1{ color:#CCCCCC}
+.fc_c9{ color:#999999}
+.fc_c6{ color:#666666}
+.fc_c3{ color:#333333}
+.fc_0{ color:#000000}
+
+.fc_y1{ color:#FF6600}
+.fc_b1{ color:#006699}
+.fc_b2{ color:#17328a}
+.fc_b3{ color:#0033FF}
+.fc_b4{ color:#2155a1}
+
+.fc_r1{ color:#FF0000}
+.fc_l1{ color:#b3e0e5}
+.b{ font-weight:bold;}
+
+/*본문간격*/
+.height_18 {font-family: "돋움"; font-size: 12px; line-height: 18px; color: #333333;}
+.under_text {  font-family: "돋움"; font-size: 12px; color: #996600; text-decoration: underline}

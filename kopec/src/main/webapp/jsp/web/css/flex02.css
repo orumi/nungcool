@@ -1,0 +1,223 @@
+/*어플리게이션 배경 */
+Application {
+   backgroundColor: #DCDDDE;
+   backgroundGradientColors: #DCDDDE, #DFDFDF;
+	themeColor: #95C904;
+    color: #27454D;
+    fontFamily: Gulim;
+    fontSize: 12;
+
+}
+
+/* 데이타그리드 정의 */
+DataGrid {
+   backgroundColor: #ffffff;
+   alternatingItemColors: #D5D5D5, #ffffff;
+   verticalGridLineColor: #666666;
+   rollOverColor: #ff6600;
+   textRollOverColor: #000000;
+   selectionColor: #95C904;
+   fontFamily: Gulim;
+   fontSize: 12;
+   color: #000000;
+   dropShadowEnabled: true;
+   headerColors: #333333, #666666;
+   headerStyleName: "mydataGridHeaderStyle";
+}
+/* 데이타 그리드 헤드 스타일 */
+.mydataGridHeaderStyle {
+   color: #ffffff;
+   fontFamily: Gulim;
+   fontSize: 12;
+   fontWeight: bold;
+}
+
+
+/* 굴림 11사이 */
+.gulimsize11 {
+   fontFamily: Gulim;
+   fontSize: 12;
+   color: #27454D;
+}
+/* 버튼 */
+Button {
+   cornerRadius: 5;
+   highlightAlphas: 0.3, 0;
+   fillAlphas: 1, 1, 1, 1;
+   fillColors: #666666, #666666, #666666, #666666;
+   fontFamily: Gulim;
+   fontSize: 12;
+   color: #ffffff;
+   textRollOverColor: #ffffff;
+   borderColor: #D0CCC4;
+   themeColor: #897e6a;
+   fontWeight: normal;   
+}
+/* 콤보박스 */
+ComboBox {
+   fontFamily: Gulim;
+   fontSize: 12;
+   color: #000000;
+   fontWeight: normal;
+   highlightAlphas: 0.3, 0;
+   fillAlphas: 1, 1, 1, 1;
+   fillColors: #D0CCC4, #D0CCC4, #D0CCC4, #D0CCC4;
+   alternatingItemColors: #D5D5D5, #ffffff;
+   textRollOverColor: #000000;
+   selectionColor: #95C904;
+   rollOverColor: #ff6600;
+   textSelectedColor: #000000;
+   dropDownStyleName: "myComboBoxDropDowns";
+}
+/* 콤보박스 하단  스타일 */
+.myComboBoxDropDowns {
+   cornerRadius: 2;
+   borderThickness: 1;
+   borderColor: #666666;
+   dropShadowEnabled: true;
+}
+/* 체크박스 하단  스타일 */
+CheckBox {
+   fontFamily: Gulim;
+   fontSize: 12;
+   color: #27454D;
+   textRollOverColor: #000000;
+   fillAlphas: 0, 0, 0, 0;
+   fillColors: #ffffff, #ffffff, #ffffff, #ffffff;   
+}
+
+/* 라디오 버튼 */
+RadioButton {
+   fontFamily: Gulim;
+   fontSize: 12;
+   color: #27454D;
+   textRollOverColor: #000000;
+   fillAlphas: 0, 0, 0, 0;
+   fillColors: #ffffff, #ffffff, #ffffff, #ffffff;   
+}
+/* 탭 네비게이션  스타일 */
+TabNavigator {
+   tabStyleName: "myTabs";
+   selectedTabTextStyleName: "mySelectedTabs";
+}
+
+.myTabs {
+   backgroundColor: #ff9900;
+
+}
+
+.mySelectedTabs {
+}TabNavigator {
+   tabStyleName: "myTabs";
+   selectedTabTextStyleName: "mySelectedTabs";
+}
+
+.myTabs {
+   backgroundColor: #95C904;
+   fontFamily: Gulim;
+   fontSize: 12;
+   fontWeight: normal;      
+   color: #ffffff;   
+
+}
+
+.mySelectedTabs {
+   fontFamily: Gulim;
+   fontSize: 12;
+   fontWeight: normal;      
+   color: #000000; 	
+}
+/* accordion */
+Accordion {
+   fillAlphas: 1, 1, 1, 1;	
+   fillColors: #999999, #999999, #999999, #999999;	
+   textIndent: 8;	
+   selectedFillColors: #0591CF, #0591CF;
+   textSelectedColor: #000000;
+   headerStyleName: "myaccordionHeader";
+}
+
+.myaccordionHeader {
+   fontFamily: Gulim;
+   fontSize: 12;
+   fontWeight: normal;   
+}
+/* 라디오 버튼 */
+RadioButton {
+   fontFamily: Gulim;
+   fontSize: 12;
+   color: #6C614C;
+}
+/* 인풋텍스트 */
+TextInput {
+   borderColor: #000000;
+   backgroundColor: #cccccc;
+   color: #27454D;
+   fontFamily: Gulim;
+   fontSize: 12;
+   
+}
+/* 트리메뉴 */
+Tree {
+   fontFamily: Dotum;
+   fontSize: 11;
+   color: #000000;
+   fontWeight: normal;
+   highlightAlphas: 0.3, 0;
+   fillAlphas: 1, 1, 1, 1;
+   fillColors: #D0CCC4, #D0CCC4, #D0CCC4, #D0CCC4;
+   alternatingItemColors: #D5D5D5, #ffffff;
+   textRollOverColor: #000000;
+   selectionColor: #95C904;
+   rollOverColor: #ff6600;
+   textSelectedColor: #000000;
+   indentation: 0;
+}
+
+Panel {
+
+}
+
+TextArea {
+   borderColor: #000000;
+   backgroundColor: #ffffff;
+   color: #27454D;
+   fontFamily: Gulim;
+   fontSize: 12;
+}
+
+/* 프로그래스바 */
+ProgressBar {
+   barColor: #95C904;
+   trackColors: #cccccc, #cccccc;
+   trackHeight: 20;
+}
+
+/* 달력 */
+DateChooser {
+   headerColors: #D0D0D0 , #ffffff;
+   cornerRadius: 0;   
+   rollOverColor: #ff6600;
+   backgroundColor: #ffffff;
+   color: #27454D;
+   todayColor: #000000;
+   selectionColor: #ffcc00;
+   
+}
+/* 버튼바 */	
+ButtonBar {
+   buttonHeight: 28;
+}
+/* 넘버스텁퍼 */
+NumericStepper {
+   borderStyle: inset;
+}
+
+VScrollBar {
+   cornerRadius: 0;
+   highlightAlphas: 0, 0;
+   fillColors: #ffffff, #ffffff, #ffffff, #eeeeee;
+   trackColors: #ffffff, #e7e7e7;
+   themeColor: #333333;
+}
+

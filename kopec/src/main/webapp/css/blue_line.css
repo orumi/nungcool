@@ -1,0 +1,93 @@
+@CHARSET "EUC-KR";
+//hrdk common
+/* 페이지 전체 CSS 정의*/
+body { margin:0 0 0 0;
+       font-size:12px;}
+td		{color:#303030; font-family:"굴림", "MS Gothic"; font-size:9pt;line-height:18px;font-size: 12px;font-weight: ;word-break:break-all;word-spacing:0mm}
+
+			
+/*배경*/			
+img{border:none}			
+.page_bg	{background-image:url(../images/blue_line/top_menu_03.jpg);background-repeat:repeat-x;}
+.sub_bg	    {background-image:url(../images/blue_line/main_back.jpg);background-repeat:repeat-x;}
+.submenubox_bg{padding-left:18px;padding-top:4px;background-image:url(../images/blue_line/submenu_box.gif);background-repeat:no-repeat;}
+
+/* 기본링크*/ 
+a:link { text-decoration: none; color: #666666; font-family: 돋움; font-size:12px}
+a:visited { text-decoration: none; color: #666666; font-family: 돋움; font-size: 12px}
+a:active { text-decoration: none; color: #FF6600; font-family: 돋움; font-size: 12px}
+a:hover {  text-decoration: none; color:#FF6600; font-family: 돋움; font-size: 12px}
+
+/*font 11 링크색상*/
+.a11:link { text-decoration: none; color: #666666; font-family: 돋움,Arial, Helvetica, sans-serif, verdana; font-size: 11px;}
+.a11:visited { text-decoration: none; color: #666666; font-family:돋움,Arial, Helvetica, sans-serif,verdana; font-size: 11px;}
+.a11:active { text-decoration: none; color: #FF6600; font-family: 돋움,Arial, Helvetica, sans-serif,verdana; font-size: 11px;}
+.a11:hover {  text-decoration:none; color:#FF6600; font-family:돋움,Arial, Helvetica, sans-serif,verdana; font-size: 11px;}
+
+
+/*서브메뉴 링크*/
+.sub1:link { text-decoration: none; color: #333333; font-family: 돋움; font-size: 11px;letter-spacing:-1;}
+.sub1:visited { text-decoration: none; color: #333333; font-family:돋움; font-size: 11px;letter-spacing:-1;}
+.sub1:active { text-decoration: none; color: #FF6600; font-family: 돋움; font-size: 11px;letter-spacing:-1;}
+.sub1:hover {  text-decoration:none; color:#FF6600; font-family: 돋움; font-size: 11px;letter-spacing:-1;}
+
+/*tablet*/
+td{font-size:12px;}
+
+/*본문 글자 크기 */
+.big_text {font-family: verdana,돋움,Arial; font-size: 1.5em; text-decoration: none; color:#003399;}
+.font_10 {font-family: "verdana","돋움";font-size: 10px;text-decoration: none}
+.font_11 {font-family: "돋움";	font-size: 11px;text-decoration: none}
+.font_12 {font-family: "돋움";	font-size: 12px;text-decoration: none}
+
+.f8{font-size: 0.8em;}
+.visitor{font-size: 0.9em; }
+
+/*글자 색상*/
+.fc_w{ color:#ffffff}
+.fc_c1{ color:#CCCCCC}
+.fc_c9{ color:#999999}
+.fc_c6{ color:#666666}
+.fc_c3{ color:#333333}
+.fc_0{ color:#000000}
+
+.fc_y1{ color:#FF6600}
+.fc_b1{ color:#006699}
+.fc_b2{ color:#17328a}
+.fc_b3{ color:#0033FF}
+
+.fc_r1{ color:#FF0000}
+.fc_g1{ color:#339900}
+
+.b{ font-weight:bold;}
+
+/*이미지포함 테이블색상*/
+.tbg01_old {background-image: url(../images/blue/tbg01.gif);background-repeat: repeat-x;padding:6 0 4 0;font-weight:bold;color:#ffffff;text-align:center}
+.tbg01 {background-image: url(../images/blue/tbg03.gif);background-repeat: repeat-x;padding:6 0 4 0;font-weight:bold;color:#02407e;text-align:center}
+.tbg02 {background-color:bed794;height:3}
+.tbg03 {background-image: url(../images/blue/tbg03.gif);background-repeat: repeat-x;padding:6 0 4 0;font-weight:bold;color:#02407e;text-align:center}
+.tbg04 {background-image: url(../images/blue/tbg04.gif);background-repeat: repeat-x;padding:6 0 4 0;font-weight:bold;color:#0a69ad;text-align:center}
+.tbg05 {background-image: url(../images/blue/tbg05.gif);background-repeat: repeat-x;padding:6 0 4 0;font-weight:bold;color:#3353a4;text-align:center}
+.tbg07 {background-image: url(../images/blue/tbg07.gif);background-repeat: repeat-x;padding:6 0 4 0;font-weight:bold;color:#006f73;text-align:center}
+.dot01 {background-image: url(../images/blue/dot01.gif);background-repeat: repeat-x;height:1px}
+.tbg09 {background-image: url(../images/blue/tbg09.gif);background-repeat: repeat-x;padding:6 0 4 0;font-weight:bold;color:#02407e;text-align:center}
+
+/*테이블색상*/
+.bg_blue01 {background-color:4d96d6};
+.bg_blue02 {background-color:e2f0ff;text-align:center;font-size:11px};
+.bg_gray01 {background-color:e7e7e7};
+.bg_gray02 {background-color:f7f7f7;text-align:center;font-size:11px};
+.bg_wt {background-color:ffffff;padding:0 0 0 10};
+.bg_wtg {background-color:f7f7f7;padding:0 0 0 10};
+.bg_wtb {background-color:e2f0ff;padding:0 0 0 10};
+.bg_wtc {background-color:ffffff;padding:0 0 0 0;text-align:center};
+	
+/*테이블디자인*/
+.ta_td01 {background-color: #E9F6FF; color:0067A9;font-weight:bold;padding:2};
+.ta_td02 {background-color: #0067A9; height:3px};
+.ta_td03 {background-color: #e7e7e7; height:3px};
+.ta_td04 {background-color: #f5f5f5; color:545454;font-weight:bold;padding:2};
+.ta_td05 {background-color: #e5f9f7; color:0eb7a9;font-weight:bold;padding:2};
+.ta_td06 {background-color: #f1fce1; color:6fa723;font-weight:bold;padding:2};
+.ta_td07 {background-color: #ebfdfc; color:00736a;font-weight:bold;padding:2;font-size:14px};
+.ta_td08 {background-color: #f5f5f5; color:333333;font-weight:;padding:2 2 2 7;font-size:11px};

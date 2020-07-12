@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+
+
+<tiles-definitions>
+
+    <!-- portal main   -->
+    <definition name="main/*.tiles" extends="mainTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/ncsys/main/portal.jsp"/>
+    </definition>
+
+    <definition name="mainTemplate" template="/WEB-INF/jsp/tiles/mainLayout.jsp">
+        <put-attribute name="header"  value="/WEB-INF/jsp/tiles/header.jsp"/>
+        <put-attribute name="left"    value="/WEB-INF/jsp/tiles/left.jsp"/>
+        <put-attribute name="content" value="/WEB-INF/jsp/tiles/content.jsp"/>
+        <put-attribute name="footer"  value="/WEB-INF/jsp/tiles/footer.jsp"/>
+    </definition>
+
+
+
+    <definition name="ncsys/*.tiles" extends="subTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/ncsys/{1}.jsp"/>
+    </definition>
+
+    <definition name="ncsys/*/*.tiles" extends="subTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/ncsys/{1}/{2}.jsp"/>
+    </definition>
+
+    <definition name="ncsys/*/*/*.tiles" extends="subTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/ncsys/{1}/{2}/{3}.jsp"/>
+    </definition>
+
+    <definition name="ncsys/*/*/*/*.tiles" extends="subTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/ncsys/{1}/{2}/{3}/{4}.jsp"/>
+    </definition>
+
+    <definition name="ncsys/*/*/*/*/*.tiles" extends="subTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/ncsys/{1}/{2}/{3}/{4}/{5}.jsp"/>
+    </definition>
+
+
+    <definition name="subTemplate" template="/WEB-INF/jsp/tiles/layout.jsp">
+        <put-attribute name="content" value="/WEB-INF/jsp/tiles/content.jsp"/>
+    </definition>
+
+
+
+    <!-- popup Mode -->
+	<definition name="popup-layout" template="/WEB-INF/jsp/tiles/popupLayout.jsp">
+	  	<put-attribute name="content"   	value="" />
+	</definition>
+
+	 <definition name="ncsys/*.popup" extends="popup-layout">
+		<put-attribute name="content" value="/WEB-INF/jsp/ncsys/{1}.jsp"/>
+	 </definition>
+	 <definition name="ncsys/*/*.popup" extends="popup-layout">
+		<put-attribute name="content" value="/WEB-INF/jsp/ncsys/{1}/{2}.jsp"/>
+	 </definition>
+	 <definition name="ncsys/*/*/*.popup" extends="popup-layout">
+		<put-attribute name="content" value="/WEB-INF/jsp/ncsys/{1}/{2}/{3}.jsp"/>
+	 </definition>
+	 <definition name="ncsys/*/*/*/*.popup" extends="popup-layout">
+		<put-attribute name="content" value="/WEB-INF/jsp/ncsys/{1}/{2}/{3}/{4}.jsp"/>
+	 </definition>
+
+
+    <!-- 임시 사용 중    -->
+    <definition name="isms/*.tiles" extends="subTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/ncsys/isms/{1}.jsp"/>
+    </definition>
+
+    <definition name="isms/*/*.tiles" extends="subTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/ncsys/isms/{1}/{2}.jsp"/>
+    </definition>
+
+    <definition name="isms/*/*/*.tiles" extends="subTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/ncsys/isms/{1}/{2}/{3}.jsp"/>
+    </definition>
+
+    <definition name="isms/*/*/*/*.tiles" extends="subTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/ncsys/isms/{1}/{2}/{3}/{4}.jsp"/>
+    </definition>
+
+    <definition name="isms/*/*/*/*/*.tiles" extends="subTemplate">
+        <put-attribute name="content" value="/WEB-INF/jsp/ncsys/isms/{1}/{2}/{3}/{4}/{5}.jsp"/>
+    </definition>
+
+
+
+
+
+	 <definition name="isms/*.popup" extends="popup-layout">
+		<put-attribute name="content" value="/WEB-INF/jsp/ncsys/isms/{1}.jsp"/>
+	 </definition>
+	 <definition name="isms/*/*.popup" extends="popup-layout">
+		<put-attribute name="content" value="/WEB-INF/jsp/ncsys/isms/{1}/{2}.jsp"/>
+	 </definition>
+	 <definition name="isms/*/*/*.popup" extends="popup-layout">
+		<put-attribute name="content" value="/WEB-INF/jsp/ncsys/isms/{1}/{2}/{3}.jsp"/>
+	 </definition>
+	 <definition name="isms/*/*/*/*.popup" extends="popup-layout">
+		<put-attribute name="content" value="/WEB-INF/jsp/ncsys/isms/{1}/{2}/{3}/{4}.jsp"/>
+	 </definition>
+
+
+</tiles-definitions>
+
+
+
+
+
+
+

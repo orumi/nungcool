@@ -1,0 +1,54 @@
+.title_text {
+	font-family: "±¼¸²";
+	font-size: 9pt;
+	line-height: normal;
+	color: #000066;
+	font-weight: bold;
+}
+.title_b {
+	font-family: "±¼¸²";
+	font-size: 18px;
+	font-weight: bold;
+	color: #000066;
+}
+
+.text {
+	font-family: "±¼¸²";
+	font-size: 9pt;
+	color: 2a4775;
+}
+.text_01 {
+	font-family: "±¼¸²";
+	font-size: 9pt;
+	color: #000066;
+}
+a:link {
+	font-family: "±¼¸²";
+	font-size: 9pt;
+	color: #2A4775;
+	text-decoration: none;
+}
+a:visited {
+	font-family: "±¼¸²";
+	font-size: 9pt;
+	color: #2A4775;
+	text-decoration: none;
+}
+a:hover {
+	font-family: "±¼¸²";
+	font-size: 9pt;
+	color: #2A4775;
+	text-decoration: underline;
+}
+a:active {
+	font-family: "±¼¸²";
+	font-size: 9pt;
+	color: #2A4775;
+	text-decoration: underline;
+}
+.td {
+
+	font-family: "±¼¸²";
+	font-size: 9pt;
+	color: 2a4775;
+}

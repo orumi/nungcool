@@ -1,0 +1,40 @@
+< 남동발전 운영 서버 정보 >
+
+
+1. 운영 서버 정보 : 10.131.5.8    <= bsc/bsc123
+
+<운영서버>
+(1) 시스템 경로 : /RAID5/BSC
+(2) WAS 경로 : /RAID5/weblogic/user_projects/domains/bscDom/
+         startbsc.sh / stopbsc.sh
+(3) http://10.131.5.8:7779/bsc
+
+<2007 운영서버>  <=== 실제 운영 서버
+(1) 시스템 경로 : /RAID5/BSC2007
+(2) WAS 경로 : /RAID5/weblogic/user_projects/domains/bscDom2007/
+         startbsc2007.sh / stopbsc2007.sh
+(3) http://10.131.5.8:7780/bsc2007
+(4) http://10.131.5.8:7780/console weblogic/weblogic
+(5) ftp 접속계정: bsc2007/bsc2007
+
+2. 개발 서버 정보 : 10.131.5.87    <= bsc/bsc123
+
+
+
+3. 운영 DB 정보  <=== 실제 운영
+	서버 : 10.131.5.9
+        sid  : ora9
+        u/p  : bsc/bsc123  <== 실제 운영
+
+
+KOSEP =
+  (DESCRIPTION =
+    (ADDRESS_LIST =
+      (ADDRESS = (PROTOCOL = TCP)(HOST = 10.131.5.9)(PORT = 1521))
+    )
+    (CONNECT_DATA =
+      (SERVICE_NAME = ORA9)
+    )
+  )
+
+	

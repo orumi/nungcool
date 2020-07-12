@@ -1,0 +1,103 @@
+<web-app
+version="3.0"
+id="WebApp_ID"
+xmlns="http://java.sun.com/xml/ns/javaee"
+xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+<!--
+    수정일          수성자                          수정내용
+   ==========      ========      =================================================
+   2011.9.19        이기하         filter 정리
+   2013.5.31        이기하         미사용 filter 정리(.mdo, .action)
+
+  ************************************************************************************************
+    0. 로그인 정책 컴포넌트용 필터 : 주석
+    1. 스프링 시큐리티 설정 : 주석
+    2. EgovSSO 로그인/로그아웃 설정을 위한 필터 설정 : 주석
+    3. Spring Security 로그인/로그아웃 설정을 위한 필터 설정 : 주석
+  ************************************************************************************************
+-->
+    <display-name>BSC2020</display-name>
+    <filter>
+        <filter-name>encodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>utf-8</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>encodingFilter</filter-name>
+        <url-pattern>*.do</url-pattern>
+        <url-pattern>*.json</url-pattern>
+    </filter-mapping>
+
+    <!-- local, stage, release  -->
+    <context-param>
+    	<param-name>spring.propertis.active</param-name>
+    	<param-value>local</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath*:egovframework/spring/com/**/context-*.xml</param-value>
+    </context-param>
+
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+    <servlet>
+        <servlet-name>action</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>/WEB-INF/config/egovframework/springmvc/egov-com-*.xml</param-value>
+        </init-param>
+        <load-on-startup>2</load-on-startup>
+        <async-supported>true</async-supported>
+    </servlet>
+    <absolute-ordering>
+		<name>action</name>
+	</absolute-ordering>
+
+    <servlet-mapping>
+        <servlet-name>action</servlet-name>
+        <url-pattern>*.do</url-pattern>
+        <url-pattern>*.json</url-pattern>
+    </servlet-mapping>
+
+    <!-- cool package   -->
+	<servlet>
+    	<servlet-name>CoolServer</servlet-name>
+    	<servlet-class>com.nc.cool.CoolServer</servlet-class>
+    	<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+    	<servlet-name>CoolServer</servlet-name>
+    	<url-pattern>/CoolServer</url-pattern>
+	</servlet-mapping>
+
+
+    <!-- 서비스 부분에서 HttpServletRequest 정보 얻기 -->
+    <listener>
+        <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+    </listener>
+
+
+
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>egovDevIndex.jsp</welcome-file>
+    </welcome-file-list>
+    <login-config>
+        <auth-method>BASIC</auth-method>
+    </login-config>
+
+    <session-config>
+        <session-timeout>600</session-timeout>
+    </session-config>
+
+
+</web-app>
