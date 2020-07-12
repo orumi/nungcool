@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ncsys.com.bsc.valuate.service.mapper.ValuateViewMapper">
+
+	<select id="selectEvalGrp" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT  distinct cid, ccid, clevel, crank, cname,
+		          sid, scid GRPID, slevel, srank, sname GRPNM
+		 FROM
+		        (select t.id cid,t.parentid cpid,t.contentid ccid,t.treelevel clevel, t.rank crank,t.weight cweight,c.name cname
+		         from   tblhierarchy t,tblcompany c
+		         where  t.contentid=c.id  and t.treelevel=0 and t.year = #{year}
+		        ) com,
+		        (select t.id sid,t.parentid spid,t.contentid scid,t.treelevel slevel, t.rank srank,t.weight sweight,c.name sname
+		         from   tblhierarchy t,tblsbu c
+		         where  t.contentid=c.id  and t.treelevel=1 and t.year = #{year}
+		        ) sbu,
+		        (select t.id bid,t.parentid bpid,t.contentid bcid,t.treelevel blevel, t.rank brank,t.weight bweight,c.name bname
+		         from   tblhierarchy t,tblbsc c
+		         where  t.contentid=c.id  and t.treelevel=2 and t.year = #{year}
+		        ) bsc,
+		        (
+		         select evaldeptid from tblmeaevaldept
+		         where  grpid in (select grpid from tblmeaevalr
+		                          where evalrid like '%' and year = #{year} and month = #{month} )
+		        ) emp
+		 where  cid  = spid
+		 and    sid  = bpid
+		 and    bcid = evaldeptid
+		 order by crank, srank
+
+	</select>
+
+
+
+	<select id="selectEvalView" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT  cid, ccid, clevel, crank, cname,  cweight,
+		          sid, scid, slevel, srank, sname,  sweight,
+		          bid, bcid, blevel, brank, bname,  sum(mweight) over (partition by cid, sid, bid          ) bweight,
+		          pid, pcid, plevel, prank, pname,  sum(mweight) over (partition by cid, sid, bid, pid     ) pweight,
+		          oid, ocid, olevel, orank, oname,  sum(mweight) over (partition by cid, sid, bid, pid, oid) oweight,
+		          mid, mcid, mlevel, mrank, mname,  mweight,
+		          mea.measureid, CASE WHEN (mea.MEASCHAR='I') THEN '고유' ELSE '공통' END mkind, measchar ,
+		          grp.year, grp.month, avg_score, grade, avg_score grade_score, round(mweight * avg_score/100,2)  meas_score
+		  FROM
+		         (select t.id cid,t.parentid cpid,t.contentid ccid,t.treelevel clevel, t.rank crank,t.weight cweight,c.name cname
+		          from   tblhierarchy t,tblcompany c
+		          where  t.contentid=c.id  and t.treelevel=0 and t.year = #{year}
+		         ) com,
+		         (select t.id sid,t.parentid spid,t.contentid scid,t.treelevel slevel, t.rank srank,t.weight sweight,c.name sname
+		          from   tblhierarchy t,tblsbu c
+		          where  t.contentid=c.id  and t.treelevel=1 and t.year = #{year} and t.contentid = #{grpid}
+		         ) sbu,
+		         (select t.id bid,t.parentid bpid,t.contentid bcid,t.treelevel blevel, t.rank brank,t.weight bweight,c.name bname
+		          from   tblhierarchy t,tblbsc c
+		          where  t.contentid=c.id  and t.treelevel=2 and t.year = #{year}
+		         ) bsc,
+		         (select t.id pid,t.parentid ppid,t.contentid pcid,t.treelevel plevel, t.rank prank,t.weight pweight,c.name pname
+		          from   tbltreescore t,tblpst c
+		          where  t.contentid=c.id  and t.treelevel=3 and t.year = #{year}
+		         ) pst  ,
+		         (select t.id oid,t.parentid opid,t.contentid ocid,t.treelevel olevel, t.rank orank,t.weight oweight,c.name oname
+		          from   tbltreescore t,tblobjective c
+		          where  t.contentid=c.id  and t.treelevel=4 and t.year = #{year}
+		         ) obj ,
+		         (select t.id mid,t.parentid mpid,t.contentid mcid,t.treelevel mlevel, t.rank mrank, t.weight mweight, c.name mname,
+		                 c.id mcd,d.measureid  , d.measurement, d.frequency, d.trend, d.etlkey,
+		                 d.unit   , c.MEASCHAR ,
+		                 d.planned,d.plannedbase, d.base, d.baselimit, d.limit
+		          from    tbltreescore    t, tblmeasure c,  tblmeasuredefine d
+		          where  t.contentid=d.id  and t.treelevel=5 and t.year = #{year}  and d.measureid=c.id
+		          and    d.measurement = '비계량'
+		         ) mea,
+		         (
+		           select a.grpid, a.grpnm, a.year, a.month,
+		                  b.evaldeptid, c.id  gbcid, c.name
+		           from tblmeaevalgrp a, tblmeaevaldept b,
+		                tblbsc        c
+		           where a.grpid      = b.grpid
+		           and   b.evaldeptid = c.id
+		           and   a.year = #{year}
+		           and   a.month= #{month}
+		           and   a.grpid like '%'
+		         ) grp,
+		         (
+		         <![CDATA[
+		           SELECT evalid, year, month,
+		                  avg_score,
+		                  case when avg_score >=100 then 'S'
+		                       when avg_score < 100 and  avg_score >= 95 then 'A+'
+		                       when avg_score < 95  and  avg_score >= 90 then 'A'
+		                       when avg_score < 90  and  avg_score >= 85 then 'B+'
+		                       when avg_score < 85  and  avg_score >= 80 then 'B'
+		                       when avg_score < 80  and  avg_score >= 75 then 'C+'
+		                       when avg_score < 75  and  avg_score >= 70 then 'C'
+		                       when avg_score < 70  and  avg_score >= 65 then 'D+'
+		                       when avg_score < 65  then 'D'
+		                  end grade,
+		                  case when avg_score >=100 then '100'
+		                       when avg_score < 100 and  avg_score >= 95 then '95'
+		                       when avg_score < 95  and  avg_score >= 90 then '90'
+		                       when avg_score < 90  and  avg_score >= 85 then '85'
+		                       when avg_score < 85  and  avg_score >= 80 then '80'
+		                       when avg_score < 80  and  avg_score >= 75 then '75'
+		                       when avg_score < 75  and  avg_score >= 70 then '70'
+		                       when avg_score < 70  and  avg_score >= 65 then '65'
+		                       when avg_score < 65  then '60'
+		                  end grade_score
+		           FROM
+		           ]]>
+		               (
+		               SELECT evalid, year, month, count(*) cnt,
+		                      sum(evalscore)  scr_sum,
+		                      max(evalscore)  scr_max,
+		                      min(evalscore)  scr_min,
+		                      round(case when count(*) >= 5 then
+		                                     (sum(evalscore) - max(evalscore) - min(evalscore))/(count(*) - 2)
+		                                 else sum(evalscore) / count(*)
+		                            end,2)  avg_score
+		               FROM   TBLMEAEVALDETAIL
+		               WHERE  year  = #{year}
+		               AND    month = #{month}
+		               AND    evalgrade is not null
+		               GROUP BY evalid, year, month
+		               )
+		           ) measrslt
+		  where  cid = spid
+		  and    sid = bpid
+		  and    bid = ppid
+		  and    pid = opid
+		  and    oid = mpid
+		  and    mcid = measrslt.evalid (+)
+		  and    bcid = gbcid
+		  order by mea.measureid, crank, srank, brank, prank, orank
+
+	</select>
+
+
+
+
+
+
+	<select id="selectQlyComment" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT  cid, ccid, clevel, crank, cname,  cweight,
+		         sid, scid, slevel, srank, sname,  sweight,
+		         bid, bcid, blevel, brank, bname,  sum(mweight) over (partition by cid, sid, bid          ) bweight,
+		         pid, pcid, plevel, prank, pname,  sum(mweight) over (partition by cid, sid, bid, pid     ) pweight,
+		         oid, ocid, olevel, orank, oname,  sum(mweight) over (partition by cid, sid, bid, pid, oid) oweight,
+		         mid, mcid, mlevel, mrank, mname,  mweight, measureid, frequency,
+		         substr(ym,1,4)||'-'||substr(ym,5,2) ym, substr(ym,5,2) mm, evalcomment
+		 FROM
+		        (select t.id cid,t.parentid cpid,t.contentid ccid,t.treelevel clevel, t.rank crank,t.weight cweight,c.name cname
+		         from   tblhierarchy t,tblcompany c
+		         where  t.contentid=c.id  and t.treelevel=0 and t.year = #{year}
+		        ) com,
+		        (select t.id sid,t.parentid spid,t.contentid scid,t.treelevel slevel, t.rank srank,t.weight sweight,c.name sname
+		         from   tblhierarchy t,tblsbu c
+		         where  t.contentid=c.id  and t.treelevel=1 and t.year = #{year}
+		         <if test="sid != null">
+		          	and t.id = #{sid}
+		         </if>
+		        ) sbu,
+		        (select t.id bid,t.parentid bpid,t.contentid bcid,t.treelevel blevel, t.rank brank,t.weight bweight,c.name bname
+		         from   tblhierarchy t,tblbsc c
+		         where  t.contentid=c.id  and t.treelevel=2 and t.year = #{year}
+		         <if test="bid != null">
+		            and t.id = #{bid}
+		         </if>
+		        ) bsc,
+		        (select t.id pid,t.parentid ppid,t.contentid pcid,t.treelevel plevel, t.rank prank,t.weight pweight,c.name pname
+		         from   tbltreescore t,tblpst c
+		         where  t.contentid=c.id  and t.treelevel=3 and t.year = #{year}
+		        ) pst  ,
+		        (select t.id oid,t.parentid opid,t.contentid ocid,t.treelevel olevel, t.rank orank,t.weight oweight,c.name oname
+		         from   tbltreescore t,tblobjective c
+		         where  t.contentid=c.id  and t.treelevel=4 and t.year = #{year}
+		        ) obj ,
+		        (
+		         select t.id mid,t.parentid mpid,t.contentid mcid,t.treelevel mlevel, t.rank mrank, t.weight mweight, c.name mname,
+		                c.id mcd,d.measureid  , d.measurement, d.frequency, d.trend, d.etlkey,
+		                d.unit       ,
+		                d.planned,d.plannedbase, d.base, d.baselimit, d.limit,
+		                mia.year||mia.month  ym, mia.evalopinion  evalcomment, evalgrade, evalscore, evalrid
+		         from   tbltreescore    t, tblmeasure c,  tblmeasuredefine d, tblmeaevaldetail mia
+		         where  t.contentid  = d.id  and t.treelevel=5 and t.year = #{year} and d.measureid=c.id
+		         and    t.contentid  = mia.evalid (+)
+		         and    d.measurement = '비계량'
+		        ) mea
+		 where  cid = spid (+)
+		 and    sid = bpid (+)
+		 and    bid = ppid (+)
+		 and    pid = opid (+)
+		 and    oid = mpid
+		 order by crank, srank, brank, prank, orank, mrank
+
+
+	</select>
+
+
+
+
+
+	<select id="selectQlyCommentDetail" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT  *
+		 FROM
+		        (select t.id cid,t.parentid cpid,t.contentid ccid,t.treelevel clevel, t.rank crank,t.weight cweight,c.name cname
+		         from   tblhierarchy t,tblcompany c
+		         where  t.contentid=c.id  and t.treelevel=0 and t.year = #{year}
+		        ) com,
+		        (select t.id sid,t.parentid spid,t.contentid scid,t.treelevel slevel, t.rank srank,t.weight sweight,c.name sname
+		         from   tblhierarchy t,tblsbu c
+		         where  t.contentid=c.id  and t.treelevel=1 and t.year = #{year}
+		        ) sbu,
+		        (select t.id bid,t.parentid bpid,t.contentid bcid,t.treelevel blevel, t.rank brank,t.weight bweight,c.name bname
+		         from   tblhierarchy t,tblbsc c
+		         where  t.contentid=c.id  and t.treelevel=2 and t.year = #{year}
+		        ) bsc,
+		        (select t.id pid,t.parentid ppid,t.contentid pcid,t.treelevel plevel, t.rank prank,t.weight pweight,c.name pname
+		         from   tbltreescore t,tblpst c
+		         where  t.contentid=c.id  and t.treelevel=3 and t.year = #{year}
+		        ) pst  ,
+		        (select t.id oid,t.parentid opid,t.contentid ocid,t.treelevel olevel, t.rank orank,t.weight oweight,c.name oname
+		         from   tbltreescore t,tblobjective c
+		         where  t.contentid=c.id  and t.treelevel=4 and t.year = #{year}
+		        ) obj ,
+		        (
+		         select t.id mid,t.parentid mpid,t.contentid mcid,t.treelevel mlevel, t.rank mrank, t.weight mweight, c.name mname,
+		                c.id mcd,d.measureid  , d.measurement, d.frequency, d.trend, d.etlkey,
+		                d.unit       ,
+		                d.planned,d.plannedbase, d.base, d.baselimit, d.limit,
+		                mia.year||mia.month  ym, nvl(mia.evalopinion,' ')  evalcomment, evalgrade, evalscore, evalrid ,
+		                   f_getempnm(mia.evalrid) evalrnm,  d.mean,
+		                   emd.planned  evalplan, emd.detail  evaldetail, emd.estimate  evalestimate
+		         from   tbltreescore    t, tblmeasure c,  tblmeasuredefine d, tblmeaevaldetail mia ,
+		                   tblevalmeasuredetail   emd
+		         where  t.contentid  = d.id  and t.treelevel=5 and t.year = #{year} and d.measureid=c.id
+		         and    t.contentid  = mia.evalid (+)
+		            and    t.contentid  = emd.measureid (+)
+		           and    emd.effectivedate like mia.year||mia.month||'%'
+		         and    d.measurement = '비계량'
+		        ) mea
+		 where  cid = spid (+)
+		 and    sid = bpid (+)
+		 and    bid = ppid (+)
+		 and    pid = opid (+)
+		 and    oid = mpid
+		 and    mcid = #{mcid}
+		 order by crank, srank, brank, prank, orank, mrank
+
+
+	</select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

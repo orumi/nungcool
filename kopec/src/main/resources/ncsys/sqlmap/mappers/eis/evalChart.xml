@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ncsys.com.bsc.eis.service.mapper.EvalChartMapper">
+
+	<select id="selectEvalOrgRst" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT     a.PADEP,
+		           a.PADEP_NUM,
+		           a.ORG_CD,
+		           b.DIV_NM,
+		           a.EMP_BONUS1,
+		           a.EMP_BONUS2,
+		           a.EMP_BONUS3,
+		           a.EMP_BONUS4,
+		           a.EMP_BONUS5,
+		           a.EMP_BONUS6,
+		           a.EMP_BONUS7,
+		           a.EMP_BONUS8
+		 FROM      (
+		           SELECT    SUM(EMP_BONUS1) AS EMP_BONUS1,
+		                     SUM(EMP_BONUS2) AS EMP_BONUS2,
+		                     SUM(EMP_BONUS3) AS EMP_BONUS3,
+		                     SUM(EMP_BONUS4) AS EMP_BONUS4,
+		                     SUM(EMP_BONUS5) AS EMP_BONUS5,
+		                     SUM(EMP_BONUS6) AS EMP_BONUS6,
+		                     SUM(EMP_BONUS7) AS EMP_BONUS7,
+		                     SUM(EMP_BONUS8) AS EMP_BONUS8,
+		                     ORG_CD,
+		                     '장려금지급률' AS PADEP    ,
+		                     '01' AS PADEP_NUM
+		           FROM      (
+		                     SELECT    ORG_CD,
+		                               CASE WHEN EVAL_YEAR = #{year} - 7 THEN EMP_BONUS END AS EMP_BONUS1,
+		                               CASE WHEN EVAL_YEAR = #{year} - 6 THEN EMP_BONUS END AS EMP_BONUS2,
+		                               CASE WHEN EVAL_YEAR = #{year} - 5 THEN EMP_BONUS END AS EMP_BONUS3,
+		                               CASE WHEN EVAL_YEAR = #{year} - 4 THEN EMP_BONUS END AS EMP_BONUS4,
+		                               CASE WHEN EVAL_YEAR = #{year} - 3 THEN EMP_BONUS END AS EMP_BONUS5,
+		                               CASE WHEN EVAL_YEAR = #{year} - 2 THEN EMP_BONUS END AS EMP_BONUS6,
+		                               CASE WHEN EVAL_YEAR = #{year} - 1 THEN EMP_BONUS END AS EMP_BONUS7,
+		                               CASE WHEN EVAL_YEAR = #{year}     THEN EMP_BONUS END AS EMP_BONUS8
+		                     FROM      (
+		                               SELECT    EVAL_YEAR,
+		                                         ORG_CD,
+		                                         EMP_BONUS,
+		                                         CHIEF_BONUS,
+		                                         EVAL_RANK
+		                               FROM      TG_EVALORG
+		                               WHERE     EVAL_YEAR > #{year} - 8
+		                               ) a
+		                     ORDER BY  EVAL_YEAR,ORG_CD
+		                     )
+		           GROUP BY  ORG_CD
+		           UNION ALL
+		           SELECT    SUM(EMP_BONUS1) AS EMP_BONUS1,
+		                     SUM(EMP_BONUS2) AS EMP_BONUS2,
+		                     SUM(EMP_BONUS3) AS EMP_BONUS3,
+		                     SUM(EMP_BONUS4) AS EMP_BONUS4,
+		                     SUM(EMP_BONUS5) AS EMP_BONUS5,
+		                     SUM(EMP_BONUS6) AS EMP_BONUS6,
+		                     SUM(EMP_BONUS7) AS EMP_BONUS7,
+		                     SUM(EMP_BONUS8) AS EMP_BONUS8,
+		                     ORG_CD,
+		                    '사장성과지급률' AS PADEP,
+		                    '02' AS PADEP_NUM
+		           FROM      (
+		                     SELECT    ORG_CD,
+		                               CASE WHEN EVAL_YEAR = #{year} - 7 THEN CHIEF_BONUS END AS EMP_BONUS1,
+		                               CASE WHEN EVAL_YEAR = #{year} - 6 THEN CHIEF_BONUS END AS EMP_BONUS2,
+		                               CASE WHEN EVAL_YEAR = #{year} - 5 THEN CHIEF_BONUS END AS EMP_BONUS3,
+		                               CASE WHEN EVAL_YEAR = #{year} - 4 THEN CHIEF_BONUS END AS EMP_BONUS4,
+		                               CASE WHEN EVAL_YEAR = #{year} - 3 THEN CHIEF_BONUS END AS EMP_BONUS5,
+		                               CASE WHEN EVAL_YEAR = #{year} - 2 THEN CHIEF_BONUS END AS EMP_BONUS6,
+		                               CASE WHEN EVAL_YEAR = #{year} - 1 THEN CHIEF_BONUS END AS EMP_BONUS7,
+		                               CASE WHEN EVAL_YEAR = #{year}     THEN CHIEF_BONUS END AS EMP_BONUS8
+		                     FROM      (
+		                               SELECT    EVAL_YEAR,
+		                                         ORG_CD,
+		                                         EMP_BONUS,
+		                                         CHIEF_BONUS,
+		                                         EVAL_RANK
+		                               FROM      TG_EVALORG
+		                               WHERE     EVAL_YEAR > #{year} - 8
+		                               ) a
+		                     ORDER BY  EVAL_YEAR,ORG_CD
+		                     )
+		           GROUP BY  ORG_CD
+		           ) a,
+		           (
+		           SELECT    SDIV_CD,
+		                     DIV_NM
+		           FROM      TZ_COMCODE
+		           WHERE     LDIV_CD = 'G01'    AND USE_YN='Y'
+		           ) b
+		 WHERE     a.ORG_CD = b.SDIV_CD
+		  ORDER BY     a.PADEP_NUM,a.ORG_CD
+
+	</select>
+
+
+
+
+
+
+
+
+</mapper>

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ncsys.com.bsc.scorecard.service.mapper.OrgScoreMapper">
+
+	<select id="selectConfig" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT substr(nvl(fixedym, sysdt),1,6)     fixedym  ,
+		        nvl(curymyn, 'Y'              )    curymyn  ,
+		        sysdt                              sysdt    ,
+		        substr(nvl(showym,  sysdt),1,6)    showym   ,
+		        substr(nvl(showym,  sysdt),1,4)    showyear ,
+		        substr(nvl(showym,  sysdt),5,2)    showmonth
+		FROM
+		(
+		         SELECT max(fixedym)                                             fixedym,
+		                max(curymyn)                                             curymyn,
+		                to_char(sysdate,'yyyymmdd')                              sysdt  ,
+		                max(case when curymyn = 'Y' then to_char(sysdate, 'yyyymm')
+		                         else fixedym end)                               showym
+		         FROM   tbzconfig
+		         WHERE  sysid = 'BSC'
+		)
+
+	</select>
+
+
+
+	<select id="selectSbuBsc" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT
+		      CID,CCID,CNAME, CRANK
+		    , SID, SCID, SNAME, SRANK
+		    , BID, BCID, BNAME, BRANK
+		FROM VIEW_HIERARCHY_BSC
+		WHERE YEAR = #{year}
+		ORDER BY CRANK, CID, SRANK, SID, BRANK, BID
+
+	</select>
+
+
+	<select id="selectState" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		select pid, pcid, pname, max(brank) brank,
+		        count(*)                                    total,
+		        sum(case when grade ='S' then 1 else 0 end) grade_s,
+		        sum(case when grade ='A' then 1 else 0 end) grade_a,
+		        sum(case when grade ='B' then 1 else 0 end) grade_b,
+		        sum(case when grade ='C' then 1 else 0 end) grade_c,
+		        sum(case when grade ='D' then 1 else 0 end) grade_d,
+		        sum(case when grade is null then 1 else 0 end) notinput
+		 from  (
+		   select * from
+		       (select t.id bid,t.parentid bpid,t.contentid bcid,t.treelevel blevel,t.rank brank,t.weight bweight,c.name bname
+		       from tblhierarchy t,tblbsc c where t.contentid=c.id and t.treelevel=2 and t.year=#{year} and t.id = #{bid} ) bsc,
+		       (select t.id pid,t.parentid ppid,t.contentid pcid,t.treelevel plevel,t.rank prank,t.weight pweight,c.name pname
+		       from tbltreescore t,tblpst c where t.contentid=c.id and t.treelevel=3 and t.year=#{year} ) pst  ,
+		       (select t.id oid,t.parentid opid,t.contentid ocid,t.treelevel olevel,t.rank orank,t.weight oweight,c.name oname
+		       from tbltreescore t,tblobjective c where t.contentid=c.id and t.treelevel=4 and t.year=#{year} ) obj ,
+		       (select t.id mid,t.parentid mpid,t.contentid mcid,t.treelevel mlevel,t.rank mrank,t.weight mweight,c.name mname,
+		               d.measurement, d.frequency, d.trend, d.etlkey,d.unit,
+		               d.planned,d.plannedbase, d.base, d.baselimit, d.limit ,
+		               round(s.actual,2) actual, s.grade, s.score  score, s.grade_score, dt.comments
+		       from    tbltreescore t,tblmeasuredefine d, tblmeasure c,
+		               tblmeasurescore s, tblmeasuredetail dt
+		       where t.contentid=d.id
+		       and   d.measureid=c.id
+		       and   t.treelevel=5
+		       and   d.id       =s.measureid  (+)
+		       and   s.measureid=dt.measureid (+)
+		       and   s.strdate  =dt.strdate   (+)
+		       and   s.strdate(+) like #{year}||#{month}||'%'
+		       and   t.year = #{year}   ) mea
+		   where bsc.bid=pst.ppid
+		   and   pst.pid=obj.opid
+		   and   obj.oid=mea.mpid
+		   order by brank,bid,prank,pid,orank,oid,mrank
+		 )
+		 group by pid, pcid, pname
+		 order by 4,pid, pcid
+
+	</select>
+
+	<select id="selectOrgScore" parameterType="map" resultType="ncsys.com.bsc.scorecard.service.model.OrgScore">
+
+		select year, bid, bpid, bcid, blevel, brank, bweight, bname,
+		     round(sum(calcscore) over(partition by bid) /
+		          sum(case when mcscore is not null then mweight end) over(partition by bid),1)  bcscore,
+		     sum(case when mcscore is not null then mweight end) over(partition by bid)  bcweight,
+		 pid, ppid, pcid, plevel, prank, pweight, pname,
+		     round(sum(calcscore) over(partition by bid,pid) /
+		           sum(case when mcscore is not null then mweight end) over(partition by bid,pid),1)  pcscore,
+		     sum(case when mcscore is not null then mweight end) over(partition by bid,pid)  pcweight,
+		 count(pid) over (partition by pid) pcnt, row_number() over (partition by pid order by orank,oid, mrank,mid) pnum,
+		 oid, opid, ocid, olevel, orank, oweight, oname,
+		     round(sum(calcscore) over(partition by bid,pid,oid) /
+		           sum(case when mcscore is not null then mweight end) over(partition by bid,pid,oid),1)  ocscore,
+		     sum(case when mcscore is not null then mweight end) over(partition by bid,pid,oid)  ocweight,
+		 count(oid) over (partition by oid) ocnt, row_number() over (partition by oid order by orank,oid, mrank,mid) onum,
+		 mid, mpid, mcid, mlevel, mrank, mweight, mname,
+		     measurement, frequency, trend, etlkey, unit,
+		     planned, plannedbase, base, baselimit, limit ,
+		     actual, grade, score, grade_score gradeScore,' ' comments , mcscore, calcscore
+		from
+		       (select t.year, t.id bid,t.parentid bpid,t.contentid bcid,t.treelevel blevel,t.rank brank,t.weight bweight,c.name bname
+		       from tblhierarchy t,tblbsc c where t.contentid=c.id and t.treelevel=2 and t.year = #{year} and t.id = #{bid} ) bsc,
+		       (select t.id pid,t.parentid ppid,t.contentid pcid,t.treelevel plevel,t.rank prank,t.weight pweight,c.name pname
+		       from tbltreescore t,tblpst c where t.contentid=c.id and t.treelevel=3 and t.year = #{year} ) pst  ,
+		       (select t.id oid,t.parentid opid,t.contentid ocid,t.treelevel olevel,t.rank orank,t.weight oweight,c.name oname
+		       from tbltreescore t,tblobjective c where t.contentid=c.id and t.treelevel=4 and t.year = #{year} ) obj ,
+		       (select t.id mid,t.parentid mpid,t.contentid mcid,t.treelevel mlevel,t.rank mrank,t.weight mweight,c.name mname,
+		               d.measurement, d.frequency, d.trend, d.etlkey,d.unit,
+		               d.planned,d.plannedbase, d.base, d.baselimit, d.limit ,
+		               round(s.actual,2) actual, s.grade, s.score  score, s.grade_score, dt.comments,
+		               s.score   mcscore, s.score * d.weight calcscore
+		       from    tbltreescore t,tblmeasuredefine d, tblmeasure c,
+		               tblmeasurescore s, tblmeasuredetail dt
+		       where t.contentid=d.id
+		       and   d.measureid=c.id
+		       and   t.treelevel=5
+		       and   d.id       =s.measureid  (+)
+		       and   s.measureid=dt.measureid (+)
+		       and   s.strdate  =dt.strdate   (+)
+		       and   s.strdate(+) like #{year}||#{month}||'%'
+		       and   t.year = #{year}   ) mea
+		   where bsc.bid=pst.ppid
+		   and   pst.pid=obj.opid
+		   and   obj.oid=mea.mpid
+		   order by brank,bid,prank,pid,orank,oid,mrank
+
+	</select>
+
+	<select id="selectMeasureActual" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT
+		    MEASUREID ,
+		    ROUND(ACTUAL,3) ACTUAL,
+		    GRADE,
+		    GRADE_SCORE
+		    COMMENTS
+		FROM TBLMEASUREDETAIL WHERE MEASUREID = #{mid}
+		AND SUBSTR(STRDATE,0,6) = #{year}||#{month}
+
+	</select>
+
+	<select id="selectItemActual" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT * FROM
+		(
+		    SELECT CODE, ITEMNAME
+		    FROM TBLITEM WHERE MEASUREID = #{mid}
+		) I
+		LEFT JOIN
+		(
+		    SELECT CODE ICODE, ACTUAL, STRDATE
+		    FROM TBLITEMACTUAL WHERE MEASUREID = #{mid}
+		    AND STRDATE = #{year}||#{month}
+		) A
+		ON I.CODE=A.ICODE
+		ORDER BY CODE
+
+	</select>
+
+	<select id="selectItemActuals" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+        SELECT * FROM
+        (
+            SELECT CODE, ITEMNAME
+            FROM TBLITEM WHERE MEASUREID = #{mid}
+        ) I
+        LEFT JOIN
+        (
+            SELECT CODE ICODE3, ROUND(ACTUAL,2) ACT3, STRDATE D3
+            FROM TBLITEMACTUAL WHERE MEASUREID = #{mid}
+            AND STRDATE = #{year}||'03'
+        ) A3
+        ON I.CODE=A3.ICODE3
+        LEFT JOIN
+        (
+            SELECT CODE ICODE6, ROUND(ACTUAL,2) ACT6, STRDATE D6
+            FROM TBLITEMACTUAL WHERE MEASUREID = #{mid}
+            AND STRDATE = #{year}||'06'
+        ) A6
+        ON I.CODE=A6.ICODE6
+        LEFT JOIN
+        (
+            SELECT CODE ICODE9, ROUND(ACTUAL,2) ACT9, STRDATE D9
+            FROM TBLITEMACTUAL WHERE MEASUREID = #{mid}
+            AND STRDATE = #{year}||'09'
+        ) A9
+        ON I.CODE=A9.ICODE9
+        LEFT JOIN
+        (
+            SELECT CODE ICODE12, ROUND(ACTUAL,2) ACT12, STRDATE D12
+            FROM TBLITEMACTUAL WHERE MEASUREID = #{mid}
+            AND STRDATE = #{year}||'12'
+        ) A12
+        ON I.CODE=A12.ICODE12
+        ORDER BY CODE
+
+	</select>
+
+
+</mapper>

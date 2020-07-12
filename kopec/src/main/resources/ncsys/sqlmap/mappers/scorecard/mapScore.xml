@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ncsys.com.bsc.scorecard.service.mapper.MapScoreMapper">
+
+	<select id="selectStrategicMap" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		select
+		year, bid,bcid,bname,bcscore,pid,pcid,prank,pname, pcscore,oid,ocid,orank,oname,ocscore
+		    , row_number() over (partition by pid,rowidx order by orow) orow
+		    , rowidx
+		    , count(rowidx) over (partition by pid,rowidx) rowsum
+		from
+		(
+		    select year, bid,bcid,bname,bcscore,pid,pcid,prank,pname, pcscore,oid,ocid,orank,oname,ocscore
+		        , row_number() over (partition by pid order by orank, oid) orow
+		        , TRUNC((row_number() over (partition by pid order by orank, oid)-1)/3) rowidx
+		    from
+		    (
+		            select year, bid, bpid, bcid, blevel, brank, bweight, bname,
+		                 round(sum(calcscore) over(partition by bid) /
+		                      sum(case when mcscore is not null then mweight end) over(partition by bid),1)  bcscore,
+		                 sum(case when mcscore is not null then mweight end) over(partition by bid)  bcweight,
+		             pid, ppid, pcid, plevel, prank, pweight, pname,
+		                 round(sum(calcscore) over(partition by bid,pid) /
+		                       sum(case when mcscore is not null then mweight end) over(partition by bid,pid),1)  pcscore,
+		                 sum(case when mcscore is not null then mweight end) over(partition by bid,pid)  pcweight,
+		             count(pid) over (partition by pid) pcnt, row_number() over (partition by pid order by orank,oid, mrank,mid) pnum,
+		             oid, opid, ocid, olevel, orank, oweight, oname,
+		                 round(sum(calcscore) over(partition by bid,pid,oid) /
+		                       sum(case when mcscore is not null then mweight end) over(partition by bid,pid,oid),1)  ocscore,
+		                 sum(case when mcscore is not null then mweight end) over(partition by bid,pid,oid)  ocweight,
+		             count(oid) over (partition by oid) ocnt, row_number() over (partition by oid order by orank,oid, mrank,mid) onum,
+		             mid, mpid, mcid, mlevel, mrank, mweight, mname,
+		                 measurement, frequency, trend, etlkey, unit,
+		                 planned, plannedbase, base, baselimit, limit ,
+		                 actual, score, mcscore, calcscore
+		            from
+		                   (select t.year, t.id bid,t.parentid bpid,t.contentid bcid,t.treelevel blevel,t.rank brank,t.weight bweight,c.name bname
+		                   from tblhierarchy t,tblbsc c where t.contentid=c.id and t.treelevel=2 and t.year = #{year} and t.id = #{bid}  ) bsc,
+		                   (select t.id pid,t.parentid ppid,t.contentid pcid,t.treelevel plevel,t.rank prank,t.weight pweight,c.name pname
+		                   from tbltreescore t,tblpst c where t.contentid=c.id and t.treelevel=3 and t.year = #{year} ) pst  ,
+		                   (select t.id oid,t.parentid opid,t.contentid ocid,t.treelevel olevel,t.rank orank,t.weight oweight,c.name oname
+		                   from tbltreescore t,tblobjective c where t.contentid=c.id and t.treelevel=4 and t.year = #{year} ) obj ,
+		                   (select t.id mid,t.parentid mpid,t.contentid mcid,t.treelevel mlevel,t.rank mrank,t.weight mweight,c.name mname,
+		                           d.measurement, d.frequency, d.trend, d.etlkey,d.unit,
+		                           d.planned,d.plannedbase, d.base, d.baselimit, d.limit ,
+		                           round(s.actual,2) actual, s.grade, s.score  score, s.grade_score, dt.comments,
+		                           s.score   mcscore, s.score * d.weight calcscore
+		                   from    tbltreescore t,tblmeasuredefine d, tblmeasure c,
+		                           tblmeasurescore s, tblmeasuredetail dt
+		                   where t.contentid=d.id
+		                   and   d.measureid=c.id
+		                   and   t.treelevel = 5
+		                   and   d.id       =s.measureid  (+)
+		                   and   s.measureid=dt.measureid (+)
+		                   and   s.strdate  =dt.strdate   (+)
+		                   and   s.strdate(+) like #{year}||#{month}||'%'
+		                   and   t.year = #{year}   ) mea
+		               where bsc.bid=pst.ppid
+		               and   pst.pid=obj.opid
+		               and   obj.oid=mea.mpid
+		               order by brank,bid,prank,pid,orank,oid,mrank
+		    ) a group by year, bid,bcid,bname,bcscore,pid,pcid,prank,pname, pcscore,oid,ocid,orank,oname,ocscore
+		    order by bid, prank,pid,orank,oid
+		) a
+		    order by bid, prank,pid,orank,oid
+
+	</select>
+
+
+
+
+</mapper>

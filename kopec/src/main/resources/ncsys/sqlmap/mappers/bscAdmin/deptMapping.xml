@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ncsys.com.bsc.admin.service.mapper.DeptMappingMapper">
+
+	<select id="selectBsc" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		 SELECT  a.sid, a.scid, a.sname, a.srank,
+		         a.bid, a.bcid, a.bname, a.brank,
+		         count(b.dept_cd) dept_cnt
+		 FROM    (
+		         SELECT SID, SPID, SCID, SNAME, SRANK,
+		                BID, BPID, BCID, BNAME, BRANK
+		         FROM
+		                 (SELECT T.ID SID,T.PARENTID SPID,T.CONTENTID SCID,T.TREELEVEL SLEVEL,T.RANK SRANK,T.WEIGHT SWEIGHT,C.NAME SNAME
+		                  FROM TBLHIERARCHY T,TBLSBU C WHERE T.CONTENTID=C.ID AND T.TREELEVEL=1 AND T.YEAR=2020) SBU,
+		                 (SELECT T.ID BID,T.PARENTID BPID,T.CONTENTID BCID,T.TREELEVEL BLEVEL,T.RANK BRANK,T.WEIGHT BWEIGHT,C.NAME BNAME
+		                  FROM TBLHIERARCHY T,TBLBSC C WHERE T.CONTENTID=C.ID AND T.TREELEVEL=2 AND T.YEAR=2020) BSC
+		         WHERE   BSC.BPID=SBU.SID
+		         ORDER BY SRANK, SID, BRANK, BID
+		         ) a,
+		         (
+		         SELECT a.dept_cd, a.org_cd, b.dept_nm, b.up_dept_cd
+		         FROM   tbldeptmapping a,
+		                tbldept        b
+		         WHERE  a.dept_cd = b.dept_cd (+)
+		         AND    a.year = #{year}
+		         ) b
+		 WHERE   a.bcid = b.org_cd(+)
+		 GROUP BY a.sid, a.scid, a.sname, a.srank,
+		          a.bid, a.bcid, a.bname, a.brank
+		 ORDER BY a.srank, a.sid, a.brank, a.bid
+
+	</select>
+
+
+	<select id="selectDeptMapping" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT * FROM TBLDEPTMAPPING M INNER JOIN
+		(SELECT nvl(U.DEPT_CD, D.DEPT_CD) UDID, nvl(U.DEPT_NM, D.DEPT_NM) UDNAME, D.DEPT_NM DNAME, D.DEPT_CD DID, D.USE_YN, D.FINISHED_DT
+		FROM TBLDEPT D LEFT OUTER JOIN TBLDEPT U ON D.UP_DEPT_CD = U.DEPT_CD) DET
+		ON M.DEPT_CD = DET.DID
+		WHERE M.ORG_CD = #{bcid, jdbcType=VARCHAR } AND M.YEAR = #{year}
+		ORDER BY UDID, DID
+
+	</select>
+
+	<select id="selectDept" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT * FROM
+		(
+		SELECT nvl(U.DEPT_CD, D.DEPT_CD) UDID, nvl(U.DEPT_NM, D.DEPT_NM) UDNAME, D.DEPT_NM DNAME, D.DEPT_CD DID, D.USE_YN, D.FINISHED_DT
+		  FROM TBLDEPT D
+		LEFT JOIN TBLDEPT U
+		ON D.UP_DEPT_CD = U.DEPT_CD
+		) DET
+		WHERE DID NOT IN (SELECT DEPT_CD FROM TBLDEPTMAPPING WHERE YEAR=#{year})
+		    AND DET.DNAME LIKE '%'||#{searchName, jdbcType=VARCHAR}||'%'
+		ORDER BY UDID, DID
+
+	</select>
+
+	<delete id="deleteDeptMappingbyYear" parameterType="map" >
+
+		DELETE FROM TBLDEPTMAPPING WHERE YEAR=#{toYear}
+
+	</delete>
+
+	<insert id="insertDeptMappingbyYear" parameterType="map" >
+
+		INSERT INTO TBLDEPTMAPPING(YEAR,DEPT_CD,ORG_CD)
+		SELECT #{toYear},DEPT_CD,ORG_CD FROM TBLDEPTMAPPING
+		WHERE YEAR = #{frYear}
+
+	</insert>
+
+	<delete id="clearDeptMapping" parameterType="map" >
+
+		DELETE FROM TBLDEPTMAPPING WHERE YEAR = #{toYear}
+		    AND ORG_CD NOT IN (SELECT BCID FROM VIEW_HIERARCHY_BSC WHERE YEAR = #{toYear}
+		)
+
+
+	</delete>
+
+
+	<delete id="deleteDeptMappingbyBcid" parameterType="map" >
+
+		DELETE FROM TBLDEPTMAPPING WHERE YEAR = #{year} AND ORG_CD = #{bcid}
+
+	</delete>
+
+	<insert id="insetDeptMapping" parameterType="map" >
+
+		INSERT INTO TBLDEPTMAPPING(YEAR,DEPT_CD,ORG_CD) VALUES(#{year},#{deptCd},#{bcid})
+
+	</insert>
+
+	<update id="updateUserDept" parameterType="map" >
+		UPDATE TBLUSER SET DIVCODE = #{bcid} WHERE DEPT_CD = #{deptCd}
+	</update>
+
+
+
+</mapper>

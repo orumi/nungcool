@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ncsys.com.bsc.admin.service.mapper.ValuateGroupMapper">
+
+	<select id="selectValuate" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT   cid, ccid, clevel, crank, cname,
+		         sid, scid, slevel, srank, sname,
+		         bid, bcid, blevel, brank, bname,
+		         year, month, grpid, grpnm, orgcd, orgnm, empno, empnm
+		 FROM
+		        (select t.id cid,t.parentid cpid,t.contentid ccid,t.treelevel clevel, t.rank crank,t.weight cweight,c.name cname
+		         from   tblhierarchy t,tblcompany c
+		         where  t.contentid=c.id  and t.treelevel=0 and t.year = #{year}
+		        ) com,
+		        (select t.id sid,t.parentid spid,t.contentid scid,t.treelevel slevel, t.rank srank,t.weight sweight,c.name sname
+		         from   tblhierarchy t,tblsbu c
+		         where  t.contentid=c.id  and t.treelevel=1 and t.year = #{year}
+		        ) sbu,
+		        (select t.id bid,t.parentid bpid,t.contentid bcid,t.treelevel blevel, t.rank brank,t.weight bweight,c.name bname
+		         from   tblhierarchy t,tblbsc c
+		         where  t.contentid=c.id  and t.treelevel=2 and t.year = #{year}
+		        ) bsc,
+		        (
+		         SELECT a.year, a.month, a.grpid, a.grpnm,
+		                b.evaldeptid  orgcd, c.name                orgnm,
+		                d.evalrid     empno, f_getempnm(d.evalrid) empnm
+		         FROM   tblmeaevalgrp  a,
+		                tblmeaevaldept b,
+		                tblbsc         c,
+		                tblmeaevalr    d
+		         WHERE  a.grpid      = b.grpid
+		         AND    b.evaldeptid = c.id
+		         AND    a.year       = d.year (+)
+		         AND    a.month      = d.month(+)
+		         AND    a.grpid      = d.grpid(+)
+		         AND    a.year       = #{year}
+		         AND    a.month      = #{month}
+		         ORDER BY a.grpid, b.evaldeptid
+		         ) est
+		 WHERE  cid  = spid (+)
+		 AND    sid  = bpid
+		 AND    bcid = orgcd (+)
+		 ORDER BY crank, srank, brank
+
+	</select>
+
+
+
+
+	<select id="selectEvaler" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT a.userid, a.username usernm,
+		       a.dept_cd deptcd, b.dept_nm  deptnm
+		FROM   tbluser a, tbldept b
+		WHERE  a.dept_cd = b.dept_cd (+)
+		and a.username like '%'||#{searchName}||'%'
+		AND    a.appraiser = 1
+		ORDER BY username
+
+	</select>
+
+
+	<insert id="insertEvalGrp" parameterType="map">
+		<selectKey resultType="string" keyProperty="grpid" order="BEFORE">
+	        select max(grpid)+1 nid from tblmeaevalgrp
+	    </selectKey>
+
+		INSERT INTO tblmeaevalgrp
+		(
+			grpid, year, month, grpnm, regir, regidate, modir, modidate
+		) VALUES
+		(
+			#{grpid}, #{year}, #{month}, #{grpnm}, #{userId}, sysdate, #{userId}, sysdate
+		)
+
+	</insert>
+
+	<insert id="insertEvalDept" parameterType="map" >
+
+		INSERT INTO tblmeaevaldept
+		(
+			grpid,
+			evaldeptid,
+			regir,
+			regidate,
+			modir,
+			modidate
+		) VALUES (
+			  #{grpid}
+			, #{evaldeptid}
+			, #{userId}
+			, sysdate
+			, #{userId}
+			, sysdate
+		)
+
+	</insert>
+
+
+
+	<insert id="insertEvaler" parameterType="map">
+		INSERT INTO tblmeaevalr
+		(
+			grpid,year,month,evalrid,regir,regidate,modir,modidate
+		) VALUES (
+			 #{grpid}
+			,#{year}
+			,#{month}
+			,#{evalrid}
+			,#{userId}
+			,sysdate
+			,#{userId}
+			,sysdate
+		)
+	</insert>
+
+	<update id="updateEvaler" parameterType="map" >
+
+	update tblmeaevalr set
+	      modir=#{userId}
+		, modidate=sysdate
+	where
+			grpid = #{grpid}
+		and year = #{year}
+		and month = #{month}
+		and evalrid = #{evalrid}
+
+	</update>
+
+
+
+
+
+	<delete id="deleteEvaler" parameterType="map">
+
+		delete from tblmeaevalr
+		where year = #{year} and month = #{month} and grpid = #{grpid}
+		and evalrid = #{evalrid}
+
+	</delete>
+
+
+
+
+	<select id="selectOrgAddScore" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+		select sid, scid, max(sname) sname, bid, max(bname)               bname,
+	         sum(case when measurement='계량'   then mweight   end)        mweight1,
+	         sum(case when measurement='계량'   then grade_score     end)  mscore1 ,
+	         sum(case when measurement='비계량' then mweight   end)         mweight2,
+	         sum(case when measurement='비계량' then grade_score    end)    mscore2 ,
+	         sum(grade_score)                               scoresum,
+	         max(addscr)                                    scoreadd,
+	         max(inputScr)                                  inputScr,
+	         max(calGrd)                                    calGrd,
+	         max(calGrdScr)                                 calGrdScr,
+	         nvl(sum(grade_score),0) + nvl(max(addscr),0)   scoretot,
+	         max(nvl(addscr_cmt,''))                        addscr_cmt,
+	         nvl(blink,0) blink,
+	         <choose>
+			    <when test="year >= 2019 ">
+			      rank() over (partition by sid order by nvl(sum(grade_score),0) + nvl(max(addscr),0) desc) grp_rank
+			    </when>
+			    <otherwise>
+			      rank() over (partition by sid, nvl(blink,0) order by nvl(sum(grade_score),0) + nvl(max(addscr),0) desc) grp_rank
+			    </otherwise>
+			 </choose>
+
+	  from
+	          (select c.name cname,t.id cid,t.contentid ccid,t.parentid cpid,t.rank crank
+	          from tblcompany c, tblhierarchy t where t.treelevel=0 and t.year = #{year} and t.contentid=c.id) com,
+	          (select c.name sname,t.id sid,t.contentid scid,t.parentid spid,t.rank srank
+	          from tblsbu c, tblhierarchy t where t.treelevel=1 and t.year=#{year} and t.contentid=c.id  and t.id like '%' ) sbu,
+	          (select c.name bname,t.id bid,t.contentid bcid,t.parentid bpid,t.rank brank, c.link blink
+	          from tblbsc c, tblhierarchy t where t.treelevel=2 and t.year=#{year} and t.contentid=c.id ) bsc,
+	          (select c.name pname,t.id pid,t.contentid pcid,t.parentid ppid,t.rank prank
+	          from  tblpst c, tbltreescore t where t.treelevel=3 and t.year=#{year} and t.contentid=c.id ) pst,
+	          (select c.name oname,t.id oid,t.contentid ocid,t.parentid opid,t.rank orank
+	          from tblobjective c, tbltreescore t where t.treelevel=4 and t.year=#{year} and t.contentid=c.id ) obj,
+	          (select c.name mname,t.id mid,t.contentid mcid,t.parentid mpid,t.rank mrank, t.weight mweight, d.measureid,
+	                  detaildefine, d.unit measunit,
+	                 entrytype, measuretype,
+	                 frequency, equation, equationdefine,
+	                 etlkey, measurement,
+	                 trend, e.planned, e.plannedbase, e.base,e.baselimit, e.limit,
+	                 e.actual, e.grade, e.grade_score, e.score, nvl(e.grade_score, 0) rank_score
+	          from tblmeasure c, tbltreescore t, tblmeasuredefine d, tblmeasurescore e
+	          where t.treelevel=5 and t.year=#{year} and t.contentid=d.id
+	          and  d.measureid = c.id
+	          and  d.id = e.measureid (+)
+	          and  e.strdate(+) like #{year}||#{month}||'%' ) mea,
+	          (select bid ebid, addscr, inputScr,calGrd,calGrdScr, addscr_cmt from tblevalresult where year = #{year} and month=substr(#{year}||#{month},5,2))   eval
+	  where  com.cid=sbu.spid
+	  and    sbu.sid=bsc.bpid
+	  and    bsc.bid=pst.ppid
+	  and    pst.pid=obj.opid
+	  and    obj.oid=mea.mpid
+	  and    bsc.bid=eval.ebid(+)
+	  group by sid, scid, bid, blink
+	  order by sid, scid, blink, bid
+
+	</select>
+
+	<select id="selectOrgAddScoreDetail" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+		select sid, scid, max(sname) sname, bid, max(bname)               bname,
+	         sum(case when measurement='계량'   then mweight   end)        mweight1,
+	         sum(case when measurement='계량'   then grade_score     end)  mscore1 ,
+	         sum(case when measurement='비계량' then mweight   end)         mweight2,
+	         sum(case when measurement='비계량' then grade_score    end)    mscore2 ,
+	         sum(grade_score)                               scoresum,
+	         max(addscr)                                    scoreadd,
+	         max(inputScr)                                  inputScr,
+	         max(calGrd)                                    calGrd,
+	         max(calGrdScr)                                 calGrdScr,
+	         nvl(sum(grade_score),0) + nvl(max(addscr),0)   scoretot,
+	         max(nvl(addscr_cmt,''))                        addscr_cmt,
+	         nvl(blink,0) blink,
+	         rank() over (partition by sid, nvl(blink,0) order by nvl(sum(grade_score),0) + nvl(max(addscr),0) desc) grp_rank
+	  from
+	          (select c.name cname,t.id cid,t.contentid ccid,t.parentid cpid,t.rank crank
+	          from tblcompany c, tblhierarchy t where t.treelevel=0 and t.year = #{year} and t.contentid=c.id) com,
+	          (select c.name sname,t.id sid,t.contentid scid,t.parentid spid,t.rank srank
+	          from tblsbu c, tblhierarchy t where t.treelevel=1 and t.year=#{year} and t.contentid=c.id  and t.id like '%' ) sbu,
+	          (select c.name bname,t.id bid,t.contentid bcid,t.parentid bpid,t.rank brank, c.link blink
+	          from tblbsc c, tblhierarchy t where t.treelevel=2 and t.year=#{year} and t.contentid=c.id  and t.id = #{bid}) bsc,
+	          (select c.name pname,t.id pid,t.contentid pcid,t.parentid ppid,t.rank prank
+	          from  tblpst c, tbltreescore t where t.treelevel=3 and t.year=#{year} and t.contentid=c.id ) pst,
+	          (select c.name oname,t.id oid,t.contentid ocid,t.parentid opid,t.rank orank
+	          from tblobjective c, tbltreescore t where t.treelevel=4 and t.year=#{year} and t.contentid=c.id ) obj,
+	          (select c.name mname,t.id mid,t.contentid mcid,t.parentid mpid,t.rank mrank, t.weight mweight, d.measureid,
+	                  detaildefine, d.unit measunit,
+	                 entrytype, measuretype,
+	                 frequency, equation, equationdefine,
+	                 etlkey, measurement,
+	                 trend, e.planned, e.plannedbase, e.base,e.baselimit, e.limit,
+	                 e.actual, e.grade, e.grade_score, e.score, nvl(e.grade_score, 0) rank_score
+	          from tblmeasure c, tbltreescore t, tblmeasuredefine d, tblmeasurescore e
+	          where t.treelevel=5 and t.year=#{year} and t.contentid=d.id
+	          and  d.measureid = c.id
+	          and  d.id = e.measureid (+)
+	          and  e.strdate(+) like #{year}||#{month}||'%' ) mea,
+	          (select bid ebid, addscr, inputScr,calGrd,calGrdScr, addscr_cmt from tblevalresult where year = #{year} and month=substr(#{year}||#{month},5,2))   eval
+	  where  com.cid=sbu.spid
+	  and    sbu.sid=bsc.bpid
+	  and    bsc.bid=pst.ppid
+	  and    pst.pid=obj.opid
+	  and    obj.oid=mea.mpid
+	  and    bsc.bid=eval.ebid(+)
+	  group by sid, scid, bid, blink
+	  order by sid, scid, blink, bid
+
+	</select>
+
+
+
+
+
+
+
+
+
+
+
+	<update id="updateOrgAddScore" parameterType="map">
+
+		update tblevalresult set
+		      inputscr  = #{inputscr, jdbcType=NUMERIC }
+		    , calgrd    = #{calgrd, jdbcType=VARCHAR}
+		    , calgrdscr = #{calgrdscr, jdbcType=NUMERIC }
+		    , addscr    = #{addscr, jdbcType=NUMERIC }
+		    , totalscr  = #{totalscr, jdbcType=NUMERIC }
+		    , addscr_cmt = #{addscrCmt, jdbcType=VARCHAR}
+		    , regir     = #{userId, jdbcType=VARCHAR}
+		    , regidate  = sysdate
+		where year      = #{year}
+		    and month   = #{month}
+		    and bid     = #{bid}
+
+	</update>
+
+
+	<insert id="insertOrgAddScore" parameterType="map">
+		insert into tblevalresult
+		(
+		      year
+		    , month
+		    , bcid
+		    , bid
+		    , inputscr
+		    , calgrd
+		    , calgrdscr
+		    , addscr
+		    , totalscr
+		    , addscr_cmt
+		    , regir
+		    , regidate
+		)
+		values
+		(
+			  #{year}
+		    , #{month}
+		    , #{bid}
+		    , #{bid}
+		    , #{inputscr, jdbcType=NUMERIC}
+		    , #{calgrd, jdbcType=VARCHAR}
+		    , #{calgrdscr, jdbcType=NUMERIC}
+		    , #{addscr, jdbcType=NUMERIC}
+		    , #{totalscr, jdbcType=NUMERIC}
+		    , #{addscrCmt, jdbcType=VARCHAR}
+		    , #{userId, jdbcType=VARCHAR}
+		    , sysdate
+		)
+	</insert>
+
+
+	<delete id="deleteOrgAddScore" parameterType="map">
+
+		delete from tblevalresult
+		where year = #{year}
+		    and month = #{month}
+		    and bid = #{bid}
+
+	</delete>
+
+</mapper>

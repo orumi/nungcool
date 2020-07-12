@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ncsys.com.bsc.actual.service.mapper.MeasureReportMapper">
+
+	<select id="selectMeasureQty" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT  cid, ccid, clevel, crank, cname,  cweight,
+		        sid, scid, slevel, srank, sname,  sweight,
+		        bid, bcid, blevel, brank, bname,  sum(mweight) over (partition by cid, sid, bid          ) bweight,
+		        pid, pcid, plevel, prank, pname,  sum(mweight) over (partition by cid, sid, bid, pid     ) pweight,
+		        oid, ocid, olevel, orank, oname,  sum(mweight) over (partition by cid, sid, bid, pid, oid) oweight,
+		        mid, mcid, mlevel, mrank, mname,  mweight, measureid, frequency, f_getempnm(updateid) empnm,
+		        itemcode, itemname,itemfixed, mm03, mm06, mm09, mm12
+		FROM
+		        (select t.id cid,t.parentid cpid,t.contentid ccid,t.treelevel clevel, t.rank crank,t.weight cweight,c.name cname
+		         from   tblhierarchy t, tblcompany c
+		         where  t.contentid=c.id  and t.treelevel=0 and t.year = #{year}
+		        ) com,
+		        (select t.id sid,t.parentid spid,t.contentid scid,t.treelevel slevel, t.rank srank,t.weight sweight,c.name sname
+		         from   tblhierarchy t, tblsbu c
+		         where  t.contentid=c.id  and t.treelevel=1 and t.year = #{year}
+		         <if test='sid != null'>
+		           and t.id = #{sid}
+		         </if>
+		        ) sbu,
+		        (select t.id bid,t.parentid bpid,t.contentid bcid,t.treelevel blevel, t.rank brank,t.weight bweight,c.name bname
+		         from   tblhierarchy t, tblbsc c
+		         where  t.contentid=c.id  and t.treelevel=2 and t.year = #{year}
+		         <if test='bid != null'>
+		           and t.id = #{bid}
+		         </if>
+		        ) bsc,
+		        (select t.id pid,t.parentid ppid,t.contentid pcid,t.treelevel plevel, t.rank prank,t.weight pweight,c.name pname
+		         from   tbltreescore t, tblpst c
+		         where  t.contentid=c.id  and t.treelevel=3 and t.year = #{year}
+		        ) pst  ,
+		        (select t.id oid,t.parentid opid,t.contentid ocid,t.treelevel olevel, t.rank orank,t.weight oweight,c.name oname
+		         from   tbltreescore t, tblobjective c
+		         where  t.contentid=c.id  and t.treelevel=4 and t.year = #{year}
+		        ) obj ,
+		        (
+		         select t.id mid,t.parentid mpid,t.contentid mcid,t.treelevel mlevel, t.rank mrank, t.weight mweight, c.name mname,
+		                c.id mcd,d.measureid  , d.measurement, d.frequency, d.trend, d.etlkey,
+		                d.unit, max(d.updateid) updateid ,
+		                d.planned,d.plannedbase, d.base, d.baselimit, d.limit,
+		                mi.code itemcode, mi.itemname, mi.itemfixed,
+		                max(case when substr(mia.strdate,5,2) = '03' then actual end)   mm03,
+		                max(case when substr(mia.strdate,5,2) = '06' then actual end)   mm06,
+		                max(case when substr(mia.strdate,5,2) = '09' then actual end)   mm09,
+		                max(case when substr(mia.strdate,5,2) = '12' then actual end)   mm12
+		         from   tbltreescore t, tblmeasure c,  tblmeasuredefine d, tblitem mi, tblitemactual mia
+		         where  t.contentid  = d.id  and t.treelevel=5 and t.year = #{year}  and d.measureid=c.id
+		         and    t.contentid  = mi.measureid  (+)
+		         and    mi.measureid = mia.measureid (+)
+		         and    mi.code      = mia.code      (+)
+		         and    d.measurement = '계량'
+				 <if test='frequency != null'>
+		         and    d.frequency   =  #{frequency}
+		         </if>
+		         group by   t.id ,t.parentid, t.contentid ,t.treelevel , t.rank , t.weight , c.name ,
+		                    c.id ,d.measureid, d.measurement, d.frequency, d.trend, d.etlkey,
+		                    d.unit       ,
+		                       d.planned,d.plannedbase, d.base, d.baselimit, d.limit,
+		                    mi.code, mi.itemname, mi.itemfixed
+		        ) mea
+		 where  cid = spid (+)
+		 and    sid = bpid (+)
+		 and    bid = ppid (+)
+		 and    pid = opid (+)
+		 and    oid = mpid
+		 order by crank, srank, brank, prank, orank, mrank, itemcode
+
+
+	</select>
+
+
+
+	<select id="selectMeasureQly" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT  cid, ccid, clevel, crank, cname,  cweight,
+		         sid, scid, slevel, srank, sname,  sweight,
+		         bid, bcid, blevel, brank, bname,  sum(mweight) over (partition by cid, sid, bid          ) bweight,
+		         pid, pcid, plevel, prank, pname,  sum(mweight) over (partition by cid, sid, bid, pid     ) pweight,
+		         oid, ocid, olevel, orank, oname,  sum(mweight) over (partition by cid, sid, bid, pid, oid) oweight,
+		         mid, mcid, mlevel, mrank, mname,  mweight, mea.measureid, frequency,  f_getempnm(updateid) empnm,
+		         substr(effectivedate,1,4)||'-'||substr(effectivedate,5,2) ym, substr(effectivedate,5,2) mm,
+		            mia.planned  evalplan, mia.detail evalactual, mia.estimate evalself
+		 FROM
+		        (select t.id cid,t.parentid cpid,t.contentid ccid,t.treelevel clevel, t.rank crank,t.weight cweight,c.name cname
+		         from   tblhierarchy t,tblcompany c
+		         where  t.contentid=c.id  and t.treelevel=0 and t.year =#{year}
+		        ) com,
+		        (select t.id sid,t.parentid spid,t.contentid scid,t.treelevel slevel, t.rank srank,t.weight sweight,c.name sname
+		         from   tblhierarchy t,tblsbu c
+		         where  t.contentid=c.id  and t.treelevel=1 and t.year =#{year}
+		         <if test='sid != null'>
+		           and t.id = #{sid}
+		         </if>
+		        ) sbu,
+		        (select t.id bid,t.parentid bpid,t.contentid bcid,t.treelevel blevel, t.rank brank,t.weight bweight,c.name bname
+		         from   tblhierarchy t,tblbsc c
+		         where  t.contentid=c.id  and t.treelevel=2 and t.year =#{year}
+
+		         <if test='bid != null'>
+		           and t.id = #{bid}
+		         </if>
+
+		        ) bsc,
+		        (select t.id pid,t.parentid ppid,t.contentid pcid,t.treelevel plevel, t.rank prank,t.weight pweight,c.name pname
+		         from   tbltreescore t,tblpst c
+		         where  t.contentid=c.id  and t.treelevel=3 and t.year =#{year}
+		        ) pst  ,
+		        (select t.id oid,t.parentid opid,t.contentid ocid,t.treelevel olevel, t.rank orank,t.weight oweight,c.name oname
+		         from   tbltreescore t,tblobjective c
+		         where  t.contentid=c.id  and t.treelevel=4 and t.year = #{year}
+		        ) obj ,
+		         (
+		          select t.id mid,t.parentid mpid,t.contentid mcid,t.treelevel mlevel, t.rank mrank, t.weight mweight, c.name mname,
+		                 c.id mcd,d.measureid  , d.measurement, d.frequency, d.trend, d.etlkey,
+		                 d.unit       , d.updateid updateid,
+		                 d.planned,d.plannedbase, d.base, d.baselimit, d.limit, freq.fym
+		          from   tbltreescore    t, tblmeasure c,  tblmeasuredefine d,
+		                  (
+		                  SELECT freq, year||mm fym
+		                  FROM
+		                  (
+		                  <![CDATA[
+		                  SELECT year, '년'   freq, ltrim(to_char(rownum * 1 ,'00')) mm  FROM tbltreescore WHERE year = #{year} AND rownum <=12  UNION
+		                  SELECT year, '반기' freq, ltrim(to_char(rownum * 3 ,'00')) mm  FROM tbltreescore WHERE year = #{year} AND rownum <=4   UNION
+		                  SELECT year, '분기' freq, ltrim(to_char(rownum * 6 ,'00')) mm  FROM tbltreescore WHERE year = #{year} AND rownum <=2   UNION
+		                  SELECT year, '월'   freq, ltrim(to_char(rownum * 12,'00')) mm  FROM tbltreescore WHERE year = #{year} AND rownum <=1
+		                  ]]>
+
+		                  )) freq
+		          where  t.contentid   = d.id  and t.treelevel=5 and t.year = #{year} and d.measureid=c.id
+		          and    d.frequency   = freq.freq
+		          and    d.measurement = '비계량'
+				  <if test='frequency != null'>
+		         	and    d.frequency   =  #{frequency}
+		          </if>
+		         ) mea,
+		         TBLEVALMEASUREDETAIL mia
+		  where  cid = spid (+)
+		  and    sid = bpid (+)
+		  and    bid = ppid (+)
+		  and    pid = opid (+)
+		  and    oid = mpid
+		  and    mcid = mia.measureid (+)
+		  and    fym  = substr(mia.effectivedate(+),1,6)
+		  order by crank, srank, brank, prank, orank, mrank, fym
+
+	</select>
+
+	<select id="selectMeasureStatusCnt" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		select sid, sname, srank, bid, bname, brank,
+		        sum(case when pcode in ('P01','P05') then 1 end)    obj1,
+		        sum(case when pcode in ('P02','P06') then 1 end)    obj2,
+		        sum(case when pcode in ('P03'      ) then 1 end)    obj3,
+		        sum(case when pcode in ('P04','P07','P08') then 1 end)    obj4,
+		        sum(case when measurement in ('계량'  ) then 1 end)    val1,
+		        sum(case when measurement in ('비계량') then 1 end)    val2,
+		        sum(case when measurement in ('계량'  ) then 1 end)+sum(case when measurement in ('비계량') then 1 end) val
+		 from
+		  (select c.name cname,t.id cid,t.contentid ccid,t.parentid cpid,t.rank crank
+		  from tblcompany c, tblhierarchy t where t.treelevel=0 and t.year = #{year} and t.contentid=c.id ) com,
+		  (select c.name sname,t.id sid,t.contentid scid,t.parentid spid,t.rank srank
+		  from tblsbu c, tblhierarchy t where t.treelevel=1 and t.year = #{year} and t.contentid=c.id ) sbu,
+		  (select c.name bname,t.id bid,t.contentid bcid,t.parentid bpid,t.rank brank
+		  from tblbsc c, tblhierarchy t where t.treelevel=2 and t.year = #{year} and t.contentid=c.id ) bsc,
+		  (select c.name pname,t.id pid,t.contentid pcid,t.parentid ppid,t.rank prank, c.code pcode
+		  from  tblpst c, tbltreescore t where t.treelevel=3 and t.year = #{year} and t.contentid=c.id ) pst,
+		  (select c.name oname,t.id oid,t.contentid ocid,t.parentid opid,t.rank orank
+		  from tblobjective c, tbltreescore t where t.treelevel=4 and t.year = #{year} and t.contentid=c.id ) obj,
+		  (select c.name mname,t.id mid,t.contentid mcid,t.parentid mpid,t.rank mrank, t.weight mweight, d.id, d.measureid, etlkey, d.measurement
+		  from tblmeasure c, tbltreescore t, tblmeasuredefine d
+		  where t.treelevel=5 and t.year = #{year} and t.contentid=d.id and   d.measureid = c.id) mea
+		 where  com.cid=sbu.spid and    sbu.sid=bsc.bpid (+) and    bsc.bid=pst.ppid (+) and    pst.pid=obj.opid (+) and    obj.oid=mea.mpid (+)
+		 group by sid, sname, srank, bid, bname, brank
+		 order by sid, srank, bid, brank
+
+	</select>
+
+	<select id="selectMeasureStatusWgt" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		select sid, sname, srank, bid, bname, brank,
+		        sum(case when pcode in ('P01','P05') then mweight end)    obj1,
+		        sum(case when pcode in ('P02','P06') then mweight end)    obj2,
+		        sum(case when pcode in ('P03'      ) then mweight end)    obj3,
+		        sum(case when pcode in ('P04','P07','P08') then mweight end)    obj4,
+		        sum(case when measurement in ('계량'  ) then mweight end)    val1,
+		        sum(case when measurement in ('비계량') then mweight end)    val2,
+		        sum(case when measurement in ('계량'  ) then mweight end)+ sum(case when measurement in ('비계량') then mweight end)    val
+		 from
+		  (select c.name cname,t.id cid,t.contentid ccid,t.parentid cpid,t.rank crank
+		  from tblcompany c, tblhierarchy t where t.treelevel=0 and t.year = #{year} and t.contentid=c.id ) com,
+		  (select c.name sname,t.id sid,t.contentid scid,t.parentid spid,t.rank srank
+		  from tblsbu c, tblhierarchy t where t.treelevel=1 and t.year = #{year} and t.contentid=c.id ) sbu,
+		  (select c.name bname,t.id bid,t.contentid bcid,t.parentid bpid,t.rank brank
+		  from tblbsc c, tblhierarchy t where t.treelevel=2 and t.year = #{year} and t.contentid=c.id ) bsc,
+		  (select c.name pname,t.id pid,t.contentid pcid,t.parentid ppid,t.rank prank, c.code pcode
+		  from  tblpst c, tbltreescore t where t.treelevel=3 and t.year = #{year} and t.contentid=c.id ) pst,
+		  (select c.name oname,t.id oid,t.contentid ocid,t.parentid opid,t.rank orank
+		  from tblobjective c, tbltreescore t where t.treelevel=4 and t.year = #{year} and t.contentid=c.id ) obj,
+		  (select c.name mname,t.id mid,t.contentid mcid,t.parentid mpid,t.rank mrank, t.weight mweight, d.id, d.measureid, etlkey, d.measurement
+		  from tblmeasure c, tbltreescore t, tblmeasuredefine d
+		  where t.treelevel=5 and t.year = #{year} and t.contentid=d.id and   d.measureid = c.id) mea
+		 where  com.cid=sbu.spid and    sbu.sid=bsc.bpid (+) and    bsc.bid=pst.ppid (+) and    pst.pid=obj.opid (+) and    obj.oid=mea.mpid (+)
+		 group by sid, sname, srank, bid, bname, brank
+		 order by sid, srank, bid, brank
+
+	</select>
+
+</mapper>

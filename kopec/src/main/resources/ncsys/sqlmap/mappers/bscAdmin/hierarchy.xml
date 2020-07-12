@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ncsys.com.bsc.admin.service.mapper.HierarchyMapper">
+
+ 	<select id="selectHierarchy" parameterType="String"
+ 		resultType="ncsys.com.bsc.admin.service.model.HierarchyNode">
+
+			SELECT T.YEAR YEAR,
+			    T.ID ID,
+			    T.PARENTID PARENTID,
+			    T.CONTENTID VALUE,
+			    C.NAME LABEL,
+			    T.TREELEVEL LVL,
+			    T.RANK RANK
+			FROM TBLHIERARCHY T, TBLCOMPANY C
+			WHERE T.TREELEVEL = 0
+			AND T.CONTENTID = C.ID AND T.YEAR=#{year, jdbcType=VARCHAR }
+			UNION
+			SELECT T.YEAR YEAR,
+			    T.ID ID,
+			    T.PARENTID PARENTID,
+			    T.CONTENTID VALUE,
+			    C.NAME LABEL,
+			    T.TREELEVEL LVL,
+			    T.RANK RANK
+			FROM TBLHIERARCHY T, TBLSBU C
+			WHERE T.TREELEVEL = 1
+			AND T.CONTENTID = C.ID AND T.YEAR=#{year, jdbcType=VARCHAR }
+			UNION
+			SELECT T.YEAR YEAR,
+			    T.ID ID,
+			    T.PARENTID PARENTID,
+			    T.CONTENTID VALUE,
+			    C.NAME LABEL,
+			    T.TREELEVEL LVL,
+			    T.RANK RANK
+			FROM TBLHIERARCHY T, TBLBSC C
+			WHERE T.TREELEVEL = 2
+			AND T.CONTENTID = C.ID AND T.YEAR=#{year, jdbcType=VARCHAR }
+			ORDER BY LVL,RANK,ID
+ 	</select>
+
+ 	<select id="selectCompnay" resultType="ncsys.com.bsc.admin.service.model.Component">
+		SELECT ID, CODE, NAME, 0 LVL FROM TBLCOMPANY
+		ORDER BY NAME, ID
+ 	</select>
+
+ 	<select id="selectSBU" resultType="ncsys.com.bsc.admin.service.model.Component">
+		SELECT ID, CODE, NAME, 1 LVL FROM TBLSBU
+		ORDER BY NAME, ID
+ 	</select>
+
+ 	<select id="selectBSC" resultType="ncsys.com.bsc.admin.service.model.Component">
+		SELECT ID, CODE, NAME, 2 LVL FROM TBLBSC
+		ORDER BY NAME, ID
+ 	</select>
+
+
+
+	<select id="selectNextHierarchyId" resultType="String">
+		SELECT NVL((SELECT MAX(ID)+1 FROM TBLHIERARCHY),1) NID FROM DUAL
+	</select>
+
+
+	<insert id="insertHierarchy" parameterType="ncsys.com.bsc.admin.service.model.HierarchyNode">
+
+		INSERT INTO TBLHIERARCHY (
+			 ID
+			,PARENTID
+			,CONTENTID
+			,TREELEVEL
+			,RANK
+			,INPUTDATE
+			,YEAR
+			,WEIGHT
+		) VALUES (
+			 #{id, jdbcType=VARCHAR }
+			,#{parentid, jdbcType=VARCHAR }
+			,#{contentid, jdbcType=VARCHAR }
+			,#{treelevel, jdbcType=VARCHAR }
+			<choose><when test="rank != null and rank !='' ">
+				,#{rank}
+			</when>
+			<otherwise>
+				,#{contentid}
+			</otherwise>
+			</choose>
+			,sysdate
+			,#{year, jdbcType=VARCHAR }
+			,100
+		)
+
+	</insert>
+
+	<select id="selectHierarchyByContentid" parameterType="ncsys.com.bsc.admin.service.model.HierarchyTree" resultType="ncsys.com.bsc.admin.service.model.HierarchyTree">
+
+		SELECT
+		    MAX(CID) CID, MAX(CPID) CPID, MAX(CCID) CCID,
+		    MAX(SID) SID, MAX(SPID) SPID, MAX(SCID) SCID,
+		    MAX(BID) BID, MAX(BPID) BPID, MAX(BCID) BCID
+		FROM
+		(
+		    SELECT CID, CPID, CCID, NULL SID, NULL SPID, NULL SCID, NULL BID, NULL BPID, NULL BCID FROM VIEW_HIERARCHY WHERE YEAR=#{year} AND CCID=#{ccid}
+		    UNION ALL
+		    SELECT NULL CID, NULL CPID, NULL CCID, SID, SPID, SCID, NULL BID, NULL BPID, NULL BCID FROM VIEW_HIERARCHY WHERE YEAR=#{year} AND CCID=#{ccid} AND SCID=#{scid}
+		    UNION ALL
+		    SELECT NULL CID, NULL CPID, NULL CCID, NULL SID, NULL SPID, NULL SCID, BID, BPID, BCID  FROM VIEW_HIERARCHY WHERE YEAR=#{year} AND CCID=#{ccid} AND SCID=#{scid} AND BCID=#{bcid}
+		)
+
+	</select>
+
+
+
+
+
+
+	<!-- update tree  -->
+	<update id="updateHierarchy" parameterType="ncsys.com.bsc.admin.service.model.HierarchyTree" >
+
+		UPDATE TBLHIERARCHY SET
+			CONTENTID=#{newId},
+			RANK = #{rank}
+		WHERE
+			YEAR=#{year}
+		AND ID=#{tId}
+		AND TREELEVEL=#{treeLevel}
+
+	</update>
+
+
+	<delete id="deleteItemActual" parameterType="ncsys.com.bsc.admin.service.model.HierarchyTree">
+
+		DELETE FROM TBLITEMACTUAL WHERE MEASUREID IN (
+		    SELECT MCID FROM VIEW_MEASURE WHERE YEAR=#{year} AND BID=#{tId}
+		)
+
+	</delete>
+
+	<delete id="deleteItem" parameterType="ncsys.com.bsc.admin.service.model.HierarchyTree">
+
+		DELETE FROM TBLITEM WHERE MEASUREID IN (
+		    SELECT MCID FROM VIEW_MEASURE WHERE YEAR=#{year} AND BID=#{tId}
+		)
+
+	</delete>
+
+	<delete id="deleteMeasureDetail" parameterType="ncsys.com.bsc.admin.service.model.HierarchyTree">
+
+		DELETE FROM TBLMEASUREDETAIL WHERE MEASUREID IN (
+		    SELECT MCID FROM VIEW_MEASURE WHERE YEAR=#{year} AND BID=#{tId}
+		)
+
+	</delete>
+
+	<delete id="deleteMeasureScore" parameterType="ncsys.com.bsc.admin.service.model.HierarchyTree">
+
+		DELETE FROM TBLMEASURESCORE WHERE MEASUREID IN (
+		    SELECT MCID FROM VIEW_MEASURE WHERE YEAR=#{year} AND BID=#{tId}
+		)
+
+	</delete>
+
+	<delete id="deleteMeasureDefine" parameterType="ncsys.com.bsc.admin.service.model.HierarchyTree">
+
+		DELETE FROM TBLMEASUREDEFINE WHERE ID IN (
+		    SELECT MCID FROM VIEW_MEASURE WHERE YEAR=#{year} AND BID=#{tId}
+		)
+
+	</delete>
+
+
+	<delete id="deleteHierarchy" parameterType="ncsys.com.bsc.admin.service.model.HierarchyTree">
+
+		DELETE FROM TBLHIERARCHY WHERE YEAR=#{year} AND ID=#{tId} AND TREELEVEL=#{treeLevel}
+
+	</delete>
+
+
+	<select id="selectChildHierarchy" parameterType="ncsys.com.bsc.admin.service.model.HierarchyTree" resultType="ncsys.com.bsc.admin.service.model.HierarchyNode">
+		SELECT YEAR,ID,PARENTID,TREELEVEL,CONTENTID FROM TBLHIERARCHY WHERE YEAR=#{year} AND PARENTID=#{tId}
+	</select>
+</mapper>

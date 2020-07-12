@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ncsys.com.bsc.actual.service.mapper.MeasureOwnerMapper">
+
+	<select id="selectSBU" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT * FROM
+		(
+		    SELECT T.YEAR CYEAR,
+		        T.ID CID,
+		        T.PARENTID CPID,
+		        T.CONTENTID CCID,
+		        C.NAME CNAME,
+		        T.TREELEVEL CLEVEL,
+		        T.WEIGHT CWGT,
+		        T.RANK CRANK
+		    FROM TBLHIERARCHY T, TBLCOMPANY C
+		    WHERE T.TREELEVEL = 0 AND T.CONTENTID = C.ID
+		) COM
+		LEFT JOIN
+		(
+		    SELECT T.YEAR SYEAR,
+		          T.ID SID,
+		          T.PARENTID SPID,
+		          T.CONTENTID SCID,
+		          C.NAME SNAME,
+		          T.TREELEVEL SLEVEL,
+		          T.WEIGHT SWGT,
+		          T.RANK SRANK
+		     FROM TBLHIERARCHY T, TBLSBU C
+		    WHERE T.TREELEVEL = 1 AND T.CONTENTID = C.ID
+		) SBU
+		ON COM.CID = SBU.SPID AND COM.CYEAR = SBU.SYEAR
+		WHERE COM.CYEAR = #{year}
+		ORDER BY CRANK, CID, SRANK, SID
+
+	</select>
+
+
+
+	<select id="selectMeasureList" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		select
+		         c.year,
+		         c.id cid, c.contentid ccid, cc.name cnm, c.treelevel clevel, c.rank crank, c.weight  cw,
+		         s.id sid, s.contentid scid, sc.name snm, s.treelevel slevel, s.rank srank, s.weight  sw,
+		         b.id bid, b.contentid bcid, bc.name bnm, b.treelevel blevel, b.rank brank, b.weight  bw,
+		         p.id pid, p.contentid pcid, pc.name pnm, p.treelevel plevel, p.rank prank, p.weight  pw,
+		         o.id oid, o.contentid ocid, oc.name onm, o.treelevel olevel, o.rank orank, o.weight  ow,
+		         m.id mid, m.contentid mcid, mc.name mnm, m.treelevel mlevel, m.rank mrank, m.weight  mw,
+		         md.measureid        mcode,
+		         p.weight*o.weight*m.weight/(100*100*100)*100   mcw,
+		         md.etlkey           etlkey,
+		         md.frequency        freq  ,
+		         md.unit             unit  ,
+		         md.measurement      mment ,
+		         md.trend            trend ,
+		         md.entrytype        entrytype,
+		         md.measuretype      meastype
+		 from    tblhierarchy c, tblcompany   cc,
+		         tblhierarchy s, tblsbu       sc,
+		         tblhierarchy b, tblbsc       bc,
+		         tbltreescore p, tblpst       pc,
+		         tbltreescore o, tblobjective oc,
+		         tbltreescore m, tblmeasure   mc, tblmeasuredefine md
+		 where   c.year = s.year(+) and c.treelevel = 0 and c.id = s.parentid(+) and c.contentid = cc.id(+)
+		 and     s.year = b.year(+) and s.treelevel = 1 and s.id = b.parentid(+) and s.contentid = sc.id(+)
+		 and     b.year = p.year(+) and b.treelevel = 2 and b.id = p.parentid(+) and b.contentid = bc.id(+)
+		 and     p.year = o.year(+) and p.treelevel = 3 and p.id = o.parentid(+) and p.contentid = pc.id(+)
+		 and     o.year = m.year(+) and o.treelevel = 4 and o.id = m.parentid(+) and o.contentid = oc.id(+)
+		 and     m.treelevel = 5    and m.contentid = md.id(+) and md.measureid = mc.id(+)
+		 and     c.year = #{year}
+
+		 <if test='sid != 0'>
+		 and     s.id   = #{sid}
+		 </if>
+
+		 <if test='ownerId != null'>
+		 and     md.id  in   (
+		                      select id mcid from tblmeasuredefine where updateid = #{ownerId}
+		                      union
+		                      select measureid mcid from tblauthority     where userid = #{ownerId}
+		                      )
+         </if>
+		 order by c.year desc, c.rank, c.id, s.rank, s.id, b.rank, b.id,
+		                       p.rank, p.id, o.rank, o.id, m.rank, m.id
+
+	</select>
+
+	<select id="selectUserList" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT USERID, USERNAME, GROUPID
+		    DEPT_CD, (SELECT DEPT_NM FROM TBLDEPT D WHERE D.DEPT_CD=U.DEPT_CD) DEPT_NM
+		FROM TBLUSER U WHERE 4 > GROUPID
+		<if test='searchText != null'>
+			AND USERNAME LIKE '%'||#{searchText}||'%'
+		</if>
+		ORDER BY USERNAME
+
+	</select>
+
+	<select id="selectMeasureOwner" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		 select usertype, usertypenm, userid, f_getempnm(userid) usernm,
+		 (SELECT DEPT_NM FROM TBLDEPT D WHERE D.DEPT_CD=(select dept_cd from tbluser u where u.userid=a.userid)) DEPT_NM
+		 from
+		 (
+		       select id        mcid, '1' usertype,'정' usertypenm, updateid userid from tblmeasuredefine where id = #{mcid}
+		       union
+		       select measureid mcid, '2' usertype,'부' usertypenm, userid   userid from tblauthority     where measureid = #{mcid}
+		 ) a
+		 order by usertype
+
+	</select>
+
+
+	<delete id="deleteAuthoritybyMeasure" parameterType="map">
+
+		DELETE FROM TBLAUTHORITY WHERE YEAR=#{year}  AND MEASUREID = #{mcid}
+
+	</delete>
+
+	<insert id="insertAuthority" parameterType="map">
+
+		INSERT INTO TBLAUTHORITY (YEAR, MEASUREID, USERID) VALUES (#{year}, #{mcid}, #{ownerId})
+
+	</insert>
+
+	<update id="updateMeasureUpdater" parameterType="map">
+
+		UPDATE TBLMEASUREDEFINE SET UPDATEID=#{ownerId} WHERE YEAR=#{year} AND ID=#{mcid}
+
+	</update>
+
+
+
+
+
+	<insert id="insertAuthorityWithTo" parameterType="map">
+
+		 insert into tblauthority (year,measureid,userid)
+		 select year,measureid, #{touserid}
+		 from   tblauthority where year=#{year} and userid=#{fromuserid} and userid != #{touserid}
+
+	</insert>
+
+	<delete id="deleteAthorityWithTo" parameterType="map">
+
+		DELETE tblauthority WHERE YEAR=#{year} AND USERID=#{fromuserid}
+
+	</delete>
+
+	<update id="updateUpdaterWithTo" parameterType="map">
+
+		update tblmeasuredefine set updateid = #{touserid}
+		 where  id in (
+		         select  mcid from (
+		         select
+		                 c.year,
+		                 c.id cid, c.contentid ccid, cc.name cnm, c.treelevel clevel, c.rank crank, c.weight  cw,
+		                 s.id sid, s.contentid scid, sc.name snm, s.treelevel slevel, s.rank srank, s.weight  sw,
+		                 b.id bid, b.contentid bcid, bc.name bnm, b.treelevel blevel, b.rank brank, b.weight  bw,
+		                 p.id pid, p.contentid pcid, pc.name pnm, p.treelevel plevel, p.rank prank, p.weight  pw,
+		                 o.id oid, o.contentid ocid, oc.name onm, o.treelevel olevel, o.rank orank, o.weight  ow,
+		                 m.id mid, m.contentid mcid, mc.name mnm, m.treelevel mlevel, m.rank mrank, m.weight  mw,
+		                 md.measureid        mcode,
+		                 p.weight*o.weight*m.weight/(100*100*100)*100   mcw,
+		                 md.etlkey           etlkey,
+		                 md.frequency        freq  ,
+		                 md.unit             unit  ,
+		                 md.updateid         mment ,
+		                 md.trend            updateid
+		         from    tblhierarchy c, tblcompany   cc,
+		                 tblhierarchy s, tblsbu       sc,
+		                 tblhierarchy b, tblbsc       bc,
+		                 tbltreescore p, tblpst       pc,
+		                 tbltreescore o, tblobjective oc,
+		                 tbltreescore m, tblmeasure   mc, tblmeasuredefine md
+		         where   c.year = s.year(+) and c.treelevel = 0 and c.id = s.parentid(+) and c.contentid = cc.id(+)
+		         and     s.year = b.year(+) and s.treelevel = 1 and s.id = b.parentid(+) and s.contentid = sc.id(+)
+		         and     b.year = p.year(+) and b.treelevel = 2 and b.id = p.parentid(+) and b.contentid = bc.id(+)
+		         and     p.year = o.year(+) and p.treelevel = 3 and p.id = o.parentid(+) and p.contentid = pc.id(+)
+		         and     o.year = m.year(+) and o.treelevel = 4 and o.id = m.parentid(+) and o.contentid = oc.id(+)
+		         and     m.treelevel = 5    and m.contentid = md.id(+) and md.measureid = mc.id(+)
+		         and     c.year = #{year}
+		         and     md.updateid = #{fromuserid}
+		         order by c.year desc, c.rank, c.id, s.rank, s.id, b.rank, b.id,
+		                               p.rank, p.id, o.rank, o.id, m.rank, m.id
+		         )
+		 )
+
+
+	</update>
+
+
+</mapper>

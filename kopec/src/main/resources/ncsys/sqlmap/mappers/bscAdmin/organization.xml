@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="ncsys.com.bsc.admin.service.mapper.OrganizationMapper">
+ 	
+ 	<select id="selectHierarchy" parameterType="String" 
+ 		resultType="ncsys.com.bsc.admin.service.model.HierarchyNode">
+		    
+			SELECT T.YEAR YEAR,
+			    T.ID ID,
+			    T.PARENTID PARENTID,
+			    T.CONTENTID VALUE,
+			    C.NAME LABEL,
+			    T.TREELEVEL LVL,
+			    T.RANK RANK
+			FROM TBLHIERARCHY T, TBLCOMPANY C
+			WHERE T.TREELEVEL = 0 
+			AND T.CONTENTID = C.ID AND T.YEAR=#{year, jdbcType=VARCHAR }
+			UNION
+			SELECT T.YEAR YEAR,
+			    T.ID ID,
+			    T.PARENTID PARENTID,
+			    T.CONTENTID VALUE,
+			    C.NAME LABEL,
+			    T.TREELEVEL LVL,
+			    T.RANK RANK
+			FROM TBLHIERARCHY T, TBLSBU C
+			WHERE T.TREELEVEL = 1 
+			AND T.CONTENTID = C.ID AND T.YEAR=#{year, jdbcType=VARCHAR }
+			UNION
+			SELECT T.YEAR YEAR,
+			    T.ID ID,
+			    T.PARENTID PARENTID,
+			    T.CONTENTID VALUE,
+			    C.NAME LABEL,
+			    T.TREELEVEL LVL,
+			    T.RANK RANK
+			FROM TBLHIERARCHY T, TBLBSC C
+			WHERE T.TREELEVEL = 2 
+			AND T.CONTENTID = C.ID AND T.YEAR=#{year, jdbcType=VARCHAR }
+			ORDER BY LVL,RANK,ID 
+ 	</select>
+ 	
+ 	
+ 	<select id="selectMap" parameterType="String" 
+ 		resultType="ncsys.com.bsc.admin.service.model.Map">
+		    
+			SELECT ID,MAPNAME,BACKGROUND,ICONPROPS,MAPRANK,MAPKIND,YEAR
+			FROM TBLMAP WHERE YEAR = #{year, jdbcType=VARCHAR }
+			ORDER BY MAPRANK
+			
+ 	</select>
+ 	
+ 	<select id="selectIcon" parameterType="String"  resultType="ncsys.com.bsc.admin.service.model.Mapicon">
+		    
+			SELECT ID,MAPID,ICONSTYLE,ICONTEXT,X,Y,WIDTH,HEIGHT,TREELEVEL,TREEID,SHOWTEXT,SHOWSCORE
+			FROM TBLMAPICON
+			WHERE MAPID=#{mapid, jdbcType=VARCHAR }
+			
+ 	</select>
+ 	
+ 	
+ 	<select id="selectNextMapId" resultType="String">
+ 		SELECT NVL((SELECT MAX(ID)+1 FROM TBLMAP),1) NID FROM DUAL
+ 	</select>
+ 	
+ 	<insert id="insertMap" parameterType="ncsys.com.bsc.admin.service.model.Map">
+ 		INSERT INTO TBLMAP (ID,MAPNAME,BACKGROUND,ICONPROPS,MAPRANK,MAPKIND,YEAR) 
+ 		VALUES (#{id},#{mapname},#{background},#{iconprops},#{maprank},#{mapkind},#{year})
+ 	</insert>
+ 	
+ 	<update id="updateMap" parameterType="ncsys.com.bsc.admin.service.model.Map">
+ 		UPDATE TBLMAP SET MAPNAME=#{mapname},BACKGROUND=#{background},ICONPROPS=#{iconprops},MAPRANK=#{maprank},MAPKIND=#{mapkind} WHERE ID=#{id}
+ 	</update>
+ 	
+ 	<delete id="deleteMap" parameterType="ncsys.com.bsc.admin.service.model.Mapicon">
+ 		DELETE FROM TBLMAP WHERE ID=#{id}
+ 	</delete>
+ 	
+ 	<insert id="insertMapicon" parameterType="ncsys.com.bsc.admin.service.model.Mapicon">
+ 		INSERT INTO TBLMAPICON (ID,MAPID,ICONSTYLE,ICONTEXT,X,Y,WIDTH,HEIGHT,TREELEVEL,TREEID,SHOWTEXT,SHOWSCORE) 
+ 		VALUES (#{id},#{mapid},#{iconstyle},#{icontext},#{x}, #{y},#{width},#{height},#{treelevel},#{treeid}, #{showtext},#{showscore})
+ 	
+ 	</insert>
+ 	
+ 	<delete id="deleteMapicon" parameterType="ncsys.com.bsc.admin.service.model.Mapicon">
+ 		DELETE FROM TBLMAPICON WHERE MAPID=#{mapid}
+ 	</delete>
+ 	
+ 	
+</mapper>

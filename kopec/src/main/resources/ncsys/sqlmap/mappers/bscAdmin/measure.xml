@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ncsys.com.bsc.admin.service.mapper.MeasureMapper">
+
+ 	<select id="selectMeasureList" parameterType="ncsys.com.bsc.admin.service.model.MeasureList"
+ 	        resultType="ncsys.com.bsc.admin.service.model.MeasureList">
+
+		SELECT ROWNUM ROWIDX
+		    ,YEAR
+		    ,CID,CCID,CNAME,CRANK
+		    ,SID,SCID,SNAME,SRANK
+		    ,BID,BCID,BNAME,BRANK
+		    ,PID,PCID,PNAME,PRANK
+		    ,PCNT
+		    ,PNUM
+		    ,OID,OCID,ONAME,ORANK
+		    ,OCNT
+		    ,ONUM
+		    ,MID,MCID,MNAME,MRANK,MEASUREID
+		    ,WEIGHT,UNIT,FREQUENCY,EQUATIONDEFINE,ETLKEY
+		    ,MEASUREMENT,TREND,PLANNED
+		FROM (
+		SELECT
+		    YEAR
+		    ,CID,CCID,CNAME,CRANK
+		    ,SID,SCID,SNAME,SRANK
+		    ,BID,BCID,BNAME,BRANK
+		    ,PID,PCID,PNAME,PRANK
+		    ,COUNT(PID) OVER (PARTITION BY PID) PCNT
+		    ,ROW_NUMBER() OVER (PARTITION BY PID ORDER BY PRANK,PID,ORANK,OID,MRANK,MID) PNUM
+		    ,OID,OCID,ONAME,ORANK
+		    ,COUNT(OID) OVER (PARTITION BY OID) OCNT
+		    ,ROW_NUMBER() OVER (PARTITION BY OID ORDER BY PRANK,PID,ORANK,OID,MRANK,MID) ONUM
+		    ,MID,MCID,MNAME,MRANK,MEASUREID
+		    ,WEIGHT,UNIT,FREQUENCY,EQUATIONDEFINE,ETLKEY
+		    ,MEASUREMENT,TREND,PLANNED
+		FROM VIEW_MEASURE WHERE YEAR=#{year} AND BID=#{bid}
+		ORDER BY
+		     CRANK,CID,SRANK,SID
+		    ,BRANK,BID,PRANK,PID
+		    ,ORANK,OID,MRANK,MID
+		) M
+
+
+ 	</select>
+
+
+
+ 	<select id="selectPst" resultType="ncsys.com.bsc.admin.service.model.Component">
+		SELECT ID, CODE, NAME, 3 LVL FROM TBLPST
+		ORDER BY NAME, ID
+ 	</select>
+
+ 	<select id="selectObject" resultType="ncsys.com.bsc.admin.service.model.Component">
+		SELECT ID, CODE, NAME, 4 LVL FROM TBLOBJECTIVE
+		ORDER BY NAME, ID
+ 	</select>
+
+ 	<select id="selectMeasure" resultType="ncsys.com.bsc.admin.service.model.Component">
+		SELECT ID, CODE, NAME, 5 LVL FROM TBLMEASURE
+		ORDER BY NAME, ID
+ 	</select>
+
+
+
+
+
+	<select id="selectTreeScoreByContentid" parameterType="ncsys.com.bsc.admin.service.model.TreeScoreTree" resultType="ncsys.com.bsc.admin.service.model.TreeScoreTree">
+
+		SELECT
+		     MAX(BID) BCID
+		    ,MAX(PID) PID
+		    ,MAX(PCID) PCID
+		    ,MAX(OID) OID
+		    ,MAX(OCID) OCID
+		    ,MAX(MID) MID
+		    ,MAX(MEASUREID) MEASUREID
+		FROM
+		(
+		    SELECT BID, BCID, NULL PID, NULL PCID, NULL OID, NULL OCID, NULL MID, NULL MEASUREID
+		    FROM VIEW_HIERARCHY WHERE YEAR=#{year} AND BID=#{bid}
+		    UNION ALL
+		    SELECT BID, BCID, PID PID, PCID PCID, NULL OID, NULL OCID, NULL MID, NULL MEASUREID
+		    FROM VIEW_HIERARCHY WHERE YEAR=#{year} AND BID=#{bid} AND PCID=#{pcid}
+		    UNION ALL
+		    SELECT BID, BCID, PID PID, PCID PCID, OID OID, OCID OCID, NULL MID, NULL MEASUREID
+		    FROM VIEW_HIERARCHY WHERE YEAR=#{year} AND BID=#{bid} AND PCID=#{pcid} AND OCID=#{ocid}
+		    UNION ALL
+		    SELECT BID, BCID, PID PID, PCID PCID, OID OID, OCID OCID, MID MID, MEASUREID MEASUREID
+		    FROM VIEW_HIERARCHY WHERE YEAR=#{year} AND BID=#{bid} AND PCID=#{pcid} AND OCID=#{ocid} AND MEASUREID=#{measureid}
+		)
+
+	</select>
+
+	<select id="selectMeasureUserS" resultType="ncsys.com.bsc.admin.service.model.MeasureUser">
+
+		SELECT
+		     U.USERID
+		    ,U.USERNAME
+		    ,U.DEPT_CD DEPTCD
+		    ,(SELECT DEPT_NM FROM TBLDEPT D WHERE D.DEPT_CD=U.DEPT_CD) AS DEPTNM
+		FROM TBLUSER U
+		WHERE 4 > GROUPID
+		ORDER BY USERNAME
+
+
+	</select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<!-- adjust treesocre  -->
+
+	<select id="selectTreeScoreByParentid" parameterType="ncsys.com.bsc.admin.service.model.HierarchyNode"
+	resultType="ncsys.com.bsc.admin.service.model.HierarchyNode">
+
+		SELECT ID,PARENTID,CONTENTID,TREELEVEL,RANK,YEAR
+		FROM TBLTREESCORE WHERE YEAR=#{year} AND PARENTID=#{parentid} AND TREELEVEL=#{treelevel} AND CONTENTID=#{contentid}
+
+	</select>
+
+
+	<insert id="insertTreeScore" parameterType="ncsys.com.bsc.admin.service.model.HierarchyNode" >
+	    <selectKey resultType="string" keyProperty="id" order="BEFORE">
+	        SELECT NVL((SELECT MAX(ID)+1 FROM TBLTREESCORE),1) id FROM DUAL
+	    </selectKey>
+
+		INSERT INTO TBLTREESCORE
+			(ID,PARENTID,CONTENTID,TREELEVEL,RANK,YEAR,WEIGHT, INPUTDATE)
+		VALUES (#{id}, #{parentid}, #{contentid}, #{treelevel}, #{id}, #{year}, 100, SYSDATE)
+
+	</insert>
+
+
+	<select id="selectMeasureId" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT ID,PARENTID,CONTENTID,TREELEVEL FROM TBLTREESCORE WHERE YEAR=#{year} AND ID = #{id}
+
+	</select>
+
+	<select id="selectMeasureDefine" resultType="ncsys.com.bsc.admin.service.model.MeasureDefine" parameterType="ncsys.com.bsc.admin.service.model.MeasureDefine">
+		SELECT
+		     YEAR
+		    ,BID
+		    ,PCID
+		    ,PNAME
+		    ,OCID
+		    ,ONAME
+		    ,MID
+		    ,MNAME
+		    ,MCID ID
+		    ,MEASUREID
+		    ,MEAN
+		    ,DETAILDEFINE
+		    ,WEIGHT
+		    ,UNIT
+		    ,PLANNED
+		    ,PLANNEDBASEPLUS
+		    ,PLANNEDBASE
+		    ,BASEPLUS
+		    ,BASE
+		    ,BASELIMITPLUS
+		    ,BASELIMIT
+		    ,LIMITPLUS
+		    ,LIMIT
+		    ,MEASUREMENT
+		    ,TREND
+		    ,FREQUENCY
+		    ,EQUATION
+		    ,EQUATIONDEFINE
+		    ,ETLKEY
+		    ,UPDATEID
+		    ,EQUATIONTYPE
+            ,PLANNEDFLAG
+		FROM VIEW_MEASURE WHERE YEAR = #{year} AND MCID = #{id}
+	</select>
+
+
+	<select id="selectMeasureItems" resultType="ncsys.com.bsc.admin.service.model.Item"
+	parameterType="ncsys.com.bsc.admin.service.model.MeasureDefine">
+
+		SELECT
+		     ROWNUM AS IDX
+		    ,CODE
+		    ,MEASUREID
+		    ,ITEMNAME
+		    ,UNIT
+		    ,ITEMENTRY
+		    ,ITEMTYPE
+		    ,ITEMFIXED
+		FROM TBLITEM WHERE MEASUREID = #{id}
+		ORDER BY CODE
+
+	</select>
+
+	<delete id="deleteMeasureItems" parameterType="ncsys.com.bsc.admin.service.model.MeasureDefine">
+
+		DELETE FROM TBLITEM WHERE MEASUREID = #{id}
+
+	</delete>
+
+	<insert id="insertMeasureItem" parameterType="ncsys.com.bsc.admin.service.model.Item">
+		INSERT INTO TBLITEM (
+			  CODE
+			, MEASUREID
+			, ITEMNAME
+			, ITEMENTRY
+			, ITEMTYPE
+			, ITEMFIXED
+		) VALUES (
+			  #{code}
+			, #{measureid}
+			, #{itemname}
+			, '입력'
+			, '현재값'
+			, #{itemfixed}
+		)
+	</insert>
+
+	<delete id="deleteMeasureAuthority" parameterType="ncsys.com.bsc.admin.service.model.MeasureDefine">
+
+		DELETE FROM TBLAUTHORITY WHERE MEASUREID = #{id}
+
+	</delete>
+
+	<insert id="insertMeasureAuthority" parameterType="ncsys.com.bsc.admin.service.model.MeasureUser">
+		INSERT INTO TBLAUTHORITY (
+			  YEAR
+			, MEASUREID
+			, USERID
+		) VALUES (
+			  #{year}
+			, #{measureid}
+			, #{userId}
+		)
+	</insert>
+
+
+
+	<select id="selectMeasureUpdaters" resultType="ncsys.com.bsc.admin.service.model.MeasureUser"
+	parameterType="ncsys.com.bsc.admin.service.model.MeasureDefine">
+
+		SELECT
+		     D.UPDATEID as userId
+		    ,'Y' TP
+		    ,U.USERNAME
+		    ,U.DEPT_CD DEPTCD
+		    ,(SELECT DEPT_NM FROM TBLDEPT D WHERE D.DEPT_CD=U.DEPT_CD) AS DEPTNM
+		FROM TBLMEASUREDEFINE D, TBLUSER U
+		WHERE D.UPDATEID=U.USERID AND D.ID=#{id}
+		UNION ALL
+		SELECT
+		     A.USERID
+		    ,'N' TP
+		    ,U.USERNAME
+		    ,U.DEPT_CD DEPTCD
+		    ,(SELECT DEPT_NM FROM TBLDEPT D WHERE D.DEPT_CD=U.DEPT_CD) AS DEPTNM
+		FROM TBLAUTHORITY A, TBLUSER U WHERE A.USERID=U.USERID AND A.MEASUREID = #{id}
+		ORDER BY TP DESC, userId
+
+	</select>
+
+ 	<insert id="insertMeasureDefine" parameterType="ncsys.com.bsc.admin.service.model.MeasureDefine">
+	    <selectKey resultType="string" keyProperty="id" order="BEFORE">
+	        SELECT NVL((SELECT MAX(ID)+1 FROM TBLMEASUREDEFINE),1) id FROM DUAL
+	    </selectKey>
+
+	 	INSERT INTO TBLMEASUREDEFINE
+		(
+		     ID
+		    ,MEASUREID
+		    ,MEAN
+		    ,DETAILDEFINE
+		    ,WEIGHT
+		    ,UNIT
+			,PLANNED
+		    ,PLANNEDBASEPLUS
+		    ,PLANNEDBASE
+		    ,BASEPLUS
+		    ,BASE
+		    ,BASELIMITPLUS
+		    ,BASELIMIT
+		    ,LIMITPLUS
+		    ,LIMIT
+		    ,MEASUREMENT
+		    ,TREND
+		    ,FREQUENCY
+		    ,EQUATION
+		    ,EQUATIONDEFINE
+		    ,ETLKEY
+		    ,UPDATEID
+
+		)
+		VALUES
+		(
+			 #{id}
+			,#{measureid, jdbcType=VARCHAR }
+			,#{mean, jdbcType=VARCHAR }
+			,#{detaildefine, jdbcType=VARCHAR }
+			,#{weight, jdbcType=NUMERIC }
+			,#{unit, jdbcType=VARCHAR }
+			,#{planned, jdbcType=NUMERIC }
+		    ,#{plannedBasePlus, jdbcType=NUMERIC }
+		    ,#{plannedBase, jdbcType=NUMERIC }
+		    ,#{basePlus, jdbcType=NUMERIC }
+		    ,#{base, jdbcType=NUMERIC }
+		    ,#{baseLimitPlus, jdbcType=NUMERIC }
+		    ,#{baseLimit, jdbcType=NUMERIC }
+		    ,#{limitPlus, jdbcType=NUMERIC }
+			,#{limit, jdbcType=NUMERIC }
+			,#{measurement, jdbcType=VARCHAR }
+			,#{trend, jdbcType=VARCHAR }
+			,#{frequency, jdbcType=VARCHAR }
+			,#{equation, jdbcType=VARCHAR }
+			,#{equationdefine, jdbcType=VARCHAR }
+			,#{etlkey, jdbcType=VARCHAR }
+			,#{updateid, jdbcType=VARCHAR }
+		)
+
+
+ 	</insert>
+
+ 	<update id="updateMeasureDefine" parameterType="ncsys.com.bsc.admin.service.model.MeasureDefine">
+
+	 	UPDATE TBLMEASUREDEFINE SET
+		     MEAN            = #{mean , jdbcType=VARCHAR }
+		    ,DETAILDEFINE    = #{detaildefine, jdbcType=VARCHAR }
+		    ,WEIGHT          = #{weight, jdbcType=NUMERIC  }
+		    ,UNIT            = #{unit, jdbcType=VARCHAR }
+		    ,PLANNED         = #{planned, jdbcType=NUMERIC  }
+		    ,PLANNEDBASEPLUS = #{plannedBasePlus, jdbcType=NUMERIC  }
+		    ,PLANNEDBASE     = #{plannedBase, jdbcType=NUMERIC  }
+		    ,BASEPLUS        = #{basePlus, jdbcType=NUMERIC  }
+		    ,BASE            = #{base, jdbcType=NUMERIC  }
+		    ,BASELIMITPLUS   = #{baseLimitPlus, jdbcType=NUMERIC  }
+		    ,BASELIMIT       = #{baseLimit, jdbcType=NUMERIC  }
+		    ,LIMITPLUS       = #{limitPlus, jdbcType=NUMERIC  }
+		    ,LIMIT           = #{limit, jdbcType=NUMERIC  }
+		    ,MEASUREMENT     = #{measurement, jdbcType=VARCHAR }
+		    ,TREND           = #{trend, jdbcType=VARCHAR }
+		    ,FREQUENCY       = #{frequency, jdbcType=VARCHAR }
+		    ,EQUATION        = #{equation, jdbcType=VARCHAR }
+		    ,EQUATIONDEFINE  = #{equationdefine, jdbcType=VARCHAR }
+		    ,ETLKEY          = #{etlkey, jdbcType=VARCHAR }
+		    ,UPDATEID        = #{updateid, jdbcType=VARCHAR }
+
+		WHERE ID = #{id}
+
+
+
+ 	</update>
+
+
+ 	<delete id="deleteTreeMeasure" parameterType="ncsys.com.bsc.admin.service.model.MeasureDefine">
+
+ 		DELETE FROM TBLTREESCORE WHERE YEAR=#{year} AND TREELEVEL=5 AND CONTENTID=#{id}
+
+ 	</delete>
+
+ 	<delete id="deleteMeasureDefine" parameterType="ncsys.com.bsc.admin.service.model.MeasureDefine">
+ 		DELETE FROM TBLMEASUREDEFINE WHERE YEAR=#{year} AND ID=#{id}
+ 	</delete>
+
+
+
+	<delete id="clearTreescoreObject" parameterType="ncsys.com.bsc.admin.service.model.MeasureDefine">
+		DELETE FROM TBLTREESCORE WHERE YEAR=#{year} AND ID NOT IN (
+			SELECT PARENTID FROM TBLTREESCORE WHERE YEAR=2020 AND TREELEVEL=5
+		) AND TREELEVEL=4
+	</delete>
+
+	<delete id="clearTreescorePst" parameterType="ncsys.com.bsc.admin.service.model.MeasureDefine">
+		DELETE FROM TBLTREESCORE WHERE YEAR=#{year} AND ID NOT IN (
+			SELECT PARENTID FROM TBLTREESCORE WHERE YEAR=2020 AND TREELEVEL=4
+		) AND TREELEVEL=3
+	</delete>
+
+
+</mapper>

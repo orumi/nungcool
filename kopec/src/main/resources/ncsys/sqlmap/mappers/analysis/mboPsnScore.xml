@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ncsys.com.bsc.analysis.service.mapper.MboPsnScoreMapper">
+
+	<select id="selectInitCon" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT in_year, in_sabun, in_seq, max(in_rev) in_rev
+		<!-- FROM   pa00.t_payb005t@lnk_cpmis     -->
+		 FROM   t_payb005t
+		 WHERE  in_year     = #{year}
+		 AND    in_seq     != '0'
+		 AND    in_pyung_gb = 'P'
+		 AND    in_jikchk   =  '01'
+		 GROUP BY in_year, in_sabun, in_seq
+
+	</select>
+
+
+
+	<select id="selectPsnRoot" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT a.in_sabun  emp_no, f_getempnm(a.in_sabun) emp_nm,   b.in_jikmu,
+		        b.in_jikchk, j.code_name1   jikchk_nm,
+		        b.organ_cd, f_OrganNm(b.organ_cd) organ_nm, b.saup_cd , ' ' saup_nm,
+		        a.in_seq, a.in_rev, a.a_no, a.accountability label, a.a_weight,
+		        success_key,  success_key2, success_key3
+<!-- 		FROM   pa00.t_payb006t@lnk_cpmis a,
+		       pa00.t_payb005t@lnk_cpmis b,
+		       pa00.v_jikchk_r@lnk_cpmis j   -->
+		 FROM   t_payb006t a,
+		        t_payb005t b,
+		        v_jikchk_r j
+		 WHERE  a.in_year  = b.in_year
+		 AND    a.in_sabun = b.in_sabun
+		 AND    a.in_seq   = b.in_seq
+		 AND    a.in_rev   = b.in_rev
+		 AND    b.in_jikchk= j.code   (+)
+		 AND    a.in_year  = #{year}
+		 AND    a.in_sabun = #{inSabun}
+		 AND    a.in_seq   = #{inSeq}
+		 AND    a.in_rev   = #{inRev}
+		 ORDER BY a_no
+
+	</select>
+
+
+	<select id="selectPsnTreeList" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT a.in_sabun  emp_no    , f_getempnm(a.in_sabun  )      emp_nm   ,
+		        a.in_seq  , a.in_rev  ,
+		        a.organ_cd, f_OrganNm(a.organ_cd) organ_nm, a.saup_cd , ' ' saup_nm,
+		        a.in_jikmu,  a.in_jikchk, j.code_name1 jikchknm,
+		        b.a_no    , b.a_weight, b.accountability||'('||j.code_name1||', '||f_getempnm(a.in_sabun  )||')' label,
+		        b.success_key, b.success_key2, b.success_key3, b.finish  ,
+		        a.in_1_sabun emp_no1, f_getempnm(a.in_1_sabun) emp_nm1, in_1_saupdan,
+		        b.in_seq_up, b.in_rev_up, b.a_no_up,
+		        a.in_2_sabun emp_no2, f_getempnm(a.in_2_sabun) emp_nm2, in_2_saupdan,
+		       (SELECT NVL(MAX('Y'),'N')  child
+		        FROM   t_payb005t x,
+		               t_payb006t y
+		        WHERE  x.in_year  = y.in_year
+		        AND    x.in_sabun = y.in_sabun
+		        AND    x.in_seq   = y.in_seq
+		        AND    x.in_rev   = y.in_rev
+		        AND    x.in_year     = #{year}
+		        AND    x.in_seq     != '0'
+		        AND    x.in_pyung_gb = 'P'
+		        AND    x.in_1_sabun  = a.in_sabun
+		        AND    y.a_no_up     = b.a_no
+		        AND    rownum      = 1 ) child
+		 FROM   t_payb005t a,
+		        t_payb006t b,
+		        v_jikchk_r j,
+		        (
+		         SELECT in_year, in_sabun, in_seq, max(in_rev) in_rev
+		         FROM   t_payb005t
+		         WHERE  in_year     =  #{year}
+		         AND    in_seq     != '0'
+		         AND    in_pyung_gb = 'P'
+		         AND    in_1_sabun  =  #{inSabun}
+		         GROUP BY in_year, in_sabun, in_seq
+		        ) x
+		 WHERE  x.in_year  = a.in_year
+		 AND    x.in_sabun = a.in_sabun
+		 AND    x.in_seq   = a.in_seq
+		 AND    x.in_rev   = a.in_rev
+		 AND    a.in_pyung_gb = 'P'
+		 AND    a.in_year  = b.in_year
+		 AND    a.in_sabun = b.in_sabun
+		 AND    a.in_seq   = b.in_seq
+		 AND    a.in_rev   = b.in_rev
+		 AND    a.in_jikchk= j.code   (+)
+		 AND    nvl(b.a_no_up,0) = #{aNo}
+		 ORDER BY a.organ_cd, a.in_sabun, b.a_no
+
+	</select>
+
+
+	<select id="selectAccoutList" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+		 SELECT in_sabun  emp_no, f_getempnm(in_sabun) emp_nm,
+		        in_seq, in_rev, a_no, accountability, a_weight,
+		        success_key,  success_key2, success_key3
+		 FROM   t_payb006t
+		 WHERE  in_year  = #{year}
+		 AND    in_sabun = #{inSabun}
+		 AND    in_seq   = #{inSeq}
+		 AND    in_rev   = #{inRev}
+		 ORDER BY a_no
+	</select>
+
+
+	<select id="selectAccoutDetail" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+		SELECT in_sabun emp_no, in_seq, in_rev, a_no, o_no, o_weight,
+		        object, plan, result,
+		        achieve_ex,
+		        achieve_vg,
+		        achieve_g ,
+		        achieve_ni,
+		        achieve_un,
+		        score1    ,
+		        bsc_acct_cd   ocid ,
+		        f_getbscnm(4,bsc_acct_cd)  oname
+		 FROM   t_payb008t
+		 WHERE  in_year  = #{year}
+		 AND    in_sabun = #{inSabun}
+		 AND    in_seq   = #{inSeq}
+		 AND    in_rev   = #{inRev}
+		 ORDER BY in_seq, in_rev, a_no, o_no
+	</select>
+
+
+
+
+
+	<select id="selectTargetRoot" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+		select a.*,rownum||'. '|| object label from
+		(
+			SELECT a.in_sabun  emp_no, f_getempnm(a.in_sabun) emp_nm,   b.in_jikmu,
+			        b.in_jikchk, j.code_name1   jikchk_nm,
+			        b.organ_cd, f_OrganNm(b.organ_cd) organ_nm, b.saup_cd , ' ' saup_nm,
+			        a.in_seq, a.in_rev, a.a_no, a.accountability, a.a_weight,
+			        success_key,  success_key2, success_key3,
+			        c.o_no  , c.object , c.o_weight, c.plan, c.result
+			 FROM   t_payb006t a,
+			        t_payb005t b,
+			        t_payb008t c,
+			        v_jikchk_r j
+			 WHERE  a.in_year  = b.in_year
+			 AND    a.in_sabun = b.in_sabun
+			 AND    a.in_seq   = b.in_seq
+			 AND    a.in_rev   = b.in_rev
+			 AND    b.in_jikchk= j.code   (+)
+			 AND    a.in_year  = c.in_year
+			 AND    a.in_sabun = c.in_sabun
+			 AND    a.in_seq   = c.in_seq
+			 AND    a.in_rev   = c.in_rev
+			 AND    a.a_no     = c.a_no
+			 AND    a.in_year  = #{year}
+			 AND    a.in_sabun = #{inSabun}
+			 AND    a.in_seq   = #{inSeq}
+			 AND    a.in_rev   = #{inRev}
+			 ORDER BY a_no, o_no
+		) a
+	</select>
+
+
+	<select id="selectTargetList" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT a.in_sabun  emp_no    , f_getempnm(a.in_sabun  )      emp_nm ,
+		         a.in_seq  , a.in_rev  ,
+		         a.organ_cd, f_OrganNm(a.organ_cd) organ_nm, a.saup_cd , ' ' saup_nm,
+		         a.in_jikmu,  a.in_jikchk, j.code_name1 jikchknm,
+		         b.accountability,
+         		 b.a_no    , b.a_weight,  c.object||'('||j.code_name1||', '||f_getempnm(a.in_sabun  )||')' label,
+		         b.success_key, b.success_key2, b.success_key3, b.finish  ,
+		         c.o_no    , c.object  , c.o_weight, c.plan, c.result,
+		         a.in_1_sabun emp_no1, f_getempnm(a.in_1_sabun) emp_nm1, in_1_saupdan,
+		         b.in_seq_up, b.in_rev_up, b.a_no_up, c.o_no_up,
+		         a.in_2_sabun emp_no2, f_getempnm(a.in_2_sabun) emp_nm2, in_2_saupdan,
+		        (SELECT NVL(MAX('Y'),'N')  child
+		         FROM   t_payb005t x,
+		                t_payb006t y,
+		                t_payb008t z
+		         WHERE  x.in_year  = y.in_year
+		         AND    x.in_sabun = y.in_sabun
+		         AND    x.in_seq   = y.in_seq
+		         AND    x.in_rev   = y.in_rev
+		         AND    y.in_year  = z.in_year
+		         AND    y.in_sabun = z.in_sabun
+		         AND    y.in_seq   = z.in_seq
+		         AND    y.in_rev   = z.in_rev
+		         AND    x.in_year     = #{year}
+		         AND    x.in_seq     != '0'
+		         AND    x.in_pyung_gb = 'P'
+		         AND    x.in_1_sabun  = a.in_sabun
+		         AND    z.in_seq_up   = a.in_seq
+		         AND    z.in_rev_up   = a.in_rev
+		         AND    y.a_no_up     = b.a_no
+		         AND    z.o_no_up     = c.o_no
+		         AND    rownum      = 1 ) child
+		  FROM   t_payb005t a,
+		         t_payb006t b,
+		         t_payb008t c,
+		         v_jikchk_r j,
+		         (
+		          SELECT in_year, in_sabun, in_seq, max(in_rev) in_rev
+		          FROM   t_payb005t
+		          WHERE  in_year     =  #{year}
+		          AND    in_seq     != '0'
+		          AND    in_pyung_gb = 'P'
+		          AND    in_1_sabun  = #{inSabun}
+		          GROUP BY in_year, in_sabun, in_seq
+		         ) x
+		  WHERE  x.in_year  = a.in_year
+		  AND    x.in_sabun = a.in_sabun
+		  AND    x.in_seq   = a.in_seq
+		  AND    x.in_rev   = a.in_rev
+		  AND    a.in_pyung_gb = 'P'
+		  AND    a.in_year  = b.in_year
+		  AND    a.in_sabun = b.in_sabun
+		  AND    a.in_seq   = b.in_seq
+		  AND    a.in_rev   = b.in_rev
+		  AND    a.in_jikchk= j.code   (+)
+		  AND    a.in_year  = c.in_year
+		  AND    a.in_sabun = c.in_sabun
+		  AND    a.in_seq   = c.in_seq
+		  AND    a.in_rev   = c.in_rev
+		  AND    b.a_no     = c.a_no
+		  AND    nvl(b.a_no_up,0) like #{aNo}||'%'
+		  AND    nvl(c.o_no_up,0) like #{oNo}||'%'
+		  ORDER BY a.organ_cd, a.in_sabun, c.object, b.a_no
+
+	</select>
+
+
+	<select id="selectTargetDetail" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT a.in_sabun  emp_no, f_getempnm(a.in_sabun) emp_nm,   b.in_jikmu,
+		        b.in_jikchk, j.code_name1   jikchk_nm,
+		        b.organ_cd, f_OrganNm(b.organ_cd) organ_nm, b.saup_cd , ' ' saup_nm,
+		        a.in_seq, a.in_rev, a.a_no, a.accountability, a.a_weight,
+		        success_key,  success_key2, success_key3,
+		        c.o_no  , c.object, c.o_weight, c.plan, c.result
+		 FROM   t_payb006t a,
+		        t_payb005t b,
+		        t_payb008t c,
+		        v_jikchk_r j
+		 WHERE  a.in_year  = b.in_year
+		 AND    a.in_sabun = b.in_sabun
+		 AND    a.in_seq   = b.in_seq
+		 AND    a.in_rev   = b.in_rev
+		 AND    b.in_jikchk= j.code   (+)
+		 AND    a.in_year  = c.in_year
+		 AND    a.in_sabun = c.in_sabun
+		 AND    a.in_seq   = c.in_seq
+		 AND    a.in_rev   = c.in_rev
+		 AND    a.a_no     = c.a_no
+		 AND    a.in_year  = #{year}
+		 AND    a.in_sabun = #{inSabun}
+		 AND    a.in_seq   = #{inSeq}
+		 AND    a.in_rev   = #{inRev}
+		 AND    a.a_no     = #{aNo}
+		 AND    c.o_no     = #{oNo}
+		 ORDER BY a_no, o_no
+
+	</select>
+
+</mapper>

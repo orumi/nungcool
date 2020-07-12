@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ncsys.com.bsc.eis.service.mapper.EvalMeasMapper">
+
+	<select id="selectEvalMeaRst" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT      a.MEAS_DIV_CD,
+	                F_GETCODENM('G02', a.MEAS_DIV_CD) MEAS_DIV_NM,
+	                a.MEAS_GRP_CD,
+	                F_GETCODENM('G03', a.MEAS_GRP_CD) MEAS_GRP_NM,
+	                a.MEAS_CD,
+	                F_GETCODENM('G04', a.MEAS_CD) MEAS_NM,
+	                MAX(a.DISP_ORD) DISP_ORD ,
+	                MAX(a.WEIGHT)  WEIGHT,
+	                MAX(CASE WHEN b.ORG_CD = '00' THEN b.EVAL_GRADE END)  EVAL_GRADE_00,
+	                MAX(CASE WHEN b.ORG_CD = '00' THEN b.EVAL_SCORE END) GRADE_SCORE_00,
+	                MAX(CASE WHEN b.ORG_CD = '01' THEN b.EVAL_GRADE END)  EVAL_GRADE_01,
+	                MAX(CASE WHEN b.ORG_CD = '01' THEN b.EVAL_SCORE END) GRADE_SCORE_01,
+	                MAX(CASE WHEN b.ORG_CD = '02' THEN b.EVAL_GRADE END)  EVAL_GRADE_02,
+	                MAX(CASE WHEN b.ORG_CD = '02' THEN b.EVAL_SCORE END) GRADE_SCORE_02,
+	                MAX(CASE WHEN b.ORG_CD = '03' THEN b.EVAL_GRADE END)  EVAL_GRADE_03,
+	                MAX(CASE WHEN b.ORG_CD = '03' THEN b.EVAL_SCORE END) GRADE_SCORE_03,
+	                MAX(CASE WHEN b.ORG_CD = '07' THEN b.EVAL_GRADE END)  EVAL_GRADE_07,
+	                MAX(CASE WHEN b.ORG_CD = '07' THEN b.EVAL_SCORE END) GRADE_SCORE_07,
+	                MAX(CASE WHEN b.ORG_CD = '08' THEN b.EVAL_GRADE END)  EVAL_GRADE_08,
+	                MAX(CASE WHEN b.ORG_CD = '08' THEN b.EVAL_SCORE END) GRADE_SCORE_08,
+	                MAX(CASE WHEN b.ORG_CD = '09' THEN b.EVAL_GRADE END)  EVAL_GRADE_09,
+	                MAX(CASE WHEN b.ORG_CD = '09' THEN b.EVAL_SCORE END) GRADE_SCORE_09,
+	                MAX(CASE WHEN b.ORG_CD = '10' THEN b.EVAL_GRADE END)  EVAL_GRADE_10,
+	                MAX(CASE WHEN b.ORG_CD = '10' THEN b.EVAL_SCORE END) GRADE_SCORE_10,
+	                MAX(CASE WHEN b.ORG_CD = '11' THEN b.EVAL_GRADE END)  EVAL_GRADE_11,
+	                MAX(CASE WHEN b.ORG_CD = '11' THEN b.EVAL_SCORE END) GRADE_SCORE_11,
+	                MAX(CASE WHEN b.ORG_CD = '12' THEN b.EVAL_GRADE END)  EVAL_GRADE_12,
+	                MAX(CASE WHEN b.ORG_CD = '12' THEN b.EVAL_SCORE END) GRADE_SCORE_12
+			 FROM            (
+			                SELECT  EVAL_YEAR,
+			                        MEAS_GRP_CD,
+			                        MEAS_CD,
+			                        MEAS_DIV_CD, DISP_ORD,
+			                        WEIGHT
+			                FROM    TG_EVALORGMEAS
+			                WHERE    EVAL_YEAR = #{year}
+			                AND        MEAS_DIV_CD = '0'
+			                ) a,
+			                TG_EVALORGMEAS B
+			 WHERE        a.EVAL_YEAR   = b.EVAL_YEAR   (+)
+			 AND            a.MEAS_GRP_CD = b.MEAS_GRP_CD (+)
+			 AND            a.MEAS_CD     = b.MEAS_CD     (+)
+			 GROUP BY        a.DISP_ORD, a.MEAS_DIV_CD, a.MEAS_GRP_CD, a.MEAS_CD
+			 ORDER BY        a.DISP_ORD, a.MEAS_GRP_CD, a.MEAS_CD
+
+	</select>
+
+
+
+	<select id="selectEvalMeasQtyRst" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		select
+		         org_cd      ,
+		         f_getcodenm('G01',org_cd) org_nm,
+		            meas_cd     ,
+		            f_getcodenm('G04',meas_cd) meas_nm,
+		         meas_grp_cd ,
+		            f_getcodenm('G03',meas_grp_cd) meas_grp_nm,
+		         meas_div_cd ,
+		            f_getcodenm('G02',meas_div_cd) meas_div_nm,
+		         weight      ,
+		         disp_ord    ,
+		         eval_grade  ,
+		         actual_value,
+		         grade_score ,
+		         eval_score
+		  from   tg_evalorgmeas
+		  where  eval_year   = #{year}
+		  and       meas_div_cd   = '1'
+		  and    org_cd  = #{orgCd}
+		  order by org_cd, meas_grp_cd, disp_ord, meas_cd
+
+	</select>
+
+
+
+
+</mapper>

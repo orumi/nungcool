@@ -1,0 +1,556 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="ncsys.com.bsc.admin.service.mapper.PerformMapper">
+
+ 	<select id="selectPsnBaseLine" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+		SELECT
+		   PS.YEAR
+		 , PS.R_CO
+		 , PS.R1_S
+		 , PS.R1_A
+		 , PS.R1_B
+		 , PS.R1_C
+		 , PS.R1_D
+		 , PS.R2_S
+		 , PS.R2_A
+		 , PS.R2_B
+		 , PS.R2_C
+		 , PS.R2_D
+		 , PS.EXCEPT_MH
+		 , NVL(PS.CLOSE_YN,'N') CLOSE_YN
+		 , PS.EXCEPT_BSCMH
+		FROM
+		TBLPSNBASELINE PS
+		WHERE YEAR = #{year}
+ 	</select>
+
+ 	<insert id="insertPsnBaseLine" parameterType="map">
+ 		INSERT INTO TBLPSNBASELINE
+		(
+			   YEAR
+			 , R_CO
+			 , R1_S
+			 , R1_A
+			 , R1_B
+			 , R1_C
+			 , R1_D
+			 , R2_S
+			 , R2_A
+			 , R2_B
+			 , R2_C
+			 , R2_D
+			 , EXCEPT_MH
+			 , CLOSE_YN
+			 , EXCEPT_BSCMH
+		) VALUES
+		(
+			   #{year}
+			 , #{rCo}
+			 , #{r1S}
+			 , #{r1A}
+			 , #{r1B}
+			 , #{r1C}
+			 , #{r1D}
+			 , #{r2S}
+			 , #{r2A}
+			 , #{r2B}
+			 , #{r2C}
+			 , #{r2D}
+			 , #{exceptMh}
+			 , 'N'
+			 , #{exceptBscmh}
+		)
+ 	</insert>
+
+	<update id="updatePsnBaseLine" parameterType="map">
+ 		UPDATE TBLPSNBASELINE SET
+			   R_CO = #{rCo}
+			 , R1_S = #{r1S}
+			 , R1_A = #{r1A}
+			 , R1_B = #{r1B}
+			 , R1_C = #{r1C}
+			 , R1_D = #{r1D}
+			 , R2_S = #{r2S}
+			 , R2_A = #{r2A}
+			 , R2_B = #{r2B}
+			 , R2_C = #{r2C}
+			 , R2_D = #{r2D}
+			 , EXCEPT_MH = #{exceptMh}
+			 , EXCEPT_BSCMH = #{exceptBscmh}
+		WHERE YEAR = #{year}
+ 	</update>
+
+
+	<delete id="deletePsnBaseLine" parameterType="map">
+
+		DELETE TBLPSNBASELINE WHERE YEAR = #{year}
+
+	</delete>
+
+
+<!-- psn jikgub  -->
+	<select id="selectPsnJikgub" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT
+		   PJ.YEAR
+		 , PJ.JIKGUB_CD
+		 , PJ.JIKGUB_NM
+		 , PJ.USE_YN
+		FROM TBLPSNJIKGUB PJ
+		WHERE YEAR = #{year}
+
+	</select>
+
+	<delete id="deletePsnJikgub" parameterType="map">
+		DELETE FROM TBLPSNJIKGUB WHERE YEAR = #{year}
+	</delete>
+
+	<delete id="deletePsnBscScore" parameterType="map">
+		DELETE TBLPSNBSCSCORE WHERE YEAR = #{year}
+	</delete>
+
+	<delete id="deletePsnScore" parameterType="map">
+		DELETE TBLPSNSCORE WHERE YEAR = #{year}
+	</delete>
+
+
+
+	<insert id="insertPsnJikgub" parameterType="map" >
+		INSERT INTO TBLPSNJIKGUB
+		(
+ 		     YEAR
+		    ,JIKGUB_CD
+		    ,JIKGUB_NM
+		    ,USE_YN
+		) VALUES (
+			 #{year}
+			,#{jikGubCd}
+			,#{jikGubNm}
+			,'Y'
+		)
+	</insert>
+
+
+    <!-- psnSubMapping -->
+
+    <select id="selectPsnSubMapping" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+	    SELECT SID SBUID, SNAME  SBUNM, BSCID, F_GETBSCNM(2,BSCCID) BSCNM, SCID SBUCID, BSCCID
+		FROM
+		    (SELECT C.NAME SNAME,T.ID SID,T.CONTENTID SCID,T.PARENTID SPID,T.RANK SRANK
+		    FROM TBLSBU C, TBLHIERARCHY T WHERE T.TREELEVEL=1 AND T.YEAR=#{year} AND T.CONTENTID=C.ID  ) SBU,
+		    (SELECT * FROM TBLSBUBSCMAPPING WHERE YEAR = #{year} ) MAP
+		WHERE  SBU.SID=MAP.SBUID (+)
+		AND    SBU.SCID NOT IN ('1','2')
+		ORDER BY SID, SCID
+
+    </select>
+
+
+	<select id="selectPsnBscMapping" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT SID SBUID, SNAME  SBUNM, BID BSCID, BNAME  BSCNM, SCID  SBUCID, BCID BSCCID
+		FROM
+		  (SELECT C.NAME SNAME,T.ID SID,T.CONTENTID SCID,T.PARENTID SPID,T.RANK SRANK
+		  FROM TBLSBU C, TBLHIERARCHY T WHERE T.TREELEVEL=1 AND T.YEAR=#{year} AND T.CONTENTID=C.ID  ) SBU,
+		  (SELECT C.NAME BNAME,T.ID BID,T.CONTENTID BCID,T.PARENTID BPID,T.RANK SRANK
+		   FROM TBLBSC C, TBLHIERARCHY T WHERE T.TREELEVEL=2 AND T.YEAR=#{year} AND T.CONTENTID=C.ID  ) BSC
+		WHERE  SBU.SID=BSC.BPID
+		AND    SBU.SCID IN ('2')
+		ORDER BY BID, BCID
+
+	</select>
+
+	<delete id="deletePsnSubMapping" parameterType="map">
+
+		DELETE FROM TBLSBUBSCMAPPING WHERE YEAR = #{year}
+
+	</delete>
+
+	<insert id="insertPsnSubMapping" parameterType="map">
+
+		INSERT INTO TBLSBUBSCMAPPING
+		(
+		      YEAR
+		    , SBUID
+		    , BSCID
+		    , SBUCID
+		    , BSCCID
+		)
+		VALUES
+		(
+		      #{year}
+		    , #{sbuid}
+		    , #{bscid}
+		    , #{sbucid}
+		    , #{bsccid}
+		)
+
+	</insert>
+
+
+
+
+    <!-- psnExcept  -->
+
+	<select id="selectSbuGroup" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT T.ID SID,T.PARENTID SPID,T.CONTENTID SCID,T.TREELEVEL SLEVEL,T.RANK SRANK,T.WEIGHT SWEIGHT,C.NAME SNAME
+		FROM TBLHIERARCHY T,TBLSBU C WHERE T.CONTENTID=C.ID AND T.TREELEVEL=1 AND T.YEAR=#{year}
+		ORDER BY SRANK, SID
+
+	</select>
+
+	<select id="selectExceptBsc" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT * FROM
+		(
+		SELECT
+		    SID,SCID,SNAME,SRANK,
+		    BID,BCID,BNAME, BRANK
+		FROM VIEW_HIERARCHY_BSC WHERE YEAR = #{year}
+		) A
+		LEFT JOIN
+		(
+		    SELECT BSCID, COUNT(BSCID) EMPCNT FROM
+		    TBLPSNEXCEPTEMP WHERE YEAR = #{year}
+		    GROUP BY BSCID
+		) B
+		ON A.BID=B.BSCID
+		ORDER BY SRANK,SID, BRANK,BID
+
+
+	</select>
+
+
+	<select id="selectPsnEmp" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT
+		    DISTINCT EMP_NO
+		    , EMP_NM
+		    , JIKGB_CD
+		    , JIKGB_NM
+		FROM TBLPSNBIZMH
+		WHERE YEAR = #{year}
+
+	</select>
+
+	<delete id="deletePsnBizMh" parameterType="map">
+
+		DELETE TBLPSNBIZMH WHERE YEAR = #{year}
+
+	</delete>
+
+	<select id="selectPsnExceptEmp" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT
+		     YEAR
+		    ,EMP_NO
+		    ,(SELECT USERNAME FROM TBLUSER WHERE USERID=EMP_NO) EMP_NM
+		    ,SBUID
+		    ,BSCID
+		    ,SBUCID
+		    ,(SELECT NAME FROM TBLSBU WHERE ID=SBUCID) SBUNM
+		    ,BSCCID
+		    ,(SELECT NAME FROM TBLBSC WHERE ID=BSCCID) BSCNM
+		FROM
+		TBLPSNEXCEPTEMP
+		WHERE YEAR = #{year}
+		AND BSCCID = #{bsccid}
+
+	</select>
+
+	<delete id="resetPsnExceptEmpbySbu" parameterType="map">
+
+		DELETE FROM TBLPSNEXCEPTEMP WHERE YEAR=#{year} AND BSCID=#{bscid}
+
+	</delete>
+
+	<delete id="deletePsnExceptEmp" parameterType="map">
+
+		DELETE FROM TBLPSNEXCEPTEMP WHERE YEAR=#{year} AND EMP_NO=#{empNo}
+
+	</delete>
+
+	<insert id="insertPsnExceptEmp" parameterType="map">
+
+		INSERT INTO TBLPSNEXCEPTEMP
+		(
+		     YEAR
+		    ,EMP_NO
+		    ,SBUID
+		    ,BSCID
+		    ,SBUCID
+		    ,BSCCID
+		)
+		VALUES
+		(
+			 #{year}
+			,#{empNo}
+			,#{sbuid}
+			,#{bscid}
+			,#{sbucid}
+			,#{bsccid}
+		)
+
+	</insert>
+
+
+    <!-- except labor   -->
+
+    <select id="selectPsnLabor" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+	    SELECT
+		      YEAR
+		    , EMP_NO
+		    ,(SELECT USERNAME FROM TBLUSER WHERE USERID=EMP_NO) EMP_NM
+		    FROM TBLPSNLABOR
+		WHERE YEAR = #{year}
+
+    </select>
+
+    <delete id="deletePsnLabor" parameterType="map">
+
+    	DELETE FROM TBLPSNLABOR WHERE YEAR = #{year}
+
+    </delete>
+
+    <insert id="insertPsnLabor" parameterType="map">
+
+		INSERT INTO
+		TBLPSNLABOR
+		(
+		    YEAR
+		    ,EMP_NO
+		) VALUES
+		(
+			 #{year}
+			,#{empNo}
+		)
+
+    </insert>
+
+
+
+
+	<!-- psnGradeBase -->
+
+	<select id="selectPsnGradeBase" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT
+		     G.YEAR
+		    ,G.ORG_CNT
+		    ,G.ORG_S
+		    ,G.ORG_A
+		    ,G.ORG_B
+		    ,G.ORG_C
+		    ,G.ORG_D
+		FROM TBLPSNGRADEBASE G
+		WHERE YEAR = #{year}
+
+	</select>
+
+	<delete id="deletePsnGradeBase" parameterType="map">
+		DELETE FROM TBLPSNGRADEBASE WHERE YEAR = #{year}
+	</delete>
+
+	<insert id="insertPsnGradeBase" parameterType="map">
+
+		INSERT INTO
+		TBLPSNGRADEBASE
+		(
+		     YEAR
+		    ,ORG_CNT
+		    ,ORG_S
+		    ,ORG_A
+		    ,ORG_B
+		    ,ORG_C
+		    ,ORG_D
+		)
+		    VALUES
+		(
+			 #{year}
+		    ,#{orgCnt}
+		    ,#{orgS}
+		    ,#{orgA}
+		    ,#{orgB}
+		    ,#{orgC}
+		    ,#{orgD}
+		)
+
+	</insert>
+
+
+
+
+	<select id="selectPsnBscGrade" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		select
+		          sbuid     ,
+		          f_getbscnm(1,sbucid)  sbunm,
+		          bscid     ,
+		          f_getbscnm(2,bsccid)  bscnm,
+		          score_qty ,
+		          score_qly ,
+		          score_sum ,
+		          score_add ,
+		          score_tot ,
+		          grp_rank  ,
+		          grade1    ,
+		          grade2    ,
+		          div_rate1 ,
+		          div_rate2 ,
+		          r_co      ,
+		          r_co + div_rate1  org_rate1,
+		          case when grade1 is null then r_co + div_rate2
+		               else r_co + div_rate1 + div_rate2
+		          end          org_rate2
+		  from   tblpsnbscscore  a,
+		         tblpsnbaseline  b
+		  where  a.year  = b.year
+		  and    a.year  = #{year}
+		  -- and    a.sbuid like ?
+		  order by sbuid, bscid
+
+	</select>
+
+
+
+	<select id="selectPsnBizMh" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT
+		          emp_no
+		       ,  emp_nm
+		       ,  jikgb_cd
+		       ,  jikgb_nm
+		       ,  dept_cd
+		       ,  dept_nm
+		       ,  mh
+		       ,  except_yn
+		       ,  except_cmt
+		 from   tblpsnbizmh
+		 where  year      =    #{year}
+		 and    emp_nm  like #{empNm}||'%'
+		 and except_yn = 'N'
+		 order by emp_nm
+
+
+	</select>
+
+
+	<select id="selectPsnScore" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		select  a.emp_no   , a.emp_nm  ,
+		         a.jikgb_cd , a.jikgb_nm,
+		         nvl(a.emp_rate , a.bsc_rate) emp_rate,
+		         a.sbuid    , a.sbunm   ,
+		         a.bscid    , a.bscnm   ,  a.bsccid  ,
+		         a.sbu_grade, a.bsc_grade, a.bsc_rate,
+		         a.bsc_mh   , a.bsc_mh_rate,
+		         sum(b.mh) over(partition by a.emp_no, a.emp_no) bsc_mh_sum,
+		         b.dept_cd  , b.dept_nm, b.mh
+		 from    (
+		         select  emp_no   , emp_nm  ,
+		                 jikgb_cd , jikgb_nm,
+		                 round(sum(bsc_rate * bsc_mh) over(partition by emp_no)
+		                       / sum(bsc_mh) over(partition by emp_no),3)  emp_rate,
+		                 sbuid    , sbunm   ,
+		                 bscid    , bscnm   ,  bsccid  ,
+		                 sbu_grade, bsc_grade, bsc_rate,
+		                 bsc_mh   ,
+		                 round(ratio_to_report(bsc_mh) over(partition by emp_no) * 100, 3)  bsc_mh_rate
+		         from
+		               (
+		               select
+		                        emp_no
+		                     ,  emp_nm
+		                     ,  jikgb_cd
+		                     ,  jikgb_nm
+		                     ,  sbuid
+		                     ,  f_getbscnm(1,max(sbucid))  sbunm
+		                     ,  bscid   ,  bsccid
+		                     ,  f_getbscnm(2,max(bsccid))  bscnm
+		                     ,  max(sbu_grade)             sbu_grade
+		                     ,  max(bsc_grade)             bsc_grade
+		                     ,  max(bsc_rate)              bsc_rate
+		                     ,  sum(mh)                    bsc_mh
+		               from   tblpsnscore    a
+		               where  year      =    #{year}
+		               and    emp_nm        like    #{empNm}||'%'
+		               and    bsc_grade is not null
+		               group by emp_no
+		                     ,  emp_nm
+		                     ,  jikgb_cd
+		                     ,  jikgb_nm
+		                     ,  sbuid
+		                     ,  bscid   , bsccid
+		               order by emp_nm, sbuid, bscid
+		               )
+		         order by emp_nm, sbuid, bscid
+		         ) a,
+		         (select * from tblpsnscore where year = #{year}) b
+		 where a.emp_no = b.emp_no
+		 and   a.sbuid  = b.sbuid
+		 and   a.bscid  = b.bscid
+		 order by emp_nm, sbuid, bscid
+
+	</select>
+
+
+	<select id="selectPsnScoreList" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		 select  a.emp_no   , a.emp_nm  ,
+		         a.jikgb_cd , a.jikgb_nm,
+		         nvl(a.emp_rate , a.bsc_rate) emp_rate,
+		         a.sbuid    , a.sbunm   ,
+		         a.bscid    , a.bscnm   ,  a.bsccid  ,
+		         a.sbu_grade, a.bsc_grade, a.bsc_rate,
+		         a.bsc_mh   , a.bsc_mh_rate,
+		         sum(a.bsc_mh) over(partition by a.emp_no, a.bscid) bsc_mh_sum
+		 from    (
+		         select  emp_no   , emp_nm  ,
+		                 jikgb_cd , jikgb_nm,
+		                 round(sum(bsc_rate * bsc_mh) over(partition by emp_no)
+		                       / sum(bsc_mh) over(partition by emp_no),3)  emp_rate,
+		                 sbuid    , sbunm   ,
+		                 bscid    , bscnm   ,  bsccid  ,
+		                 sbu_grade, bsc_grade, bsc_rate,
+		                 bsc_mh   ,
+		                 round(ratio_to_report(bsc_mh) over(partition by emp_no) * 100, 3)  bsc_mh_rate
+		         from
+		               (
+		               select
+		                        emp_no
+		                     ,  emp_nm
+		                     ,  jikgb_cd
+		                     ,  jikgb_nm
+		                     ,  sbuid
+		                     ,  f_getbscnm(1,max(sbucid))  sbunm
+		                     ,  bscid   ,  bsccid
+		                     ,  f_getbscnm(2,max(bsccid))  bscnm
+		                     ,  max(sbu_grade)             sbu_grade
+		                     ,  max(bsc_grade)             bsc_grade
+		                     ,  max(bsc_rate)              bsc_rate
+		                     ,  sum(mh)                    bsc_mh
+		               from   tblpsnscore    a
+		               where  year      =    #{year}
+		               and    emp_nm        like    #{empNm}||'%'
+		               and    bsc_grade is not null
+		               group by emp_no
+		                     ,  emp_nm
+		                     ,  jikgb_cd
+		                     ,  jikgb_nm
+		                     ,  sbuid
+		                     ,  bscid   , bsccid
+		               order by emp_nm, sbuid, bscid
+		               )
+		         order by emp_nm, sbuid, bscid
+		         ) a
+		 order by emp_nm, sbuid, bscid
+
+	</select>
+
+
+</mapper>

@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ncsys.com.bsc.eis.service.mapper.EvalMngMapper">
+
+	<select id="selectOrgCd" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT SDIV_CD ORGCD, DIV_NM ORGNM, ORD
+		FROM TZ_COMCODE WHERE LDIV_CD='G01' AND USE_YN='Y'
+		ORDER BY ORD
+
+	</select>
+
+
+	<select id="selectMeasDivCd" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT SDIV_CD MEASDIVCD, DIV_NM MEASDIVNM, ORD
+		FROM TZ_COMCODE WHERE LDIV_CD='G02' AND USE_YN='Y'
+		ORDER BY ORD
+
+	</select>
+
+
+	<select id="selectMeasGrpCd" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT SDIV_CD MEASGRPCD, DIV_NM MEASGRPNM, ORD
+		FROM TZ_COMCODE WHERE LDIV_CD='G03' AND USE_YN='Y'
+		ORDER BY ORD, SDIV_CD
+
+	</select>
+
+
+	<select id="selectMeasCd" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT SDIV_CD MEASCD, DIV_NM MEASNM, ORD
+		FROM TZ_COMCODE WHERE LDIV_CD='G04' AND USE_YN='Y'
+		ORDER BY ORD, SDIV_CD
+
+	</select>
+
+
+	<select id="selectMeasList" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		select
+		         org_cd      ,
+		         f_getcodenm('G01',org_cd) org_nm,
+		         meas_cd     ,
+		         f_getcodenm('G04',meas_cd) meas_nm,
+		         meas_grp_cd ,
+		         f_getcodenm('G03',meas_grp_cd) meas_grp_nm,
+		         meas_div_cd ,
+		         f_getcodenm('G02',meas_div_cd) meas_div_nm,
+		         weight      ,
+		         disp_ord    ,
+		         eval_grade  ,
+		         actual_value,
+		         grade_score ,
+		         eval_score
+		  from   tg_evalorgmeas
+		  where  eval_year   = #{year}
+		  and    org_cd   like #{orgCd}||'%'
+		  order by org_cd,meas_div_cd desc, disp_ord,  meas_grp_cd, meas_cd
+
+	</select>
+
+
+	<insert id="insertOrgMeas" parameterType="map">
+
+		INSERT INTO TG_EVALORGMEAS
+		(
+		      EVAL_YEAR
+		    , ORG_CD
+		    , MEAS_CD
+		    , MEAS_GRP_CD
+		    , MEAS_DIV_CD
+		    , WEIGHT
+		    , DISP_ORD
+		    , INP_DATE
+		    , INP_USERID
+		)
+		VALUES
+		(
+			#{year}
+		    , #{orgCd}
+		    , #{measCd}
+		    , #{measGrpCd}
+		    , #{measDivCd}
+		    , #{weight}
+		    , #{dispOrd}
+		    , SYSDATE
+		    , #{userId}
+		)
+
+	</insert>
+
+	<update id="updateOrgMeas" parameterType="map">
+
+		UPDATE TG_EVALORGMEAS SET
+		      MEAS_GRP_CD = #{measGrpCd}
+		    , MEAS_DIV_CD = #{measDivCd}
+		    , WEIGHT = #{weight}
+		    , DISP_ORD = #{dispOrd}
+		    , INP_DATE = SYSDATE
+		    , INP_USERID = #{userId}
+		WHERE
+		EVAL_YEAR = #{year} AND ORG_CD=#{orgCd} AND MEAS_CD=#{measCd}
+
+	</update>
+
+
+
+	<delete id="deleteOrgMeas" parameterType="map">
+
+		DELETE FROM TG_EVALORGMEAS
+		WHERE
+		EVAL_YEAR = #{year} AND ORG_CD=#{orgCd} AND MEAS_CD=#{measCd}
+
+	</delete>
+
+
+
+
+
+
+
+
+
+	<select id="selectOrgList" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT SDIV_CD MEASCD, DIV_NM MEASNM, ORD
+		FROM TZ_COMCODE WHERE LDIV_CD='G04' AND USE_YN='Y'
+		ORDER BY ORD, SDIV_CD
+
+	</select>
+
+
+
+	<insert id="insertMeasComCd" parameterType="map">
+
+		insert into tz_comcode (
+		           ldiv_cd, sdiv_cd, div_nm, ord,  use_yn, inp_date, inp_userid, upd_date, upd_userid )
+		select ldiv_cd, nvl(ltrim(to_char(to_number(max(sdiv_cd)) + 1,'000')),'000'), #{newOrgMeas} div_nm, 1  ord, 'Y' use_yn,
+		           sysdate,  #{userId}, sysdate, #{userId}
+		from    tz_comcode
+		where  ldiv_cd = 'G04'
+		group by ldiv_cd
+
+	</insert>
+
+
+
+
+
+	<!-- year copy -->
+
+	<delete id="deleteEvalOrg" parameterType="map">
+		delete from tg_evalorg where eval_year = #{toYear}
+	</delete>
+
+	<insert id="insertEvalOrg" parameterType="map" >
+
+		insert into tg_evalorg (
+		    eval_year, org_cd,  inp_date, inp_userid, upd_date, upd_userid)
+		select
+		    #{toYear} eval_year, org_cd, sysdate, #{userId}, sysdate, #{userId}
+		from tg_evalorg
+		where  eval_year = #{fromYear}
+
+	</insert>
+
+
+	<delete id="deleteEvalOrgMeas" parameterType="map">
+		delete from tg_evalorgmeas where eval_year = #{toYear}
+	</delete>
+
+	<insert id="insertEvalOrgMeas" parameterType="map" >
+
+		 insert into tg_evalorgmeas (
+		    eval_year, org_cd, meas_cd, meas_grp_cd, meas_div_cd, weight, disp_ord,
+		    inp_date, inp_userid, upd_date, upd_userid)
+		 select
+		      #{toYear} eval_year, org_cd, meas_cd, meas_grp_cd, meas_div_cd, weight, disp_ord,
+		      sysdate, #{userId}, sysdate, #{userId}
+		 from tg_evalorgmeas
+		 where  eval_year = #{fromYear}
+
+	</insert>
+
+
+
+
+
+	<delete id="deleteEvalOrgMeasByOrgCd" parameterType="map">
+		delete from tg_evalorgmeas where eval_year = #{year} and org_cd = #{toOrgCd}
+	</delete>
+
+	<insert id="insertEvalOrgMeasByOrgCd" parameterType="map" >
+
+		 insert into tg_evalorgmeas (
+		    eval_year, org_cd, meas_cd, meas_grp_cd, meas_div_cd, weight, disp_ord,
+		    inp_date, inp_userid, upd_date, upd_userid)
+		 select
+		      #{year}, #{toOrgCd}, meas_cd, meas_grp_cd, meas_div_cd, weight, disp_ord,
+		      sysdate, #{userId}, sysdate, #{userId}
+		 from tg_evalorgmeas
+		 where  eval_year = #{year} and org_cd=#{fromOrgCd}
+
+	</insert>
+
+
+
+
+
+
+
+	<!-- eval org result  -->
+
+	<select id="selectEvalOrgRst" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		select nvl(a.sdiv_cd,'') org_cd,
+		        nvl(a.div_nm ,'') org_nm,
+		        b.emp_bonus     ,
+		        b.chief_bonus   ,
+		        b.eval_rank     ,
+		        b.eval_score    ,
+		        b.qty_meas      ,
+		        b.qly_meas
+		 from   tz_comcode a,
+		        tg_evalorg b
+		 where  a.ldiv_cd = 'G01'
+		 and    a.use_yn  = 'Y'
+		 and    a.sdiv_cd = b.org_cd (+)
+		 and    b.eval_year(+) = #{year}
+		 order by a.ord, a.sdiv_cd
+
+	</select>
+
+
+	<insert id="insertEvalOrgRst" parameterType="map">
+
+		insert into tg_evalorg
+		(
+		      eval_year
+		    , org_cd
+		    , emp_bonus
+		    , chief_bonus
+		    , eval_rank
+		    , eval_score
+		    , qty_meas
+		    , qly_meas
+		    , inp_date
+		    , inp_userid
+		    , upd_date
+		    , upd_userid
+		) values
+		(
+		      #{year}
+		    , #{orgCd}
+		    , #{empBonus, jdbcType=NUMERIC}
+		    , #{chiefBonus, jdbcType=NUMERIC}
+		    , #{evalRank, jdbcType=NUMERIC}
+		    , #{evalScore, jdbcType=NUMERIC}
+		    , #{qtyMeas, jdbcType=NUMERIC}
+		    , #{qlyMeas, jdbcType=NUMERIC}
+		    , sysdate
+		    , #{userId}
+		    , sysdate
+		    , #{userId}
+		)
+
+	</insert>
+
+
+	<update id="updateEvalOrgRst" parameterType="map">
+
+		update tg_evalorg set
+		      emp_bonus = #{empBonus, jdbcType=NUMERIC}
+		    , chief_bonus = #{chiefBonus, jdbcType=NUMERIC}
+		    , eval_rank = #{evalRank, jdbcType=NUMERIC}
+		    , eval_score = #{evalScore, jdbcType=NUMERIC}
+		    , qty_meas = #{qtyMeas, jdbcType=NUMERIC}
+		    , qly_meas = #{qlyMeas, jdbcType=NUMERIC}
+		    , upd_date = sysdate
+		    , upd_userid = #{userId}
+		where eval_year = #{year}
+		and org_cd = #{orgCd}
+
+	</update>
+
+	<delete id="deleteEvalOrgRst" parameterType="map">
+
+		delete from tg_evalorg
+		where eval_year = #{year}
+
+	</delete>
+
+
+
+	<update id="updateEvalMeasRst" parameterType="map">
+
+		UPDATE TG_EVALORGMEAS SET
+		      EVAL_GRADE = #{evalGrade, jdbcType=VARCHAR}
+		    , EVAL_SCORE = #{evalScore, jdbcType=NUMERIC}
+		    , UPD_DATE = SYSDATE
+		    , UPD_USERID = #{userId}
+		WHERE
+		EVAL_YEAR = #{year} AND ORG_CD=#{orgCd} AND MEAS_CD=#{measCd}
+
+	</update>
+
+
+
+
+
+
+
+
+</mapper>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ncsys.com.bsc.admin.service.mapper.PsnEmpScoreMapper">
+
+	<select id="selectEmp" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT distinct emp_no userid, emp_nm usernm, jikgb_cd, jikgb_nm
+		 FROM   tblpsnbizmh
+		 WHERE  year = #{year}
+		 AND    emp_nm like '%'||#{empNm}||'%'
+		 ORDER BY emp_nm
+
+	</select>
+
+
+
+
+	<select id="selectPeriod" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		 SELECT NVL(MAX(CASE
+		 WHEN TO_CHAR (SYSDATE, 'yyyyMMdd') >= start_dt
+		 AND  end_dt >= TO_CHAR (SYSDATE, 'yyyyMMdd')
+		 THEN 'Y'             ELSE 'N'          END),'N') AS div_yn
+		 FROM tbzperiod p   WHERE div_cd = 'B04' AND YEAR = #{year}
+
+	</select>
+
+    <!-- 노조 및 예외자 목록  -->
+	<select id="selectPsnLabor" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		 SELECT nvl(max('Y'),'N')   laboryn, max(emp_no) emp_no, max(f_getempnm(emp_no)) emp_nm
+		 FROM   TBLPSNLABOR
+		 WHERE  year = #{year}
+		 AND    emp_no = #{empNo}
+		 ORDER BY emp_nm
+
+
+	</select>
+
+	<select id="selectPsnScore" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		select  emp_no   , emp_nm  ,
+		         jikgb_cd , jikgb_nm,
+		         round(avg(bsc_rate) over(partition by emp_no),3)  emp_rate,
+		         sbu_grade, sbuid    , sbunm   ,
+		         bscid    , bscnm   ,  bsccid  ,
+		         bsc_grade, bsc_rate,
+		         bsc_mh   ,
+		         round(ratio_to_report(bsc_mh) over(partition by emp_no) * 100, 3)  bsc_mh_rate
+		 from
+		       (
+		       select
+		                emp_no
+		             ,  emp_nm
+		             ,  jikgb_cd
+		             ,  jikgb_nm
+		             ,  sbuid
+		             ,  f_getbscnm(1,max(sbucid))  sbunm
+		             ,  bscid   ,  bsccid
+		             ,  f_getbscnm(2,max(bsccid))  bscnm
+		             ,  max(sbu_grade)             sbu_grade
+		             ,  max(bsc_grade)             bsc_grade
+		             ,  max(bsc_rate)              bsc_rate
+		             ,  sum(mh)                    bsc_mh
+		       from   tblpsnscore    a
+		       where  year      =    #{year}
+		       and    emp_no    =    #{empNo}
+		       and    bsc_grade is not null
+		       group by emp_no
+		             ,  emp_nm
+		             ,  jikgb_cd
+		             ,  jikgb_nm
+		             ,  sbuid
+		             ,  bscid   , bsccid
+		       order by emp_nm, sbuid, bscid
+		       )
+		 order by emp_nm, sbuid, bscid
+
+	</select>
+
+	<select id="selectPsnBizmh" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		select a.emp_no   , a.emp_nm , a.jikgb_cd, a.jikgb_nm,
+		        a.dept_cd  , a.dept_nm   dept_nm,
+		        b.org_cd  bsccid,  nvl(f_getbscnm(2,b.org_cd),'-')  bscnm,
+		        a.mh,   a.except_yn, a.except_cmt
+		 from  tblpsnbizmh    a,
+		       tbldeptmapping b
+		 where a.year      = b.year   (+)
+		 and   a.dept_cd   = b.dept_cd(+)
+		 and   a.year      = #{year}
+		 and   a.emp_no    = #{empNo}
+		 order by a.emp_nm, b.org_cd, dept_cd
+
+	</select>
+
+</mapper>

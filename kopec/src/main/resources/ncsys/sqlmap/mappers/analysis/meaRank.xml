@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ncsys.com.bsc.analysis.service.mapper.MeaRankMapper">
+
+	<select id="selectMeasureYear" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT  b.id,
+		        b.code,
+		        b.name,
+		        b.measchar,
+		        case when b.measchar = 'C' then '공통지표'
+		             else '고유지표'
+		        end  meascharnm
+		 FROM
+		     (
+		     SELECT distinct measureid
+		     FROM  TBLMEASUREDEFINE
+		     WHERE year = #{year}
+		     ) a,
+		     tblmeasure b
+		 where  a.measureid = b.id
+		 and    b.name like '%'||#{searchText}||'%'
+		 order by b.name
+
+	</select>
+
+
+
+	<select id="selectMeaRank" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		select mname, mcid, sid, sname, bid, bname,
+		         mweight, planned, plannedbase, base, baselimit, limit,
+		         round(actual,1) actual, grade  , grade_score, score, rank_score,
+		         rank() over(partition by sid order by rank_score desc ) grp_rank,
+		         rank() over(order by rank_score desc )                  all_rank,
+		         round(avg(grade_score) over(partition by sid ),1)       grp_avg,
+		         round(avg(grade_score) over(),1)                        all_avg
+		  from
+		      (select c.name cname,t.id cid,t.contentid ccid,t.parentid cpid,t.rank crank
+		      from tblcompany c, tblhierarchy t where t.treelevel=0 and t.year=#{year} and t.contentid=c.id ) com,
+		      (select c.name sname,t.id sid,t.contentid scid,t.parentid spid,t.rank srank
+		      from tblsbu c, tblhierarchy t where t.treelevel=1 and t.year=#{year} and t.contentid=c.id ) sbu,
+		      (select c.name bname,t.id bid,t.contentid bcid,t.parentid bpid,t.rank brank
+		      from tblbsc c, tblhierarchy t where t.treelevel=2 and t.year=#{year} and t.contentid=c.id ) bsc,
+		      (select c.name pname,t.id pid,t.contentid pcid,t.parentid ppid,t.rank prank
+		      from  tblpst c, tbltreescore t where t.treelevel=3 and t.year=#{year} and t.contentid=c.id ) pst,
+		      (select c.name oname,t.id oid,t.contentid ocid,t.parentid opid,t.rank orank
+		      from tblobjective c, tbltreescore t where t.treelevel=4 and t.year=#{year} and t.contentid=c.id ) obj,
+		      (select c.name mname,t.id mid,t.contentid mcid,t.parentid mpid,t.rank mrank, t.weight mweight, d.measureid,
+		              detaildefine, d.unit measunit,
+		             entrytype, measuretype,
+		             frequency, equation, equationdefine,
+		             etlkey, measurement,
+		             trend, e.planned, e.plannedbase, e.base,e.baselimit, e.limit,
+		             e.actual, e.grade, e.score  grade_score, e.score, nvl(e.score, 0) rank_score
+		      from tblmeasure c, tbltreescore t, tblmeasuredefine d, tblmeasurescore e
+		      where t.treelevel=5 and t.year=#{year} and t.contentid=d.id
+		      and  d.measureid = c.id
+		      and  d.id = e.measureid (+)
+		      and  e.strdate(+) like #{year}||#{month}||'%'
+		      and  c.id like #{meaid} ) mea
+		  where  com.cid=sbu.spid
+		  and    sbu.sid=bsc.bpid
+		  and    bsc.bid=pst.ppid
+		  and    pst.pid=obj.opid
+		  and    obj.oid=mea.mpid
+		  order by srank,sid, brank,bid
+
+	</select>
+
+
+
+
+</mapper>

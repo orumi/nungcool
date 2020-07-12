@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ncsys.com.bsc.admin.service.mapper.AppConfigMapper">
+
+	<select id="selectConfig" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT SYSID
+		, FIXEDYM
+		, SUBSTR(FIXEDYM,0,4) FIXEDYR
+		, SUBSTR(FIXEDYM,5,2) FIXEDMT
+		, CURYMYN
+		FROM TBZCONFIG
+		WHERE SYSID='BSC'
+
+	</select>
+
+
+	<insert id="insertConfig" parameterType="map">
+
+		INSERT INTO TBZCONFIG
+		(
+			  SYSID
+			, FIXEDYM
+			, CURYMYN
+		)
+		VALUES
+		(
+			  #{sysid}
+			, #{fixedym}
+			, #{curymyn}
+		)
+
+	</insert>
+
+	<update id="updateConfig" parameterType="map" >
+
+		UPDATE TBZCONFIG SET
+			  FIXEDYM = #{fixedym}
+			, CURYMYN = #{curymyn}
+		WHERE
+			  SYSID = #{sysid}
+
+	</update>
+
+
+	<select id="selectSchedule" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		select
+		      p.year
+		    , p.div_cd
+		    , p.div_nm
+		    , p.start_dt
+		    , p.end_dt
+		    , p.q1
+		    , p.q2
+		    , p.q3
+		    , p.q4
+		    , p.m01
+		    , p.m02
+		    , p.m03
+		    , p.m04
+		    , p.m05
+		    , p.m06
+		    , p.m07
+		    , p.m08
+		    , p.m09
+		    , p.m10
+		    , p.m11
+		    , p.m12
+		    , CASE WHEN TO_CHAR (SYSDATE, 'yyyyMMdd') >= start_dt and end_dt >= TO_CHAR (SYSDATE, 'yyyyMMdd')
+                THEN '진행'
+	           WHEN TO_CHAR (SYSDATE, 'yyyyMMdd') > end_dt
+	                THEN '종료'
+	           WHEN start_dt > TO_CHAR (SYSDATE, 'yyyyMMdd')
+	                THEN '예정'
+	            ELSE '종료'
+	         END AS div_yn
+		from tbzperiod p
+		where year = #{year}
+		order by div_cd
+
+	</select>
+
+	<insert id="insertSchedule" parameterType="map">
+		insert into tbzperiod
+		(
+			  year
+		    , div_cd
+		    , div_nm
+		    , start_dt
+		    , end_dt
+		    , q1
+		    , q2
+		    , q3
+		    , q4
+		    , m01
+		    , m02
+		    , m03
+		    , m04
+		    , m05
+		    , m06
+		    , m07
+		    , m08
+		    , m09
+		    , m10
+		    , m11
+		    , m12
+		    , inp_userid
+		    , inp_date
+		)
+		values
+		(
+			  #{year}
+		    , #{div_cd}
+		    , #{div_nm}
+		    , #{start_dt}
+		    , #{end_dt}
+		    , #{q1}
+		    , #{q2}
+		    , #{q3}
+		    , #{q4}
+		    , #{m01}
+		    , #{m02}
+		    , #{m03}
+		    , #{m04}
+		    , #{m05}
+		    , #{m06}
+		    , #{m07}
+		    , #{m08}
+		    , #{m09}
+		    , #{m10}
+		    , #{m11}
+		    , #{m12}
+		    , #{userId}
+		    , SYSDATE
+		)
+	</insert>
+
+	<delete id="deleteSchedule" parameterType="map">
+
+		delete from tbzperiod where year = #{year} and div_cd = #{div_cd}
+
+	</delete>
+
+
+	<delete id="clearScheduleByYear" parameterType="map">
+
+		delete tbzperiod where year=#{toYear}
+
+	</delete>
+
+	<insert id="insertScheduleByYear" parameterType="map">
+
+	insert into tbzperiod
+	 (YEAR, DIV_CD, DIV_NM, START_DT, END_DT, INP_USERID, UPD_USERID)
+	 select #{toYear}, DIV_CD, DIV_NM, #{toYear}||substr(START_DT,5,4), #{toYear}||substr(END_DT,5,4), #{userId}, #{userId}
+	 from tbzperiod where year = #{frYear}
+
+	</insert>
+
+
+
+
+
+
+
+
+
+</mapper>

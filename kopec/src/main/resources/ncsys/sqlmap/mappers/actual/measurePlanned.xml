@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ncsys.com.bsc.actual.service.mapper.MeasurePlannedMapper">
+
+	<select id="selectMeasureList" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		 SELECT * FROM
+		 (SELECT A.YEAR AYEAR,A.MEASUREID AMID FROM TBLAUTHORITY A
+		 	WHERE YEAR = #{year}
+		 	<if test='userId != null'>
+		 		AND A.USERID = #{userId}
+		 	</if>
+		 UNION
+		 SELECT D.YEAR AYEAR,D.ID AMID FROM TBLMEASUREDEFINE D
+		 	WHERE YEAR = #{year}
+		 	<if test='userId != null'>
+		 		AND D.UPDATEID = #{userId}
+		 	</if>
+		 ) AUT
+		 LEFT JOIN
+		 (SELECT T.ID MID,T.PARENTID MPID,T.CONTENTID MCID,T.TREELEVEL MLEVEL,T.RANK MRANK,T.WEIGHT MWEIGHT,C.NAME MNAME,D.FREQUENCY,T.YEAR MTYEAR,D.MEASUREMENT,
+		          COUNT(I.CODE) ITEMCOUNT, SUM(CASE WHEN ITEMFIXED = 'Y' THEN 1 ELSE NULL END) ITEMFIXED, D.UNIT
+		  FROM TBLTREESCORE T,TBLMEASUREDEFINE D, TBLMEASURE C, TBLITEM I
+		 WHERE T.CONTENTID=D.ID AND D.MEASUREID=C.ID AND T.TREELEVEL=5 AND T.YEAR = #{year} AND MEASUREMENT='계량' AND  D.ID =I.MEASUREID (+)
+		 GROUP BY T.ID ,T.PARENTID,T.CONTENTID,T.TREELEVEL,T.RANK,T.WEIGHT,C.NAME,D.FREQUENCY,T.YEAR,D.MEASUREMENT,D.UNIT     ) MEA
+		 ON AUT.AMID=MEA.MCID AND AUT.AYEAR=MTYEAR
+		 LEFT JOIN
+		 (SELECT T.ID OID,T.PARENTID OPID,T.CONTENTID OCID,T.TREELEVEL OLEVEL,T.RANK ORANK,T.WEIGHT OWEIGHT,C.NAME ONAME
+		 FROM TBLTREESCORE T,TBLOBJECTIVE C WHERE T.CONTENTID=C.ID AND T.TREELEVEL=4 AND T.YEAR = #{year} ) OBJ
+		 ON MEA.MPID=OBJ.OID
+		 LEFT JOIN
+		 (SELECT T.ID PID,T.PARENTID PPID,T.CONTENTID PCID,T.TREELEVEL PLEVEL,T.RANK PRANK,T.WEIGHT PWEIGHT,C.NAME PNAME
+		 FROM TBLTREESCORE T,TBLPST C WHERE T.CONTENTID=C.ID AND T.TREELEVEL=3 AND T.YEAR = #{year} ) PST
+		 ON OBJ.OPID=PST.PID
+		 LEFT JOIN
+		 (SELECT T.ID BID,T.PARENTID BPID,T.CONTENTID BCID,T.TREELEVEL BLEVEL,T.RANK BRANK,T.WEIGHT BWEIGHT,C.NAME BNAME
+		 FROM TBLHIERARCHY T,TBLBSC C WHERE T.CONTENTID=C.ID AND T.TREELEVEL=2 AND T.YEAR = #{year} ) BSC
+		 ON PST.PPID=BSC.BID
+		 LEFT JOIN
+		 (SELECT T.ID SID,T.PARENTID SPID,T.CONTENTID SCID,T.TREELEVEL SLEVEL,T.RANK SRANK,T.WEIGHT SWEIGHT,C.NAME SNAME
+		 FROM TBLHIERARCHY T,TBLSBU C WHERE T.CONTENTID=C.ID AND T.TREELEVEL=1 AND T.YEAR = #{year}
+		 <if test='sid != 0'>
+		 	AND T.ID = #{sid}
+		 </if>
+		 ) SBU
+		 ON BSC.BPID=SBU.SID
+		 WHERE MID IS NOT NULL
+		 <if test='itemFixed != null and itemFixed == "Y" '>
+		 	AND   ITEMFIXED > 0
+		 </if>
+		 ORDER BY SRANK, BRANK,ORANK,PRANK,MRANK
+
+	</select>
+
+
+
+	<select id="selectMeasureItem" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT CODE, MEASUREID, ITEMNAME, ITEMENTRY, ITEMTYPE,UNIT, ITEMFIXED
+ 		FROM TBLITEM WHERE MEASUREID=#{mcid} ORDER BY CODE
+
+	</select>
+
+	<select id="selectItemActual" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		 SELECT a.ym strdate, a.mcid measureid, a.frequency, a.code, a.itemname, a.itementry, a.itemfixed, b.actual
+		 FROM   (
+		         SELECT a.year||c.mm  ym, a.id  mcid, a.frequency, b.code, b.itemname, b.itementry, b.itemfixed
+		         FROM   tblmeasuredefine a, tblitem b,
+		                 (
+		                 <![CDATA[
+		                 select '년'   freq, ltrim(to_char(rownum*12, '00')) mm from tblmeasuredefine where rownum  = 1   union all
+		                 select '반기' freq, ltrim(to_char(rownum*6 , '00')) mm from tblmeasuredefine where rownum <= 2   union all
+		                 select '분기' freq, ltrim(to_char(rownum*3 , '00')) mm from tblmeasuredefine where rownum <= 4   union all
+		                 select '월'   freq, ltrim(to_char(rownum*1 , '00')) mm from tblmeasuredefine where rownum <= 12
+		                 ]]>
+		                 ) c
+		         WHERE  a.id        = b.measureid
+		         AND    a.frequency = c.freq
+		         AND    a.year = #{year}
+		         AND    a.id   = #{mcid}
+		         AND    b.code = #{itemcode}
+		         ) a,
+		         tblitemactual b
+		 where  a.ym   = substr(b.strdate(+),1,6)
+		 and    a.mcid = b.measureid(+)
+		 and    a.code = b.code     (+)
+		 order by ym
+
+	</select>
+
+
+	<delete id="deleteItem" parameterType="map">
+
+		DELETE FROM TBLITEMACTUAL WHERE MEASUREID=#{mcid} AND CODE=#{itemcode}
+
+	</delete>
+
+	<insert id="insertItem" parameterType="map">
+
+		INSERT INTO TBLITEMACTUAL
+		(
+			MEASUREID, CODE, STRDATE,INPUTDATE,ACTUAL
+		) VALUES
+		(
+			  #{mcid}
+			, #{itemcode}
+			, #{strdate}
+			, sysdate
+			, #{actual}
+		)
+
+
+	</insert>
+
+
+</mapper>

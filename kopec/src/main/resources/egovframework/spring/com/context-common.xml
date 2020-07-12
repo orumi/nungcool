@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+						http://www.springframework.org/schema/context
+						http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+	<context:component-scan base-package="ncsys">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+
+	<context:annotation-config/>	<!--  registered for JavaConfig -->
+
+
+
+	<bean id="egov.antPathMater" class="org.springframework.util.AntPathMatcher" />
+
+	<bean id="egov.defaultTraceHandler" class="egovframework.rte.fdl.cmmn.trace.handler.DefaultTraceHandler" />
+
+
+
+    <!-- MULTIPART RESOLVERS -->
+    <!-- regular spring resolver -->
+    <bean id="spring.RegularCommonsMultipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="600000000" />
+        <property name="maxInMemorySize" value="100000000" />
+    </bean>
+
+    <!-- choose one from above and alias it to the name Spring expects -->
+    <!-- alias name="local.MultiCommonsMultipartResolver" alias="multipartResolver" /-->
+    <alias name="spring.RegularCommonsMultipartResolver" alias="multipartResolver" />
+
+
+	<beans profile="local">
+		<bean id="EnvConfig" class="ncsys.com.util.EnvConfig">
+			<property name="rootPath" value="C:/home/profile"/>
+			<property name="batch" value="${batch.profiles.active}"/>
+		</bean>
+	</beans>
+	<beans profile="dev">
+		<bean id="EnvConfig" class="ncsys.com.util.EnvConfig">
+			<property name="rootPath" value="/home/dev"/>
+			<property name="batch" value="${batch.profiles.active}"/>
+		</bean>
+	</beans>
+
+
+
+</beans>
