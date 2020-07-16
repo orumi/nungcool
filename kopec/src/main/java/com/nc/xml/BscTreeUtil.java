@@ -21,17 +21,17 @@ import com.nc.math.Expression;
 import com.nc.math.ExpressionParser;
 
 public class BscTreeUtil {
-	
+
 	/**
 	 * Method : getTreeMeasList
-	 * Desc   : ³âµµÀÇ Á¶Á÷°ú ÁöÇ¥¸®½ºÆ®¸¦ ±¸ÇÏ´Â ±âº» SQL.
-	 * 
-	 * Rev.   : 1.2008.08.05 by PHG.  Init Version(¸ğµâÈ­) 
-	 * 
+	 * Desc   : ë…„ë„ì˜ ì¡°ì§ê³¼ ì§€í‘œë¦¬ìŠ¤íŠ¸ë¥¼ êµ¬í•˜ëŠ” ê¸°ë³¸ SQL.
+	 *
+	 * Rev.   : 1.2008.08.05 by PHG.  Init Version(ëª¨ë“ˆí™”)
+	 *
 	 * @param request
 	 * @param respons
 	 */
-	
+
 	public void getTreeMeasList(HttpServletRequest request, HttpServletResponse respons){
 		CoolConnection conn = null;
 		DBObject dbobject = null;
@@ -81,19 +81,19 @@ public class BscTreeUtil {
 			sb.append(" and    pid = opid (+)                                                                                                      ");
 			sb.append(" and    oid = mpid (+)                                                                                                      ");
 			sb.append(" order by crank,cid, srank,sid, brank,bid, prank, pid, orank, oid, mrank, mid                                               ");
-			
+
 	        Object[] params = {year,year,year, year,year,year};
-			
+
 			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
 			conn.createStatement(false);
-			
+
 			dbobject = new DBObject(conn.getConnection());
-			
+
 			rs = dbobject.executePreparedQuery(sb.toString(),params);
-			
+
 			DataSet ds = new DataSet();
 			ds.load(rs);
-			
+
 			request.setAttribute("ds", ds);
 		} catch (Exception e) {
 			System.out.println("getTreeMeasList Error : " + e);
@@ -104,16 +104,16 @@ public class BscTreeUtil {
 		}
 	}
 
-	
+
 	/**
 	 * Method : getTreeOrgList
-	 * Desc   : ³âµµÀÇ Á¶Á÷À» ±¸ÇÏ´Â ±âº» SQL.
-	 * 
-	 * Rev.   : 1.2008.05.25 by PHG.  Init Version. 
-	 * 
+	 * Desc   : ë…„ë„ì˜ ì¡°ì§ì„ êµ¬í•˜ëŠ” ê¸°ë³¸ SQL.
+	 *
+	 * Rev.   : 1.2008.05.25 by PHG.  Init Version.
+	 *
 	 * @param request
 	 * @param respons
-	 */	
+	 */
 	public void getTreeOrgList(HttpServletRequest request, HttpServletResponse respons){
 		CoolConnection conn = null;
 		DBObject dbobject = null;
@@ -141,19 +141,19 @@ public class BscTreeUtil {
 			sb.append(" where  cid = spid (+)                                                                                                      ");
 			sb.append(" and    sid = bpid                                                                                                          ");
 			sb.append(" order by crank,cid, srank, sid, brank, bid                                                                                 ");
-			
+
 	        Object[] params = {year,year,year};
-			
+
 			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
 			conn.createStatement(false);
-			
+
 			dbobject = new DBObject(conn.getConnection());
-			
+
 			rs = dbobject.executePreparedQuery(sb.toString(),params);
-			
+
 			DataSet ds = new DataSet();
 			ds.load(rs);
-			
+
 			request.setAttribute("ds", ds);
 		} catch (Exception e) {
 			System.out.println("getTreeOrgList Error : " + e);
@@ -163,16 +163,16 @@ public class BscTreeUtil {
 			if (conn != null) {conn.close(); conn = null;}
 		}
 	}
-	
+
 	/**
 	 * Method : getTreeBscList
-	 * Desc   : ³âµµÀÇ Æ¯Á¤Á¶Á÷ÀÇ °üÁ¡,¼º°ú¸ñÇ¥,ÁöÇ¥¸¦ ±¸ÇÏ´Â ±âº» SQL.
-	 * 
-	 * Rev.   : 1.2008.05.25 by PHG.  Init Version(¸ğµâÈ­)
-	 * 
+	 * Desc   : ë…„ë„ì˜ íŠ¹ì •ì¡°ì§ì˜ ê´€ì ,ì„±ê³¼ëª©í‘œ,ì§€í‘œë¥¼ êµ¬í•˜ëŠ” ê¸°ë³¸ SQL.
+	 *
+	 * Rev.   : 1.2008.05.25 by PHG.  Init Version(ëª¨ë“ˆí™”)
+	 *
 	 * @param request
 	 * @param respons
-	 */	
+	 */
 	public void getTreeBscList(HttpServletRequest request, HttpServletResponse respons){
 		CoolConnection conn = null;
 		DBObject dbobject = null;
@@ -205,19 +205,19 @@ public class BscTreeUtil {
 			sb.append(" where  pid = opid (+)                                                                                                      ");
 			sb.append(" and    oid = mpid (+)                                                                                                      ");
 			sb.append(" order by prank, pid, orank, oid, mrank, mid                                                                          ");
-			
+
 	        Object[] params = {year,bscid,year,year};
-			
+
 			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
 			conn.createStatement(false);
-			
+
 			dbobject = new DBObject(conn.getConnection());
-			
+
 			rs = dbobject.executePreparedQuery(sb.toString(),params);
-			
+
 			DataSet ds = new DataSet();
 			ds.load(rs);
-			
+
 			request.setAttribute("ds", ds);
 		} catch (Exception e) {
 			System.out.println("getTreeBscList Error : " + e);
@@ -226,21 +226,21 @@ public class BscTreeUtil {
 			if (dbobject != null){dbobject.close(); dbobject = null;}
 			if (conn != null) {conn.close(); conn = null;}
 		}
-	}	
-	
+	}
+
 	/**
 	 * Method : getComponent
-	 * Desc   : Á¶Á÷,°üÁ¡,¼º°ú¸ñÇ¥,ÁöÇ¥ ÄÚµå¸¦ ±¸ÇÏ´Â ±âº» SQL.
-	 * 
-	 * Rev.   : 1.2008.08.05 by PHG.  Init Version(¸ğµâÈ­)
-	 * 
+	 * Desc   : ì¡°ì§,ê´€ì ,ì„±ê³¼ëª©í‘œ,ì§€í‘œ ì½”ë“œë¥¼ êµ¬í•˜ëŠ” ê¸°ë³¸ SQL.
+	 *
+	 * Rev.   : 1.2008.08.05 by PHG.  Init Version(ëª¨ë“ˆí™”)
+	 *
 	 * @param request
 	 * @param respons
-	 */		
+	 */
 	public void getComponent(HttpServletRequest request, HttpServletResponse respons){
 		CoolConnection conn = null;
 		DBObject dbobject = null;
-		ResultSet rs = null; 
+		ResultSet rs = null;
 		try {
 
 			StringBuffer sb = new StringBuffer();
@@ -256,17 +256,17 @@ public class BscTreeUtil {
 			sb.append(" union                                  ");
 			sb.append(" select 5 kd,id,name from tblmeasure    ");
 			sb.append(" order by kd,name                       ");
-			
+
 			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
 			conn.createStatement(false);
-			
+
 			dbobject = new DBObject(conn.getConnection());
-			
+
 			rs = dbobject.executeQuery(sb.toString());
-			
+
 			DataSet ds = new DataSet();
 			ds.load(rs);
-			
+
 			request.setAttribute("ds", ds);
 		} catch (Exception e) {
 			System.out.println("getComponent Error : " + e);
@@ -276,37 +276,37 @@ public class BscTreeUtil {
 			if (conn != null) {conn.close(); conn = null;}
 		}
 	}
-	
+
 	/**
 	 * Method : getEquType
-	 * Desc   : ¸ñÇ¥±¸°£°ª ±¸ÇÔ.
-	 * 
-	 * Rev.   : 1.2008.05.25 by PHG.  Init Version(¸ğµâÈ­) 
-	 * 
+	 * Desc   : ëª©í‘œêµ¬ê°„ê°’ êµ¬í•¨.
+	 *
+	 * Rev.   : 1.2008.05.25 by PHG.  Init Version(ëª¨ë“ˆí™”)
+	 *
 	 * @param request
 	 * @param respons
-	 */		
+	 */
 	public void getEquType (HttpServletRequest request, HttpServletResponse response){
 		CoolConnection conn = null;
 		DBObject dbobject = null;
-		ResultSet rs = null;   
-		try {  
-			
+		ResultSet rs = null;
+		try {
+
 			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
 			conn.createStatement(false);
-			
+
 			if (dbobject==null) dbobject= new DBObject(conn.getConnection());
-			
-			
+
+
 			String strS = "SELECT * FROM TBLEQUATIONTYPE ORDER BY TYPE";
-			
+
 			rs = dbobject.executeQuery(strS);
-			
+
 			DataSet ds = new DataSet();
 			ds.load(rs);
-			
+
 			request.setAttribute("ds",ds);
-			
+
 		} catch (Exception e) {
 			System.out.println(e);
 		} finally {
@@ -314,34 +314,34 @@ public class BscTreeUtil {
 			if (dbobject != null){dbobject.close(); dbobject = null;}
 			if (conn != null) {conn.close(); conn = null;}
 		}
-	}		
-	
+	}
+
 	/**
 	 * Method : getBscUser
-	 * Desc   : ¼º°ú´ã´çÀÚ¸¦ ±¸ÇÔ.
-	 * 
-	 * Rev.   : 1.2008.05.25 by PHG.  Init Version(¸ğµâÈ­) 
-	 * 
+	 * Desc   : ì„±ê³¼ë‹´ë‹¹ìë¥¼ êµ¬í•¨.
+	 *
+	 * Rev.   : 1.2008.05.25 by PHG.  Init Version(ëª¨ë“ˆí™”)
+	 *
 	 * @param request
 	 * @param respons
-	 */	
+	 */
 	public void getBscUser(HttpServletRequest request, HttpServletResponse response){
 		CoolConnection conn = null;
 		DBObject dbobject = null;
-		ResultSet rs = null;   
-		try {  			
-			
+		ResultSet rs = null;
+		try {
+
 			String usernm = request.getParameter("usernm")==null?"%":request.getParameter("usernm");
-			
+
 			System.out.println("usernm : " + usernm);
-			
+
 			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
 			conn.createStatement(false);
-			
+
 			if (dbobject==null) dbobject= new DBObject(conn.getConnection());
-			
+
 			StringBuffer sb = new StringBuffer();
-			
+
 			sb.append(" select b.dept_cd  orgcd, b.dept_nm orgnm, ");
 			sb.append("        a.userid   ,    a.username usernm  ");
 			sb.append(" from   tbluser a, tbldept b               ");
@@ -349,15 +349,15 @@ public class BscTreeUtil {
 			sb.append(" and    a.groupid  < 4                     ");
 			sb.append(" and    a.username like ?||'%'             ");
 			sb.append(" order by 2, username                      ");
-			
-			Object[] paramS = {usernm};			
+
+			Object[] paramS = {usernm};
 			rs = dbobject.executePreparedQuery(sb.toString(), paramS);
-			
+
 			DataSet ds = new DataSet();
 			ds.load(rs);
-			
+
 			request.setAttribute("ds",ds);
-			
+
 		} catch (Exception e) {
 			System.out.println("getBscUser : " + e);
 		} finally {
@@ -365,32 +365,32 @@ public class BscTreeUtil {
 			if (dbobject != null){dbobject.close(); dbobject = null;}
 			if (conn != null) {conn.close(); conn = null;}
 		}
-	}	
-		
+	}
+
 	/**
 	 * Method : getMeasUser
-	 * Desc   : ÁöÇ¥ ´ã´çÀÚ¸¦ ±¸ÇÔ.
-	 * 
-	 * Rev.   : 1.2008.05.25 by PHG.  Init Version(¸ğµâÈ­) 
-	 * 
+	 * Desc   : ì§€í‘œ ë‹´ë‹¹ìë¥¼ êµ¬í•¨.
+	 *
+	 * Rev.   : 1.2008.05.25 by PHG.  Init Version(ëª¨ë“ˆí™”)
+	 *
 	 * @param request
 	 * @param respons
-	 */	
+	 */
 	public void getMeasUser(HttpServletRequest request, HttpServletResponse response){
 		CoolConnection conn = null;
 		DBObject dbobject = null;
-		ResultSet rs = null;   
-		try {  			
-			
+		ResultSet rs = null;
+		try {
+
 			String mcid= request.getParameter("mcid");
-			
+
 			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
 			conn.createStatement(false);
-			
+
 			if (dbobject==null) dbobject= new DBObject(conn.getConnection());
-			
+
 			StringBuffer sb = new StringBuffer();
-			
+
 			sb.append(" SELECT  distinct                                                                     ");
 			sb.append("         b.orgcd, b.orgnm, b.userid, b.usernm, mngyn                                  ");
 			sb.append(" FROM                                                                                 ");
@@ -409,18 +409,18 @@ public class BscTreeUtil {
 			sb.append("         ) b                                                                          ");
 			sb.append(" WHERE a.userid = b.userid                                                            ");
 			sb.append(" ORDER BY mngyn desc, orgnm, usernm                                                   ");
-			
+
 			System.out.println("MEAS USER : " + mcid + "/" + sb.toString());
-			
+
 			Object[] paramS = {mcid, mcid};
-			
+
 			rs = dbobject.executePreparedQuery(sb.toString(), paramS);
-			
+
 			DataSet ds = new DataSet();
 			ds.load(rs);
-			
+
 			request.setAttribute("ds",ds);
-			
+
 		} catch (Exception e) {
 			System.out.println("getMeasUser : " + e);
 		} finally {
@@ -428,117 +428,117 @@ public class BscTreeUtil {
 			if (dbobject != null){dbobject.close(); dbobject = null;}
 			if (conn != null) {conn.close(); conn = null;}
 		}
-	}	
-	
+	}
+
 	/**
 	 * Method : updateTreeNode
-	 * Desc   : Á¶Á÷,°üÁ¡,¼º°ú¸ñÇ¥,ÁöÇ¥ ÄÚµå ¼öÁ¤ ±âº» SQL.
-	 * 
-	 * Rev.   : 1.2008.05.25 by PHG.  Init Version(¸ğµâÈ­) 
-	 * 
+	 * Desc   : ì¡°ì§,ê´€ì ,ì„±ê³¼ëª©í‘œ,ì§€í‘œ ì½”ë“œ ìˆ˜ì • ê¸°ë³¸ SQL.
+	 *
+	 * Rev.   : 1.2008.05.25 by PHG.  Init Version(ëª¨ë“ˆí™”)
+	 *
 	 * @param request
 	 * @param respons
-	 */	
+	 */
 	public void updateTreeNode(HttpServletRequest request, HttpServletResponse response){
-		
+
 		CoolConnection conn = null;
 		DBObject dbobject   = null;
-		ResultSet rs = null; 
+		ResultSet rs = null;
 		Hashtable ht = new Hashtable();
-		
+
 		try {
 
-			String tag      = request.getParameter("tag" );			
+			String tag      = request.getParameter("tag" );
 			String year     = request.getParameter("year");
 			String level    = request.getParameter("level")!=null?request.getParameter("level"):"-1";
 			String userInfo = (String)request.getSession().getAttribute("userId")+"_"+request.getSession().getAttribute("userName");
-			int lvl = Integer.valueOf(level).intValue();			 
-			
+			int lvl = Integer.valueOf(level).intValue();
+
 			System.out.println("updateTreeNode Proc TAG : " + tag + " level : " + level);
-			
+
 			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
 			conn.createStatement(false);
-			
+
 			String tId = "";
 			dbobject   = new DBObject(conn.getConnection());
 			String tbl = "TBLHIERARCHY";
 
 			if ("new".equals(tag)){
-				
+
 				String pid     = request.getParameter("pid"   );
 				String cid     = request.getParameter("cid"   );
 				String weight  = request.getParameter("weight");
 				String rank    = request.getParameter("rank"  );
-				
+
 				lvl++;
 				if (lvl==0) pid ="0";
 				if (lvl >2) tbl ="TBLTREESCORE";
-				
+
 				tId = String.valueOf(dbobject.getNextId(tbl));		// Next ID
 				String strI = "INSERT INTO "+tbl+" (ID,PARENTID,CONTENTID,TREELEVEL,RANK,INPUTDATE,YEAR,WEIGHT) VALUES (?,?,?,?,?,?,?,?)";
 				Object[] paramI = {tId,pid,cid,String.valueOf(lvl),rank, Util.getToDayTime().substring(0,14),year,weight};
 				dbobject.executePreparedUpdate(strI,paramI);
-				
+
 			} else if ("mod".equals(tag)){
 				String id      = request.getParameter("id");
 				String weight  = request.getParameter("weight");
 				String rank    = request.getParameter("rank"  );
 				tId            = id;
-				
+
 				if (lvl>2) tbl="TBLTREESCORE";
 				String strU = "UPDATE "+tbl+" SET WEIGHT=?,RANK=? WHERE ID=? AND TREELEVEL=? AND YEAR=?";
-				Object[] paramU = {weight,rank,id,level,year};				
-				dbobject.executePreparedUpdate(strU,paramU);		
-				
+				Object[] paramU = {weight,rank,id,level,year};
+				dbobject.executePreparedUpdate(strU,paramU);
+
 				if (lvl==5) {
 					String strUD = "UPDATE tblmeasuredefine SET WEIGHT=? WHERE year=? and ID=(SELECT contentid FROM tbltreescore WHERE ID=? AND TREELEVEL=? AND YEAR=?)";
-					Object[] paramUD = {weight,year,id,level,year};				
-					dbobject.executePreparedUpdate(strUD,paramUD);		
-					
+					Object[] paramUD = {weight,year,id,level,year};
+					dbobject.executePreparedUpdate(strUD,paramUD);
+
 					System.out.println("updateTreeNode Proc MeasureDefine");
 				}
-				
+
 				System.out.println("updateTreeNode Proc strU : " + strU + "ID : " + id +" weight : " + weight);
-				
+
 			} else if ("del".equals(tag)){
 				String id = request.getParameter("id");
-				
+
 				if (lvl>2) tbl ="TBLTREESCORE";
-				
+
 				String strD = "DELETE FROM "+tbl+" WHERE ID=? AND TREELEVEL=? AND YEAR=?";
-				Object[] paramD = {id,level,year};				
-				dbobject.executePreparedUpdate(strD,paramD);				
-				request.setAttribute("result", "true");	
-				
-				
-				
-				
-				
-				
-			// ÄÁÅÙÃ÷ IDº¯°æ	
+				Object[] paramD = {id,level,year};
+				dbobject.executePreparedUpdate(strD,paramD);
+				request.setAttribute("result", "true");
+
+
+
+
+
+
+			// ì»¨í…ì¸  IDë³€ê²½
 			} else if ("rep".equals(tag)){
 				String id      = request.getParameter("id");
 				String cid     = request.getParameter("cid"   );
 				tId            = id;
-				
+
 				if (lvl>2) tbl="TBLTREESCORE";
 				String strU = "UPDATE "+tbl+" SET contentid = ? WHERE ID=? AND TREELEVEL=? AND YEAR=?";
-				Object[] paramU = {cid,id,level,year};				
+				Object[] paramU = {cid,id,level,year};
 				System.out.println("updateTreeNode Proc strU : " + strU + ", ID : " + id +" contentid : " + cid);
-				
-				dbobject.executePreparedUpdate(strU,paramU);		
-			}	
-			
-			// µî·Ï ¼öÁ¤ÀÎ °æ¿ì¿¡...	
+
+				dbobject.executePreparedUpdate(strU,paramU);
+			}
+
+			// ë“±ë¡ ìˆ˜ì •ì¸ ê²½ìš°ì—...
 			if ("new".equals(tag)||"mod".equals(tag)||"rep".equals(tag)){
 					String      tblCom = "TBLCOMPANY";
 					if      (lvl==1) tblCom ="TBLSBU";
 					else if (lvl==2) tblCom="TBLBSC";
 					else if (lvl==3) tblCom="TBLPST";
 					else if (lvl==4) tblCom="TBLOBJECTIVE";
-					
+
 					StringBuffer sb = new StringBuffer();
-					
+
 					if (lvl<5){
 						sb.append("SELECT T.ID,T.PARENTID,T.CONTENTID,T.TREELEVEL,T.RANK,T.YEAR,T.WEIGHT,C.NAME FROM "+tbl+" T,"+tblCom+" C WHERE T.CONTENTID=C.ID AND T.ID=? AND T.YEAR=?");
 					}else{
@@ -549,19 +549,19 @@ public class BscTreeUtil {
 						sb.append(" AND    T.ID= ? AND T.YEAR=?                                                  ");
 					}
 					Object[] params = {tId,year};
-					
+
 					System.out.println("SELECT Proc strU : " + sb.toString() + ", ID : " + tId);
-					
+
 					rs = dbobject.executePreparedQuery(sb.toString(),params);
-					
+
 					DataSet ds = new DataSet();
 					ds.load(rs);
-					
-					request.setAttribute("ds", ds);	
+
+					request.setAttribute("ds", ds);
 			}
-			
+
 			conn.commit();
-			
+
 		} catch (Exception e) {
 			System.out.println("updateTreeNode : " + e);
 		} finally {
@@ -570,34 +570,34 @@ public class BscTreeUtil {
 			if (conn != null) {conn.close(); conn = null;}
 		}
 	}
-	
-	
+
+
 	/**
-	 * Method : getMeasure : ÁöÇ¥Á¤ÀÇ¼­ »ó¼¼Á¤º¸ ±¸ÇÏ±â
-	 * Desc   :ÁöÇ¥Á¤ÀÇ¼­ »ó¼¼Á¤º¸ ±¸ÇÏ±â ±âº» SQL.
-	 * 
-	 * Rev.   : 1.2008.05.25 by PHG.  Init Version(¸ğµâÈ­) 
-	 * 
+	 * Method : getMeasure : ì§€í‘œì •ì˜ì„œ ìƒì„¸ì •ë³´ êµ¬í•˜ê¸°
+	 * Desc   :ì§€í‘œì •ì˜ì„œ ìƒì„¸ì •ë³´ êµ¬í•˜ê¸° ê¸°ë³¸ SQL.
+	 *
+	 * Rev.   : 1.2008.05.25 by PHG.  Init Version(ëª¨ë“ˆí™”)
+	 *
 	 * @param request
 	 * @param respons
-	 */	
+	 */
 	public void getMeasure(HttpServletRequest request, HttpServletResponse response){
 		CoolConnection conn = null;
 		DBObject dbobject = null;
-		ResultSet rs = null;   
-		try {  
-			
+		ResultSet rs = null;
+		try {
+
 			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
 			conn.createStatement(false);
-			
+
 			if (dbobject==null) dbobject= new DBObject(conn.getConnection());
-			
+
 			String mid  = request.getParameter("mid");
 			String year = request.getParameter("year");
-			
+
 			//System.out.println(mid);
-			
-			// ÁöÇ¥Á¤ÀÇ¼­ Á¤º¸
+
+			// ì§€í‘œì •ì˜ì„œ ì •ë³´
 			StringBuffer sb = new StringBuffer();
 			sb.append(" select  *                                                                                                                  ");
 			sb.append(" from                                                                                                                       ");
@@ -626,37 +626,37 @@ public class BscTreeUtil {
 			sb.append(" order by prank, pid, orank, oid, mrank, mid                                                                                ");
 
 			Object[] paramS = {year,year,year,mid};
-			
+
 			rs = dbobject.executePreparedQuery(sb.toString(),paramS);
-			
+
 			DataSet ds = new DataSet();
 			ds.load(rs);
-			
+
 			request.setAttribute("ds",ds);
-			
-			// ÁöÇ¥Ç×¸ñÁ¤º¸
+
+			// ì§€í‘œí•­ëª©ì •ë³´
 			String strItem ="SELECT * FROM TBLITEM WHERE MEASUREID=? ORDER BY CODE";
 			Object[] param = {mid};
-			
+
 			if (rs!=null){rs.close(); rs=null;}
 			rs = dbobject.executePreparedQuery(strItem,param);
-			
+
 			DataSet dsItem = new DataSet();
 			dsItem.load(rs);
-			
+
 			request.setAttribute("dsItem",dsItem);
-			
-			// ´ã´çÀÚ Á¤º¸
+
+			// ë‹´ë‹¹ì ì •ë³´
 			String strUpdater = "SELECT R.USERID,(SELECT USERNAME FROM TBLUSER U WHERE U.USERID=R.USERID) USERNAME FROM TBLAUTHORITY R WHERE MEASUREID=?";
 			if (rs!=null){rs.close(); rs=null;}
 			rs = dbobject.executePreparedQuery(strUpdater,param);
-			
+
 			DataSet dsUpdater = new DataSet();
 			dsUpdater.load(rs);
-			
+
 			request.setAttribute("dsUpdater",dsUpdater);
-			
-			
+
+
 		} catch (Exception e) {
 			System.out.println(e);
 		} finally {
@@ -665,73 +665,73 @@ public class BscTreeUtil {
 			if (conn != null) {conn.close(); conn = null;}
 		}
 	}
-	
+
 	/**
-	 * Method : insertMeasure : ÁöÇ¥Á¤ÀÇ¼­ µî·Ï
-	 * 
-	 * Desc   :ÁöÇ¥Á¤ÀÇ¼­ µî·Ï.
-	 * 
-	 * Rev.   : 1.2008.05.25 by PHG.  Init Version(¸ğµâÈ­) 
-	 * 
+	 * Method : insertMeasure : ì§€í‘œì •ì˜ì„œ ë“±ë¡
+	 *
+	 * Desc   :ì§€í‘œì •ì˜ì„œ ë“±ë¡.
+	 *
+	 * Rev.   : 1.2008.05.25 by PHG.  Init Version(ëª¨ë“ˆí™”)
+	 *
 	 * @param request
 	 * @param respons
-	 */			
+	 */
 	public void insertMeasure(HttpServletRequest request, HttpServletResponse response){
 		CoolConnection conn = null;
 		DBObject dbobject = null;
 		ResultSet rs = null;
 		try {
-			
+
 			String year    = request.getParameter("year");
 			String updater = (String)request.getSession().getAttribute("userId");
-			
+
 			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
 			conn.createStatement(false);
-			
+
 			if (dbobject==null) dbobject= new DBObject(conn.getConnection());
-			
+
 			String tid   ="";
 			String mcid  = request.getParameter("mcid" );
 			String objid = request.getParameter("objid");
 
-			// MeasureDefine ... : °¡ÁßÄ¡ 5, ¸ñÇ¥°ª 100·Î ¼³Á¤, 
+			// MeasureDefine ... : ê°€ì¤‘ì¹˜ 5, ëª©í‘œê°’ 100ë¡œ ì„¤ì •,
 			StringBuffer sbI = new StringBuffer();
 			sbI.append("INSERT INTO TBLMEASUREDEFINE (ID,MEASUREID,UPDATEID,  WEIGHT,PLANNED, PLANNEDBASEPLUS, PLANNEDBASE, BASEPLUS, BASE, BASELIMITPLUS, BASELIMIT, LIMITPLUS, LIMIT,FREQUENCY,MEASUREMENT,TREND,YEAR )");
-			sbI.append(" VALUES (?,?,?,5, 100,95,90,85,80,75,70,65,65, '¿ù','°è·®','»óÇâ' ,?)");
-			
+			sbI.append(" VALUES (?,?,?,5, 100,95,90,85,80,75,70,65,65, 'ì›”','ê³„ëŸ‰','ìƒí–¥' ,?)");
+
 			String mid = String.valueOf(dbobject.getNextId("TBLMEASUREDEFINE"));
-			Object[] paramI = {mid,mcid,updater,year};			
+			Object[] paramI = {mid,mcid,updater,year};
 			dbobject.executePreparedQuery(sbI.toString(),paramI);
-			
-			// 
+
+			//
 			String strI = "INSERT INTO TBLTREESCORE (ID,PARENTID,CONTENTID,TREELEVEL,RANK,INPUTDATE,YEAR,WEIGHT) VALUES (?,?,?,?,0,?,?,5)";
-			
+
 			tid=String.valueOf(dbobject.getNextId("TBLTREESCORE"));
 			Object[] paramIC = {tid,objid,mid,"5",Util.getToDayTime().substring(0,14),year};
 			dbobject.executePreparedQuery(strI.toString(),paramIC);
-			
+
 			String strUD = "DELETE FROM TBLAUTHORITY WHERE YEAR=? AND MEASUREID=? ";
 			Object[] pmUD = {year,mid};
-			dbobject.executePreparedUpdate(strUD,pmUD);		
-			
+			dbobject.executePreparedUpdate(strUD,pmUD);
+
 			setMeasDetailValue(dbobject, year, mid);
-			System.out.println("ÁöÇ¥¸ñÇ¥ ÀÚµ¿»ı¼º");				
-			
+			System.out.println("ì§€í‘œëª©í‘œ ìë™ìƒì„±");
+
 			conn.commit();
 
 			StringBuffer strS = new StringBuffer();
-			
+
 			strS.append(" SELECT T.ID,T.PARENTID,T.CONTENTID,T.TREELEVEL,T.RANK,T.YEAR,T.WEIGHT,C.NAME ");
 			strS.append(" FROM   TBLTREESCORE T,TBLMEASURE C,TBLMEASUREDEFINE D                        ");
 			strS.append(" WHERE  T.CONTENTID=D.ID AND D.MEASUREID=C.ID AND T.ID=? AND T.YEAR=?         ");
 			Object[] paramS = {tid,year};
 			rs = dbobject.executePreparedQuery(strS.toString(),paramS);
-			
+
 			DataSet ds = new DataSet();
 			ds.load(rs);
-			
+
 			request.setAttribute("ds",ds);
-			
+
 		} catch (Exception e) {
 			System.out.println(e);
 		} finally {
@@ -739,59 +739,59 @@ public class BscTreeUtil {
 			if (dbobject != null){dbobject.close(); dbobject = null;}
 			if (conn != null) {conn.close(); conn = null;}
 		}
-	}	
+	}
 
 	/**
-	 * Method : replaceMeasure : ÁöÇ¥Á¤ÀÇ¼­ ÁöÇ¥ÄÚµå º¯°æ
-	 * 
-	 * Desc   :ÁöÇ¥Á¤ÀÇ¼­ ÁöÇ¥ÄÚµå µî·Ï.
-	 * 
-	 * Rev.   : 1.2008.05.25 by PHG.  Init Version(¸ğµâÈ­) 
-	 * 
+	 * Method : replaceMeasure : ì§€í‘œì •ì˜ì„œ ì§€í‘œì½”ë“œ ë³€ê²½
+	 *
+	 * Desc   :ì§€í‘œì •ì˜ì„œ ì§€í‘œì½”ë“œ ë“±ë¡.
+	 *
+	 * Rev.   : 1.2008.05.25 by PHG.  Init Version(ëª¨ë“ˆí™”)
+	 *
 	 * @param request
 	 * @param respons
-	 */			
+	 */
 	public void replaceMeasure(HttpServletRequest request, HttpServletResponse response){
 		CoolConnection conn = null;
 		DBObject dbobject = null;
 		ResultSet rs = null;
 		try {
-			
-			String tag      = request.getParameter("tag" );			
+
+			String tag      = request.getParameter("tag" );
 			String year     = request.getParameter("year");
 			String level    = request.getParameter("level");
-			String id       = request.getParameter("id");				// tbltreescore ÀÇ id.
-			String cid      = request.getParameter("cid"   );			// tblmeasuredefine ÀÇ Measureid			
-			
+			String id       = request.getParameter("id");				// tbltreescore ì˜ id.
+			String cid      = request.getParameter("cid"   );			// tblmeasuredefine ì˜ Measureid
+
 			System.out.println("updateTreeNode Proc TAG : " + tag + " level : " + level);
-			
+
 			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
 			conn.createStatement(false);
 			if (dbobject==null) dbobject= new DBObject(conn.getConnection());
-			
-			// MeasureDefine ...  
+
+			// MeasureDefine ...
 			StringBuffer sbU = new StringBuffer();
 			sbU.append(" update tblmeasuredefine set  measureid = ? ");
 			sbU.append(" where year = ? and id = (select contentid from tbltreescore where year = ? and id = ? and treelevel=?)");
-			
+
 			Object[] pmU = {cid, year, year, id, level};
-			dbobject.executePreparedUpdate(sbU.toString(),pmU);			
+			dbobject.executePreparedUpdate(sbU.toString(),pmU);
 
 			conn.commit();
 
 			StringBuffer strS = new StringBuffer();
-			
+
 			strS.append(" SELECT T.ID,T.PARENTID,T.CONTENTID,T.TREELEVEL,T.RANK,T.YEAR,T.WEIGHT,C.NAME ");
 			strS.append(" FROM   TBLTREESCORE T,TBLMEASURE C,TBLMEASUREDEFINE D                        ");
 			strS.append(" WHERE  T.CONTENTID=D.ID AND D.MEASUREID=C.ID AND T.ID=? AND T.YEAR=?         ");
 			Object[] paramS = {id,year};
 			rs = dbobject.executePreparedQuery(strS.toString(),paramS);
-			
+
 			DataSet ds = new DataSet();
 			ds.load(rs);
-			
+
 			request.setAttribute("ds",ds);
-			
+
 		} catch (Exception e) {
 			System.out.println(e);
 		} finally {
@@ -799,80 +799,80 @@ public class BscTreeUtil {
 			if (dbobject != null){dbobject.close(); dbobject = null;}
 			if (conn != null) {conn.close(); conn = null;}
 		}
-	}	
-	
+	}
+
 	/**
-	 * Method : updateMeasure : ÁöÇ¥Á¤ÀÇ¼­ ¼öÁ¤
-	 * 
-	 * Desc   :ÁöÇ¥Á¤ÀÇ¼­ ÁöÇ¥ÄÚµå ¼öÁ¤.
-	 * 
-	 * Rev.   : 1.2008.05.25 by PHG.  Init Version(¸ğµâÈ­) 
-	 * 
+	 * Method : updateMeasure : ì§€í‘œì •ì˜ì„œ ìˆ˜ì •
+	 *
+	 * Desc   :ì§€í‘œì •ì˜ì„œ ì§€í‘œì½”ë“œ ìˆ˜ì •.
+	 *
+	 * Rev.   : 1.2008.05.25 by PHG.  Init Version(ëª¨ë“ˆí™”)
+	 *
 	 * @param request
 	 * @param respons
-	 */			
-	
+	 */
+
 	public void updateMeasure(HttpServletRequest request, HttpServletResponse reponse){
 		CoolConnection conn = null;
 		DBObject dbobject   = null;
-		ResultSet rs        = null;   
-		
-		try {      
+		ResultSet rs        = null;
 
-/*	Real SERVER */ 		
-			String year      = request.getParameter("year");                                                                      
-			String mode      = request.getParameter("tag" );                                                                      
-			String level     = request.getParameter("level");                                                                     
-			String mean      = request.getParameter("mean");                                                                      
-			                                                                                                                      
-			String detail    = request.getParameter("detail").trim();                                                             
-			String etlkey    = request.getParameter("etlkey");                                                                    
-			String equDefine = request.getParameter("equDefine").trim();                                                          
-			String weight    = request.getParameter("weight");                                                                    
-			String unit      = request.getParameter("unit").trim();                                                               
-			String trend     = request.getParameter("trend");                                                                     
-			String frequecny = request.getParameter("frequency");                                                                 
-			String type      = request.getParameter("type");                                                                      
-			String planned   = request.getParameter("planned");                                                                   
-			String base      = request.getParameter("base");                                                                      
-			String limit     = request.getParameter("limit");                                                                     
-			String equation  = request.getParameter("equation").trim();                                                           
-			String ya1       = request.getParameter("ya1");                                                                       
-			String ya2       = request.getParameter("ya2");                                                                       
-			String ya3       = request.getParameter("ya3");                                                                       
-			String ya4       = request.getParameter("ya4");                                                                       
-			String y         = request.getParameter("y");                                                                         
-			String yb1       = request.getParameter("yb1");                                                                       
-			String yb2       = request.getParameter("yb2");                                                                       
-			String yb3       = request.getParameter("yb3");                                                                       
-			String updateId  = request.getParameter("updateId");                                                                  
-			                                                                                                                      
-			String item      = request.getParameter("item");                                                                      
-			String updater   = request.getParameter("updater");                                                                   
-			                                                                                                                      
-			String datasource     = request.getParameter("datasource")==null?"":request.getParameter("datasource").trim();			  
-			String plannedbase    = request.getParameter("plannedbase")==null?"":request.getParameter("plannedbase");             
-			String baselimit      = request.getParameter("baselimit")  ==null?"":request.getParameter("baselimit");		            
-			String equType        = request.getParameter("equType")    ==null?"":request.getParameter("equType");                 
-			String ifsystem       = request.getParameter("ifsystem")   ==null?"":request.getParameter("ifsystem").trim();         
-			String mngdeptnm      = request.getParameter("mngdeptnm")  ==null?"":request.getParameter("mngdeptnm").trim();        
+		try {
+
+/*	Real SERVER */
+			String year      = request.getParameter("year");
+			String mode      = request.getParameter("tag" );
+			String level     = request.getParameter("level");
+			String mean      = request.getParameter("mean");
+
+			String detail    = request.getParameter("detail").trim();
+			String etlkey    = request.getParameter("etlkey");
+			String equDefine = request.getParameter("equDefine").trim();
+			String weight    = request.getParameter("weight");
+			String unit      = request.getParameter("unit").trim();
+			String trend     = request.getParameter("trend");
+			String frequecny = request.getParameter("frequency");
+			String type      = request.getParameter("type");
+			String planned   = request.getParameter("planned");
+			String base      = request.getParameter("base");
+			String limit     = request.getParameter("limit");
+			String equation  = request.getParameter("equation").trim();
+			String ya1       = request.getParameter("ya1");
+			String ya2       = request.getParameter("ya2");
+			String ya3       = request.getParameter("ya3");
+			String ya4       = request.getParameter("ya4");
+			String y         = request.getParameter("y");
+			String yb1       = request.getParameter("yb1");
+			String yb2       = request.getParameter("yb2");
+			String yb3       = request.getParameter("yb3");
+			String updateId  = request.getParameter("updateId");
+
+			String item      = request.getParameter("item");
+			String updater   = request.getParameter("updater");
+
+			String datasource     = request.getParameter("datasource")==null?"":request.getParameter("datasource").trim();
+			String plannedbase    = request.getParameter("plannedbase")==null?"":request.getParameter("plannedbase");
+			String baselimit      = request.getParameter("baselimit")  ==null?"":request.getParameter("baselimit");
+			String equType        = request.getParameter("equType")    ==null?"":request.getParameter("equType");
+			String ifsystem       = request.getParameter("ifsystem")   ==null?"":request.getParameter("ifsystem").trim();
+			String mngdeptnm      = request.getParameter("mngdeptnm")  ==null?"":request.getParameter("mngdeptnm").trim();
 			String targetrationle = request.getParameter("targetrationle")==null?"":request.getParameter("targetrationle").trim();
-			String plannedflag    = request.getParameter("plannedflag")==null?"":request.getParameter("plannedflag");             
+			String plannedflag    = request.getParameter("plannedflag")==null?"":request.getParameter("plannedflag");
 
-			
+
 			String plannedbaseplus    = request.getParameter("plannedbaseplus")  ==null?"":request.getParameter("plannedbaseplus");
 			String baseplus           = request.getParameter("baseplus")  ==null?"":request.getParameter("baseplus");
 			String baselimitplus      = request.getParameter("baselimitplus")  ==null?"":request.getParameter("baselimitplus");
 			String limitplus          = request.getParameter("limitplus")  ==null?"":request.getParameter("limitplus");
-			
+
 			String scoreCode = request.getParameter("scoreCode")!=null?request.getParameter("scoreCode"):"";
-	/*		
+	/*
 			// My PC
 			String year      = request.getParameter("year");
 			String mode      = request.getParameter("tag" );
 			String level     = request.getParameter("level");
 			String mean      = Util.getUTF(request.getParameter("mean"));
-			
+
 			String detail    = Util.getUTF(request.getParameter("detail")).trim();
 			String etlkey    = request.getParameter("etlkey");
 			String equDefine = Util.getUTF(request.getParameter("equDefine")).trim();
@@ -894,68 +894,68 @@ public class BscTreeUtil {
 			String yb2       = request.getParameter("yb2");
 			String yb3       = request.getParameter("yb3");
 			String updateId  = Util.getUTF(request.getParameter("updateId"));
-			 
+
 			String item      = Util.getUTF(request.getParameter("item"));
 			String updater   = Util.getUTF(request.getParameter("updater"));
-			
-			String datasource     = request.getParameter("datasource")==null?"":Util.getUTF(request.getParameter("datasource")).trim();			
+
+			String datasource     = request.getParameter("datasource")==null?"":Util.getUTF(request.getParameter("datasource")).trim();
 			String plannedbase    = request.getParameter("plannedbase")==null?"":request.getParameter("plannedbase");
-			String baselimit      = request.getParameter("baselimit")  ==null?"":request.getParameter("baselimit");		
+			String baselimit      = request.getParameter("baselimit")  ==null?"":request.getParameter("baselimit");
 			String equType        = request.getParameter("equType")    ==null?"":Util.getUTF(request.getParameter("equType"));
 			String ifsystem       = request.getParameter("ifsystem")   ==null?"":Util.getUTF(request.getParameter("ifsystem")).trim();
 			String mngdeptnm      = request.getParameter("mngdeptnm")  ==null?"":Util.getUTF(request.getParameter("mngdeptnm")).trim();
 			String targetrationle = request.getParameter("targetrationle")==null?"":Util.getUTF(request.getParameter("targetrationle")).trim();
 			String plannedflag    = request.getParameter("plannedflag")==null?"":request.getParameter("plannedflag");
-			
+
 			String scoreCode = request.getParameter("scoreCode")!=null?request.getParameter("scoreCode"):"";
-			
+
  /**/
-			
-			
-			
-			
-			
-			
-			
-			
+
+
+
+
+
+
+
+
 			Hashtable ht = new Hashtable();
 			String userInfo = (String)request.getSession().getAttribute("userId")+"_"+request.getSession().getAttribute("userName");
-			
-			// »ê½Ä Ã¼Å© if 			
+
+			// ì‚°ì‹ ì²´í¬ if
 			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
 			conn.createStatement(false);
-			
+
 			if (dbobject==null) dbobject= new DBObject(conn.getConnection());
 			String tid="";
-			
+
 			if ("mod".equals(mode)) {
 				tid              = request.getParameter("tid");
 				String mid       = request.getParameter("mid");
 				String objId     = request.getParameter("objId");
-			
-				System.out.println("updateMeasure : " + mode + "/" + mid + "/" + updater);		
-				
+
+				System.out.println("updateMeasure : " + mode + "/" + mid + "/" + updater);
+
 				StringBuffer sbU = new StringBuffer();
 				sbU.append(" UPDATE TBLMEASUREDEFINE SET MEAN=?,DETAILDEFINE=?,ETLKEY=?,UPDATEID=?,WEIGHT=?,PLANNED=?,BASE=?,LIMIT=?,");
 				sbU.append("        FREQUENCY=?,MEASUREMENT=?,EQUATION=?,EQUATIONDEFINE=?,DATASOURCE=?,UNIT=?,TREND=?,YA1=?,YA2=?,YA3=?,YA4=?,Y=?,YB1=?,YB2=?,YB3=?, ");
-				sbU.append("        PLANNEDBASE=?, BASELIMIT=?, IFSYSTEM=?,MNGDEPTNM=?,TARGETRATIONLE=?, PLANNED_FLAG=?,SCORECODE=?,PLANNEDBASEPLUS=?,BASEPLUS=?,BASELIMITPLUS=?,LIMITPLUS=? ");				
+				sbU.append("        PLANNEDBASE=?, BASELIMIT=?, IFSYSTEM=?,MNGDEPTNM=?,TARGETRATIONLE=?, PLANNED_FLAG=?,SCORECODE=?,PLANNEDBASEPLUS=?,BASEPLUS=?,BASELIMITPLUS=?,LIMITPLUS=? ");
 				sbU.append(" WHERE ID=? ");
-						
+
 				Object[] paramU = {mean,detail,etlkey,updateId,weight,planned,base,limit,
 						           frequecny,type,equation,equDefine,datasource,unit,trend,ya1,ya2,ya3,ya4,y,yb1,yb2,yb3,
 						           plannedbase,baselimit,ifsystem,mngdeptnm,targetrationle, plannedflag,scoreCode,
 						           plannedbaseplus, baseplus, baselimitplus, limitplus,
 						           mid};
-				
-				dbobject.executePreparedUpdate(sbU.toString(),paramU);				
-				System.out.println("ÁöÇ¥Á¤ÀÇ¼­ ÀúÀå");
-				
+
+				dbobject.executePreparedUpdate(sbU.toString(),paramU);
+				System.out.println("ì§€í‘œì •ì˜ì„œ ì €ì¥");
+
 				setMeasDetailValue(dbobject, year, mid);
-				System.out.println("ÁöÇ¥¸ñÇ¥ ÀÚµ¿»ı¼º");				
-				
+				System.out.println("ì§€í‘œëª©í‘œ ìë™ìƒì„±");
+
 				//-------------------------------------------------------------------------------------------
-				// ÁöÇ¥Ç×¸ñ ÀúÀå
-				//-------------------------------------------------------------------------------------------				
+				// ì§€í‘œí•­ëª© ì €ì¥
+				//-------------------------------------------------------------------------------------------
 				// store items
 				if (!"".equals(item.trim())){
 					String[] items = item.split("`");
@@ -963,18 +963,18 @@ public class BscTreeUtil {
 					Object[] parItem = new Object[6];
 					String strItemU ="UPDATE TBLITEM SET ITEMNAME=?,ITEMENTRY=?,ITEMTYPE=?,ITEMFIXED=? WHERE CODE=? AND MEASUREID=?";
 					Object[] parItemU = new Object[6];
-					
+
 					ArrayList a = new ArrayList();
 					for (int i = 0; i < items.length; i++) {
 						String[] iPart = items[i].split(",");
-						parItemU[0] = iPart[1];		// Name 
+						parItemU[0] = iPart[1];		// Name
 						parItemU[1] = iPart[2];		// Type.
 						parItemU[2] = iPart[3];		// Entry.
 						parItemU[3] = iPart[4];		// Fixed.
-						
+
 						parItemU[4] = iPart[0];		// Code.
 						parItemU[5] = mid;
-						
+
 						if (dbobject.executePreparedUpdate(strItemU,parItemU)<1){
 							parItem[0] = iPart[0];
 							parItem[1] = mid;
@@ -982,18 +982,18 @@ public class BscTreeUtil {
 							parItem[3] = iPart[2];
 							parItem[4] = iPart[3];
 							parItem[5] = iPart[4];
-							
+
 							dbobject.executePreparedUpdate(strItem,parItem);
 						}
-						
-						a.add(iPart[0]);						
+
+						a.add(iPart[0]);
 					}
 					String aId = "";
 					for (int j = 0; j < a.size(); j++) {
 						if (j==0) aId = "'"+(String)a.get(j)+"'";
 						else aId += ",'"+(String)a.get(j)+"'";
 					}
-					
+
 					String strD = "DELETE FROM TBLITEM WHERE MEASUREID=? AND CODE NOT IN ("+aId+")";
 					if (a.size()==0) strD = "DELETE FROM TBLITEM WHERE MEASUREID=?";
 					dbobject.executePreparedUpdate(strD,new Object[]{mid});
@@ -1001,48 +1001,48 @@ public class BscTreeUtil {
 					String strD = "DELETE FROM TBLITEM WHERE MEASUREID=?";
 					dbobject.executePreparedUpdate(strD,new Object[]{mid});
 				}
-				System.out.println("ÁöÇ¥Ç×¸ñ ÀúÀå");
-				
+				System.out.println("ì§€í‘œí•­ëª© ì €ì¥");
+
 				//-------------------------------------------------------------------------------------------
-				// ÁöÇ¥´ã´çÀÚ(ºÎ) ÀúÀå
-				//-------------------------------------------------------------------------------------------				
+				// ì§€í‘œë‹´ë‹¹ì(ë¶€) ì €ì¥
+				//-------------------------------------------------------------------------------------------
 				String strUD = "DELETE FROM TBLAUTHORITY WHERE YEAR=? AND MEASUREID=? ";
-				Object[] pmUD = {year,mid};				
+				Object[] pmUD = {year,mid};
 				dbobject.executePreparedUpdate(strUD,pmUD);
-				
+
 				String strUI = "INSERT INTO TBLAUTHORITY (YEAR,MEASUREID,USERID) VALUES (?,?,?)";
 				Object[] pmUI = {year,mid,null};
 				if (!"".equals(updater.trim())){
 					String[] updaters = updater.split("`");
-					
+
 					for (int m = 0; m < updaters.length; m++) {
 						String[] tmpUserId = updaters[m].split(",");
 						pmUI[2]=tmpUserId[0];
-						
+
 						dbobject.executePreparedUpdate(strUI,pmUI);
 					}
-				}				
+				}
 
-				// add tbltreescore				
-				String strU = "UPDATE TBLTREESCORE SET INPUTDATE=?,WEIGHT=? WHERE ID=? AND YEAR=?";				
+				// add tbltreescore
+				String strU = "UPDATE TBLTREESCORE SET INPUTDATE=?,WEIGHT=? WHERE ID=? AND YEAR=?";
 				Object[] paramUC = {Util.getToDayTime().substring(0,14),weight,tid,year};
 				dbobject.executePreparedUpdate(strU.toString(),paramUC);
-				
+
 				conn.commit();
 			}
-			
-			StringBuffer strS = new StringBuffer();			
+
+			StringBuffer strS = new StringBuffer();
 			strS.append(" SELECT T.ID,T.PARENTID,T.CONTENTID,T.TREELEVEL,T.RANK,T.YEAR,T.WEIGHT,C.NAME ");
 			strS.append(" FROM TBLTREESCORE T,TBLMEASURE C,TBLMEASUREDEFINE D ");
 			strS.append(" WHERE T.CONTENTID=D.ID AND D.MEASUREID=C.ID AND T.ID=? AND T.YEAR=? ");
 			Object[] paramS = {tid,year};
-			
-			rs = dbobject.executePreparedQuery(strS.toString(),paramS);			
+
+			rs = dbobject.executePreparedQuery(strS.toString(),paramS);
 			DataSet ds = new DataSet();
 			ds.load(rs);
-			
+
 			request.setAttribute("ds",ds);
-			
+
 			request.setAttribute("equ","true");
 		} catch (Exception e) {
 			System.out.println(e);
@@ -1054,65 +1054,65 @@ public class BscTreeUtil {
 	}
 
 	/**
-	 * Method : updateMeasure : ÁöÇ¥Á¤ÀÇ¼­ »èÁ¦ 
-	 * 
-	 * Rev.   :  
-	 * 
+	 * Method : updateMeasure : ì§€í‘œì •ì˜ì„œ ì‚­ì œ
+	 *
+	 * Rev.   :
+	 *
 	 * @param request
 	 * @param respons
-	 */			
+	 */
 	public void deleteMeasure(HttpServletRequest request, HttpServletResponse response) {
 		CoolConnection conn = null;
 		DBObject dbobject = null;
-		ResultSet rs = null;   
-		try {   
+		ResultSet rs = null;
+		try {
 			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
 			conn.createStatement(false);
 			Hashtable ht = new Hashtable();
 			String userInfo = (String)request.getSession().getAttribute("userId")+"_"+request.getSession().getAttribute("userName");
 
 			if (dbobject==null) dbobject= new DBObject(conn.getConnection());
-			
+
 			String year = request.getParameter("year");
 			String mode = request.getParameter("tag");
-			
+
 			if ("del".equals(mode)){
 				String tid = request.getParameter("tid");
 				String mid = request.getParameter("mid");
-				
+
 				System.out.println("deleteMeasure : " + userInfo + "/" + mid);
-				
-				// 0. tblmeasuredetail : ÁÖ±âº° ½ÇÀû Å×ÀÌºí 
+
+				// 0. tblmeasuredetail : ì£¼ê¸°ë³„ ì‹¤ì  í…Œì´ë¸”
 				String strD = "delete from tblmeasuredetail where strdate like ?||'%' and measureid=?";
 				dbobject.executePreparedUpdate(strD,new Object[]{year,mid});
 
 				strD = "delete from tblmeasurescore where strdate like ?||'%'  and measureid=?";
 				dbobject.executePreparedUpdate(strD,new Object[]{year, mid});
-				
-				// 2. tblauthority : ±ÇÇÑ Å×ÀÌºí 
-				strD = "delete from tblauthority where year = ? and measureid=?";
-				dbobject.executePreparedUpdate(strD,new Object[]{year, mid});	
 
-				// 1. tblitem : Ç×¸ñ Å×ÀÌºí
+				// 2. tblauthority : ê¶Œí•œ í…Œì´ë¸”
+				strD = "delete from tblauthority where year = ? and measureid=?";
+				dbobject.executePreparedUpdate(strD,new Object[]{year, mid});
+
+				// 1. tblitem : í•­ëª© í…Œì´ë¸”
 				strD = "delete from tblitemactual where  strdate like ?||'%'  and measureid=?";
-				dbobject.executePreparedUpdate(strD,new Object[]{year, mid});				
+				dbobject.executePreparedUpdate(strD,new Object[]{year, mid});
 
 				String strI = "DELETE FROM TBLITEM WHERE MEASUREID=?";
 				Object[] par = {mid};
 				dbobject.executePreparedUpdate(strI,par);
-				
+
 				String strM = "DELETE FROM TBLMEASUREDEFINE WHERE ID=?";
 				dbobject.executePreparedUpdate(strM,par);
-				
+
 				String strT = "DELETE FROM TBLTREESCORE WHERE ID=? AND TREELEVEL=5 AND YEAR=?";
 				Object[] parT = {tid,year};
-				
+
 				dbobject.executePreparedUpdate(strT,parT);
 				conn.commit();
 			}
-			
+
 			request.setAttribute("result", "true");
-			
+
 		} catch (Exception e) {
 			System.out.println(e);
 		} finally {
@@ -1124,7 +1124,7 @@ public class BscTreeUtil {
 	//--------------------------------------------------------------------------------------------------------------
 
 	//-------------------------------------------------------------------------------------------------------
-	// ÁöÇ¥º¹»ç¸¦ À§ÇØ¼­ »ç¿ëÇÔ.
+	// ì§€í‘œë³µì‚¬ë¥¼ ìœ„í•´ì„œ ì‚¬ìš©í•¨.
 	//-------------------------------------------------------------------------------------------------------
 	public void getOrgYear(HttpServletRequest request, HttpServletResponse respons){
 		CoolConnection conn = null;
@@ -1155,17 +1155,17 @@ public class BscTreeUtil {
 			sb.append(" order by crank, srank, brank                                                                                            ");
 
 			Object[] params = {year,year,year};
-			
+
 			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
 			conn.createStatement(false);
-			
+
 			dbobject = new DBObject(conn.getConnection());
-			
+
 			rs = dbobject.executePreparedQuery(sb.toString(),params);
-			
+
 			DataSet ds = new DataSet();
 			ds.load(rs);
-			
+
 			request.setAttribute("ds", ds);
 		} catch (Exception e) {
 			System.out.println(e);
@@ -1175,7 +1175,7 @@ public class BscTreeUtil {
 			if (conn != null) {conn.close(); conn = null;}
 		}
 	}
-	
+
 	public void getMeasCopy(HttpServletRequest request, HttpServletResponse respons){
 		CoolConnection conn = null;
 		DBObject dbobject = null;
@@ -1184,7 +1184,7 @@ public class BscTreeUtil {
 			String year      = request.getParameter("year")!=null?request.getParameter("year"):Util.getToDay().substring(0,4);
 			String ocid      = request.getParameter("ocid")!=null?request.getParameter("ocid"):"%";
 			String mcid      = request.getParameter("mcid")!=null?request.getParameter("mcid"):"%";
-			String measureid = request.getParameter("measureid")!=null?request.getParameter("measureid"):"%";			
+			String measureid = request.getParameter("measureid")!=null?request.getParameter("measureid"):"%";
 
 			StringBuffer sb = new StringBuffer();
 			sb.append(" SELECT * FROM  ")
@@ -1211,19 +1211,19 @@ public class BscTreeUtil {
 	         .append(" FROM TBLTREESCORE T,TBLMEASUREDEFINE D, TBLMEASURE C WHERE T.CONTENTID=D.ID AND D.MEASUREID=C.ID AND T.TREELEVEL=5 AND T.YEAR=? AND T.CONTENTID LIKE ? AND D.MEASUREID LIKE ?) MEA ")
 	         .append(" ON OBJ.OID=MEA.MPID ")
 	         .append(" ORDER BY CRANK,SRANK,SID,BRANK,BID,PRANK,PID,ORANK,OID,MRANK ");
-			
+
 	         Object[] params = {year,year,year,year,year,ocid,year, mcid, measureid};
-			
+
 			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
 			conn.createStatement(false);
-			
+
 			dbobject = new DBObject(conn.getConnection());
-			
+
 			rs = dbobject.executePreparedQuery(sb.toString(),params);
-			
+
 			DataSet ds = new DataSet();
 			ds.load(rs);
-			
+
 			request.setAttribute("ds", ds);
 		} catch (Exception e) {
 			System.out.println(e);
@@ -1233,7 +1233,7 @@ public class BscTreeUtil {
 			if (conn != null) {conn.close(); conn = null;}
 		}
 	}
-	
+
 	public void getScoreLevel (HttpServletRequest request, HttpServletResponse respons){
 		CoolConnection conn = null;
 		DBObject dbobject = null;
@@ -1242,19 +1242,19 @@ public class BscTreeUtil {
 
 			StringBuffer sb = new StringBuffer();
 			sb.append(" SELECT * FROM TBLSCORELEVEL ");
-			
+
 	        //Object[] params = {};
-			
+
 			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
 			conn.createStatement(false);
-			
+
 			dbobject = new DBObject(conn.getConnection());
-			
+
 			rs = dbobject.executeQuery(sb.toString());//(sb.toString(),params);
-			
+
 			DataSet ds = new DataSet();
 			ds.load(rs);
-			
+
 			request.setAttribute("ds", ds);
 		} catch (Exception e) {
 			System.out.println(e);
@@ -1263,30 +1263,30 @@ public class BscTreeUtil {
 			if (dbobject != null){dbobject.close(); dbobject = null;}
 			if (conn != null) {conn.close(); conn = null;}
 		}
-	}	
-	
+	}
+
 	/*
 	//-----------------------------------------------------------------------------------------------------
-	// 	ÁöÇ¥º¹»ç
+	// 	ì§€í‘œë³µì‚¬
 	//-----------------------------------------------------------------------------------------------------
 	*/
 	public void setMeasCopy(HttpServletRequest request, HttpServletResponse response){
 		CoolConnection conn = null;
 		DBObject dbobject = null;
-		ResultSet rs = null;   
-	    
-		try {   
-			
+		ResultSet rs = null;
+
+		try {
+
 			String year = request.getParameter("year");
 			String mode = request.getParameter("mode");
-			
-			// ÁöÇ¥Á¤ÀÇ¼­¿Í ÁöÇ¥ÄÚµå
+
+			// ì§€í‘œì •ì˜ì„œì™€ ì§€í‘œì½”ë“œ
 			String mcid= request.getParameter("mcid");
-			
-			// ÁöÇ¥Á¤ÀÇ¼­ ´ÜÀÏÇ×¸ñ
+
+			// ì§€í‘œì •ì˜ì„œ ë‹¨ì¼í•­ëª©
 			String mean       = request.getParameter("mean").trim()==null?"":request.getParameter("mean").trim();
 			String detail     = request.getParameter("detail").trim()==null?"":request.getParameter("detail").trim();
-			String datasource = request.getParameter("datasource")==null?"":request.getParameter("datasource").trim();		
+			String datasource = request.getParameter("datasource")==null?"":request.getParameter("datasource").trim();
 			String weight     = request.getParameter("weight")==null?"":request.getParameter("weight");
 			String unit       = request.getParameter("unit").trim()==null?"":request.getParameter("unit").trim();
 			String trend      = request.getParameter("trend")==null?"":request.getParameter("trend");
@@ -1297,208 +1297,208 @@ public class BscTreeUtil {
 			// kopec
 			String ifsystem = request.getParameter("ifsystem")==null?"":request.getParameter("ifsystem").trim();
 			String mngdeptnm = request.getParameter("mngdeptnm")==null?"":request.getParameter("mngdeptnm").trim();
-			String targetrationle = request.getParameter("targetrationle")==null?"":request.getParameter("targetrationle").trim();			
-			
+			String targetrationle = request.getParameter("targetrationle")==null?"":request.getParameter("targetrationle").trim();
+
 			//	 Equation...
 			String equation   = request.getParameter("equation").trim()==null?"":request.getParameter("equation").trim();
-			
-			// ¸ñÇ¥°ª : Grade
+
+			// ëª©í‘œê°’ : Grade
 			String grade      = request.getParameter("grade")==null?"":request.getParameter("grade");
-			
-			// Ç×¸ñ
+
+			// í•­ëª©
 			String item       = request.getParameter("item")==null?"":request.getParameter("item");
 
-			// ´ë»óºÎ¼­ (ºÎ¼­¸í, mcid)
+			// ëŒ€ìƒë¶€ì„œ (ë¶€ì„œëª…, mcid)
 			String orgdefineid = request.getParameter("orgdefineid")==null?"":request.getParameter("orgdefineid");
-			
-			
-			// Á¡¼ö±¸°£
+
+
+			// ì ìˆ˜êµ¬ê°„
 			String scorecode = request.getParameter("scorecode")==null?"":request.getParameter("scorecode");
-			
-			
-			
-			
+
+
+
+
 			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
-			conn.createStatement(false);			
+			conn.createStatement(false);
 			if (dbobject==null) dbobject= new DBObject(conn.getConnection());
-		
-			
+
+
 			if ("U".equals(mode)) {
 
 					//-----------------------------------------------------------------------------------------------
-					// ÁöÇ¥Á¤ÀÇ¼­ º¹»ç¿øº»À» ±¸ÇÔ
+					// ì§€í‘œì •ì˜ì„œ ë³µì‚¬ì›ë³¸ì„ êµ¬í•¨
 					//-----------------------------------------------------------------------------------------------
 					StringBuffer sbI = new StringBuffer();
-					  sbI.append(" select 	  id,measureid, detaildefine, weight, unit,          ") 
+					  sbI.append(" select 	  id,measureid, detaildefine, weight, unit,          ")
 					 	 .append("            entrytype, measuretype, frequency,                 ")
 						 .append("  		  equation, equationdefine, etlkey,                  ")
 						 .append("            measurement, year, trend,                          ")
 						 .append("            planned, base,limit,                               ")
 						 .append("            plannedbaseplus, baseplus, baselimitplus, limitplus,                              ")
-						 .append("            y, ya1, ya2, ya3, ya4, yb1, yb2, yb3,              ") 
+						 .append("            y, ya1, ya2, ya3, ya4, yb1, yb2, yb3,              ")
 						 .append("            mean, updateid, equationtype, datasource,	         ")
-						 .append("            plannedbase,baselimit,scorecode,                             ")						 
-						 .append("            ifsystem, mngdeptnm, targetrationle, planned_flag  ")									 
+						 .append("            plannedbase,baselimit,scorecode,                             ")
+						 .append("            ifsystem, mngdeptnm, targetrationle, planned_flag  ")
 					     .append("   from  tblmeasuredefine                                      ")
 					     .append(" where year =?                                                 ")
 						 .append("   and id   =?                                                 ");
 					Object[] paramS = {year,mcid};
-					
-					System.out.println("¿øº» : " + mcid);
-					
+
+					System.out.println("ì›ë³¸ : " + mcid);
+
 					rs = dbobject.executePreparedQuery(sbI.toString(),paramS);
-					
-					// ÁöÇ¥Á¤ÀÇ¼­ º¹»ç¿øº» 
+
+					// ì§€í‘œì •ì˜ì„œ ë³µì‚¬ì›ë³¸
 					DataSet dsFrom = new DataSet();
-					dsFrom.load(rs);								
+					dsFrom.load(rs);
 					dsFrom.next();
-					
+
 					//-----------------------------------------------------------------------------------------------
-					// º¹»ç Check Flag¿¡ µû¶ó Update SQL ¹®À» ¸¸µë.
+					// ë³µì‚¬ Check Flagì— ë”°ë¼ Update SQL ë¬¸ì„ ë§Œë“¬.
 					//-----------------------------------------------------------------------------------------------
-					//System.out.println("Detail : " + dsFrom.getString("detaildefine") );					
-					
+					//System.out.println("Detail : " + dsFrom.getString("detaildefine") );
+
 					StringBuffer sbu = new StringBuffer();
-					
+
 					sbu.append(" Update tblmeasuredefine set year = year ");
-					
+
 					if ("1".equals(mean))      { sbu.append(", mean         = '" + (dsFrom.getString("mean")==null?"":dsFrom.getString("mean")) + "'" ); }
-					//if ("1".equals(detail))        { sbu.append(", detaildefine = '" + (dsFrom.getString("detaildefine")==null?"":dsFrom.getString("detaildefine")) + "'" ); }			
+					//if ("1".equals(detail))        { sbu.append(", detaildefine = '" + (dsFrom.getString("detaildefine")==null?"":dsFrom.getString("detaildefine")) + "'" ); }
 					if ("1".equals(datasource)){ sbu.append(", datasource   = '" + (dsFrom.getString("datasource")==null?"":dsFrom.getString("datasource")) + "'" ); }
 					if ("1".equals(unit))      { sbu.append(", unit         = '" + (dsFrom.getString("unit")==null?"":dsFrom.getString("unit")) + "'" ); }
-					if ("1".equals(trend))     { sbu.append(", trend        = '" + (dsFrom.getString("trend")==null?"":dsFrom.getString("trend")) + "'" ); }					
+					if ("1".equals(trend))     { sbu.append(", trend        = '" + (dsFrom.getString("trend")==null?"":dsFrom.getString("trend")) + "'" ); }
 					if ("1".equals(frequecny)) { sbu.append(", frequency    = '" + (dsFrom.getString("frequency")==null?"":dsFrom.getString("frequency")) + "'" ); }
 					if ("1".equals(mtype))     { sbu.append(", measuretype  = '" + (dsFrom.getString("measuretype")==null?"":dsFrom.getString("measuretype")) + "'" ); }
-					if ("1".equals(mtype))     { sbu.append(", entrytype    = '" + (dsFrom.getString("entrytype")==null?"":dsFrom.getString("entrytype")) + "'" ); }							
+					if ("1".equals(mtype))     { sbu.append(", entrytype    = '" + (dsFrom.getString("entrytype")==null?"":dsFrom.getString("entrytype")) + "'" ); }
 					if ("1".equals(mtype))     { sbu.append(", measurement  = '" + (dsFrom.getString("measurement")==null?"":dsFrom.getString("measurement")) + "'" ); }
-					
+
 					if ("1".equals(ifsystem))      { sbu.append(", ifsystem = '" + ( dsFrom.getString("ifsystem")==null?"":dsFrom.getString("ifsystem")) + "'" ); }
-					if ("1".equals(mngdeptnm))     { sbu.append(", mngdeptnm = '" + (dsFrom.getString("mngdeptnm")==null?"":dsFrom.getString("mngdeptnm")) + "'" ); }							
+					if ("1".equals(mngdeptnm))     { sbu.append(", mngdeptnm = '" + (dsFrom.getString("mngdeptnm")==null?"":dsFrom.getString("mngdeptnm")) + "'" ); }
 					if ("1".equals(targetrationle)){ sbu.append(",  targetrationle = '" + (dsFrom.getString("targetrationle")==null?"":dsFrom.getString("targetrationle")) + "'" ); }
 
 					if ("1".equals(equation)){ sbu.append(", equation = '" + (dsFrom.getString("equation")==null?"":dsFrom.getString("equation")) + "'" ); }
-					if ("1".equals(equation)){ sbu.append(", equationdefine = '" + (dsFrom.getString("equationdefine")==null?"":dsFrom.getString("equationdefine")) + "'" ); }					
-					
-					if ("1".equals(updateId)){ sbu.append(", updateid = " + (dsFrom.getString("updateid")==null?"null":dsFrom.getString("updateid")) ); }		
-					if ("1".equals(weight))  { sbu.append(", weight = " + (dsFrom.getString("weight")==null?"null":dsFrom.getString("weight")) ); }							
+					if ("1".equals(equation)){ sbu.append(", equationdefine = '" + (dsFrom.getString("equationdefine")==null?"":dsFrom.getString("equationdefine")) + "'" ); }
 
-					if ("1".equals(grade))   { sbu.append(", planned = "         + (dsFrom.getString("planned")==null||dsFrom.isEmpty("planned")?"null":dsFrom.getString("planned")) ); }		
+					if ("1".equals(updateId)){ sbu.append(", updateid = " + (dsFrom.getString("updateid")==null?"null":dsFrom.getString("updateid")) ); }
+					if ("1".equals(weight))  { sbu.append(", weight = " + (dsFrom.getString("weight")==null?"null":dsFrom.getString("weight")) ); }
+
+					if ("1".equals(grade))   { sbu.append(", planned = "         + (dsFrom.getString("planned")==null||dsFrom.isEmpty("planned")?"null":dsFrom.getString("planned")) ); }
 					if ("1".equals(grade))   { sbu.append(", plannedbaseplus = " + (dsFrom.getString("plannedbaseplus")==null||dsFrom.isEmpty("plannedbaseplus")?"null":dsFrom.getString("plannedbaseplus")) ); }
 					if ("1".equals(grade))   { sbu.append(", plannedbase = "     + (dsFrom.getString("plannedbase")==null||dsFrom.isEmpty("plannedbase")?"null":dsFrom.getString("plannedbase")) ); }
-					if ("1".equals(grade))   { sbu.append(", baseplus = "        + (dsFrom.getString("baseplus")==null||dsFrom.isEmpty("baseplus")?"null":dsFrom.getString("baseplus")) ); }							
-					if ("1".equals(grade))   { sbu.append(", base = "            + (dsFrom.getString("base")==null||dsFrom.isEmpty("base")?"null":dsFrom.getString("base")) ); }							
-					if ("1".equals(grade))   { sbu.append(", baselimitplus = "   + (dsFrom.getString("baselimitplus")==null||dsFrom.isEmpty("baselimitplus")?"null":dsFrom.getString("baselimitplus")) ); }		
-					if ("1".equals(grade))   { sbu.append(", baselimit = "       + (dsFrom.getString("baselimit")==null||dsFrom.isEmpty("baselimit")?"null":dsFrom.getString("baselimit")) ); }		
-					if ("1".equals(grade))   { sbu.append(", limitplus = "       + (dsFrom.getString("limitplus")==null||dsFrom.isEmpty("limitplus")?"null":dsFrom.getString("limitplus")) ); }					
-					if ("1".equals(grade))   { sbu.append(", limit = "           + (dsFrom.getString("limit")==null||dsFrom.isEmpty("limit")?"null":dsFrom.getString("limit")) ); }					
-					
-					
+					if ("1".equals(grade))   { sbu.append(", baseplus = "        + (dsFrom.getString("baseplus")==null||dsFrom.isEmpty("baseplus")?"null":dsFrom.getString("baseplus")) ); }
+					if ("1".equals(grade))   { sbu.append(", base = "            + (dsFrom.getString("base")==null||dsFrom.isEmpty("base")?"null":dsFrom.getString("base")) ); }
+					if ("1".equals(grade))   { sbu.append(", baselimitplus = "   + (dsFrom.getString("baselimitplus")==null||dsFrom.isEmpty("baselimitplus")?"null":dsFrom.getString("baselimitplus")) ); }
+					if ("1".equals(grade))   { sbu.append(", baselimit = "       + (dsFrom.getString("baselimit")==null||dsFrom.isEmpty("baselimit")?"null":dsFrom.getString("baselimit")) ); }
+					if ("1".equals(grade))   { sbu.append(", limitplus = "       + (dsFrom.getString("limitplus")==null||dsFrom.isEmpty("limitplus")?"null":dsFrom.getString("limitplus")) ); }
+					if ("1".equals(grade))   { sbu.append(", limit = "           + (dsFrom.getString("limit")==null||dsFrom.isEmpty("limit")?"null":dsFrom.getString("limit")) ); }
+
+
 					if ("1".equals(grade))   { sbu.append(", planned_flag = '" + (dsFrom.getString("planned_flag")==null||dsFrom.isEmpty("planned_flag")?"U":dsFrom.getString("planned_flag")) + "'" ); }
-					
-					
-					// Á¡¼ö±¸°£ º¹»ç Ãß°¡.
+
+
+					// ì ìˆ˜êµ¬ê°„ ë³µì‚¬ ì¶”ê°€.
 					if ("1".equals(scorecode))   { sbu.append(", scoreCode = " + (dsFrom.getString("scorecode")==null||dsFrom.isEmpty("scorecode")?"1":dsFrom.getString("scorecode")) + " " ); }
 
-					
+
 					sbu.append(" where year =  " + year  );
 					sbu.append(" and    id = ? ");
-					
-					//System.out.println("Update SQL : \n"  + sbu.toString());					
-					
-					
-					// TreeScore ÀÇ WEIGHTµµ Update...
-					StringBuffer sbtu = new StringBuffer();			
-					
-					if ("1".equals(weight)){						
+
+					//System.out.println("Update SQL : \n"  + sbu.toString());
+
+
+					// TreeScore ì˜ WEIGHTë„ Update...
+					StringBuffer sbtu = new StringBuffer();
+
+					if ("1".equals(weight)){
 							sbtu.append(" update tbltreescore  set weight = " + (dsFrom.getString("weight")==null?"null":dsFrom.getString("weight")) );
 							sbtu.append(" where year = " + year   );
-							sbtu.append(" and    contentid = ? "   );						
-					}	
-					
-					StringBuffer sbdu = new StringBuffer();			
-					
-					if ("1".equals(detail)){						
+							sbtu.append(" and    contentid = ? "   );
+					}
+
+					StringBuffer sbdu = new StringBuffer();
+
+					if ("1".equals(detail)){
 							sbdu.append(" update tblmeasuredefine  set detaildefine = (select detaildefine from tblmeasuredefine where id = ? )"  );
 							sbdu.append(" where year = " + year   );
-							sbdu.append(" and   id   = ? "   );						
-					}	
-					
+							sbdu.append(" and   id   = ? "   );
+					}
+
 					//System.out.println("Update SQL2 : \n");
-					
-					//--------------------------------------------------------------------------------------------	
-					//  ºÎ¼­º° Update.... Á¨Àå ºÎ¼­¸í¿¡ ',' ÀÌ µé¾î°¡³×...
+
+					//--------------------------------------------------------------------------------------------
+					//  ë¶€ì„œë³„ Update.... ì  ì¥ ë¶€ì„œëª…ì— ',' ì´ ë“¤ì–´ê°€ë„¤...
 					//--------------------------------------------------------------------------------------------
 					if (!"".equals(orgdefineid.trim())){
-						
+
 						String    orgMcid ;
-						
+
 						String[] orgdefineids = orgdefineid.split("`");
-						
+
 						//System.out.println("MeasCopy1 : " + orgdefineids);
-						
+
 						for (int m = 0; m < orgdefineids.length; m++) {
-							String[] iPart = orgdefineids[m].split("^");							
+							String[] iPart = orgdefineids[m].split("^");
 							orgMcid= iPart[0];
-							
+
 							System.out.println("MeasCopy : " + orgMcid);
-							
+
 							dbobject.executePreparedUpdate(sbu.toString(),new Object[]{orgMcid});
 
-							// Weight µµ ¾÷µ¥ÀÌÆ® ÇÏ´Â °æ¿ì
+							// Weight ë„ ì—…ë°ì´íŠ¸ í•˜ëŠ” ê²½ìš°
 							if ("1".equals(weight)){
 								dbobject.executePreparedUpdate(sbtu.toString(),new Object[]{orgMcid});
 							}
-							
-							// detailDefine¿¡ Æ¯¼ö¹®ÀÚ°¡ µé¾î°¡´Â °æ¿ì
+
+							// detailDefineì— íŠ¹ìˆ˜ë¬¸ìê°€ ë“¤ì–´ê°€ëŠ” ê²½ìš°
 							if ("1".equals(detail)){
 								dbobject.executePreparedUpdate(sbdu.toString(),new Object[]{mcid, orgMcid});
-							}							
-							
-							// Ç×¸ñÄÚµåµµ º¹»çÇÏ´Â°¡?
-							if ("1".equals(item)){ 
+							}
 
-								
+							// í•­ëª©ì½”ë“œë„ ë³µì‚¬í•˜ëŠ”ê°€?
+							if ("1".equals(item)){
+
+
 									String strD = "DELETE FROM TBLITEM WHERE MEASUREID=?";
 									dbobject.executePreparedUpdate(strD,new Object[]{orgMcid});
-									
+
 									String strUI   = " insert into tblitem (measureid, code, itemname, itementry, itemtype, unit, itemfixed)";
 											  strUI += " select ?, code, itemname, itementry, itemtype, unit, itemfixed  " ;
 											  strUI += " from   tblitem ";
 											  strUI += " where  measureid = ?" ;
 
-									System.out.println("Ç×¸ñº¹»ç SQL : \n"  + strUI);											  
-											  
+									System.out.println("í•­ëª©ë³µì‚¬ SQL : \n"  + strUI);
+
 									Object[] pmUI = {orgMcid, mcid};
 									dbobject.executePreparedUpdate(strUI,pmUI);
 							}
-							
-							// ´ã´çÀÚ
+
+							// ë‹´ë‹¹ì
 							if ("1".equals(updateId)){
 								String strD1 = "DELETE FROM TBLAUTHORITY WHERE YEAR = ? AND MEASUREID=?";
 								dbobject.executePreparedUpdate(strD1,new Object[]{year, orgMcid});
-								
+
 								String strUI1  = " insert into tblauthority (year, measureid, userid)";
 									   strUI1 += " select year, ? measureid, userid  " ;
 									   strUI1 += " from   tblauthority ";
 									   strUI1 += " where  year = ? and measureid = ?" ;
 
-								System.out.println("´ã´çÀÚ SQL : \n"  + strUI1);											  
-										  
+								System.out.println("ë‹´ë‹¹ì SQL : \n"  + strUI1);
+
 								Object[] pmUI1 = {orgMcid, year, mcid};
-								dbobject.executePreparedUpdate(strUI1,pmUI1);								
+								dbobject.executePreparedUpdate(strUI1,pmUI1);
 							}
-							
-							//  µî±Ş±¸°£ ¸ñÇ¥°ª ÀÚµ¿»ı¼º
-							if ("1".equals(grade)){								
-								System.out.println("µî±Ş±¸°£ ¸ñÇ¥°ª ÀÚµ¿»ı¼º : "  + mcid);	
+
+							//  ë“±ê¸‰êµ¬ê°„ ëª©í‘œê°’ ìë™ìƒì„±
+							if ("1".equals(grade)){
+								System.out.println("ë“±ê¸‰êµ¬ê°„ ëª©í‘œê°’ ìë™ìƒì„± : "  + mcid);
 								setMeasDetailValue(dbobject, year, orgMcid);
-							}							
+							}
 						}
 				}
-				
+
 				conn.commit();
 			}
-			
+
 			request.setAttribute("rslt","true");
 
 		} catch (Exception e) {
@@ -1509,55 +1509,55 @@ public class BscTreeUtil {
 			if (conn != null) {conn.close(); conn = null;}
 		}
 	}
-	  
+
 	//-----------------------------------------------------------------------------------------------------
 	// 	 : setMeasDetailValue
-	//   ÁöÇ¥ ¸ñÇ¥°ª »ı¼º½Ã °ü·Ã MeasureDetail¿¡ Planned, Base, LimtÀ» ÁÖ±â¿¡ ¸Â°Ô ÀÚµ¿»ı¼º.
+	//   ì§€í‘œ ëª©í‘œê°’ ìƒì„±ì‹œ ê´€ë ¨ MeasureDetailì— Planned, Base, Limtì„ ì£¼ê¸°ì— ë§ê²Œ ìë™ìƒì„±.
 	//-----------------------------------------------------------------------------------------------------
 	public int setMeasDetailValue(DBObject dbobject, String year, String mcid) {
 
-		ResultSet rs = null;   
+		ResultSet rs = null;
 		ResultSet rs2 = null;
 		DataSet ds = new DataSet();
-	    
-		try {   		
-				
+
+		try {
+
 				if ("".equals(year)){
 					return -1;
 				}
 
-				// 0. ³âµµÀÇ ÁöÇ¥Á¤ÀÇ¼­ ID¿¡ ÇØ´çµÇ´Â Á¤º¸¸¦ ±¸ÇÔ.
-				StringBuffer sb = new StringBuffer();				
-				
+				// 0. ë…„ë„ì˜ ì§€í‘œì •ì˜ì„œ IDì— í•´ë‹¹ë˜ëŠ” ì •ë³´ë¥¼ êµ¬í•¨.
+				StringBuffer sb = new StringBuffer();
+
 				sb.append(" SELECT  a.id, a.measureid, a.frequency, a.weight, ?||b.ym ym,           ");
 				sb.append("         a.planned, a.plannedbase, a.base , a.baselimit, a.limit,         ");
 				sb.append("         a.plannedbaseplus, a.baseplus, a.baselimitplus , a.limitplus     ");
 				sb.append(" FROM    tblmeasuredefine a,                                             ");
 				sb.append("         (                                                               ");
-				sb.append("         SELECT '³â' freq, ltrim(to_char(rownum * 12,'00')) ym           ");
+				sb.append("         SELECT 'ë…„' freq, ltrim(to_char(rownum * 12,'00')) ym           ");
 				sb.append("         FROM   tbluser WHERE rownum <= 1                                ");
 				sb.append("         UNION ALL                                                       ");
-				sb.append("         SELECT '¹İ±â' freq, ltrim(to_char(rownum * 6,'00')) ym          ");
+				sb.append("         SELECT 'ë°˜ê¸°' freq, ltrim(to_char(rownum * 6,'00')) ym          ");
 				sb.append("         FROM   tbluser WHERE rownum <= 2                                ");
 				sb.append("         UNION ALL                                                       ");
-				sb.append("         SELECT 'ºĞ±â' freq, ltrim(to_char(rownum * 3,'00')) ym          ");
+				sb.append("         SELECT 'ë¶„ê¸°' freq, ltrim(to_char(rownum * 3,'00')) ym          ");
 				sb.append("         FROM   tbluser WHERE rownum <= 4                                ");
 				sb.append("         UNION ALL                                                       ");
-				sb.append("         SELECT '¿ù' freq, ltrim(to_char(rownum * 1,'00')) ym            ");
+				sb.append("         SELECT 'ì›”' freq, ltrim(to_char(rownum * 1,'00')) ym            ");
 				sb.append("         FROM   tbluser WHERE rownum <= 12                               ");
 				sb.append("         ) b                                                             ");
 				sb.append(" WHERE  a.frequency = b.freq                                             ");
 				sb.append(" AND    a.year      = ?                                                  ");
-				sb.append(" AND    a.id        = ?                                                  ");				
+				sb.append(" AND    a.id        = ?                                                  ");
 				sb.append(" ORDER BY a.id, b.ym                                                     ");
-				
+
 				Object[] paramS = {year,year,mcid};
 				rs = dbobject.executePreparedQuery(sb.toString(),paramS);
 				ds.load(rs);
 				rs = null;
 				//System.out.println("Row Count : "+ ds.getRowCount());
 				//System.out.println("MeasDetail 1.mcid : " + mcid );
-				
+
 				int     measureid  ;
 				String  frequency  ;
 				String  weight     ;
@@ -1567,97 +1567,97 @@ public class BscTreeUtil {
 				double limit      ;
 				double plannedbase    ;
 				double baselimit      ;
-				
-				
+
+
 				double plannedbaseplus ;
 				double baseplus;
 				double baselimitplus;
 				double limitplus;
-				
-				
-				// ÁöÇ¥Á¤ÀÇ¼­ Read... 
-				int v_cnt = 0; 		
+
+
+				// ì§€í‘œì •ì˜ì„œ Read...
+				int v_cnt = 0;
 				int i = 0;
-				
+
 				while(ds.next()){
-					
+
 					System.out.println("	MeasDetail Loop : " + i++);
 					System.out.println("	ds.getString('weight'     )   ===>   "+ds.getString("weight"     ));
 					System.out.println("	ds.getString('planned'         )   ===>   "+String.valueOf(ds.isEmpty("planned")?0.0:ds.getDouble("planned"    )));
 					System.out.println("	ds.getString('base'            )   ===>   "+String.valueOf(ds.isEmpty("base")?0.0:ds.getDouble("base"       )));
 					System.out.println("	ds.getString('plannedbase'     )   ===>   "+String.valueOf(ds.isEmpty("plannedbase")?0.0:ds.getDouble("plannedbase"      )));
 					System.out.println("	ds.getString('limit'     )   ===>   "+String.valueOf(ds.isEmpty("limit")?0.0:ds.getDouble("limit"      )));
-					
+
 					measureid   = ds.getInt("id"         );
 					ym          = ds.getString("ym"         );
 					frequency   = ds.getString("frequency"  );
 					weight      = ds.getString("weight"     );
 					planned     = ds.isEmpty("planned")?0.0:ds.getDouble("planned"    );
 					base        = ds.isEmpty("base")?0.0:ds.getDouble("base"       );
-					limit       = ds.isEmpty("limit")?0.0:ds.getDouble("limit"      );					
-					
+					limit       = ds.isEmpty("limit")?0.0:ds.getDouble("limit"      );
+
 					plannedbase = ds.isEmpty("plannedbase")?0.0:ds.getDouble("plannedbase"    );
 					baselimit   = ds.isEmpty("baselimit"  )?0.0:ds.getDouble("baselimit"      );
-					
-					
+
+
 					plannedbaseplus   = ds.isEmpty("plannedbaseplus"  )?0.0:ds.getDouble("plannedbaseplus"      );
 					baseplus          = ds.isEmpty("baseplus"  )?0.0:ds.getDouble("baseplus"      );
 					baselimitplus     = ds.isEmpty("baselimitplus"  )?0.0:ds.getDouble("baselimitplus"      );
 					limitplus         = ds.isEmpty("limitplus"  )?0.0:ds.getDouble("limitplus"      );
-					
+
 					//--------------------------------------------------------------
-					// 1. MeasureDetail¿¡ ¸ñÇ¥µî±Ş µ¥ÀÌÅ¸ Setting.
-					//--------------------------------------------------------------					
-					// 1-1. ÁÖ±â¿¡ ¸ÂÁö¾Ê´Â ¸ñÇ¥°ª »èÁ¦
-					
-					StringBuffer sbD = new StringBuffer();	
-					
-					if ("³â".equals(frequency)){
-						
+					// 1. MeasureDetailì— ëª©í‘œë“±ê¸‰ ë°ì´íƒ€ Setting.
+					//--------------------------------------------------------------
+					// 1-1. ì£¼ê¸°ì— ë§ì§€ì•ŠëŠ” ëª©í‘œê°’ ì‚­ì œ
+
+					StringBuffer sbD = new StringBuffer();
+
+					if ("ë…„".equals(frequency)){
+
 						sbD.append(" delete tblmeasuredetail                               ");
 						sbD.append(" where  measureid                = ?                   ");
 						sbD.append(" and    strdate               like substr(?, 1,4)||'%' ");
 						sbD.append(" and    substr(strdate,5,2) not in ('12')              ");
-						
-					} else if ("¹İ±â".equals(frequency)){
+
+					} else if ("ë°˜ê¸°".equals(frequency)){
 						sbD.append(" delete tblmeasuredetail                               ");
 						sbD.append(" where  measureid                = ?                   ");
 						sbD.append(" and    strdate               like substr(?, 1,4)||'%' ");
-						sbD.append(" and    substr(strdate,5,2) not in  ('06','12')        ");						
-						
-					} else if ("ºĞ±â".equals(frequency)){
+						sbD.append(" and    substr(strdate,5,2) not in  ('06','12')        ");
+
+					} else if ("ë¶„ê¸°".equals(frequency)){
 						sbD.append(" delete tblmeasuredetail                                 ");
 						sbD.append(" where  measureid                = ?                     ");
 						sbD.append(" and    strdate               like substr(?, 1,4)||'%'   ");
-						sbD.append(" and    substr(strdate,5,2) not in ('03','06','09','12') ");		
+						sbD.append(" and    substr(strdate,5,2) not in ('03','06','09','12') ");
 					}
-					
-					Object[] paramD = {String.valueOf(measureid),ym};					
+
+					Object[] paramD = {String.valueOf(measureid),ym};
 					dbobject.executePreparedUpdate(sbD.toString(),paramD);
-					
+
 					//System.out.println("MeasDetail Delete : " + mcid + ", ym :" + ym);
-					
-					// 1-2. ÁÖ±â¿¡ ¸Â´Â ¸ñÇ¥°ª ÀÚµ¿ »ı¼º 					
-					StringBuffer sbQ = new StringBuffer();				
-					
+
+					// 1-2. ì£¼ê¸°ì— ë§ëŠ” ëª©í‘œê°’ ìë™ ìƒì„±
+					StringBuffer sbQ = new StringBuffer();
+
 					sbQ.append(" select count(*) cnt             ");
 					sbQ.append(" from   tblmeasuredetail         ");
 					sbQ.append(" where  measureid       = ?      ");
 					sbQ.append(" and    strdate      like ?||'%' ");
-			
-					Object[] paramQ = {String.valueOf(measureid),ym};		
-					
+
+					Object[] paramQ = {String.valueOf(measureid),ym};
+
 					rs2 = null;
 					rs2 = dbobject.executePreparedQuery(sbQ.toString(),paramQ);
 					rs2.next();
-					
+
 					v_cnt = rs2.getInt("cnt");
 					rs2.close();
-					
+
 					//System.out.println("MeasDetail I/U Check : " + v_cnt);
 
 					if (v_cnt > 0){
-						StringBuffer sbU = new StringBuffer();						
+						StringBuffer sbU = new StringBuffer();
 
 						sbU.append(" update tblmeasuredetail                                         ");
 						sbU.append(" set    weight      = ?                                          ");
@@ -1666,26 +1666,26 @@ public class BscTreeUtil {
 						sbU.append("     ,  limit       = ?                                          ");
 						sbU.append("     ,  plannedbase = ?                                          ");
 						sbU.append("     ,  baselimit   = ?                                          ");
-						
+
 						sbU.append("     ,  plannedbaseplus   = ?                                    ");
 						sbU.append("     ,  baseplus          = ?                                    ");
 						sbU.append("     ,  baselimitplus     = ?                                    ");
 						sbU.append("     ,  limitplus         = ?                                    ");
-						
+
 						sbU.append("     ,  updatedate  = sysdate                                    ");
 						sbU.append(" where  measureid       = ?                                      ");
 						sbU.append(" and    strdate      like ?||'%'                                 ");
-						
-						Object[] paramU = {weight, String.valueOf(planned),  String.valueOf(base), String.valueOf(limit), 
+
+						Object[] paramU = {weight, String.valueOf(planned),  String.valueOf(base), String.valueOf(limit),
 										   String.valueOf(plannedbase), String.valueOf(baselimit),
 										   String.valueOf(plannedbaseplus),String.valueOf(baseplus),String.valueOf(baselimitplus),String.valueOf(limitplus),
-										   String.valueOf(measureid),ym};	
-						dbobject.executePreparedUpdate(sbU.toString(),paramU);			
-						
+										   String.valueOf(measureid),ym};
+						dbobject.executePreparedUpdate(sbU.toString(),paramU);
+
 						//System.out.println("MeasDetail Update : " + mcid);
-						
+
 					}else{
-						StringBuffer sbC = new StringBuffer();						
+						StringBuffer sbC = new StringBuffer();
 
 						sbC.append(" insert into tblmeasuredetail                                            ");
 						sbC.append(" (id, measureid, strdate, weight,                                        ");
@@ -1694,28 +1694,28 @@ public class BscTreeUtil {
 						sbC.append(" SELECT nvl(max(id) + 1,0) id, ? measureid,?   ym,?  weight,             ");
 						sbC.append("        ? planned, ? base, ? limit, ? plannedbase, ? baselimit,          ");
 						sbC.append("        ? plannedbaseplus, ? baseplus, ? baselimitplus, ? limitplus, sysdate  ");
-						sbC.append(" FROM   tblmeasuredetail                                                 ");						
-						
+						sbC.append(" FROM   tblmeasuredetail                                                 ");
+
 						ym =  Util.getLastMonth(ym);
-						Object[] paramI = {String.valueOf(measureid),ym,weight, String.valueOf(planned),  String.valueOf(base),  String.valueOf(limit), 
+						Object[] paramI = {String.valueOf(measureid),ym,weight, String.valueOf(planned),  String.valueOf(base),  String.valueOf(limit),
 								 		   String.valueOf(plannedbase), String.valueOf(baselimit),
 								 		   String.valueOf(plannedbaseplus),String.valueOf(baseplus),String.valueOf(baselimitplus),String.valueOf(limitplus)
-								 		   };	
-						dbobject.executePreparedUpdate(sbC.toString(),paramI);		
-						
+								 		   };
+						dbobject.executePreparedUpdate(sbC.toString(),paramI);
+
 						//System.out.println("MeasDetail Insert : " + mcid);
-					}					
-						
+					}
+
 				}
-				
-				//System.out.println("MeasDetail Planned Auto Create Sucess : " + mcid);				
+
+				//System.out.println("MeasDetail Planned Auto Create Sucess : " + mcid);
 				ds = null;
-		
+
 
 				return 0;
 
 		} catch (Exception e) {
-			System.out.println("setMeasDetailValue ¿¡·¯ : " + e.toString()); 
+			System.out.println("setMeasDetailValue ì—ëŸ¬ : " + e.toString());
 			try{if (rs != null) {rs.close(); rs = null;} } catch (Exception ee){}
 			try{if (rs2 != null) {rs2.close(); rs2 = null;} } catch (Exception ee){}
 			try{if (ds != null) {ds = null;} } catch (Exception ee){}
@@ -1723,36 +1723,36 @@ public class BscTreeUtil {
 			return -1;
 		} finally {
 			try{if (rs != null) {rs.close(); rs = null;} } catch (Exception e){}
-			try{if (rs2 != null) {rs2.close(); rs2 = null;} } catch (Exception e){}	
+			try{if (rs2 != null) {rs2.close(); rs2 = null;} } catch (Exception e){}
 			try{if (ds != null) {ds = null;} } catch (Exception ee){}
-		}		
-		
+		}
+
 	}
-	
+
 	//-----------------------------------------------------------------------------------------------------
 	// 	 : setMeasWeight
-	//     ÁöÇ¥ÀÇ °¡ÁßÄ¡¸¦ »óÀ§ ·¹º§·Î UpdateÇÑ´Ù.
+	//     ì§€í‘œì˜ ê°€ì¤‘ì¹˜ë¥¼ ìƒìœ„ ë ˆë²¨ë¡œ Updateí•œë‹¤.
 	//-----------------------------------------------------------------------------------------------------
 	public int setOrgMeasWeight(DBObject dbobject, String year, String bid) {
 
 
-		ResultSet rs = null;   
+		ResultSet rs = null;
 		ResultSet rs2 = null;
 		DataSet ds = new DataSet();
-	    
-		try {   		
+
+		try {
 				if ("".equals(year)) return -1;
-				
-				Object[] params = null;				
-				
-				
-				
-				
-				System.out.println("   >>>> 1. °¡ÁßÄ¡ Àç°è»ê : ´ë»óºÎ¼­ - " + bid);
-				
-				// 0. ÁöÇ¥Á¤ÀÇ¼­ÀÇ °¡ÁßÄ¡ Update : ÁöÇ¥·¹º§
+
+				Object[] params = null;
+
+
+
+
+				System.out.println("   >>>> 1. ê°€ì¤‘ì¹˜ ì¬ê³„ì‚° : ëŒ€ìƒë¶€ì„œ - " + bid);
+
+				// 0. ì§€í‘œì •ì˜ì„œì˜ ê°€ì¤‘ì¹˜ Update : ì§€í‘œë ˆë²¨
 				StringBuffer sb = new StringBuffer();
-				
+
 				sb.append(" update tblmeasuredefine d  ")
 		          .append(" set d.weight = (  ")
 		          .append("   select mweight from ")
@@ -1781,16 +1781,16 @@ public class BscTreeUtil {
 		          .append("    where t.treelevel=5 and t.year=? and t.contentid=d.id and   d.measureid = c.id) mea ")
 		          .append("   where  bsc.bid=pst.ppid (+) and    pst.pid=obj.opid (+) and    obj.oid=mea.mpid (+) ")
 		          .append("   and    BID = ?) Z where Z.defineid = d.id )");
-				
+
 				params = new Object[] {year,year,year,year,bid,year,year,year,year,bid};
 				dbobject.executePreparedUpdate(sb.toString(),params);
-				
-				System.out.println("   >>>> 1. °¡ÁßÄ¡ Àç°è»ê : Measure - " + bid);				
-				
-				
-				// 1. Àü·«¸ñÇ¥ Update.
+
+				System.out.println("   >>>> 1. ê°€ì¤‘ì¹˜ ì¬ê³„ì‚° : Measure - " + bid);
+
+
+				// 1. ì „ëµëª©í‘œ Update.
 				sb = new StringBuffer();
-				
+
 				sb.append("update tbltreescore s ")
 				  .append("set s.weight = (select oweight from ")
 				  .append(" (select distinct oid, oname, sum(mweight) over (partition by bid, pid, oid) oweight from ")
@@ -1818,14 +1818,14 @@ public class BscTreeUtil {
 				  .append("  where t.treelevel=5 and t.year=? and t.contentid=d.id and   d.measureid = c.id) mea ")
 				  .append(" where  bsc.bid=pst.ppid (+) and    pst.pid=obj.opid (+) and    obj.oid=mea.mpid (+) ")
 				  .append(" and    BID = ?) z where s.id = z.oid) ");
-				  
+
 				params = new Object[] {year,year,year,year,bid,year,year,year,year,bid};
 				dbobject.executePreparedUpdate(sb.toString(),params);
-				  
-				System.out.println("   >>>> 1. °¡ÁßÄ¡ Àç°è»ê : Object - " + bid);
-				
+
+				System.out.println("   >>>> 1. ê°€ì¤‘ì¹˜ ì¬ê³„ì‚° : Object - " + bid);
+
 				sb = new StringBuffer();
-				
+
 				sb.append("update tbltreescore s ")
 				  .append("set s.weight = (select pweight from ")
 				  .append(" (select distinct pid, pname, sum(mweight) over (partition by bid, pid)  pweight from ")
@@ -1853,14 +1853,14 @@ public class BscTreeUtil {
 				  .append("  where t.treelevel=5 and t.year=? and t.contentid=d.id and   d.measureid = c.id) mea ")
 				  .append(" where  bsc.bid=pst.ppid (+) and    pst.pid=obj.opid (+) and    obj.oid=mea.mpid (+) ")
 				  .append(" and    BID = ?) z where s.id = z.pid) ");
-				
+
 				params = new Object[] {year,year,year,year,bid,year,year,year,year,bid};
 				dbobject.executePreparedUpdate(sb.toString(),params);
-				
-				System.out.println("   >>>> 1. °¡ÁßÄ¡ Àç°è»ê : Perspective - " + bid);				
-				
+
+				System.out.println("   >>>> 1. ê°€ì¤‘ì¹˜ ì¬ê³„ì‚° : Perspective - " + bid);
+
 				sb = new StringBuffer();
-				
+
 				sb.append("update tblhierarchy s ")
 				  .append("set s.weight = (select bweight from ")
 				  .append(" (select distinct bid, bname, sum(mweight) over (partition by cid, sid, bid) bweight from ")
@@ -1896,46 +1896,46 @@ public class BscTreeUtil {
 				  .append("  where t.treelevel=5 and t.year=? and t.contentid=d.id and   d.measureid = c.id) mea ")
 				  .append(" where  bsc.bid=pst.ppid (+) and    pst.pid=obj.opid (+) and    obj.oid=mea.mpid (+) ")
 				  .append(" and    BID = ?) z where s.id = z.bid) ");
-				
+
 				params = new Object[] {year,year,year,year,year,year,bid,
 						               year,year,year,year,year,year,bid};
 				dbobject.executePreparedUpdate(sb.toString(),params);
-								
-				System.out.println("   >>>> 1. °¡ÁßÄ¡ Àç°è»ê : BSC - " + bid);
-				
+
+				System.out.println("   >>>> 1. ê°€ì¤‘ì¹˜ ì¬ê³„ì‚° : BSC - " + bid);
+
 				return 0;
 
 		} catch (Exception e) {
-			System.out.println("setMeasWeight ¿¡·¯ : " + e.toString()); 
+			System.out.println("setMeasWeight ì—ëŸ¬ : " + e.toString());
 			//e.printStackTrace();
 			return -1;
 		} finally {
 			try{if (rs != null) {rs.close(); rs = null;} } catch (Exception e){}
-			try{if (rs2 != null) {rs2.close(); rs2 = null;} } catch (Exception e){}	
-		}		
-		
+			try{if (rs2 != null) {rs2.close(); rs2 = null;} } catch (Exception e){}
+		}
+
 	}
-	
+
 	//-----------------------------------------------------------------------------------------------------
 	// 	 : setMeasWeight
-	//     ÁöÇ¥ÀÇ °¡ÁßÄ¡¸¦ »óÀ§ ·¹º§·Î UpdateÇÑ´Ù.
+	//     ì§€í‘œì˜ ê°€ì¤‘ì¹˜ë¥¼ ìƒìœ„ ë ˆë²¨ë¡œ Updateí•œë‹¤.
 	//-----------------------------------------------------------------------------------------------------
 	public int setMeasWeight(DBObject dbobject, String year, String mcid) {
 
 
-		ResultSet rs = null;   
+		ResultSet rs = null;
 		ResultSet rs2 = null;
 		DataSet ds = new DataSet();
-	    
-		try {   		
+
+		try {
 				if ("".equals(year)) return -1;
-				
+
 				Object[] params = null;
-				String   bid    = null;   // ÁöÇ¥ ¼ÒÀ¯ºÎ¼­
-				
-				
+				String   bid    = null;   // ì§€í‘œ ì†Œìœ ë¶€ì„œ
+
+
 				StringBuffer sb = new StringBuffer();
-				
+
 				sb.append(" SELECT  cid, ccid, clevel, crank, cname,  cweight,                                                                             ");
 				sb.append("         sid, scid, slevel, srank, sname,  sweight,                                                                             ");
 				sb.append("         bid, bcid, blevel, brank, bname,  sum(mweight) over (partition by cid, sid, bid          ) bweight,                    ");
@@ -1975,17 +1975,17 @@ public class BscTreeUtil {
 				sb.append(" and    pid = opid (+)                                                                                                          ");
 				sb.append(" and    oid = mpid                                                                                                              ");
 				sb.append(" order by crank, srank, brank, prank, orank, mrank                                                                              ");
-				
+
 				Object[] paramS = {year,year,year, year,year,year, mcid};
 				rs = dbobject.executePreparedQuery(sb.toString(),paramS);
-				if (rs.next()) 	bid = rs.getString("bid");					
-				
-				System.out.println("1. °¡ÁßÄ¡ Àç°è»ê : orgMcid - " + mcid);				
-				System.out.println("1. °¡ÁßÄ¡ Àç°è»ê : ´ë»óºÎ¼­±¸ÇÏ±â - " + bid);
-				
-				// 0. ÁöÇ¥Á¤ÀÇ¼­ÀÇ °¡ÁßÄ¡ Update : ÁöÇ¥·¹º§
+				if (rs.next()) 	bid = rs.getString("bid");
+
+				System.out.println("1. ê°€ì¤‘ì¹˜ ì¬ê³„ì‚° : orgMcid - " + mcid);
+				System.out.println("1. ê°€ì¤‘ì¹˜ ì¬ê³„ì‚° : ëŒ€ìƒë¶€ì„œêµ¬í•˜ê¸° - " + bid);
+
+				// 0. ì§€í‘œì •ì˜ì„œì˜ ê°€ì¤‘ì¹˜ Update : ì§€í‘œë ˆë²¨
 				sb = new StringBuffer();
-				
+
 				sb.append(" update tblmeasuredefine d  ")
 		          .append(" set d.weight = (  ")
 		          .append("   select mweight from ")
@@ -2014,16 +2014,16 @@ public class BscTreeUtil {
 		          .append("    where t.treelevel=5 and t.year=? and t.contentid=d.id and   d.measureid = c.id) mea ")
 		          .append("   where  bsc.bid=pst.ppid (+) and    pst.pid=obj.opid (+) and    obj.oid=mea.mpid (+) ")
 		          .append("   and    BID = ?) Z where Z.defineid = d.id )");
-				
+
 				params = new Object[] {year,year,year,year,bid,year,year,year,year,bid};
 				dbobject.executePreparedUpdate(sb.toString(),params);
-				
-				System.out.println("1. °¡ÁßÄ¡ Àç°è»ê : Measure - " + bid);				
-				
-				
-				// 1. Àü·«¸ñÇ¥ Update.
+
+				System.out.println("1. ê°€ì¤‘ì¹˜ ì¬ê³„ì‚° : Measure - " + bid);
+
+
+				// 1. ì „ëµëª©í‘œ Update.
 				sb = new StringBuffer();
-				
+
 				sb.append("update tbltreescore s ")
 				  .append("set s.weight = (select oweight from ")
 				  .append(" (select distinct oid, oname, sum(mweight) over (partition by bid, pid, oid) oweight from ")
@@ -2051,14 +2051,14 @@ public class BscTreeUtil {
 				  .append("  where t.treelevel=5 and t.year=? and t.contentid=d.id and   d.measureid = c.id) mea ")
 				  .append(" where  bsc.bid=pst.ppid (+) and    pst.pid=obj.opid (+) and    obj.oid=mea.mpid (+) ")
 				  .append(" and    BID = ?) z where s.id = z.oid) ");
-				  
+
 				params = new Object[] {year,year,year,year,bid,year,year,year,year,bid};
 				dbobject.executePreparedUpdate(sb.toString(),params);
-				  
-				System.out.println("1. °¡ÁßÄ¡ Àç°è»ê : Object - " + bid);
-				
+
+				System.out.println("1. ê°€ì¤‘ì¹˜ ì¬ê³„ì‚° : Object - " + bid);
+
 				sb = new StringBuffer();
-				
+
 				sb.append("update tbltreescore s ")
 				  .append("set s.weight = (select pweight from ")
 				  .append(" (select distinct pid, pname, sum(mweight) over (partition by bid, pid)  pweight from ")
@@ -2086,14 +2086,14 @@ public class BscTreeUtil {
 				  .append("  where t.treelevel=5 and t.year=? and t.contentid=d.id and   d.measureid = c.id) mea ")
 				  .append(" where  bsc.bid=pst.ppid (+) and    pst.pid=obj.opid (+) and    obj.oid=mea.mpid (+) ")
 				  .append(" and    BID = ?) z where s.id = z.pid) ");
-				
+
 				params = new Object[] {year,year,year,year,bid,year,year,year,year,bid};
 				dbobject.executePreparedUpdate(sb.toString(),params);
-				
-				System.out.println("1. °¡ÁßÄ¡ Àç°è»ê : Perspective - " + bid);				
-				
+
+				System.out.println("1. ê°€ì¤‘ì¹˜ ì¬ê³„ì‚° : Perspective - " + bid);
+
 				sb = new StringBuffer();
-				
+
 				sb.append("update tblhierarchy s ")
 				  .append("set s.weight = (select bweight from ")
 				  .append(" (select distinct bid, bname, sum(mweight) over (partition by cid, sid, bid) bweight from ")
@@ -2129,52 +2129,52 @@ public class BscTreeUtil {
 				  .append("  where t.treelevel=5 and t.year=? and t.contentid=d.id and   d.measureid = c.id) mea ")
 				  .append(" where  bsc.bid=pst.ppid (+) and    pst.pid=obj.opid (+) and    obj.oid=mea.mpid (+) ")
 				  .append(" and    BID = ?) z where s.id = z.bid) ");
-				
+
 				params = new Object[] {year,year,year,year,year,year,bid,year,year,year,year,year,year,bid};
 				dbobject.executePreparedUpdate(sb.toString(),params);
-								
-				System.out.println("1. °¡ÁßÄ¡ Àç°è»ê : BSC - " + bid);
-				
+
+				System.out.println("1. ê°€ì¤‘ì¹˜ ì¬ê³„ì‚° : BSC - " + bid);
+
 				return 0;
 
 		} catch (Exception e) {
-			System.out.println("setMeasWeight ¿¡·¯ : " + e.toString()); 
+			System.out.println("setMeasWeight ì—ëŸ¬ : " + e.toString());
 			//e.printStackTrace();
 			return -1;
 		} finally {
 			try{if (rs != null) {rs.close(); rs = null;} } catch (Exception e){}
-			try{if (rs2 != null) {rs2.close(); rs2 = null;} } catch (Exception e){}	
-		}		
-		
+			try{if (rs2 != null) {rs2.close(); rs2 = null;} } catch (Exception e){}
+		}
+
 	}
-		
-	
+
+
 	//-----------------------------------------------------------------------------------------------------
 	// 	 : setMeasScoreValue
-	//     ÁöÇ¥¿¬°è½Ã °ü·Ã Ç×¸ñ, ¸ñÇ¥°ª, ½ÇÀû°ªÀ» ±×´ë·Î Copy(orgmcid => mcid)
+	//     ì§€í‘œì—°ê³„ì‹œ ê´€ë ¨ í•­ëª©, ëª©í‘œê°’, ì‹¤ì ê°’ì„ ê·¸ëŒ€ë¡œ Copy(orgmcid => mcid)
 	//-----------------------------------------------------------------------------------------------------
 	public int setMeasScoreValue(DBObject dbobject, String year, String orgmcid, String mcid) {
 
-		ResultSet rs = null;   
+		ResultSet rs = null;
 		ResultSet rs2 = null;
 		DataSet ds = new DataSet();
-	    
-		try {   		
-				
+
+		try {
+
 				if ("".equals(year)){
 					return -1;
 				}
-				
+
 				//------------------------------------------------------------------------------------
 				// 0. tblitemactaul
 				// 1. tblmeasuredetail
-				// 2. tblmeasurescore 
+				// 2. tblmeasurescore
 				//------------------------------------------------------------------------------------
 				String strD = "delete from tblitemactual where strdate like ?||'%' and measureid = ?";
 				dbobject.executePreparedUpdate(strD,new Object[]{year, mcid});
-				
-				StringBuffer sb = new StringBuffer();				
-				
+
+				StringBuffer sb = new StringBuffer();
+
 				sb.append(" insert into tblitemactual (                                      ");
 				sb.append("    measureid, code, strdate, inputdate, actual, accum, average)  ");
 				sb.append(" select                                                           ");
@@ -2185,19 +2185,19 @@ public class BscTreeUtil {
 
 				Object[] paramI = {mcid,year,orgmcid};
 				dbobject.executePreparedUpdate(sb.toString(),paramI);
-				
+
 				// 1. tblmeasuredetail
-				StringBuffer sbD = new StringBuffer();	
+				StringBuffer sbD = new StringBuffer();
 				sbD.append(" delete tblmeasuredetail              ");
 				sbD.append(" where   strdate        like ?||'%'   ");
 				sbD.append(" and     measureid      = ?           ");
-							
-				Object[] paramD = {year,mcid};					
+
+				Object[] paramD = {year,mcid};
 				dbobject.executePreparedUpdate(sbD.toString(),paramD);
-				
+
 				String nextid = String.valueOf(dbobject.getNextId("TBLMEASUREDETAIL"));
-				
-				sbD = new StringBuffer();	
+
+				sbD = new StringBuffer();
 				sbD.append(" insert into tblmeasuredetail (                                                         ");
 				sbD.append("    id, measureid, strdate, actual, weight, planned, comments, base, limit,plannedbase, baselimit,             ");
 				sbD.append("    filepath, filename, inputid, updateid, inputdate, updatedate,conform)               ");
@@ -2206,21 +2206,21 @@ public class BscTreeUtil {
 				sbD.append("    filepath, filename, inputid, updateid, inputdate, updatedate,conform                ");
 				sbD.append(" from  tblmeasuredetail                                                                 ");
 				sbD.append(" where   strdate        like ?||'%'   ");
-				sbD.append(" and     measureid      = ?           ");	
+				sbD.append(" and     measureid      = ?           ");
 
-				Object[] paramD1 = {nextid, mcid, year, orgmcid};					
-				dbobject.executePreparedUpdate(sbD.toString(),paramD1);				
-				
-				// 2. tblmeasurescore 
-				sbD = new StringBuffer();	
+				Object[] paramD1 = {nextid, mcid, year, orgmcid};
+				dbobject.executePreparedUpdate(sbD.toString(),paramD1);
+
+				// 2. tblmeasurescore
+				sbD = new StringBuffer();
 				sbD.append(" delete tblmeasurescore               ");
 				sbD.append(" where   strdate        like ?||'%'   ");
 				sbD.append(" and     measureid      = ?           ");
-							
-				Object[] paramS = {year,mcid};					
+
+				Object[] paramS = {year,mcid};
 				dbobject.executePreparedUpdate(sbD.toString(),paramS);
-				
-				sbD = new StringBuffer();	
+
+				sbD = new StringBuffer();
 				sbD.append(" insert into tblmeasurescore (                                                          ");
 				sbD.append("    measureid, strdate, actual, weight, planned, comments, base, limit, plannedbase, baselimit, plannedbase, baselimit,               ");
 				sbD.append("    score, addscore  )                                                                  ");
@@ -2229,15 +2229,15 @@ public class BscTreeUtil {
 				sbD.append("    score, addscore                                                                     ");
 				sbD.append(" from  tblmeasurescore                                                                  ");
 				sbD.append(" where   strdate        like ?||'%'   ");
-				sbD.append(" and     measureid      = ?           ");	
+				sbD.append(" and     measureid      = ?           ");
 
-				Object[] paramS1 = {mcid, year, orgmcid};					
-				dbobject.executePreparedUpdate(sbD.toString(),paramS1);		
-				
+				Object[] paramS1 = {mcid, year, orgmcid};
+				dbobject.executePreparedUpdate(sbD.toString(),paramS1);
+
 				return 0;
 
 		} catch (Exception e) {
-			System.out.println("setMeasScoreValue ¿¡·¯ : " + e.toString()); 
+			System.out.println("setMeasScoreValue ì—ëŸ¬ : " + e.toString());
 			try{if (rs != null) {rs.close(); rs = null;} } catch (Exception ee){}
 			try{if (rs2 != null) {rs2.close(); rs2 = null;} } catch (Exception ee){}
 			try{if (ds != null) {ds = null;} } catch (Exception ee){}
@@ -2245,94 +2245,94 @@ public class BscTreeUtil {
 			return -1;
 		} finally {
 			try{if (rs != null) {rs.close(); rs = null;} } catch (Exception e){}
-			try{if (rs2 != null) {rs2.close(); rs2 = null;} } catch (Exception e){}	
+			try{if (rs2 != null) {rs2.close(); rs2 = null;} } catch (Exception e){}
 			try{if (ds != null) {ds = null;} } catch (Exception ee){}
-		}		
-		
-	}	
-	
+		}
+
+	}
+
 	//-----------------------------------------------------------------------------------------------------
-	// 	ÁöÇ¥º¹»ç(³â ÀÌ°ü) http://127.0.0.1:7070/kopec/jsp/xml/hierarchy/copyMeasure.jsp?mode=U&div_gn=setMeasYearCopy
+	// 	ì§€í‘œë³µì‚¬(ë…„ ì´ê´€) http://127.0.0.1:7070/kopec/jsp/xml/hierarchy/copyMeasure.jsp?mode=U&div_gn=setMeasYearCopy
 	//-----------------------------------------------------------------------------------------------------
 
 	public void setMeasYearCopy(HttpServletRequest request, HttpServletResponse response){
 		CoolConnection conn = null;
 		DBObject dbobject = null;
-		ResultSet rs = null;   
+		ResultSet rs = null;
 	    int rslt = 0;
-		
-		try {   
-			
+
+		try {
+
 			String fmyear = request.getParameter("fmyear")==null?"":request.getParameter("fmyear");
-			String toyear = request.getParameter("toyear")==null?"":request.getParameter("toyear");			
+			String toyear = request.getParameter("toyear")==null?"":request.getParameter("toyear");
 
 			//fmyear = "2007";
 			//toyear ="2008";
 			if ("".equals(fmyear)||"".equals(toyear)){
-				request.setAttribute("rslt","false");				
+				request.setAttribute("rslt","false");
 				return;
-			}			
+			}
 
-			System.out.println("\n\n" );			
-			System.out.println("=========================================================================");			
-			System.out.println("Meas Year Copy : From " + fmyear + " To " + toyear );						
-			
-			// 0. ±âÁ¸ ÀÚ·á¸¦ »èÁ¦ÇÑ´Ù.
-			//     0-1.tblitem,  tblauthority ÀÇ °æ¿ì tblmeasuredefineÀÇ ³âµµ ID¿¡ ¼ÓÇÑ Ç×¸ñµéÀ» ¸ğµÎ »èÁ¦
-			//     0-2.tblhierarchy, tbltreescore, tblmeasuredefine Å×ÀÌºíÀÇ ³âµµ¿¡ ÇØ´çµÇ´Â µÇ´Â Ç×¸ñ»èÁ¦.	
+			System.out.println("\n\n" );
+			System.out.println("=========================================================================");
+			System.out.println("Meas Year Copy : From " + fmyear + " To " + toyear );
+
+			// 0. ê¸°ì¡´ ìë£Œë¥¼ ì‚­ì œí•œë‹¤.
+			//     0-1.tblitem,  tblauthority ì˜ ê²½ìš° tblmeasuredefineì˜ ë…„ë„ IDì— ì†í•œ í•­ëª©ë“¤ì„ ëª¨ë‘ ì‚­ì œ
+			//     0-2.tblhierarchy, tbltreescore, tblmeasuredefine í…Œì´ë¸”ì˜ ë…„ë„ì— í•´ë‹¹ë˜ëŠ” ë˜ëŠ” í•­ëª©ì‚­ì œ.
 			if (setMeasYearDelete(toyear) < 0){
-					System.out.println(" setMeasYearCopy - ÁöÇ¥ ÀÌ°ü³âµµ »èÁ¦Áß ¿À·ù :  "  + toyear);
+					System.out.println(" setMeasYearCopy - ì§€í‘œ ì´ê´€ë…„ë„ ì‚­ì œì¤‘ ì˜¤ë¥˜ :  "  + toyear);
 					 conn.rollback();
 					return;
 			}
-			
-			System.out.println("1. Meas Year Copy : Delete Target Year's Meas");			
+
+			System.out.println("1. Meas Year Copy : Delete Target Year's Meas");
 
 			//-----------------------------------------------------------------------------
 			//  MAX ID...
-			//-----------------------------------------------------------------------------			
-			int v_mm = -1;     // TBLMeasureDefine 
-			int v_hm = -1;      // TBLHIERARCHY 
+			//-----------------------------------------------------------------------------
+			int v_mm = -1;     // TBLMeasureDefine
+			int v_hm = -1;      // TBLHIERARCHY
 			int v_sm = -1;      // TBLTREESCORE
-			int v_dm = -1;		// TBLMEASUREDETAIL	
+			int v_dm = -1;		// TBLMEASUREDETAIL
 
 			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
-			conn.createStatement(false);			
-			if (dbobject==null) dbobject= new DBObject(conn.getConnection());					
+			conn.createStatement(false);
+			if (dbobject==null) dbobject= new DBObject(conn.getConnection());
 
-			// 1-1. ÁöÇ¥Á¤ÀÇ¼­ MAX ID : Query¿¡¼­ ³âµµ Á¦°Å(2007 -> 2010)
+			// 1-1. ì§€í‘œì •ì˜ì„œ MAX ID : Queryì—ì„œ ë…„ë„ ì œê±°(2007 -> 2010)
 			String strQry = "SELECT MAX(ID) as MM FROM TBLMEASUREDEFINE";
 			rs = dbobject.executeQuery(strQry);
 			while (rs.next()){
 					v_mm = rs.getInt("MM");
-			}			
-			
+			}
+
 			// 1-2. TREESCORE MAX ID.
 			strQry = "SELECT MAX(ID) as SM FROM TBLTREESCORE";
 			rs = dbobject.executeQuery(strQry);
 			while (rs.next()){
 					v_sm = rs.getInt("SM");
-			}						
-			
+			}
+
 			// 1-3. TBLHIERARCHY  MAX ID.
 			strQry = "SELECT MAX(ID) as HM FROM TBLHIERARCHY";
 			rs = dbobject.executeQuery(strQry);
 			while (rs.next()){
 					v_hm = rs.getInt("HM");
-			}			
+			}
 			// 1-4. TBLMEASUREDETAIL  MAX ID.
 			strQry = "SELECT MAX(ID) as DM FROM TBLMEASUREDETAIL ";
-			rs = dbobject.executeQuery(strQry); 
+			rs = dbobject.executeQuery(strQry);
 			while (rs.next()){
 					v_dm = rs.getInt("DM");
-			}						
-			
-			System.out.println("2. Get Next MAX ID for Target Year.");			
-			
+			}
+
+			System.out.println("2. Get Next MAX ID for Target Year.");
+
 			//-----------------------------------------------------------------------------
-			// 2. ÁöÇ¥Ã¼°è º¹»ç 
+			// 2. ì§€í‘œì²´ê³„ ë³µì‚¬
 			//-----------------------------------------------------------------------------
-			// 2-1. ÁöÇ¥Á¤ÀÇ¼­ º¹»ç
+			// 2-1. ì§€í‘œì •ì˜ì„œ ë³µì‚¬
 			String strM = " ";
 			strM += " insert into tblmeasuredefine (                   ";
 			strM += "    id, measureid, detaildefine, weight, unit,    ";
@@ -2342,7 +2342,7 @@ public class BscTreeUtil {
 			strM += "    planned, plannedbase, base, baselimit, limit, plannedbaseplus, baseplus, baselimitplus, limitplus, ";
 			strM += "    y,   ya1, ya2, ya3, ya4, yb1, yb2, yb3,       ";
 			strM += "    mean, updateid, equationtype, datasource,     ";
-			strM += "    ifsystem, mngdeptnm, targetrationle, planned_flag, scorecode   )       ";			
+			strM += "    ifsystem, mngdeptnm, targetrationle, planned_flag, scorecode   )       ";
 			strM += " select                                           ";
 			strM += "    id + ? id, measureid, detaildefine, weight, unit,    ";
 			strM += "    entrytype, measuretype, frequency,            ";
@@ -2350,40 +2350,40 @@ public class BscTreeUtil {
 			strM += "    measurement, ? year, trend,                   ";
 			strM += "    planned, plannedbase, base, baselimit, limit, plannedbaseplus, baseplus, baselimitplus, limitplus,";
 			strM += "    y,   ya1, ya2, ya3, ya4, yb1, yb2, yb3,       ";
-			strM += "    mean, updateid, equationtype, datasource,     ";  
-			strM += "    ifsystem, mngdeptnm, targetrationle, planned_flag, scorecode           ";   
+			strM += "    mean, updateid, equationtype, datasource,     ";
+			strM += "    ifsystem, mngdeptnm, targetrationle, planned_flag, scorecode           ";
 			strM += " from  tblmeasuredefine                           ";
 			strM += " where year = ?                                   ";
 			strM += " order by id                                      ";
-				
+
 			dbobject.executePreparedUpdate(strM, new Object[]{String.valueOf(v_mm), toyear, fmyear});
-			
-			System.out.println("3. Meas Copy : ÁöÇ¥Á¤ÀÇ¼­");			
-			
-			// 2-2. ÁöÇ¥ TREESCORE  º¹»ç
+
+			System.out.println("3. Meas Copy : ì§€í‘œì •ì˜ì„œ");
+
+			// 2-2. ì§€í‘œ TREESCORE  ë³µì‚¬
 			String strS = " ";
-			strS += " insert into tbltreescore                                        "; 
+			strS += " insert into tbltreescore                                        ";
 			strS += " (id,parentid,contentid,treelevel,rank,year,weight)              ";
 			strS += " select id+?, parentid,contentid,treelevel,rank,? year,weight    ";
 			strS += " from tbltreescore where year=?                                  ";
-			
+
 			dbobject.executePreparedUpdate(strS, new Object[]{String.valueOf(v_sm), toyear, fmyear});
-			System.out.println("3. Meas Copy : TREESCORE");					
-			
-			// 2-3. ÁöÇ¥ Hierarchy º¹»ç
+			System.out.println("3. Meas Copy : TREESCORE");
+
+			// 2-3. ì§€í‘œ Hierarchy ë³µì‚¬
 			String strH = " ";
-			strH += " insert into tblhierarchy                                                           "; 
+			strH += " insert into tblhierarchy                                                           ";
 			strH += " (id,parentid,contentid,treelevel,rank,year,weight)                   ";
 			strH += " select id+?, parentid,contentid,treelevel,rank,? year,weight    ";
 			strH += " from tblhierarchy where year=?                                             ";
 			dbobject.executePreparedUpdate(strH, new Object[]{String.valueOf(v_hm), toyear, fmyear});
-			System.out.println("3. Meas Copy : Hierarchy");					
-			
-			
-			// 2-4. parent IDÁ¤¸®.
+			System.out.println("3. Meas Copy : Hierarchy");
+
+
+			// 2-4. parent IDì •ë¦¬.
 			strH = " update tblhierarchy set parentid=parentid+? where year=? and treelevel in (1,2) ";
 			dbobject.executePreparedUpdate(strH, new Object[]{String.valueOf(v_hm), toyear});
-			
+
 			strH = " update tbltreescore set parentid=parentid+? where year=? and treelevel in (3) ";
 			dbobject.executePreparedUpdate(strH, new Object[]{String.valueOf(v_hm), toyear});
 
@@ -2392,49 +2392,49 @@ public class BscTreeUtil {
 
 			strS = " update tbltreescore set contentid=contentid+? where year=? and treelevel in (5) ";
 			dbobject.executePreparedUpdate(strS, new Object[]{String.valueOf(v_mm), toyear});
-			
-			System.out.println("3. Meas Copy : parent ID");					
-			
-			//-----------------------------------------------------------------------------
-			// 3. ÁöÇ¥Ç×¸ñ º¹»ç : 2007³â ÁöÇ¥ÀÇ Ç×¸ñÁ¤º¸¸¦ Update.
-			//-----------------------------------------------------------------------------
-			// 3-1. ÁöÇ¥Ç×¸ñ º¹»ç
-			strS   = " insert into tblitem (code,measureid,itemname,itementry,itemtype,unit, itemfixed)       ";                       
-			strS += " select code,measureid+?, itemname,itementry,itemtype,unit, itemfixed from tblitem "; 
-			strS += " where measureid in  (select id from tblmeasuredefine where year=?)       ";                                               			
 
-			dbobject.executePreparedUpdate(strS, new Object[]{String.valueOf(v_mm), fmyear});			
-			System.out.println("3. Meas Copy : ÁöÇ¥Ç×¸ñ");					
-			
-			//-----------------------------------------------------------------------------
-			// 4. ÁöÇ¥»ç¿ëÀÚ Á¤º¸ 
-			//-----------------------------------------------------------------------------
-			// 4-1. ÁöÇ¥»ç¿ëÀÚ º¹»ç
-			strS   = " insert into tblauthority (year,measureid,userid)       ";                       
-			strS += " select ? year,  measureid+?,userid  from tblauthority "; 
-			strS += " where year = ?  ";                                         			
+			System.out.println("3. Meas Copy : parent ID");
 
-			dbobject.executePreparedUpdate(strS, new Object[]{toyear, String.valueOf(v_mm), fmyear});			
-			System.out.println("3. Meas Copy : ÁöÇ¥»ç¿ëÀÚ");					
-			
-			// 6. ÁÖ±âº° ½ÇÀûÅ×ÀÌºíÀÇ ¸ñÇ¥°ª±îÁö ¼³Á¤.
-			// 			
-			// 4-1. ¸ñÇ¥°ª  º¹»ç
-			strS  = " insert into tblmeasuredetail (id,measureid,strdate, weight,planned, plannedbase, base, baselimit, limit, inputid, inputdate)  ";                       
-			strS += " select id + ? id, measureid + ? measureid, ? ||substr(strdate,5) strdate, weight, planned, plannedbase, base, baselimit, limit, inputid, inputdate from tblmeasuredetail "; 
-			strS += " where strdate like ? ||'%' ";                                                                         			
+			//-----------------------------------------------------------------------------
+			// 3. ì§€í‘œí•­ëª© ë³µì‚¬ : 2007ë…„ ì§€í‘œì˜ í•­ëª©ì •ë³´ë¥¼ Update.
+			//-----------------------------------------------------------------------------
+			// 3-1. ì§€í‘œí•­ëª© ë³µì‚¬
+			strS   = " insert into tblitem (code,measureid,itemname,itementry,itemtype,unit, itemfixed)       ";
+			strS += " select code,measureid+?, itemname,itementry,itemtype,unit, itemfixed from tblitem ";
+			strS += " where measureid in  (select id from tblmeasuredefine where year=?)       ";
 
-			dbobject.executePreparedUpdate(strS, new Object[]{String.valueOf(v_dm), String.valueOf(v_mm), toyear, fmyear});		
-			System.out.println("3. Meas Copy : ¸ñÇ¥°ª");					
-			
-			System.out.println("3. Copy and Restructure BSC Arch : Hierarchy,treescore, measuredefine, item, authority, target value.");			
-			
+			dbobject.executePreparedUpdate(strS, new Object[]{String.valueOf(v_mm), fmyear});
+			System.out.println("3. Meas Copy : ì§€í‘œí•­ëª©");
+
+			//-----------------------------------------------------------------------------
+			// 4. ì§€í‘œì‚¬ìš©ì ì •ë³´
+			//-----------------------------------------------------------------------------
+			// 4-1. ì§€í‘œì‚¬ìš©ì ë³µì‚¬
+			strS   = " insert into tblauthority (year,measureid,userid)       ";
+			strS += " select ? year,  measureid+?,userid  from tblauthority ";
+			strS += " where year = ?  ";
+
+			dbobject.executePreparedUpdate(strS, new Object[]{toyear, String.valueOf(v_mm), fmyear});
+			System.out.println("3. Meas Copy : ì§€í‘œì‚¬ìš©ì");
+
+			// 6. ì£¼ê¸°ë³„ ì‹¤ì í…Œì´ë¸”ì˜ ëª©í‘œê°’ê¹Œì§€ ì„¤ì •.
+			//
+			// 4-1. ëª©í‘œê°’  ë³µì‚¬
+			strS  = " insert into tblmeasuredetail (id,measureid,strdate, weight,planned, plannedbase, base, baselimit, limit, inputid, inputdate)  ";
+			strS += " select id + ? id, measureid + ? measureid, ? ||substr(strdate,5) strdate, weight, planned, plannedbase, base, baselimit, limit, inputid, inputdate from tblmeasuredetail ";
+			strS += " where strdate like ? ||'%' ";
+
+			dbobject.executePreparedUpdate(strS, new Object[]{String.valueOf(v_dm), String.valueOf(v_mm), toyear, fmyear});
+			System.out.println("3. Meas Copy : ëª©í‘œê°’");
+
+			System.out.println("3. Copy and Restructure BSC Arch : Hierarchy,treescore, measuredefine, item, authority, target value.");
+
 			conn.commit();
-			
+
 			request.setAttribute("rslt","true");
 
-			System.out.println("=========================================================================");			
-			
+			System.out.println("=========================================================================");
+
 		} catch (Exception e) {
 			System.out.println(e);
 		} finally {
@@ -2442,41 +2442,41 @@ public class BscTreeUtil {
 			if (dbobject != null){dbobject.close(); dbobject = null;}
 			if (conn != null) {conn.close(); conn = null;}
 		}
-	}	
-	
+	}
+
 	public void setMeasYearDeleteAll(HttpServletRequest request, HttpServletResponse response){
 		CoolConnection conn = null;
 		DBObject dbobject = null;
-		ResultSet rs = null;   
+		ResultSet rs = null;
 	    int rslt = 0;
-		
-		try {   
-			
-			String year = request.getParameter("year")==null?"":request.getParameter("year");			
+
+		try {
+
+			String year = request.getParameter("year")==null?"":request.getParameter("year");
 
 			//fmyear = "2007";
 			//toyear ="2008";
 			if ("".equals(year)){
-				request.setAttribute("rslt","false");				
+				request.setAttribute("rslt","false");
 				return;
-			}			
+			}
 
-			System.out.println("\n\n" );			
-			System.out.println("=========================================================================");			
-			System.out.println("Meas Year Delete : " + year );						
-			
-			// 0. ±âÁ¸ ÀÚ·á¸¦ »èÁ¦ÇÑ´Ù.
-			//     0-1.tblitem,  tblauthority ÀÇ °æ¿ì tblmeasuredefineÀÇ ³âµµ ID¿¡ ¼ÓÇÑ Ç×¸ñµéÀ» ¸ğµÎ »èÁ¦
-			//     0-2.tblhierarchy, tbltreescore, tblmeasuredefine Å×ÀÌºíÀÇ ³âµµ¿¡ ÇØ´çµÇ´Â µÇ´Â Ç×¸ñ»èÁ¦.	
+			System.out.println("\n\n" );
+			System.out.println("=========================================================================");
+			System.out.println("Meas Year Delete : " + year );
+
+			// 0. ê¸°ì¡´ ìë£Œë¥¼ ì‚­ì œí•œë‹¤.
+			//     0-1.tblitem,  tblauthority ì˜ ê²½ìš° tblmeasuredefineì˜ ë…„ë„ IDì— ì†í•œ í•­ëª©ë“¤ì„ ëª¨ë‘ ì‚­ì œ
+			//     0-2.tblhierarchy, tbltreescore, tblmeasuredefine í…Œì´ë¸”ì˜ ë…„ë„ì— í•´ë‹¹ë˜ëŠ” ë˜ëŠ” í•­ëª©ì‚­ì œ.
 			if (setMeasYearDelete(year) < 0){
-					System.out.println(" setMeasYearCopy - ÁöÇ¥ ÀÌ°ü³âµµ »èÁ¦Áß ¿À·ù :  "  + year);
+					System.out.println(" setMeasYearCopy - ì§€í‘œ ì´ê´€ë…„ë„ ì‚­ì œì¤‘ ì˜¤ë¥˜ :  "  + year);
 					 conn.rollback();
 					return;
 			}
-			
+
 			request.setAttribute("rslt","true");
-			System.out.println("=========================================================================");			
-			
+			System.out.println("=========================================================================");
+
 		} catch (Exception e) {
 			System.out.println(e);
 		} finally {
@@ -2484,58 +2484,58 @@ public class BscTreeUtil {
 			if (dbobject != null){dbobject.close(); dbobject = null;}
 			if (conn != null) {conn.close(); conn = null;}
 		}
-	}	
-	
+	}
 
-	// ³âµµÀÇ ÁöÇ¥Á¤ÀÇ¼­ °ü·Ã »èÁ¦.
+
+	// ë…„ë„ì˜ ì§€í‘œì •ì˜ì„œ ê´€ë ¨ ì‚­ì œ.
 	public int setMeasYearDelete(String year){
 
 		CoolConnection conn = null;
 		DBObject dbobject = null;
-		ResultSet rs = null;   
-	    
-		try {   		
+		ResultSet rs = null;
+
+		try {
 				conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
-				conn.createStatement(false);			
-				if (dbobject==null) dbobject= new DBObject(conn.getConnection());		
-				
+				conn.createStatement(false);
+				if (dbobject==null) dbobject= new DBObject(conn.getConnection());
+
 				if ("".equals(year)){
 					return -1;
 				}
 
-				// 0. tblmeasuredetail : ÁÖ±âº° ½ÇÀû Å×ÀÌºí 
+				// 0. tblmeasuredetail : ì£¼ê¸°ë³„ ì‹¤ì  í…Œì´ë¸”
 				String strD = "delete from tblmeasuredetail where strdate like ?||'%'";
 				dbobject.executePreparedUpdate(strD,new Object[]{year});
 
 				strD = "delete from tblmeasurescore where strdate like ?||'%'";
 				dbobject.executePreparedUpdate(strD,new Object[]{year});
-				
-				// 1. tblitem : Ç×¸ñ Å×ÀÌºí
+
+				// 1. tblitem : í•­ëª© í…Œì´ë¸”
 				strD = "delete from tblitem where measureid in (select  id from tblmeasuredefine where  year = ?) ";
 				dbobject.executePreparedUpdate(strD,new Object[]{year});
 
 				strD = "delete from tblitemactual where measureid in (select  id from tblmeasuredefine where  year = ?) ";
-				dbobject.executePreparedUpdate(strD,new Object[]{year});				
+				dbobject.executePreparedUpdate(strD,new Object[]{year});
 
-				// 2. tblauthority : ±ÇÇÑ Å×ÀÌºí 
+				// 2. tblauthority : ê¶Œí•œ í…Œì´ë¸”
 				strD = "delete from tblauthority where year = ?";
 				dbobject.executePreparedUpdate(strD,new Object[]{year});
-				
-				// 3. tblmeasuredefine : ÁöÇ¥Á¤ÀÇ¼­ Å×ÀÌºí 
+
+				// 3. tblmeasuredefine : ì§€í‘œì •ì˜ì„œ í…Œì´ë¸”
 				strD = "delete from tblmeasuredefine where year = ?";
 				dbobject.executePreparedUpdate(strD,new Object[]{year});
 
-				// 4. tbltreescore : TREESCORE Å×ÀÌºí 
+				// 4. tbltreescore : TREESCORE í…Œì´ë¸”
 				strD = "delete from tbltreescore where year = ?";
 				dbobject.executePreparedUpdate(strD,new Object[]{year});
 
-				// 4. tblhierarchy : Hierachy Å×ÀÌºí 
+				// 4. tblhierarchy : Hierachy í…Œì´ë¸”
 				strD = "delete from tblhierarchy where year = ?";
 				dbobject.executePreparedUpdate(strD,new Object[]{year});
-				
-				conn.commit();				
+
+				conn.commit();
 				return 0;
-		
+
 		} catch (Exception e) {
 			System.out.println(e);
 			return -1;
@@ -2543,60 +2543,60 @@ public class BscTreeUtil {
 			try{if (rs != null) {rs.close(); rs = null;} } catch (Exception e){}
 			if (dbobject != null){dbobject.close(); dbobject = null;}
 			if (conn != null) {conn.close(); conn = null;}
-		}		
-		
+		}
+
 	}
-	
-	// ³âµµÀÇ ÁöÇ¥Á¤ÀÇ¼­ ºÎ¼­¿¡ ÁöÇ¥»ı¼º ¹× ½ÇÀû¿¬°èÃ³¸®.
+
+	// ë…„ë„ì˜ ì§€í‘œì •ì˜ì„œ ë¶€ì„œì— ì§€í‘œìƒì„± ë° ì‹¤ì ì—°ê³„ì²˜ë¦¬.
 	public int setMeasOrgCreate(HttpServletRequest request, HttpServletResponse response){
 
 		CoolConnection conn = null;
 		DBObject dbobject = null;
-		ResultSet rs = null;   
+		ResultSet rs = null;
 		String year = "";
-	    
-		try {   		
+
+		try {
 				conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
-				conn.createStatement(false);			
-				if (dbobject==null) dbobject= new DBObject(conn.getConnection());		
-				
+				conn.createStatement(false);
+				if (dbobject==null) dbobject= new DBObject(conn.getConnection());
+
 				if ("".equals(year)){
 					return -1;
 				}
 
-				// 0. tblmeasuredetail : ÁÖ±âº° ½ÇÀû Å×ÀÌºí 
+				// 0. tblmeasuredetail : ì£¼ê¸°ë³„ ì‹¤ì  í…Œì´ë¸”
 				String strD = "delete from tblmeasuredetail where strdate like ?||'%'";
 				dbobject.executePreparedUpdate(strD,new Object[]{year});
 
 				strD = "delete from tblmeasurescore where strdate like ?||'%'";
 				dbobject.executePreparedUpdate(strD,new Object[]{year});
-				
-				// 1. tblitem : Ç×¸ñ Å×ÀÌºí
+
+				// 1. tblitem : í•­ëª© í…Œì´ë¸”
 				strD = "delete from tblitem where measureid in (select  id from tblmeasuredefine where  year = ?) ";
 				dbobject.executePreparedUpdate(strD,new Object[]{year});
 
 				strD = "delete from tblitemactual where measureid in (select  id from tblmeasuredefine where  year = ?) ";
-				dbobject.executePreparedUpdate(strD,new Object[]{year});				
+				dbobject.executePreparedUpdate(strD,new Object[]{year});
 
-				// 2. tblauthority : ±ÇÇÑ Å×ÀÌºí 
+				// 2. tblauthority : ê¶Œí•œ í…Œì´ë¸”
 				strD = "delete from tblauthority where year = ?";
 				dbobject.executePreparedUpdate(strD,new Object[]{year});
-				
-				// 3. tblmeasuredefine : ÁöÇ¥Á¤ÀÇ¼­ Å×ÀÌºí 
+
+				// 3. tblmeasuredefine : ì§€í‘œì •ì˜ì„œ í…Œì´ë¸”
 				strD = "delete from tblmeasuredefine where year = ?";
 				dbobject.executePreparedUpdate(strD,new Object[]{year});
 
-				// 4. tbltreescore : TREESCORE Å×ÀÌºí 
+				// 4. tbltreescore : TREESCORE í…Œì´ë¸”
 				strD = "delete from tbltreescore where year = ?";
 				dbobject.executePreparedUpdate(strD,new Object[]{year});
 
-				// 4. tblhierarchy : Hierachy Å×ÀÌºí 
+				// 4. tblhierarchy : Hierachy í…Œì´ë¸”
 				strD = "delete from tblhierarchy where year = ?";
 				dbobject.executePreparedUpdate(strD,new Object[]{year});
-				
-				conn.commit();				
+
+				conn.commit();
 				return 0;
-		
+
 		} catch (Exception e) {
 			System.out.println(e);
 			return -1;
@@ -2606,124 +2606,124 @@ public class BscTreeUtil {
 			if (conn != null) {conn.close(); conn = null;}
 		}
 	}
-	
+
 	/*
 	//-----------------------------------------------------------------------------------------------------
-	// 	ÁöÇ¥ÀÚµ¿»ı¼º...
+	// 	ì§€í‘œìë™ìƒì„±...
 	//-----------------------------------------------------------------------------------------------------
 	*/
 	public void setMeasCreate(HttpServletRequest request, HttpServletResponse response){
 		CoolConnection conn = null;
 		DBObject dbobject = null;
-		ResultSet rs = null;   
-	    
-		try {   
+		ResultSet rs = null;
+
+		try {
 			String strT = null;
 			String tbl = "TBLTREESCORE";
 
 			String year = request.getParameter("year");
 			String mode = request.getParameter("mode");
-			
-			// ÁöÇ¥Á¤ÀÇ¼­¿Í ÁöÇ¥ÄÚµå
+
+			// ì§€í‘œì •ì˜ì„œì™€ ì§€í‘œì½”ë“œ
 			String pcid = request.getParameter("pcid");
 			String ocid = request.getParameter("ocid");
 			String mcid = request.getParameter("mcid");
 			String mcode= request.getParameter("mcode");
-			
-			
-			// ´ë»óºÎ¼­ (ºÎ¼­¸í, mcid)
+
+
+			// ëŒ€ìƒë¶€ì„œ (ë¶€ì„œëª…, mcid)
 			String orgstr = request.getParameter("orgstr")==null?"":request.getParameter("orgstr");
-			
+
 			System.out.println("======================================================");
 			System.out.println("==            MeasCreate :" + mcid);
-			System.out.println("======================================================");					
+			System.out.println("======================================================");
 			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
-			conn.createStatement(false);			
+			conn.createStatement(false);
 			if (dbobject==null) dbobject= new DBObject(conn.getConnection());
-			
-			//--------------------------------------------------------------------------------------------	
-			//  ºÎ¼­º° Update.... Á¨Àå ºÎ¼­¸í¿¡ ',' ÀÌ µé¾î°¡³×...
+
 			//--------------------------------------------------------------------------------------------
-			
+			//  ë¶€ì„œë³„ Update.... ì  ì¥ ë¶€ì„œëª…ì— ',' ì´ ë“¤ì–´ê°€ë„¤...
+			//--------------------------------------------------------------------------------------------
+
 			System.out.println(orgstr);
 			if (!"".equals(orgstr.trim())){
-				
+
 				String   orgBid   =null;
-				String   orgBcid  =null;						
-				String   orgWeight=null;						
+				String   orgBcid  =null;
+				String   orgWeight=null;
 				String   orgDefendent=null ;
-				
+
 				String   slevel=null;
 				String   orgPid=null;
 				String   orgOid=null;
 				String   orgMid=null;
 				String   orgMcid=null;
-				
-				String[] orgdefineids = orgstr.split("\\`");	
-				
+
+				String[] orgdefineids = orgstr.split("\\`");
+
 				for (int m = 0; m < orgdefineids.length; m++) {
-					
+
 					orgBid   =null;
-					orgBcid  =null;						
-					orgWeight=null;						
+					orgBcid  =null;
+					orgWeight=null;
 					orgDefendent=null ;
-					
+
 					slevel=null;
 					orgPid=null;
 					orgOid=null;
 					orgMid=null;
 					orgMcid=null;
-					
-					String[] iPart = orgdefineids[m].split("\\^");							
-					
-					orgBid      = iPart[0];			// ºÎ¼­ TREE ID
-					orgBcid     = iPart[1];			// ºÎ¼­ ContentID
-					orgWeight   = iPart[2];			// ºÎ¼­ ÁöÇ¥°¡ÁßÄ¡
-					orgDefendent= iPart[3];					
-										
+
+					String[] iPart = orgdefineids[m].split("\\^");
+
+					orgBid      = iPart[0];			// ë¶€ì„œ TREE ID
+					orgBcid     = iPart[1];			// ë¶€ì„œ ContentID
+					orgWeight   = iPart[2];			// ë¶€ì„œ ì§€í‘œê°€ì¤‘ì¹˜
+					orgDefendent= iPart[3];
+
 					System.out.println("	MeasCreate : orgBid / orgBcid / orgWeight / orgDefendent ="  + iPart[0] + "/"+ iPart[1] + "/"+ iPart[2] + "/"+ iPart[3] );
-					
-					// 1. ´ë»óºÎ¼­¿¡ °üÁ¡ÀÌ Á¸ÀçÇÏ´Â°¡?
+
+					// 1. ëŒ€ìƒë¶€ì„œì— ê´€ì ì´ ì¡´ì¬í•˜ëŠ”ê°€?
 					//    parentid = bscid...
-					
+
 					slevel = "3";
-					orgPid = getExistPstId(dbobject, year,slevel,orgBid,pcid);		
-					
+					orgPid = getExistPstId(dbobject, year,slevel,orgBid,pcid);
+
 					if ("".equals(orgPid)) {
 						orgPid = String.valueOf(dbobject.getNextId(tbl));
-						
+
 						strT  = "";
-						strT += " insert into tbltreescore                           "; 
+						strT += " insert into tbltreescore                           ";
 						strT += " (id,parentid,contentid,treelevel,rank,year,weight) ";
 						strT += " values (?,?,?,?,?,?,?)                             ";
-						
+
 						Object[] paramU = {orgPid,orgBid,pcid,slevel,"10",year,orgWeight };
 						dbobject.executePreparedUpdate(strT, paramU );
 					}
 					System.out.println("1. Meas Create : TREESCORE Perspective : " + orgPid);
-					
-					// 2. ´ë»óºÎ¼­¿¡ Àü·«¸ñÇ¥°¡ Á¸ÀçÇÏ´Â°¡?
+
+					// 2. ëŒ€ìƒë¶€ì„œì— ì „ëµëª©í‘œê°€ ì¡´ì¬í•˜ëŠ”ê°€?
 					slevel = "4";
-					orgOid = getExistObjId(dbobject, year,orgBid,orgPid,ocid);							
+					orgOid = getExistObjId(dbobject, year,orgBid,orgPid,ocid);
 					if ("".equals(orgOid)) {
 						orgOid = String.valueOf(dbobject.getNextId(tbl));
-						
+
 						strT  = "";
-						strT += " insert into tbltreescore                           "; 
+						strT += " insert into tbltreescore                           ";
 						strT += " (id,parentid,contentid,treelevel,rank,year,weight) ";
 						strT += " values (?,?,?,?,?,?,?)                             ";
-						
+
 						Object[] paramU = {orgOid,orgPid,ocid,slevel,"10",year,orgWeight };
 						dbobject.executePreparedUpdate(strT, paramU );
-					}							
+					}
 					System.out.println("2. Meas Create : TREESCORE Object : " + orgOid);
-					
-					// 3. ´ë»óºÎ¼­¿¡ ÁöÇ¥°¡ Á¸ÀçÇÏ´Ï?		
-					//  3-1.ContentId¸¦ ¾î¶»°Ô ±¸ÇÏÁö? ¾Æ´Â °ÍÀº ParentId, Measureid.
-					
+
+					// 3. ëŒ€ìƒë¶€ì„œì— ì§€í‘œê°€ ì¡´ì¬í•˜ë‹ˆ?
+					//  3-1.ContentIdë¥¼ ì–´ë–»ê²Œ êµ¬í•˜ì§€? ì•„ëŠ” ê²ƒì€ ParentId, Measureid.
+
 					slevel = "5";
 					StringBuffer sb = new StringBuffer();
-					
+
 					sb.append(" select t.id mid,t.parentid mpid,t.contentid mcid, c.name mname,      ");
 					sb.append("        c.id mcd,d.measureid                                          ");
 					sb.append(" from   tbltreescore    t, tblmeasure c,  tblmeasuredefine d          ");
@@ -2732,35 +2732,35 @@ public class BscTreeUtil {
 					sb.append(" and    t.parentid  =?                                                ");
 					//sb.append(" and    d.measureid =?                                                ");
 					sb.append(" and    c.id =?                                                ");
-					
+
 					Object[] params = new Object[] {year, orgOid, mcode};
 					rs = dbobject.executePreparedQuery(sb.toString(),params);
 					if (rs.next()) {
 						orgMid  = rs.getString("mid");
-						orgMcid = rs.getString("mcid");						
-					}					
+						orgMcid = rs.getString("mcid");
+					}
 
 					if ("".equals(orgMid)||orgMid==null) {
 						orgMid  = String.valueOf(dbobject.getNextId(tbl));
 						orgMcid = String.valueOf(dbobject.getNextId("TBLMEASUREDEFINE"));
-						
+
 						strT  = "";
-						strT += " insert into tbltreescore                           "; 
+						strT += " insert into tbltreescore                           ";
 						strT += " (id,parentid,contentid,treelevel,rank,year,weight) ";
 						strT += " values (?,?,?,?,?,?,?)                             ";
-						
+
 						Object[] paramU = {orgMid,orgOid,orgMcid,slevel,"10",year,orgWeight };
 						dbobject.executePreparedUpdate(strT, paramU );
-					}					
+					}
 
-					System.out.println("3. Meas Create : TREESCORE Measure : orgMcid " + orgMcid);					
-					
+					System.out.println("3. Meas Create : TREESCORE Measure : orgMcid " + orgMcid);
+
 					//-------------------------------------------------------------------------
-					// 4. ÁöÇ¥Á¤ÀÇ¼­¸¦ »èÁ¦ÈÄ  »õ·Ó°Ô µî·Ï.
+					// 4. ì§€í‘œì •ì˜ì„œë¥¼ ì‚­ì œí›„  ìƒˆë¡­ê²Œ ë“±ë¡.
 					//-------------------------------------------------------------------------
 					String strD = "delete from tblmeasuredefine where year = ? and id = ?";
 					dbobject.executePreparedUpdate(strD,new Object[]{year,orgMcid});
-					
+
 					String strM = " ";
 					strM += " insert into tblmeasuredefine (                   ";
 					strM += "    id, measureid, detaildefine, weight, unit,    ";
@@ -2769,8 +2769,8 @@ public class BscTreeUtil {
 					strM += "    measurement, year, trend,                     ";
 					strM += "    planned, plannedbase, base, baselimit, limit, plannedbaseplus, baseplus, baselimitplus, limitplus,";
 					strM += "    y,   ya1, ya2, ya3, ya4, yb1, yb2, yb3,       ";
-					strM += "    mean, updateid, equationtype, datasource,     ";  
-					strM += "    ifsystem, mngdeptnm, targetrationle, planned_flag,scorecode )          ";   	
+					strM += "    mean, updateid, equationtype, datasource,     ";
+					strM += "    ifsystem, mngdeptnm, targetrationle, planned_flag,scorecode )          ";
 					strM += " select                                           ";
 					strM += "    ? id, measureid, detaildefine, weight, unit,  ";
 					strM += "    entrytype, measuretype, frequency,            ";
@@ -2778,88 +2778,88 @@ public class BscTreeUtil {
 					strM += "    measurement, year, trend,                     ";
 					strM += "    planned, plannedbase, base, baselimit, limit, plannedbaseplus, baseplus, baselimitplus, limitplus, ";
 					strM += "    y,   ya1, ya2, ya3, ya4, yb1, yb2, yb3,       ";
-					strM += "    mean, updateid, equationtype, datasource,     ";  
-					strM += "    ifsystem, mngdeptnm, targetrationle, planned_flag,scorecode           ";   
+					strM += "    mean, updateid, equationtype, datasource,     ";
+					strM += "    ifsystem, mngdeptnm, targetrationle, planned_flag,scorecode           ";
 					strM += " from  tblmeasuredefine                           ";
 					strM += " where year = ?                                   ";
-					strM += " and   id   = ?                                   ";							
+					strM += " and   id   = ?                                   ";
 					strM += " order by id                                      ";
-						
+
 					dbobject.executePreparedUpdate(strM, new Object[]{orgMcid, year, mcid});
 					System.out.println("4. Meas Create : MeasureDefine : " + mcid);
 
-					
+
 					//-------------------------------------------------------------------------
-					// 5. Ç×¸ñÄÚµåµµ º¹»çÇÏ´Â°¡?
+					// 5. í•­ëª©ì½”ë“œë„ ë³µì‚¬í•˜ëŠ”ê°€?
 					//-------------------------------------------------------------------------
 					strD = "DELETE FROM TBLITEM WHERE MEASUREID=?";
 					dbobject.executePreparedUpdate(strD,new Object[]{orgMcid});
-					
+
 					String strUI  = " insert into tblitem (measureid, code, itemname, itementry, itemtype, unit, itemfixed)";
 						   strUI += " select ?, code, itemname, itementry, itemtype, unit, itemfixed  " ;
 						   strUI += " from   tblitem ";
 						   strUI += " where  measureid = ?" ;
-							  
+
 					Object[] pmUI = {orgMcid, mcid};
-					dbobject.executePreparedUpdate(strUI,pmUI);							
+					dbobject.executePreparedUpdate(strUI,pmUI);
 					System.out.println("5. Meas Create : ITEM");
-					
+
 					//-------------------------------------------------------------------------
-					// 6. ÁöÇ¥»ç¿ëÀÚ º¹»ç
-					//-------------------------------------------------------------------------	
+					// 6. ì§€í‘œì‚¬ìš©ì ë³µì‚¬
+					//-------------------------------------------------------------------------
 					strD  = " delete tblauthority where year = ? and measureid = ?" ;
-					dbobject.executePreparedUpdate(strD,new Object[]{year,mcid});			
-					   
-					strUI  = " insert into tblauthority (year,measureid,userid)    ";                       
-					strUI += " select year, ? measureid, userid  from tblauthority "; 
-					strUI += " where year = ?  "; 
+					dbobject.executePreparedUpdate(strD,new Object[]{year,mcid});
+
+					strUI  = " insert into tblauthority (year,measureid,userid)    ";
+					strUI += " select year, ? measureid, userid  from tblauthority ";
+					strUI += " where year = ?  ";
 					strUI += " and   measureid = ?" ;
 
-					dbobject.executePreparedUpdate(strUI, new Object[]{year, orgMcid, mcid});			
-					System.out.println("6. Meas Create : ÁöÇ¥»ç¿ëÀÚ º¹»ç");		
-					
+					dbobject.executePreparedUpdate(strUI, new Object[]{year, orgMcid, mcid});
+					System.out.println("6. Meas Create : ì§€í‘œì‚¬ìš©ì ë³µì‚¬");
+
 					//-------------------------------------------------------------------------
-					// 6. ÁöÇ¥ ¸ñÇ¥°ª »ı¼º
-					//-------------------------------------------------------------------------					
+					// 6. ì§€í‘œ ëª©í‘œê°’ ìƒì„±
+					//-------------------------------------------------------------------------
 					setMeasDetailValue(dbobject,year,orgMcid);
-					System.out.println("7. Meas Create : ¸ñÇ¥°ª »ı¼º");		
-		
+					System.out.println("7. Meas Create : ëª©í‘œê°’ ìƒì„±");
+
 					//-------------------------------------------------------------------------
-					// 8. ÁöÇ¥½ÇÀû¿¬°è
+					// 8. ì§€í‘œì‹¤ì ì—°ê³„
 					//-------------------------------------------------------------------------
 					if ("Y".equals(orgDefendent)){
 						   strD  = " delete tblmeasuredependent where childid = ?" ;
-						   dbobject.executePreparedUpdate(strD,new Object[]{orgMcid});						
-						
+						   dbobject.executePreparedUpdate(strD,new Object[]{orgMcid});
+
 						   strUI  = " insert into tblmeasuredependent (parentid, childid) values (?,?)" ;
 						   dbobject.executePreparedUpdate(strUI,new Object[]{mcid, orgMcid});
-						   System.out.println("8. Meas Create : ÁöÇ¥½ÇÀû¿¬°è");	
-						   
-						   // From : mcid, To : orgMcid : KOPECÀº ¾øÀ½.
+						   System.out.println("8. Meas Create : ì§€í‘œì‹¤ì ì—°ê³„");
+
+						   // From : mcid, To : orgMcid : KOPECì€ ì—†ìŒ.
 						   //setMeasScoreValue(dbobject,year,mcid,orgMcid);
-						   System.out.println("8-1. Meas Create : ½ÇÀû°ª »ı¼º " + mcid + " => " + orgMcid);
-						   
-						   // °¡ÁßÄ¡°¡ ´Ş¶óÁö¸é... tblmeasuredetail, tblmeasurescore¿¡ UpdateÇÑ´Ù.
+						   System.out.println("8-1. Meas Create : ì‹¤ì ê°’ ìƒì„± " + mcid + " => " + orgMcid);
+
+						   // ê°€ì¤‘ì¹˜ê°€ ë‹¬ë¼ì§€ë©´... tblmeasuredetail, tblmeasurescoreì— Updateí•œë‹¤.
 						   strUI = " update tblmeasuredetail set weight = ? where strdate like ?||'%' and meausreid = ?";
 						   dbobject.executePreparedUpdate(strUI,new Object[]{orgWeight, year, orgMcid});
 
 						   strUI = " update tblmeasurescore set weight = ? where strdate like ?||'%' and meausreid = ?";
-						   dbobject.executePreparedUpdate(strUI,new Object[]{orgWeight, year, orgMcid});						   
+						   dbobject.executePreparedUpdate(strUI,new Object[]{orgWeight, year, orgMcid});
 					}
 
-					
+
 					//-------------------------------------------------------------------------
-					// 9. ÁöÇ¥°¡ÁßÄ¡ Update				
+					// 9. ì§€í‘œê°€ì¤‘ì¹˜ Update
 					//-------------------------------------------------------------------------
 					setOrgMeasWeight(dbobject,year,orgBid);
-					System.out.println("9. Meas Create : °¡ÁßÄ¡ ÀçÀû¿ë : " + orgBid);	
-					
+					System.out.println("9. Meas Create : ê°€ì¤‘ì¹˜ ì¬ì ìš© : " + orgBid);
+
 				}	// Loop End ----------------------------------------------------------------
-				
+
 			}
-			
+
 			conn.commit();
-			
+
 			request.setAttribute("rslt","true");
 
 		} catch (Exception e) {
@@ -2870,133 +2870,133 @@ public class BscTreeUtil {
 			if (conn != null) {conn.close(); conn = null;}
 		}
 	}
-	
+
 	/*
 	//-----------------------------------------------------------------------------------------------------
-	// 	ÁöÇ¥ÀÚµ¿»ı¼º...
+	// 	ì§€í‘œìë™ìƒì„±...
 	//-----------------------------------------------------------------------------------------------------
 	*/
 	public void setMeasCreateAll(HttpServletRequest request, HttpServletResponse response){
 		CoolConnection conn = null;
 		DBObject dbobject = null;
-		ResultSet rs = null;   
-	    
-		try {   
+		ResultSet rs = null;
+
+		try {
 			String strT = null;
 			String tbl = "TBLTREESCORE";
 
 			String year = request.getParameter("year");
 			String mode = request.getParameter("mode");
-			
-			// ´ë»óºÎ¼­ (ºÎ¼­¸í, mcid)
-			String srcstr = request.getParameter("srcstr")==null?"":request.getParameter("srcstr");			
+
+			// ëŒ€ìƒë¶€ì„œ (ë¶€ì„œëª…, mcid)
+			String srcstr = request.getParameter("srcstr")==null?"":request.getParameter("srcstr");
 			String orgstr = request.getParameter("orgstr")==null?"":request.getParameter("orgstr");
-			
+
 			System.out.println("scrstr " + srcstr);
-					
+
 			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
-			conn.createStatement(false);			
+			conn.createStatement(false);
 			if (dbobject==null) dbobject= new DBObject(conn.getConnection());
-			
+
 			if (!"".equals(srcstr.trim())){
-				
-				//--------------------------------------------------------------------------------------------	
-				//  ºÎ¼­º° Update.... Á¨Àå ºÎ¼­¸í¿¡ ',' ÀÌ µé¾î°¡³×...
+
+				//--------------------------------------------------------------------------------------------
+				//  ë¶€ì„œë³„ Update.... ì  ì¥ ë¶€ì„œëª…ì— ',' ì´ ë“¤ì–´ê°€ë„¤...
 				//--------------------------------------------------------------------------------------------
 				if (!"".equals(orgstr.trim())){
-					
+
 					String   orgBid   =null;
-					String   orgBcid  =null;						
-					String   orgWeight=null;						
+					String   orgBcid  =null;
+					String   orgWeight=null;
 					String   orgDefendent=null ;
-					
+
 					String   slevel=null;
 					String   orgPid=null;
 					String   orgOid=null;
 					String   orgMid=null;
-					String   orgMcid=null;					
-					
-					String[] orgdefineids = orgstr.split("\\`");	
-					
-					// ºÎ¼­·Î ...
+					String   orgMcid=null;
+
+					String[] orgdefineids = orgstr.split("\\`");
+
+					// ë¶€ì„œë¡œ ...
 					for (int m = 0; m < orgdefineids.length; m++) {
-						
-						String[] iPart = orgdefineids[m].split("\\^");							
-						
-						orgBid      = iPart[0];			// ºÎ¼­ TREE ID
-						orgBcid     = iPart[1];			// ºÎ¼­ ContentID
-						orgWeight   = iPart[2];			// ºÎ¼­ ÁöÇ¥°¡ÁßÄ¡
-						orgDefendent= iPart[3];		
+
+						String[] iPart = orgdefineids[m].split("\\^");
+
+						orgBid      = iPart[0];			// ë¶€ì„œ TREE ID
+						orgBcid     = iPart[1];			// ë¶€ì„œ ContentID
+						orgWeight   = iPart[2];			// ë¶€ì„œ ì§€í‘œê°€ì¤‘ì¹˜
+						orgDefendent= iPart[3];
 
 						System.out.println("\n\n\n\n");
 						System.out.println("===================================================================");
-						System.out.println("	setMeasCreateAll : orgBid / orgBcid / orgWeight / orgDefendent ="  + iPart[0] + "/"+ iPart[1] + "/"+ iPart[2] + "/"+ iPart[3] );						System.out.println("===================================================================");							
+						System.out.println("	setMeasCreateAll : orgBid / orgBcid / orgWeight / orgDefendent ="  + iPart[0] + "/"+ iPart[1] + "/"+ iPart[2] + "/"+ iPart[3] );						System.out.println("===================================================================");
 						System.out.println("===================================================================");
 
-						// ÁöÇ¥Á¤ÀÇ¼­¿Í ÁöÇ¥ÄÚµå ÃÊ±âÈ­.
+						// ì§€í‘œì •ì˜ì„œì™€ ì§€í‘œì½”ë“œ ì´ˆê¸°í™”.
 						String pcid    = null;
 						String ocid    = null;
 						String mcid    = null;
 						String mcode   = null;
-						String mweight = null;				
+						String mweight = null;
 						String[] srcdefineids = srcstr.split("\\`");
-						
-						// 1. ´ë»óºÎ¼­¿¡ °üÁ¡ÀÌ Á¸ÀçÇÏ´Â°¡?
+
+						// 1. ëŒ€ìƒë¶€ì„œì— ê´€ì ì´ ì¡´ì¬í•˜ëŠ”ê°€?
 						//    parentid = bscid...
-							
+
 						for (int k = 0; k < srcdefineids.length; k++) {
-							
-							// ÃÊ±âÈ­.
-							orgPid=null; orgOid=null;orgMid=null;orgMcid=null;							
-							
-							String[] sPart = srcdefineids[k].split("\\^");							
-							
-							pcid    = sPart[0];			
-							ocid    = sPart[1];			
-							mcid    = sPart[2];			// ºÎ¼­ TREE ID
-							mcode   = sPart[3];			// ºÎ¼­ ContentID
-							mweight = sPart[4];         // ºÎ¼­ ÁöÇ¥°¡ÁßÄ¡
+
+							// ì´ˆê¸°í™”.
+							orgPid=null; orgOid=null;orgMid=null;orgMcid=null;
+
+							String[] sPart = srcdefineids[k].split("\\^");
+
+							pcid    = sPart[0];
+							ocid    = sPart[1];
+							mcid    = sPart[2];			// ë¶€ì„œ TREE ID
+							mcode   = sPart[3];			// ë¶€ì„œ ContentID
+							mweight = sPart[4];         // ë¶€ì„œ ì§€í‘œê°€ì¤‘ì¹˜
 
 							System.out.println("==   MeasCreate :" + pcid + "/" + ocid + "/" + mcid + "/" + mcode + "/" + mweight);
-							
+
 							slevel = "3";
-							orgPid = getExistPstId(dbobject, year,slevel,orgBid,pcid);		
-							
+							orgPid = getExistPstId(dbobject, year,slevel,orgBid,pcid);
+
 							if ("".equals(orgPid)) {
 								orgPid = String.valueOf(dbobject.getNextId(tbl));
-								
+
 								strT  = "";
-								strT += " insert into tbltreescore                           "; 
+								strT += " insert into tbltreescore                           ";
 								strT += " (id,parentid,contentid,treelevel,rank,year,weight) ";
 								strT += " values (?,?,?,?,?,?,?)                             ";
-								
+
 								Object[] paramU = {orgPid,orgBid,pcid,slevel,"10",year,orgWeight };
 								dbobject.executePreparedUpdate(strT, paramU );
 							}
 							System.out.println("1. Meas Create : TREESCORE Perspective : " + orgPid);
-							
-							// 2. ´ë»óºÎ¼­¿¡ Àü·«¸ñÇ¥°¡ Á¸ÀçÇÏ´Â°¡?
+
+							// 2. ëŒ€ìƒë¶€ì„œì— ì „ëµëª©í‘œê°€ ì¡´ì¬í•˜ëŠ”ê°€?
 							slevel = "4";
-							orgOid = getExistObjId(dbobject, year,orgBid,orgPid,ocid);							
+							orgOid = getExistObjId(dbobject, year,orgBid,orgPid,ocid);
 							if ("".equals(orgOid)) {
 								orgOid = String.valueOf(dbobject.getNextId(tbl));
-								
+
 								strT  = "";
-								strT += " insert into tbltreescore                           "; 
+								strT += " insert into tbltreescore                           ";
 								strT += " (id,parentid,contentid,treelevel,rank,year,weight) ";
 								strT += " values (?,?,?,?,?,?,?)                             ";
-								
+
 								Object[] paramU = {orgOid,orgPid,ocid,slevel,"10",year,orgWeight };
 								dbobject.executePreparedUpdate(strT, paramU );
-							}							
+							}
 							System.out.println("2. Meas Create : TREESCORE Object : " + orgOid);
-							
-							// 3. ´ë»óºÎ¼­¿¡ ÁöÇ¥°¡ Á¸ÀçÇÏ´Ï?		
-							//  3-1.ContentId¸¦ ¾î¶»°Ô ±¸ÇÏÁö? ¾Æ´Â °ÍÀº ParentId, Measureid.
-							
+
+							// 3. ëŒ€ìƒë¶€ì„œì— ì§€í‘œê°€ ì¡´ì¬í•˜ë‹ˆ?
+							//  3-1.ContentIdë¥¼ ì–´ë–»ê²Œ êµ¬í•˜ì§€? ì•„ëŠ” ê²ƒì€ ParentId, Measureid.
+
 							slevel = "5";
 							StringBuffer sb = new StringBuffer();
-							
+
 							sb.append(" select t.id mid,t.parentid mpid,t.contentid mcid, c.name mname,      ");
 							sb.append("        c.id mcd,d.measureid, t.weight mweight                        ");
 							sb.append(" from   tbltreescore    t, tblmeasure c,  tblmeasuredefine d          ");
@@ -3004,35 +3004,35 @@ public class BscTreeUtil {
 							sb.append(" and    t.year      =?                                                ");
 							sb.append(" and    t.parentid  =?                                                ");
 							sb.append(" and    d.measureid =?                                                ");
-							
+
 							Object[] params = new Object[] {year, orgOid, mcode};
 							rs = dbobject.executePreparedQuery(sb.toString(),params);
 							if (rs.next()) {
 								orgMid    = rs.getString("mid");
-								orgMcid   = rs.getString("mcid");	
-							}					
-		
+								orgMcid   = rs.getString("mcid");
+							}
+
 							if ("".equals(orgMid)||orgMid==null) {
 								orgMid  = String.valueOf(dbobject.getNextId("TBLTREESCORE"    ));
 								orgMcid = String.valueOf(dbobject.getNextId("TBLMEASUREDEFINE"));
-								
+
 								strT  = "";
-								strT += " insert into tbltreescore                           "; 
+								strT += " insert into tbltreescore                           ";
 								strT += " (id,parentid,contentid,treelevel,rank,year,weight) ";
 								strT += " values (?,?,?,?,?,?,?)                             ";
-								
+
 								Object[] paramU = {orgMid,orgOid,orgMcid,slevel,"10",year, mweight };
 								dbobject.executePreparedUpdate(strT, paramU );
-							}					
-		
-							System.out.println("3. Meas Create : TREESCORE Measure : orgMcid " + orgMid +"/" + orgOid +"/" + orgMcid);					
-							
+							}
+
+							System.out.println("3. Meas Create : TREESCORE Measure : orgMcid " + orgMid +"/" + orgOid +"/" + orgMcid);
+
 							//-------------------------------------------------------------------------
-							// 4. ÁöÇ¥Á¤ÀÇ¼­¸¦ »èÁ¦ÈÄ  »õ·Ó°Ô µî·Ï.
+							// 4. ì§€í‘œì •ì˜ì„œë¥¼ ì‚­ì œí›„  ìƒˆë¡­ê²Œ ë“±ë¡.
 							//-------------------------------------------------------------------------
 							String strD = "delete from tblmeasuredefine where year = ? and id = ?";
 							dbobject.executePreparedUpdate(strD,new Object[]{year,orgMcid});
-							
+
 							String strM = " ";
 							strM += " insert into tblmeasuredefine (                   ";
 							strM += "    id, measureid, detaildefine, weight, unit,    ";
@@ -3041,8 +3041,8 @@ public class BscTreeUtil {
 							strM += "    measurement, year, trend,                     ";
 							strM += "    planned, plannedbase, base, baselimit, limit, plannedbaseplus, baseplus, baselimitplus, limitplus, ";
 							strM += "    y,   ya1, ya2, ya3, ya4, yb1, yb2, yb3,       ";
-							strM += "    mean, updateid, equationtype, datasource,     ";  
-							strM += "    ifsystem, mngdeptnm, targetrationle, planned_flag,scorecode )        ";   		
+							strM += "    mean, updateid, equationtype, datasource,     ";
+							strM += "    ifsystem, mngdeptnm, targetrationle, planned_flag,scorecode )        ";
 							strM += " select                                           ";
 							strM += "    ? id, measureid, detaildefine, weight, unit,  ";
 							strM += "    entrytype, measuretype, frequency,            ";
@@ -3050,84 +3050,84 @@ public class BscTreeUtil {
 							strM += "    measurement, year, trend,                     ";
 							strM += "    planned, plannedbase, base, baselimit, limit, plannedbaseplus, baseplus, baselimitplus, limitplus, ";
 							strM += "    y,   ya1, ya2, ya3, ya4, yb1, yb2, yb3,       ";
-							strM += "    mean, updateid, equationtype, datasource,     ";  
-							strM += "    ifsystem, mngdeptnm, targetrationle, planned_flag,scorecode           ";   
+							strM += "    mean, updateid, equationtype, datasource,     ";
+							strM += "    ifsystem, mngdeptnm, targetrationle, planned_flag,scorecode           ";
 							strM += " from  tblmeasuredefine                           ";
 							strM += " where year = ?                                   ";
-							strM += " and   id   = ?                                   ";							
+							strM += " and   id   = ?                                   ";
 							strM += " order by id                                      ";
-								
+
 							dbobject.executePreparedUpdate(strM, new Object[]{orgMcid, year, mcid});
 							System.out.println("4. Meas Create : MeasureDefine : " + mcid);
-		
-							
+
+
 							//-------------------------------------------------------------------------
-							// 5. Ç×¸ñÄÚµåµµ º¹»çÇÏ´Â°¡?
+							// 5. í•­ëª©ì½”ë“œë„ ë³µì‚¬í•˜ëŠ”ê°€?
 							//-------------------------------------------------------------------------
 							strD = "DELETE FROM TBLITEM WHERE MEASUREID=?";
 							dbobject.executePreparedUpdate(strD,new Object[]{orgMcid});
-							
+
 							String strUI  = " insert into tblitem (measureid, code, itemname, itementry, itemtype, unit, itemfixed)";
 								   strUI += " select ?, code, itemname, itementry, itemtype, unit, itemfixed  " ;
 								   strUI += " from   tblitem ";
 								   strUI += " where  measureid = ?" ;
-									  
+
 							Object[] pmUI = {orgMcid, mcid};
-							dbobject.executePreparedUpdate(strUI,pmUI);							
+							dbobject.executePreparedUpdate(strUI,pmUI);
 							System.out.println("5. Meas Create : ITEM");
-							
+
 							//-------------------------------------------------------------------------
-							// 6. ÁöÇ¥»ç¿ëÀÚ º¹»ç
-							//-------------------------------------------------------------------------	
+							// 6. ì§€í‘œì‚¬ìš©ì ë³µì‚¬
+							//-------------------------------------------------------------------------
 							strD  = " delete tblauthority where year = ? and measureid = ?" ;
-							dbobject.executePreparedUpdate(strD,new Object[]{year,mcid});			
-							   
-							strUI  = " insert into tblauthority (year,measureid,userid)    ";                       
-							strUI += " select year, ? measureid, userid  from tblauthority "; 
-							strUI += " where year = ?  "; 
+							dbobject.executePreparedUpdate(strD,new Object[]{year,mcid});
+
+							strUI  = " insert into tblauthority (year,measureid,userid)    ";
+							strUI += " select year, ? measureid, userid  from tblauthority ";
+							strUI += " where year = ?  ";
 							strUI += " and   measureid = ?" ;
-		
-							dbobject.executePreparedUpdate(strUI, new Object[]{year, orgMcid, mcid});			
-							System.out.println("6. Meas Create : ÁöÇ¥»ç¿ëÀÚ º¹»ç");		
-							
+
+							dbobject.executePreparedUpdate(strUI, new Object[]{year, orgMcid, mcid});
+							System.out.println("6. Meas Create : ì§€í‘œì‚¬ìš©ì ë³µì‚¬");
+
 							//-------------------------------------------------------------------------
-							// 6. ÁöÇ¥ ¸ñÇ¥°ª »ı¼º
-							//-------------------------------------------------------------------------					
+							// 6. ì§€í‘œ ëª©í‘œê°’ ìƒì„±
+							//-------------------------------------------------------------------------
 							setMeasDetailValue(dbobject,year,orgMcid);
-							System.out.println("7. Meas Create : ¸ñÇ¥°ª »ı¼º");	
-							
+							System.out.println("7. Meas Create : ëª©í‘œê°’ ìƒì„±");
+
 							//-------------------------------------------------------------------------
-							// 8. ÁöÇ¥½ÇÀû¿¬°è
+							// 8. ì§€í‘œì‹¤ì ì—°ê³„
 							//-------------------------------------------------------------------------
 							if ("Y".equals(orgDefendent)){
 								   strD  = " delete tblmeasuredependent where childid = ?" ;
-								   dbobject.executePreparedUpdate(strD,new Object[]{orgMcid});						
-								
+								   dbobject.executePreparedUpdate(strD,new Object[]{orgMcid});
+
 								   strUI  = " insert into tblmeasuredependent (parentid, childid) values (?,?)" ;
 								   dbobject.executePreparedUpdate(strUI,new Object[]{mcid, orgMcid});
-								   System.out.println("8. Meas Create : ÁöÇ¥½ÇÀû¿¬°è");	
-								   
-								   // ½ÇÀû ÀçÀû¿ë : XX Â¥Áõ¸¸¶¥... : tblitemactual, tblmeasuredetail, tblmeasurescore
-								   
+								   System.out.println("8. Meas Create : ì§€í‘œì‹¤ì ì—°ê³„");
+
+								   // ì‹¤ì  ì¬ì ìš© : XX ì§œì¦ë§Œë•…... : tblitemactual, tblmeasuredetail, tblmeasurescore
+
 								   // From : mcid, To : orgMcid
 								   //setMeasScoreValue(dbobject,year,mcid,orgMcid);
-								   System.out.println("8-1. Meas Create : ½ÇÀû°ª »ı¼º " + mcid + " => " + orgMcid);		
+								   System.out.println("8-1. Meas Create : ì‹¤ì ê°’ ìƒì„± " + mcid + " => " + orgMcid);
 							}
-					
+
 						}	// Loop End ----------------------------------------------------------------
-						
+
 						//-------------------------------------------------------------------------
-						// 9. ÁöÇ¥°¡ÁßÄ¡ Update				
+						// 9. ì§€í‘œê°€ì¤‘ì¹˜ Update
 						//-------------------------------------------------------------------------
 						setOrgMeasWeight(dbobject,year,orgBid);
-						System.out.println("9. Meas Create : °¡ÁßÄ¡ ÀçÀû¿ë " + orgBid);	
-						
+						System.out.println("9. Meas Create : ê°€ì¤‘ì¹˜ ì¬ì ìš© " + orgBid);
+
 					}	// orgStr End
-				
-				} // srcSTR Loop End.	
-			
+
+				} // srcSTR Loop End.
+
 			}	// srcStr End.
-			conn.commit();			
+			conn.commit();
 			request.setAttribute("rslt","true");
 
 		} catch (Exception e) {
@@ -3138,47 +3138,47 @@ public class BscTreeUtil {
 			if (conn != null) {conn.close(); conn = null;}
 		}
 	}
-		
+
 	/*
 	//-----------------------------------------------------------------------------------------------------
-	// 	ºÎ¼­ÀÇ ÁöÇ¥ ÀüÃ¼»èÁ¦.
+	// 	ë¶€ì„œì˜ ì§€í‘œ ì „ì²´ì‚­ì œ.
 	//-----------------------------------------------------------------------------------------------------
 	*/
 	public void OrgMeasDeleteAll(HttpServletRequest request, HttpServletResponse response){
 		CoolConnection conn = null;
 		DBObject dbobject = null;
-		ResultSet rs = null;   
-	    
-		try {   
+		ResultSet rs = null;
+
+		try {
 			String strT = null;
 			String tbl = "TBLTREESCORE";
-				
+
 			String year  = request.getParameter("year");
-			String bid   = request.getParameter("bid");		// »èÁ¦´ë»ó ºÎ¼­ BSCID
+			String bid   = request.getParameter("bid");		// ì‚­ì œëŒ€ìƒ ë¶€ì„œ BSCID
 
 			System.out.println("=================================================");
 			System.out.println("             OrgMeasDeleteAll BSC :" + bid);
 			System.out.println("=================================================");
-			
+
 			if ("".equals("bid")) return;
 
-			// 
-			// 1. ºÎ¼­¿¡ ÇØ´çÇÏ´Â ÁöÇ¥ List¸¦ ±¸ÇÑ´Ù. 
-			
-			// 2. »èÁ¦´ë»ó Å×ÀÌºí 
+			//
+			// 1. ë¶€ì„œì— í•´ë‹¹í•˜ëŠ” ì§€í‘œ Listë¥¼ êµ¬í•œë‹¤.
+
+			// 2. ì‚­ì œëŒ€ìƒ í…Œì´ë¸”
 			// 	2.1 tblmeasuredetail, tblmeasurescore    , tblitemactual
 			//  2.2 tblmeasuredefine, tblmeasuredefendent, tblauthority
-			//  2.3 tbltreescore    : ´Ü°èº° »èÁ¦ÁøÇà
-					
+			//  2.3 tbltreescore    : ë‹¨ê³„ë³„ ì‚­ì œì§„í–‰
+
 			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
-			conn.createStatement(false);			
+			conn.createStatement(false);
 			if (dbobject==null) dbobject= new DBObject(conn.getConnection());
-			
-			//--------------------------------------------------------------------------------------------	
+
+			//--------------------------------------------------------------------------------------------
 			// 	2.1 tblmeasuredetail, tblmeasurescore, tblitemactual
 			//--------------------------------------------------------------------------------------------
 			StringBuffer sb = new StringBuffer();
-			
+
 			sb.append(" delete tblmeasuredetail                                                                                   ");
 			sb.append(" where  strdate   like ?||'%'                                                                              ");
 			sb.append(" and    measureid in (                                                                                     ");
@@ -3201,7 +3201,7 @@ public class BscTreeUtil {
 			sb.append("                ) sbu,                                                                                     ");
 			sb.append("                (select t.id bid,t.parentid bpid,t.contentid bcid,t.treelevel blevel, c.name bname         ");
 			sb.append("                 from   tblhierarchy t,tblbsc c                                                            ");
-			sb.append("                 where  t.contentid=c.id  and t.treelevel=2 and t.year =? and t.id = ?                     ");			// Æ¯Á¤ºÎ¼­ 
+			sb.append("                 where  t.contentid=c.id  and t.treelevel=2 and t.year =? and t.id = ?                     ");			// íŠ¹ì •ë¶€ì„œ
 			sb.append("                ) bsc,                                                                                     ");
 			sb.append("                (select t.id pid,t.parentid ppid,t.contentid pcid,t.treelevel plevel, c.name pname         ");
 			sb.append("                 from   tbltreescore t,tblpst c                                                            ");
@@ -3221,23 +3221,23 @@ public class BscTreeUtil {
 			sb.append("         and    pid = opid (+)                                                                             ");
 			sb.append("         and    oid = mpid                                                                                 ");
 			sb.append("         )                                                                                                 ");
-			sb.append("         )                                                                                                 ");			
+			sb.append("         )                                                                                                 ");
 
-					
+
 			Object[] paramD = {year,	year,year,year,bid, 	year,year,year};
 			dbobject.executePreparedUpdate(sb.toString(), paramD );
-			
+
 			System.out.println("1. tblmeasuredetail :" + bid);
-			
-			//--------------------------------------------------------------------------------------------	
+
+			//--------------------------------------------------------------------------------------------
 			// 	2.1 tblmeasuredetail, tblmeasurescore, tblitemactual
 			//--------------------------------------------------------------------------------------------
 			sb = new StringBuffer();
-			
+
 			sb.append(" delete tblmeasurescore                                                                                    ");
 			sb.append(" where  strdate   like ?||'%'                                                                              ");
 			sb.append(" and    measureid in (                                                                                     ");
-			sb.append("         SELECT mcid FROM                                                                                  ");		// ÁöÇ¥Á¤ÀÇ¼­ 
+			sb.append("         SELECT mcid FROM                                                                                  ");		// ì§€í‘œì •ì˜ì„œ
 			sb.append("         (                                                                                                 ");
 			sb.append("         SELECT  cid, ccid, clevel, cname,                                                                 ");
 			sb.append("                 sid, scid, slevel, sname,                                                                 ");
@@ -3256,7 +3256,7 @@ public class BscTreeUtil {
 			sb.append("                ) sbu,                                                                                     ");
 			sb.append("                (select t.id bid,t.parentid bpid,t.contentid bcid,t.treelevel blevel, c.name bname         ");
 			sb.append("                 from   tblhierarchy t,tblbsc c                                                            ");
-			sb.append("                 where  t.contentid=c.id  and t.treelevel=2 and t.year =? and t.id = ?                     ");		// Æ¯Á¤ºÎ¼­ 
+			sb.append("                 where  t.contentid=c.id  and t.treelevel=2 and t.year =? and t.id = ?                     ");		// íŠ¹ì •ë¶€ì„œ
 			sb.append("                ) bsc,                                                                                     ");
 			sb.append("                (select t.id pid,t.parentid ppid,t.contentid pcid,t.treelevel plevel, c.name pname         ");
 			sb.append("                 from   tbltreescore t,tblpst c                                                            ");
@@ -3276,240 +3276,240 @@ public class BscTreeUtil {
 			sb.append("         and    pid = opid (+)                                                                             ");
 			sb.append("         and    oid = mpid                                                                                 ");
 			sb.append("         )                                                                                                 ");
-			sb.append("         )                                                                                                 ");			
-
-			paramD = new Object[] {year,	year,year,year,bid, 	year,year,year};
-			dbobject.executePreparedUpdate(sb.toString(), paramD );			
-			
-			System.out.println("2. tblmeasurescore :" + bid);
-			
-			//--------------------------------------------------------------------------------------------	
-			// 	2.1 tblmeasuredetail, tblmeasurescore, tblitemactual
-			//--------------------------------------------------------------------------------------------
-			sb = new StringBuffer();
-			
-			sb.append(" delete tblitemactual                                                                                    ");
-			sb.append(" where  strdate   like ?||'%'                                                                              ");
-			sb.append(" and    measureid in (                                                                                     ");
-			sb.append("         SELECT mcid FROM                                                                                  ");		// ÁöÇ¥Á¤ÀÇ¼­ 
-			sb.append("         (                                                                                                 ");
-			sb.append("         SELECT  cid, ccid, clevel, cname,                                                                 ");
-			sb.append("                 sid, scid, slevel, sname,                                                                 ");
-			sb.append("                 bid, bcid, blevel, bname,                                                                 ");
-			sb.append("                 pid, pcid, plevel, pname,                                                                 ");
-			sb.append("                 oid, ocid, olevel, oname,                                                                 ");
-			sb.append("                 mid, mcid, mlevel                                                                         ");
-			sb.append("         FROM                                                                                              ");
-			sb.append("                (select t.id cid,t.parentid cpid,t.contentid ccid,t.treelevel clevel, c.name cname         ");
-			sb.append("                 from   tblhierarchy t,tblcompany c                                                        ");
-			sb.append("                 where  t.contentid=c.id  and t.treelevel=0 and t.year =?                                  ");
-			sb.append("                ) com,                                                                                     ");
-			sb.append("                (select t.id sid,t.parentid spid,t.contentid scid,t.treelevel slevel, c.name sname         ");
-			sb.append("                 from   tblhierarchy t,tblsbu c                                                            ");
-			sb.append("                 where  t.contentid=c.id  and t.treelevel=1 and t.year =?                                  ");
-			sb.append("                ) sbu,                                                                                     ");
-			sb.append("                (select t.id bid,t.parentid bpid,t.contentid bcid,t.treelevel blevel, c.name bname         ");
-			sb.append("                 from   tblhierarchy t,tblbsc c                                                            ");
-			sb.append("                 where  t.contentid=c.id  and t.treelevel=2 and t.year =? and t.id = ?                     ");		// Æ¯Á¤ºÎ¼­ 
-			sb.append("                ) bsc,                                                                                     ");
-			sb.append("                (select t.id pid,t.parentid ppid,t.contentid pcid,t.treelevel plevel, c.name pname         ");
-			sb.append("                 from   tbltreescore t,tblpst c                                                            ");
-			sb.append("                 where  t.contentid=c.id  and t.treelevel=3 and t.year =?                                  ");
-			sb.append("                ) pst  ,                                                                                   ");
-			sb.append("                (select t.id oid,t.parentid opid,t.contentid ocid,t.treelevel olevel, c.name oname         ");
-			sb.append("                 from   tbltreescore t,tblobjective c                                                      ");
-			sb.append("                 where  t.contentid=c.id  and t.treelevel=4 and t.year =?                                  ");
-			sb.append("                ) obj ,                                                                                    ");
-			sb.append("                (select t.id mid,t.parentid mpid,t.contentid mcid,t.treelevel mlevel                       ");
-			sb.append("                 from    tbltreescore t                                                                    ");
-			sb.append("                 where  t.treelevel=5 and t.year =?                                                        ");
-			sb.append("                ) mea                                                                                      ");
-			sb.append("         where  cid = spid (+)                                                                             ");
-			sb.append("         and    sid = bpid (+)                                                                             ");
-			sb.append("         and    bid = ppid (+)                                                                             ");
-			sb.append("         and    pid = opid (+)                                                                             ");
-			sb.append("         and    oid = mpid                                                                                 ");
 			sb.append("         )                                                                                                 ");
-			sb.append("         )                                                                                                 ");			
-
-			paramD = new Object[] {year,	year,year,year,bid, 	year,year,year};
-			dbobject.executePreparedUpdate(sb.toString(), paramD );			
-
-			System.out.println("3. tblitemactual :" + bid);
-			
-			//--------------------------------------------------------------------------------------------	
-			//		  2.2 tblmeasuredefine, tblmeasuredefendent, tblauthority
-			//--------------------------------------------------------------------------------------------
-			sb = new StringBuffer();
-			
-			sb.append(" delete tblmeasuredependent                                                                                ");
-			sb.append(" where  childid in (                                                                                       ");
-			sb.append("         SELECT mcid FROM                                                                                  ");		// ÁöÇ¥Á¤ÀÇ¼­ 
-			sb.append("         (                                                                                                 ");
-			sb.append("         SELECT  cid, ccid, clevel, cname,                                                                 ");
-			sb.append("                 sid, scid, slevel, sname,                                                                 ");
-			sb.append("                 bid, bcid, blevel, bname,                                                                 ");
-			sb.append("                 pid, pcid, plevel, pname,                                                                 ");
-			sb.append("                 oid, ocid, olevel, oname,                                                                 ");
-			sb.append("                 mid, mcid, mlevel                                                                         ");
-			sb.append("         FROM                                                                                              ");
-			sb.append("                (select t.id cid,t.parentid cpid,t.contentid ccid,t.treelevel clevel, c.name cname         ");
-			sb.append("                 from   tblhierarchy t,tblcompany c                                                        ");
-			sb.append("                 where  t.contentid=c.id  and t.treelevel=0 and t.year =?                                  ");
-			sb.append("                ) com,                                                                                     ");
-			sb.append("                (select t.id sid,t.parentid spid,t.contentid scid,t.treelevel slevel, c.name sname         ");
-			sb.append("                 from   tblhierarchy t,tblsbu c                                                            ");
-			sb.append("                 where  t.contentid=c.id  and t.treelevel=1 and t.year =?                                  ");
-			sb.append("                ) sbu,                                                                                     ");
-			sb.append("                (select t.id bid,t.parentid bpid,t.contentid bcid,t.treelevel blevel, c.name bname         ");
-			sb.append("                 from   tblhierarchy t,tblbsc c                                                            ");
-			sb.append("                 where  t.contentid=c.id  and t.treelevel=2 and t.year =? and t.id = ?                     ");		// Æ¯Á¤ºÎ¼­ 
-			sb.append("                ) bsc,                                                                                     ");
-			sb.append("                (select t.id pid,t.parentid ppid,t.contentid pcid,t.treelevel plevel, c.name pname         ");
-			sb.append("                 from   tbltreescore t,tblpst c                                                            ");
-			sb.append("                 where  t.contentid=c.id  and t.treelevel=3 and t.year =?                                  ");
-			sb.append("                ) pst  ,                                                                                   ");
-			sb.append("                (select t.id oid,t.parentid opid,t.contentid ocid,t.treelevel olevel, c.name oname         ");
-			sb.append("                 from   tbltreescore t,tblobjective c                                                      ");
-			sb.append("                 where  t.contentid=c.id  and t.treelevel=4 and t.year =?                                  ");
-			sb.append("                ) obj ,                                                                                    ");
-			sb.append("                (select t.id mid,t.parentid mpid,t.contentid mcid,t.treelevel mlevel                       ");
-			sb.append("                 from    tbltreescore t                                                                    ");
-			sb.append("                 where  t.treelevel=5 and t.year =?                                                        ");
-			sb.append("                ) mea                                                                                      ");
-			sb.append("         where  cid = spid (+)                                                                             ");
-			sb.append("         and    sid = bpid (+)                                                                             ");
-			sb.append("         and    bid = ppid (+)                                                                             ");
-			sb.append("         and    pid = opid (+)                                                                             ");
-			sb.append("         and    oid = mpid                                                                                 ");
-			sb.append("         )                                                                                                 ");
-			sb.append("         )                                                                                                 ");			
-
-			paramD = new Object[] {year,year,year,bid, 	year,year,year};
-			dbobject.executePreparedUpdate(sb.toString(), paramD );			
-
-			System.out.println("4. tblmeasuredefendent :" + bid);
-						
-			
-			//--------------------------------------------------------------------------------------------	
-			//		  2.2 tblmeasuredefine, tblmeasuredefendent, tblauthority
-			//--------------------------------------------------------------------------------------------
-			sb = new StringBuffer();
-			
-			sb.append(" delete tblauthority                                                                                       ");
-			sb.append(" where  year   like ?                                                                                      ");
-			sb.append(" and    measureid in (                                                                                     ");
-			sb.append("         SELECT mcid FROM                                                                                  ");		// ÁöÇ¥Á¤ÀÇ¼­ 
-			sb.append("         (                                                                                                 ");
-			sb.append("         SELECT  cid, ccid, clevel, cname,                                                                 ");
-			sb.append("                 sid, scid, slevel, sname,                                                                 ");
-			sb.append("                 bid, bcid, blevel, bname,                                                                 ");
-			sb.append("                 pid, pcid, plevel, pname,                                                                 ");
-			sb.append("                 oid, ocid, olevel, oname,                                                                 ");
-			sb.append("                 mid, mcid, mlevel                                                                         ");
-			sb.append("         FROM                                                                                              ");
-			sb.append("                (select t.id cid,t.parentid cpid,t.contentid ccid,t.treelevel clevel, c.name cname         ");
-			sb.append("                 from   tblhierarchy t,tblcompany c                                                        ");
-			sb.append("                 where  t.contentid=c.id  and t.treelevel=0 and t.year =?                                  ");
-			sb.append("                ) com,                                                                                     ");
-			sb.append("                (select t.id sid,t.parentid spid,t.contentid scid,t.treelevel slevel, c.name sname         ");
-			sb.append("                 from   tblhierarchy t,tblsbu c                                                            ");
-			sb.append("                 where  t.contentid=c.id  and t.treelevel=1 and t.year =?                                  ");
-			sb.append("                ) sbu,                                                                                     ");
-			sb.append("                (select t.id bid,t.parentid bpid,t.contentid bcid,t.treelevel blevel, c.name bname         ");
-			sb.append("                 from   tblhierarchy t,tblbsc c                                                            ");
-			sb.append("                 where  t.contentid=c.id  and t.treelevel=2 and t.year =? and t.id = ?                     ");		// Æ¯Á¤ºÎ¼­ 
-			sb.append("                ) bsc,                                                                                     ");
-			sb.append("                (select t.id pid,t.parentid ppid,t.contentid pcid,t.treelevel plevel, c.name pname         ");
-			sb.append("                 from   tbltreescore t,tblpst c                                                            ");
-			sb.append("                 where  t.contentid=c.id  and t.treelevel=3 and t.year =?                                  ");
-			sb.append("                ) pst  ,                                                                                   ");
-			sb.append("                (select t.id oid,t.parentid opid,t.contentid ocid,t.treelevel olevel, c.name oname         ");
-			sb.append("                 from   tbltreescore t,tblobjective c                                                      ");
-			sb.append("                 where  t.contentid=c.id  and t.treelevel=4 and t.year =?                                  ");
-			sb.append("                ) obj ,                                                                                    ");
-			sb.append("                (select t.id mid,t.parentid mpid,t.contentid mcid,t.treelevel mlevel                       ");
-			sb.append("                 from    tbltreescore t                                                                    ");
-			sb.append("                 where  t.treelevel=5 and t.year =?                                                        ");
-			sb.append("                ) mea                                                                                      ");
-			sb.append("         where  cid = spid (+)                                                                             ");
-			sb.append("         and    sid = bpid (+)                                                                             ");
-			sb.append("         and    bid = ppid (+)                                                                             ");
-			sb.append("         and    pid = opid (+)                                                                             ");
-			sb.append("         and    oid = mpid                                                                                 ");
-			sb.append("         )                                                                                                 ");
-			sb.append("         )                                                                                                 ");			
-
-			paramD = new Object[] {year,	year,year,year,bid, 	year,year,year};
-			dbobject.executePreparedUpdate(sb.toString(), paramD );				
-			
-			System.out.println("5. tblauthority :" + bid);
-			
-			//--------------------------------------------------------------------------------------------	
-			//		  2.2 tblmeasuredefine, tblmeasuredefendent, tblauthority
-			//--------------------------------------------------------------------------------------------
-			sb = new StringBuffer();
-			
-			sb.append(" delete tblmeasuredefine                                                                                   ");
-			sb.append(" where  year   like ?                                                                                      ");
-			sb.append(" and    id in (                                                                                            ");
-			sb.append("         SELECT mcid FROM                                                                                  ");		// ÁöÇ¥Á¤ÀÇ¼­ 
-			sb.append("         (                                                                                                 ");
-			sb.append("         SELECT  cid, ccid, clevel, cname,                                                                 ");
-			sb.append("                 sid, scid, slevel, sname,                                                                 ");
-			sb.append("                 bid, bcid, blevel, bname,                                                                 ");
-			sb.append("                 pid, pcid, plevel, pname,                                                                 ");
-			sb.append("                 oid, ocid, olevel, oname,                                                                 ");
-			sb.append("                 mid, mcid, mlevel                                                                         ");
-			sb.append("         FROM                                                                                              ");
-			sb.append("                (select t.id cid,t.parentid cpid,t.contentid ccid,t.treelevel clevel, c.name cname         ");
-			sb.append("                 from   tblhierarchy t,tblcompany c                                                        ");
-			sb.append("                 where  t.contentid=c.id  and t.treelevel=0 and t.year =?                                  ");
-			sb.append("                ) com,                                                                                     ");
-			sb.append("                (select t.id sid,t.parentid spid,t.contentid scid,t.treelevel slevel, c.name sname         ");
-			sb.append("                 from   tblhierarchy t,tblsbu c                                                            ");
-			sb.append("                 where  t.contentid=c.id  and t.treelevel=1 and t.year =?                                  ");
-			sb.append("                ) sbu,                                                                                     ");
-			sb.append("                (select t.id bid,t.parentid bpid,t.contentid bcid,t.treelevel blevel, c.name bname         ");
-			sb.append("                 from   tblhierarchy t,tblbsc c                                                            ");
-			sb.append("                 where  t.contentid=c.id  and t.treelevel=2 and t.year =? and t.id = ?                     ");		// Æ¯Á¤ºÎ¼­ 
-			sb.append("                ) bsc,                                                                                     ");
-			sb.append("                (select t.id pid,t.parentid ppid,t.contentid pcid,t.treelevel plevel, c.name pname         ");
-			sb.append("                 from   tbltreescore t,tblpst c                                                            ");
-			sb.append("                 where  t.contentid=c.id  and t.treelevel=3 and t.year =?                                  ");
-			sb.append("                ) pst  ,                                                                                   ");
-			sb.append("                (select t.id oid,t.parentid opid,t.contentid ocid,t.treelevel olevel, c.name oname         ");
-			sb.append("                 from   tbltreescore t,tblobjective c                                                      ");
-			sb.append("                 where  t.contentid=c.id  and t.treelevel=4 and t.year =?                                  ");
-			sb.append("                ) obj ,                                                                                    ");
-			sb.append("                (select t.id mid,t.parentid mpid,t.contentid mcid,t.treelevel mlevel                       ");
-			sb.append("                 from    tbltreescore t                                                                    ");
-			sb.append("                 where  t.treelevel=5 and t.year =?                                                        ");
-			sb.append("                ) mea                                                                                      ");
-			sb.append("         where  cid = spid (+)                                                                             ");
-			sb.append("         and    sid = bpid (+)                                                                             ");
-			sb.append("         and    bid = ppid (+)                                                                             ");
-			sb.append("         and    pid = opid (+)                                                                             ");
-			sb.append("         and    oid = mpid                                                                                 ");
-			sb.append("         )                                                                                                 ");
-			sb.append("         )                                                                                                 ");			
 
 			paramD = new Object[] {year,	year,year,year,bid, 	year,year,year};
 			dbobject.executePreparedUpdate(sb.toString(), paramD );
-			
-			System.out.println("6. tblmeasuredefine :" + bid);
-			
-			
-			//--------------------------------------------------------------------------------------------	
-			//		  2.3 tbltreescore    : ´Ü°èº° »èÁ¦ÁøÇà : MEAS
+
+			System.out.println("2. tblmeasurescore :" + bid);
+
+			//--------------------------------------------------------------------------------------------
+			// 	2.1 tblmeasuredetail, tblmeasurescore, tblitemactual
 			//--------------------------------------------------------------------------------------------
 			sb = new StringBuffer();
-			
+
+			sb.append(" delete tblitemactual                                                                                    ");
+			sb.append(" where  strdate   like ?||'%'                                                                              ");
+			sb.append(" and    measureid in (                                                                                     ");
+			sb.append("         SELECT mcid FROM                                                                                  ");		// ì§€í‘œì •ì˜ì„œ
+			sb.append("         (                                                                                                 ");
+			sb.append("         SELECT  cid, ccid, clevel, cname,                                                                 ");
+			sb.append("                 sid, scid, slevel, sname,                                                                 ");
+			sb.append("                 bid, bcid, blevel, bname,                                                                 ");
+			sb.append("                 pid, pcid, plevel, pname,                                                                 ");
+			sb.append("                 oid, ocid, olevel, oname,                                                                 ");
+			sb.append("                 mid, mcid, mlevel                                                                         ");
+			sb.append("         FROM                                                                                              ");
+			sb.append("                (select t.id cid,t.parentid cpid,t.contentid ccid,t.treelevel clevel, c.name cname         ");
+			sb.append("                 from   tblhierarchy t,tblcompany c                                                        ");
+			sb.append("                 where  t.contentid=c.id  and t.treelevel=0 and t.year =?                                  ");
+			sb.append("                ) com,                                                                                     ");
+			sb.append("                (select t.id sid,t.parentid spid,t.contentid scid,t.treelevel slevel, c.name sname         ");
+			sb.append("                 from   tblhierarchy t,tblsbu c                                                            ");
+			sb.append("                 where  t.contentid=c.id  and t.treelevel=1 and t.year =?                                  ");
+			sb.append("                ) sbu,                                                                                     ");
+			sb.append("                (select t.id bid,t.parentid bpid,t.contentid bcid,t.treelevel blevel, c.name bname         ");
+			sb.append("                 from   tblhierarchy t,tblbsc c                                                            ");
+			sb.append("                 where  t.contentid=c.id  and t.treelevel=2 and t.year =? and t.id = ?                     ");		// íŠ¹ì •ë¶€ì„œ
+			sb.append("                ) bsc,                                                                                     ");
+			sb.append("                (select t.id pid,t.parentid ppid,t.contentid pcid,t.treelevel plevel, c.name pname         ");
+			sb.append("                 from   tbltreescore t,tblpst c                                                            ");
+			sb.append("                 where  t.contentid=c.id  and t.treelevel=3 and t.year =?                                  ");
+			sb.append("                ) pst  ,                                                                                   ");
+			sb.append("                (select t.id oid,t.parentid opid,t.contentid ocid,t.treelevel olevel, c.name oname         ");
+			sb.append("                 from   tbltreescore t,tblobjective c                                                      ");
+			sb.append("                 where  t.contentid=c.id  and t.treelevel=4 and t.year =?                                  ");
+			sb.append("                ) obj ,                                                                                    ");
+			sb.append("                (select t.id mid,t.parentid mpid,t.contentid mcid,t.treelevel mlevel                       ");
+			sb.append("                 from    tbltreescore t                                                                    ");
+			sb.append("                 where  t.treelevel=5 and t.year =?                                                        ");
+			sb.append("                ) mea                                                                                      ");
+			sb.append("         where  cid = spid (+)                                                                             ");
+			sb.append("         and    sid = bpid (+)                                                                             ");
+			sb.append("         and    bid = ppid (+)                                                                             ");
+			sb.append("         and    pid = opid (+)                                                                             ");
+			sb.append("         and    oid = mpid                                                                                 ");
+			sb.append("         )                                                                                                 ");
+			sb.append("         )                                                                                                 ");
+
+			paramD = new Object[] {year,	year,year,year,bid, 	year,year,year};
+			dbobject.executePreparedUpdate(sb.toString(), paramD );
+
+			System.out.println("3. tblitemactual :" + bid);
+
+			//--------------------------------------------------------------------------------------------
+			//		  2.2 tblmeasuredefine, tblmeasuredefendent, tblauthority
+			//--------------------------------------------------------------------------------------------
+			sb = new StringBuffer();
+
+			sb.append(" delete tblmeasuredependent                                                                                ");
+			sb.append(" where  childid in (                                                                                       ");
+			sb.append("         SELECT mcid FROM                                                                                  ");		// ì§€í‘œì •ì˜ì„œ
+			sb.append("         (                                                                                                 ");
+			sb.append("         SELECT  cid, ccid, clevel, cname,                                                                 ");
+			sb.append("                 sid, scid, slevel, sname,                                                                 ");
+			sb.append("                 bid, bcid, blevel, bname,                                                                 ");
+			sb.append("                 pid, pcid, plevel, pname,                                                                 ");
+			sb.append("                 oid, ocid, olevel, oname,                                                                 ");
+			sb.append("                 mid, mcid, mlevel                                                                         ");
+			sb.append("         FROM                                                                                              ");
+			sb.append("                (select t.id cid,t.parentid cpid,t.contentid ccid,t.treelevel clevel, c.name cname         ");
+			sb.append("                 from   tblhierarchy t,tblcompany c                                                        ");
+			sb.append("                 where  t.contentid=c.id  and t.treelevel=0 and t.year =?                                  ");
+			sb.append("                ) com,                                                                                     ");
+			sb.append("                (select t.id sid,t.parentid spid,t.contentid scid,t.treelevel slevel, c.name sname         ");
+			sb.append("                 from   tblhierarchy t,tblsbu c                                                            ");
+			sb.append("                 where  t.contentid=c.id  and t.treelevel=1 and t.year =?                                  ");
+			sb.append("                ) sbu,                                                                                     ");
+			sb.append("                (select t.id bid,t.parentid bpid,t.contentid bcid,t.treelevel blevel, c.name bname         ");
+			sb.append("                 from   tblhierarchy t,tblbsc c                                                            ");
+			sb.append("                 where  t.contentid=c.id  and t.treelevel=2 and t.year =? and t.id = ?                     ");		// íŠ¹ì •ë¶€ì„œ
+			sb.append("                ) bsc,                                                                                     ");
+			sb.append("                (select t.id pid,t.parentid ppid,t.contentid pcid,t.treelevel plevel, c.name pname         ");
+			sb.append("                 from   tbltreescore t,tblpst c                                                            ");
+			sb.append("                 where  t.contentid=c.id  and t.treelevel=3 and t.year =?                                  ");
+			sb.append("                ) pst  ,                                                                                   ");
+			sb.append("                (select t.id oid,t.parentid opid,t.contentid ocid,t.treelevel olevel, c.name oname         ");
+			sb.append("                 from   tbltreescore t,tblobjective c                                                      ");
+			sb.append("                 where  t.contentid=c.id  and t.treelevel=4 and t.year =?                                  ");
+			sb.append("                ) obj ,                                                                                    ");
+			sb.append("                (select t.id mid,t.parentid mpid,t.contentid mcid,t.treelevel mlevel                       ");
+			sb.append("                 from    tbltreescore t                                                                    ");
+			sb.append("                 where  t.treelevel=5 and t.year =?                                                        ");
+			sb.append("                ) mea                                                                                      ");
+			sb.append("         where  cid = spid (+)                                                                             ");
+			sb.append("         and    sid = bpid (+)                                                                             ");
+			sb.append("         and    bid = ppid (+)                                                                             ");
+			sb.append("         and    pid = opid (+)                                                                             ");
+			sb.append("         and    oid = mpid                                                                                 ");
+			sb.append("         )                                                                                                 ");
+			sb.append("         )                                                                                                 ");
+
+			paramD = new Object[] {year,year,year,bid, 	year,year,year};
+			dbobject.executePreparedUpdate(sb.toString(), paramD );
+
+			System.out.println("4. tblmeasuredefendent :" + bid);
+
+
+			//--------------------------------------------------------------------------------------------
+			//		  2.2 tblmeasuredefine, tblmeasuredefendent, tblauthority
+			//--------------------------------------------------------------------------------------------
+			sb = new StringBuffer();
+
+			sb.append(" delete tblauthority                                                                                       ");
+			sb.append(" where  year   like ?                                                                                      ");
+			sb.append(" and    measureid in (                                                                                     ");
+			sb.append("         SELECT mcid FROM                                                                                  ");		// ì§€í‘œì •ì˜ì„œ
+			sb.append("         (                                                                                                 ");
+			sb.append("         SELECT  cid, ccid, clevel, cname,                                                                 ");
+			sb.append("                 sid, scid, slevel, sname,                                                                 ");
+			sb.append("                 bid, bcid, blevel, bname,                                                                 ");
+			sb.append("                 pid, pcid, plevel, pname,                                                                 ");
+			sb.append("                 oid, ocid, olevel, oname,                                                                 ");
+			sb.append("                 mid, mcid, mlevel                                                                         ");
+			sb.append("         FROM                                                                                              ");
+			sb.append("                (select t.id cid,t.parentid cpid,t.contentid ccid,t.treelevel clevel, c.name cname         ");
+			sb.append("                 from   tblhierarchy t,tblcompany c                                                        ");
+			sb.append("                 where  t.contentid=c.id  and t.treelevel=0 and t.year =?                                  ");
+			sb.append("                ) com,                                                                                     ");
+			sb.append("                (select t.id sid,t.parentid spid,t.contentid scid,t.treelevel slevel, c.name sname         ");
+			sb.append("                 from   tblhierarchy t,tblsbu c                                                            ");
+			sb.append("                 where  t.contentid=c.id  and t.treelevel=1 and t.year =?                                  ");
+			sb.append("                ) sbu,                                                                                     ");
+			sb.append("                (select t.id bid,t.parentid bpid,t.contentid bcid,t.treelevel blevel, c.name bname         ");
+			sb.append("                 from   tblhierarchy t,tblbsc c                                                            ");
+			sb.append("                 where  t.contentid=c.id  and t.treelevel=2 and t.year =? and t.id = ?                     ");		// íŠ¹ì •ë¶€ì„œ
+			sb.append("                ) bsc,                                                                                     ");
+			sb.append("                (select t.id pid,t.parentid ppid,t.contentid pcid,t.treelevel plevel, c.name pname         ");
+			sb.append("                 from   tbltreescore t,tblpst c                                                            ");
+			sb.append("                 where  t.contentid=c.id  and t.treelevel=3 and t.year =?                                  ");
+			sb.append("                ) pst  ,                                                                                   ");
+			sb.append("                (select t.id oid,t.parentid opid,t.contentid ocid,t.treelevel olevel, c.name oname         ");
+			sb.append("                 from   tbltreescore t,tblobjective c                                                      ");
+			sb.append("                 where  t.contentid=c.id  and t.treelevel=4 and t.year =?                                  ");
+			sb.append("                ) obj ,                                                                                    ");
+			sb.append("                (select t.id mid,t.parentid mpid,t.contentid mcid,t.treelevel mlevel                       ");
+			sb.append("                 from    tbltreescore t                                                                    ");
+			sb.append("                 where  t.treelevel=5 and t.year =?                                                        ");
+			sb.append("                ) mea                                                                                      ");
+			sb.append("         where  cid = spid (+)                                                                             ");
+			sb.append("         and    sid = bpid (+)                                                                             ");
+			sb.append("         and    bid = ppid (+)                                                                             ");
+			sb.append("         and    pid = opid (+)                                                                             ");
+			sb.append("         and    oid = mpid                                                                                 ");
+			sb.append("         )                                                                                                 ");
+			sb.append("         )                                                                                                 ");
+
+			paramD = new Object[] {year,	year,year,year,bid, 	year,year,year};
+			dbobject.executePreparedUpdate(sb.toString(), paramD );
+
+			System.out.println("5. tblauthority :" + bid);
+
+			//--------------------------------------------------------------------------------------------
+			//		  2.2 tblmeasuredefine, tblmeasuredefendent, tblauthority
+			//--------------------------------------------------------------------------------------------
+			sb = new StringBuffer();
+
+			sb.append(" delete tblmeasuredefine                                                                                   ");
+			sb.append(" where  year   like ?                                                                                      ");
+			sb.append(" and    id in (                                                                                            ");
+			sb.append("         SELECT mcid FROM                                                                                  ");		// ì§€í‘œì •ì˜ì„œ
+			sb.append("         (                                                                                                 ");
+			sb.append("         SELECT  cid, ccid, clevel, cname,                                                                 ");
+			sb.append("                 sid, scid, slevel, sname,                                                                 ");
+			sb.append("                 bid, bcid, blevel, bname,                                                                 ");
+			sb.append("                 pid, pcid, plevel, pname,                                                                 ");
+			sb.append("                 oid, ocid, olevel, oname,                                                                 ");
+			sb.append("                 mid, mcid, mlevel                                                                         ");
+			sb.append("         FROM                                                                                              ");
+			sb.append("                (select t.id cid,t.parentid cpid,t.contentid ccid,t.treelevel clevel, c.name cname         ");
+			sb.append("                 from   tblhierarchy t,tblcompany c                                                        ");
+			sb.append("                 where  t.contentid=c.id  and t.treelevel=0 and t.year =?                                  ");
+			sb.append("                ) com,                                                                                     ");
+			sb.append("                (select t.id sid,t.parentid spid,t.contentid scid,t.treelevel slevel, c.name sname         ");
+			sb.append("                 from   tblhierarchy t,tblsbu c                                                            ");
+			sb.append("                 where  t.contentid=c.id  and t.treelevel=1 and t.year =?                                  ");
+			sb.append("                ) sbu,                                                                                     ");
+			sb.append("                (select t.id bid,t.parentid bpid,t.contentid bcid,t.treelevel blevel, c.name bname         ");
+			sb.append("                 from   tblhierarchy t,tblbsc c                                                            ");
+			sb.append("                 where  t.contentid=c.id  and t.treelevel=2 and t.year =? and t.id = ?                     ");		// íŠ¹ì •ë¶€ì„œ
+			sb.append("                ) bsc,                                                                                     ");
+			sb.append("                (select t.id pid,t.parentid ppid,t.contentid pcid,t.treelevel plevel, c.name pname         ");
+			sb.append("                 from   tbltreescore t,tblpst c                                                            ");
+			sb.append("                 where  t.contentid=c.id  and t.treelevel=3 and t.year =?                                  ");
+			sb.append("                ) pst  ,                                                                                   ");
+			sb.append("                (select t.id oid,t.parentid opid,t.contentid ocid,t.treelevel olevel, c.name oname         ");
+			sb.append("                 from   tbltreescore t,tblobjective c                                                      ");
+			sb.append("                 where  t.contentid=c.id  and t.treelevel=4 and t.year =?                                  ");
+			sb.append("                ) obj ,                                                                                    ");
+			sb.append("                (select t.id mid,t.parentid mpid,t.contentid mcid,t.treelevel mlevel                       ");
+			sb.append("                 from    tbltreescore t                                                                    ");
+			sb.append("                 where  t.treelevel=5 and t.year =?                                                        ");
+			sb.append("                ) mea                                                                                      ");
+			sb.append("         where  cid = spid (+)                                                                             ");
+			sb.append("         and    sid = bpid (+)                                                                             ");
+			sb.append("         and    bid = ppid (+)                                                                             ");
+			sb.append("         and    pid = opid (+)                                                                             ");
+			sb.append("         and    oid = mpid                                                                                 ");
+			sb.append("         )                                                                                                 ");
+			sb.append("         )                                                                                                 ");
+
+			paramD = new Object[] {year,	year,year,year,bid, 	year,year,year};
+			dbobject.executePreparedUpdate(sb.toString(), paramD );
+
+			System.out.println("6. tblmeasuredefine :" + bid);
+
+
+			//--------------------------------------------------------------------------------------------
+			//		  2.3 tbltreescore    : ë‹¨ê³„ë³„ ì‚­ì œì§„í–‰ : MEAS
+			//--------------------------------------------------------------------------------------------
+			sb = new StringBuffer();
+
 			sb.append(" delete tbltreescore                                                                                       ");
 			sb.append(" where  year   like ?                                                                                      ");
 			sb.append(" and    treelevel = 5                                                                                      ");
 			sb.append(" and    parentid in (                                                                                      ");
-			sb.append("         SELECT oid FROM                                                                                   ");		// ÁöÇ¥Á¤ÀÇ¼­ 
+			sb.append("         SELECT oid FROM                                                                                   ");		// ì§€í‘œì •ì˜ì„œ
 			sb.append("         (                                                                                                 ");
 			sb.append("         SELECT  cid, ccid, clevel, cname,                                                                 ");
 			sb.append("                 sid, scid, slevel, sname,                                                                 ");
@@ -3527,7 +3527,7 @@ public class BscTreeUtil {
 			sb.append("                ) sbu,                                                                                     ");
 			sb.append("                (select t.id bid,t.parentid bpid,t.contentid bcid,t.treelevel blevel, c.name bname         ");
 			sb.append("                 from   tblhierarchy t,tblbsc c                                                            ");
-			sb.append("                 where  t.contentid=c.id  and t.treelevel=2 and t.year =? and t.id = ?                     ");		// Æ¯Á¤ºÎ¼­ 
+			sb.append("                 where  t.contentid=c.id  and t.treelevel=2 and t.year =? and t.id = ?                     ");		// íŠ¹ì •ë¶€ì„œ
 			sb.append("                ) bsc,                                                                                     ");
 			sb.append("                (select t.id pid,t.parentid ppid,t.contentid pcid,t.treelevel plevel, c.name pname         ");
 			sb.append("                 from   tbltreescore t,tblpst c                                                            ");
@@ -3542,23 +3542,23 @@ public class BscTreeUtil {
 			sb.append("         and    bid = ppid (+)                                                                             ");
 			sb.append("         and    pid = opid                                                                                 ");
 			sb.append("         )                                                                                                 ");
-			sb.append("         )                                                                                                 ");			
+			sb.append("         )                                                                                                 ");
 
 			paramD = new Object[] {year,	year,year,year,bid, 	year,year};
 			dbobject.executePreparedUpdate(sb.toString(), paramD );
 
 			System.out.println("7. tbltreescore Level 5:" + bid);
-						
-			//--------------------------------------------------------------------------------------------	
-			//		  2.3 tbltreescore    : ´Ü°èº° »èÁ¦ÁøÇà : OBJ
+
+			//--------------------------------------------------------------------------------------------
+			//		  2.3 tbltreescore    : ë‹¨ê³„ë³„ ì‚­ì œì§„í–‰ : OBJ
 			//--------------------------------------------------------------------------------------------
 			sb = new StringBuffer();
-			
+
 			sb.append(" delete tbltreescore                                                                                       ");
 			sb.append(" where  year   like ?                                                                                      ");
 			sb.append(" and    treelevel = 4                                                                                      ");
 			sb.append(" and    parentid in (                                                                                      ");
-			sb.append("         SELECT pid FROM                                                                                   ");		// ÁöÇ¥Á¤ÀÇ¼­ 
+			sb.append("         SELECT pid FROM                                                                                   ");		// ì§€í‘œì •ì˜ì„œ
 			sb.append("         (                                                                                                 ");
 			sb.append("         SELECT  cid, ccid, clevel, cname,                                                                 ");
 			sb.append("                 sid, scid, slevel, sname,                                                                 ");
@@ -3575,7 +3575,7 @@ public class BscTreeUtil {
 			sb.append("                ) sbu,                                                                                     ");
 			sb.append("                (select t.id bid,t.parentid bpid,t.contentid bcid,t.treelevel blevel, c.name bname         ");
 			sb.append("                 from   tblhierarchy t,tblbsc c                                                            ");
-			sb.append("                 where  t.contentid=c.id  and t.treelevel=2 and t.year =? and t.id = ?                     ");		// Æ¯Á¤ºÎ¼­ 
+			sb.append("                 where  t.contentid=c.id  and t.treelevel=2 and t.year =? and t.id = ?                     ");		// íŠ¹ì •ë¶€ì„œ
 			sb.append("                ) bsc,                                                                                     ");
 			sb.append("                (select t.id pid,t.parentid ppid,t.contentid pcid,t.treelevel plevel, c.name pname         ");
 			sb.append("                 from   tbltreescore t,tblpst c                                                            ");
@@ -3585,23 +3585,23 @@ public class BscTreeUtil {
 			sb.append("         and    sid = bpid (+)                                                                             ");
 			sb.append("         and    bid = ppid                                                                                 ");
 			sb.append("         )                                                                                                 ");
-			sb.append("         )                                                                                                 ");			
+			sb.append("         )                                                                                                 ");
 
 			paramD = new Object[] {year,	year,year,year,bid, 	year};
 			dbobject.executePreparedUpdate(sb.toString(), paramD );
 
 			System.out.println("7. tbltreescore Level 4:" + bid);
-			
-			//--------------------------------------------------------------------------------------------	
-			//		  2.3 tbltreescore    : ´Ü°èº° »èÁ¦ÁøÇà : PST
+
+			//--------------------------------------------------------------------------------------------
+			//		  2.3 tbltreescore    : ë‹¨ê³„ë³„ ì‚­ì œì§„í–‰ : PST
 			//--------------------------------------------------------------------------------------------
 			sb = new StringBuffer();
-			
+
 			sb.append(" delete tbltreescore                                                                                       ");
 			sb.append(" where  year   like ?                                                                                      ");
 			sb.append(" and    treelevel = 3                                                                                      ");
 			sb.append(" and    parentid in (                                                                                      ");
-			sb.append("         SELECT bid FROM                                                                                   ");		// ÁöÇ¥Á¤ÀÇ¼­ 
+			sb.append("         SELECT bid FROM                                                                                   ");		// ì§€í‘œì •ì˜ì„œ
 			sb.append("         (                                                                                                 ");
 			sb.append("         SELECT  cid, ccid, clevel, cname,                                                                 ");
 			sb.append("                 sid, scid, slevel, sname,                                                                 ");
@@ -3617,22 +3617,22 @@ public class BscTreeUtil {
 			sb.append("                ) sbu,                                                                                     ");
 			sb.append("                (select t.id bid,t.parentid bpid,t.contentid bcid,t.treelevel blevel, c.name bname         ");
 			sb.append("                 from   tblhierarchy t,tblbsc c                                                            ");
-			sb.append("                 where  t.contentid=c.id  and t.treelevel=2 and t.year =? and t.id = ?                     ");		// Æ¯Á¤ºÎ¼­ 
+			sb.append("                 where  t.contentid=c.id  and t.treelevel=2 and t.year =? and t.id = ?                     ");		// íŠ¹ì •ë¶€ì„œ
 			sb.append("                ) bsc                                                                                     ");
 			sb.append("         where  cid = spid (+)                                                                             ");
 			sb.append("         and    sid = bpid                                                                                 ");
 			sb.append("         )                                                                                                 ");
-			sb.append("         )                                                                                                 ");			
+			sb.append("         )                                                                                                 ");
 
 			paramD = new Object[] {year,	year,year,year,bid};
 			dbobject.executePreparedUpdate(sb.toString(), paramD );
 
-			System.out.println("7. tbltreescore Level 3:" + bid);	
-			
+			System.out.println("7. tbltreescore Level 3:" + bid);
 
-			// 
+
+			//
 			conn.commit();
-			
+
 			request.setAttribute("rslt","true");
 
 		} catch (Exception e) {
@@ -3643,47 +3643,47 @@ public class BscTreeUtil {
 			if (conn != null) {conn.close(); conn = null;}
 		}
 	}
-	
 
-	
+
+
 	/**
-	*   getExistTreeId : TREESCORE¿¡ ÀÖ´Â TREEID¸¦ ±¸ÇÔ.
+	*   getExistTreeId : TREESCOREì— ìˆëŠ” TREEIDë¥¼ êµ¬í•¨.
 	*/
 	public String getExistPstId(DBObject  dbobject, String year, String level, String parentid, String contentid) throws SQLException{
-		
+
 		ResultSet rs = null;
 		try {
-			
-			String sql  = " select id from tbltreescore "  
+
+			String sql  = " select id from tbltreescore "
 				        + "  where year     =? "
 				        + "    and treelevel=? "
-				        + "    and parentid =? " 
+				        + "    and parentid =? "
 				        + "    and contentid=? ";
-			
+
 			System.out.println("	level/parentid/contentid = " +level +"/"+parentid+"/"+contentid);
-			
-			
+
+
 			Object[] paramS = {year,level,parentid,contentid};
 			rs = dbobject.executePreparedQuery(sql,paramS);
 			if (rs.next()) return rs.getString("id");
-			
+
 		} catch (Exception e) {
 			System.out.println(e);
 		} finally {
 			if(rs !=null){rs.close(); rs = null;}
 		}
 		return "";
-	}	
-	
+	}
+
 	/**
-	*   getExistObjId : TREESCORE¿¡ ÀÖ´Â TREEID¸¦ ±¸ÇÔ.
+	*   getExistObjId : TREESCOREì— ìˆëŠ” TREEIDë¥¼ êµ¬í•¨.
 	*/
 	public String getExistObjId(DBObject  dbobject, String year, String bscid, String pstid, String contentid) throws SQLException{
-		
+
 		ResultSet rs = null;
 		try {
 			StringBuffer sb = new StringBuffer();
-			
+
 			sb.append(" SELECT  pid, ppid, pcid, plevel, pname,                                                      ");
 			sb.append("         oid, opid, ocid, olevel, oname                                                       ");
 			sb.append(" FROM                                                                                         ");
@@ -3701,17 +3701,17 @@ public class BscTreeUtil {
 			sb.append(" WHERE  pid = opid                                                                            ");
 			sb.append(" ORDER BY pid,oid                                                                             ");
 
-			
+
 			Object[] paramS = {year,bscid,year,pstid,contentid};
 			rs = dbobject.executePreparedQuery(sb.toString(),paramS);
 			if (rs.next()) return rs.getString("oid");
-			
+
 		} catch (Exception e) {
 			System.out.println(e);
 		} finally {
 			if(rs !=null){rs.close(); rs = null;}
 		}
 		return "";
-	}		
+	}
 }
 

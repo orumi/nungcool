@@ -6,10 +6,10 @@
     String userId = request.getParameter("userId");
 	String passwd = request.getParameter("passwd");
 	String flag   = request.getParameter("flag")==null?"":request.getParameter("flag");
-	
+
     LoginUtil loginutil = new LoginUtil();
     loginutil.doAction(request, response);
-	
+
     String tag = (String)request.getAttribute("tag");
     //System.out.println("pass : " + passwd);
 
@@ -17,7 +17,7 @@
 	    if ("true".equals(tag)) {
 	%>
 	<script>
-		parent.location.href = "./main.jsp";
+		top.location.href = "./main.jsp";
 	</script>
 	<%
 	    }else{
@@ -25,8 +25,7 @@
 	<script>
 	alert("사용자 정보가 잘못 되었습니다.");
 	self.close();
-	parent.location.href = "./login.jsp";
-	//history.back();
+	top.location.href = "./login.jsp";
 	</script>
 	<%
 	    }
@@ -35,9 +34,8 @@
     	<script>
     	alert("잘못된 정보가 있습니다.");
     	self.close();
-    	parent.location.href = "./login.jsp"
-    	//history.back();
+    	top.location.href = "./login.jsp"
     	</script>
-    	<%    	
+    	<%
     }
 %>

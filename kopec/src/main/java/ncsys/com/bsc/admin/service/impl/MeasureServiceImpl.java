@@ -13,6 +13,7 @@ import ncsys.com.bsc.admin.service.model.Component;
 import ncsys.com.bsc.admin.service.model.HierarchyNode;
 import ncsys.com.bsc.admin.service.model.Item;
 import ncsys.com.bsc.admin.service.model.MeasureDefine;
+import ncsys.com.bsc.admin.service.model.MeasureDetail;
 import ncsys.com.bsc.admin.service.model.MeasureList;
 import ncsys.com.bsc.admin.service.model.MeasureUser;
 import ncsys.com.bsc.admin.service.model.TreeScoreTree;
@@ -176,8 +177,41 @@ public class MeasureServiceImpl implements MeasureService{
 			}
 		}
 
+
+
+		_setMeasDetailValue(measureDefine);
+
+
+
 		return reVal;
 	}
+
+	/* 목표 자동 등록 */
+	private int _setMeasDetailValue(MeasureDefine measureDefine) {
+        /* 주기별 목표 목록 가져오기 */
+
+		List<MeasureDetail> measureDetail = measureMapper.selectMeasurePlanned(measureDefine);
+
+		List<String> months = new ArrayList<>();
+		MeasureDetail dtl = null;
+		for (MeasureDetail detail : measureDetail) {
+			if(measureMapper.updateMeasureDetail(detail)<1){
+				measureMapper.insertMeasureDetail(detail);
+			}
+			months.add(detail.getYm().substring(4,6));
+			if(dtl == null) dtl = detail;
+		}
+
+		dtl.setMonths(months);
+
+		measureMapper.deleteMeasureDetailClear(dtl);
+
+
+		return 0;
+	}
+
+
+
 
 	public int deleteMeasure(MeasureDefine measureDefine) throws Exception {
 		int reVal = 0;

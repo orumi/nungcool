@@ -16,9 +16,9 @@ public class CoolComIndexController {
 
 	@RequestMapping("/index.do")
 	public String index(ModelMap model) {
-		
+
 		System.out.println("IndexController :");
-		
+
 		return "main/portal.tiles";
 	}
 

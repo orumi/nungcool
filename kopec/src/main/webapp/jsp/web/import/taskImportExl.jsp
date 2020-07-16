@@ -1,36 +1,36 @@
-<%@ page contentType="text/html; charset=euc-kr" %>
+<%@ page contentType="text/html; charset=utf-8" %>
 <%@ page import="com.nc.cool.PeriodUtil" %>
 <%
   String imgUri = request.getRequestURI();
   imgUri = imgUri.substring(1);
   imgUri = "../../../../../"+imgUri.substring(0, imgUri.indexOf("/"));
-  
-  
-	// ¿ù¸¶°¨ Ã¼Å©
+
+
+	// ì›”ë§ˆê° ì²´í¬
 	PeriodUtil periodutil = new PeriodUtil();
 	String div_cd  = "B02";
 	String year    = request.getParameter("year");
-	String message2   = "¸¶°¨µÇ¾ú½À´Ï´Ù. Á¶È¸¸¸ °¡´ÉÇÕ´Ï´Ù.";                                   
+	String message2   = "ë§ˆê°ë˜ì—ˆìŠµë‹ˆë‹¤. ì¡°íšŒë§Œ ê°€ëŠ¥í•©ë‹ˆë‹¤.";
 	String month      = request.getParameter("month");
-	String mmclose_yn = periodutil.getCheckCloseMM(year, div_cd, month);  
+	String mmclose_yn = periodutil.getCheckCloseMM(year, div_cd, month);
 	if(mmclose_yn.equalsIgnoreCase("Y")){
 		out.println("<script>");
 		out.println("alert('"+message2+"');");
 		out.println("window.close();");
 		out.println("</script>");
 	}
-	
-	// ¸¶°¨ÀÏÁ¤°Ë»ç ³¡ ==================================================================
+
+	// ë§ˆê°ì¼ì •ê²€ì‚¬ ë ==================================================================
 %>
 
-<SCRIPT>    
+<SCRIPT>
     function actionPerformed(){
     	if(importFileForm.file.value ==""){
-    		alert('ÆÄÀÏÀ» ¼±ÅÃÇÏ¼¼¿ä.');
+    		alert('íŒŒì¼ì„ ì„ íƒí•˜ì„¸ìš”.');
     		return false;
     	}
     	if(importFileForm.file.value.substring(importFileForm.file.value.indexOf("."),importFileForm.file.value.length) != ".csv"){
-    		alert('CSVÇü½ÄÀÇ ÆÄÀÏÀ» ¿Ã·ÁÁÖ¼¼¿ä');
+    		alert('CSVí˜•ì‹ì˜ íŒŒì¼ì„ ì˜¬ë ¤ì£¼ì„¸ìš”');
     		return false;
     	}
 		importFileForm.submit();
@@ -45,24 +45,24 @@
 	<tr>
 		<td height="25"><strong> <img
 			src="<%=imgUri%>/jsp/web/images/icon_point_00.gif" width="15"
-			height="15" align="absmiddle"> ½ÇÀû¿¢¼¿µî·Ï</strong></td>
+			height="15" align="absmiddle"> ì‹¤ì ì—‘ì…€ë“±ë¡</strong></td>
 	</tr>
 </table>
 <table width="100%" border=0 cellpadding="5" cellspacing="1" bgcolor="#9DB5D7">
 
 	<input type=hidden name=serviceName value='<%= (request.getParameter("serviceName")!= null)?request.getParameter("serviceName"):""%>'>
 	<tr>
-		<td align="center" bgcolor="#DCEDF6"><strong><font color="#006699">ÆÄÀÏÃ£±â</font></strong></td>
+		<td align="center" bgcolor="#DCEDF6"><strong><font color="#006699">íŒŒì¼ì°¾ê¸°</font></strong></td>
 		<td bgcolor="#FFFFFF"><input name="file" type="file" class="input_box" size="33">
-			<img src="<%=imgUri%>/jsp/web/images/btn_regi.gif" onclick="javascript:actionPerformed();"  STYLE="cursor:hand" alt="ÆÄÀÏ¿Ã¸®±â" border="0" align="absmiddle">
+			<img src="<%=imgUri%>/jsp/web/images/btn_regi.gif" onclick="javascript:actionPerformed();"  STYLE="cursor:hand" alt="íŒŒì¼ì˜¬ë¦¬ê¸°" border="0" align="absmiddle">
 		</td>
 	</tr>
 
 </table>
 <table width="98%" border="0" cellspacing="0" cellpadding="0">
 	<tr>
-		<td height="25" align="left">   *.csv ÆÄÀÏº¯È¯ ÈÄ ÀúÀåÇÏ¼¼¿ä. </td>
-		<td height="25" align="right"><img src="<%=imgUri%>/jsp/web/images/btn_close.gif" onclick="javascript:self.close();"  STYLE="cursor:hand" alt="´İ±â" border="0" align="absmiddle"></td>
+		<td height="25" align="left">   *.csv íŒŒì¼ë³€í™˜ í›„ ì €ì¥í•˜ì„¸ìš”. </td>
+		<td height="25" align="right"><img src="<%=imgUri%>/jsp/web/images/btn_close.gif" onclick="javascript:self.close();"  STYLE="cursor:hand" alt="ë‹«ê¸°" border="0" align="absmiddle"></td>
 	</tr>
 </table>
 </form>

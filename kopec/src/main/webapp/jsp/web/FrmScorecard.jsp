@@ -278,7 +278,7 @@ body {
 	</td>
     <!--<td width="5" valign="top">&nbsp;</td>-->
     <td valign="top">
-      <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
+      <table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0" background="images/bsub_title_bg.jpg" style="background-repeat: repeat-x">
         <tr>
           <td>
 		    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="border-bottom: 1px solid #c1c1c1;">

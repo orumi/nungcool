@@ -31,7 +31,7 @@
         selectRow1.style.backgroundColor="F0F0F0";
         selectRow2.style.backgroundColor="F0F0F0";
       }
-      var sRow = eval("this.cell"+id);
+      var sRow  = eval("this.cell"+id);
       var sRow1 = eval("this.cella"+id);
 	  var sRow2 = eval("this.cellb"+id);
 
@@ -39,7 +39,7 @@
       selectRow1 = sRow1;
       selectRow2 = sRow2;
 
-      selectRow.style.backgroundColor = "C4EAF9";
+      selectRow.style.backgroundColor  = "C4EAF9";
       selectRow1.style.backgroundColor = "C4EAF9";
       selectRow2.style.backgroundColor = "C4EAF9";
 

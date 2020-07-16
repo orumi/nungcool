@@ -15,10 +15,10 @@ public class CSVImport implements Importer{
 	ArrayList rowData;
 	int cursor;
 	String currentRow[];
-	HashMap map;
+	HashMap<String, Integer> map;
 	NumberFormat numberFormat;
 	DateFormat dateFormat;
-	
+
 	public CSVImport(){
 		QUOTE_CHAR = '"';
 		CELL_DIV_CHAR =',';
@@ -28,12 +28,12 @@ public class CSVImport implements Importer{
 
 	public void setProperties(Properties properties) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void setSource(String s) {
 		filename = s;
-		
+
 	}
 
 	public void load() throws IOException {
@@ -43,19 +43,19 @@ public class CSVImport implements Importer{
 		try {
 			bufferedreader = new BufferedReader(new FileReader(filename));
 			rowData = new ArrayList();
-			map = new HashMap();
+			map = new HashMap<String, Integer>();
 			while(addRowData(bufferedreader));
 		} catch (RuntimeException e) {
 			throw e;
 		} finally {
 			if(bufferedreader != null) bufferedreader.close();
 		}
-		
+
 	}
-	
+
 	protected boolean addRowData(BufferedReader bufferedreader)
 	throws IOException {
-		String s = bufferedreader.readLine(); 
+		String s = bufferedreader.readLine();
 		if (s== null) return false;
 		int i = s.length();
 		int j = 0;
@@ -64,7 +64,7 @@ public class CSVImport implements Importer{
 		boolean flag1= rows != 0;
 		if(flag1) as = new String[columns];
 		else arraylist = new ArrayList();
-		
+
 		for (int k=0; j<i; k++){
 			if(flag1 && k>= columns) break;
 			char c = s.charAt(j++);
@@ -90,14 +90,14 @@ public class CSVImport implements Importer{
 							stringbuffer.append('\n');
 						} while (i==0);
 				}
-				
+
 				String s1 = stringbuffer.toString();
 				if(trimValues) s1 = s1.trim();
 				if(flag1) as[k] = s1;
 				else arraylist.add(s1);
 			}
 		}
-		
+
 		if(!flag1){
 			columns = arraylist.size();
 			as = new String[columns];
@@ -109,10 +109,10 @@ public class CSVImport implements Importer{
 				as[l] = s2;
 			}
 		}
-		
+
 		rowData.add(as);
 		rows++;
-		
+
 		System.out.println(rowData.size());
 		return true;
 	}
@@ -131,7 +131,7 @@ public class CSVImport implements Importer{
 
 	public int getColumnIndex(String s) {
 		Integer integer = (Integer)map.get(s.toUpperCase());
-		return integer != null ? integer.intValue() : -1; 
+		return integer != null ? integer.intValue() : -1;
 	}
 
 	public String getColumnName(int i) {
@@ -195,7 +195,7 @@ public class CSVImport implements Importer{
 	}
 
 	public void setDateFormat(DateFormat dateformat) {
-		this.dateFormat = dateformat;		
+		this.dateFormat = dateformat;
 	}
 
 	public Date getDate(String s) {

@@ -20,8 +20,17 @@ public class CoolInterceptor extends HandlerInterceptorAdapter{
         try {
         	LOGGER.info("called CoolInterceptor preHandle ..");
 
+
+        	String userId = (String)request.getSession().getAttribute("userId");
+
+        	if(userId == null){
+        		response.sendRedirect(request.getContextPath()+"/jsp/web/loginProc.jsp");
+        		return false;
+        	}
+
         	request.setCharacterEncoding("UTF-8");
         	response.setContentType("text/html;charset=UTF-8");
+
         } catch (Exception e) {
             e.printStackTrace();
         }

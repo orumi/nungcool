@@ -1,39 +1,39 @@
 <%@ page contentType="text/html; charset=euc-kr"%>
 <%@ page import="com.nc.actual.*,
 				 com.nc.util.*,
-				 com.nc.cool.*"%>				 
+				 com.nc.cool.*"%>
 <%
 	String schDate = (String) request.getAttribute("schDate");
-	
+
 	ActualUtil util = new ActualUtil();
 	util.getOrgMeasure(request, response);
 
 	DataSet ds = (DataSet)request.getAttribute("ds");
 
-	// 마감체크	
-	PeriodUtil periodutil = new PeriodUtil();                                          
-	String div_cd     = "B02" ;                                                            
-	String message = ": 마감되었습니다.";                          
+	// 마감체크
+	PeriodUtil periodutil = new PeriodUtil();
+	String div_cd     = "B02" ;
+	String message = ": 마감되었습니다.";
 
 	String year  = request.getParameter("year");
 	String month = request.getParameter("month1");
-	String mmclose_yn = periodutil.getCheckCloseMM(year, div_cd, month);  
-	if(mmclose_yn.equalsIgnoreCase("N")) message = "";	
+	String mmclose_yn = periodutil.getCheckCloseMM(year, div_cd, month);
+	if(mmclose_yn.equalsIgnoreCase("N")) message = "";
 %>
 <%
 	String imgUri = request.getRequestURI();
 	imgUri = imgUri.substring(1);
 	imgUri = "../../../../" + imgUri.substring(0, imgUri.indexOf("/"));
 %>
-<SCRIPT>                                  
-    var selectRow = null; 
-    var selectRow1 = null; 
+<SCRIPT>
+    var selectRow = null;
+    var selectRow1 = null;
     var selectRow2 = null;
     function funcSelectActual(id, m_name){
-      
+
       parent.openDetail(id, m_name);
     }
-    
+
 	function mergeCell(tbl, startRow, cNum, length, add)
 	{
 		var isAdd = false;
@@ -48,15 +48,15 @@
 		}
 		cNum   = parseInt(cNum);
 		length = parseInt(length);
-	
+
 		rows   = tbl.rows;
 		rowNum = rows.length;
-	
+
 		tempVal  = '';
 		cnt      = 0;
 		startRow = parseInt(startRow);
-	
-		for( i = startRow; i < rowNum; i++ ) { 
+
+		for( i = startRow; i < rowNum; i++ ) {
 			curVal = rows[i].cells[cNum].innerHTML;
 			if(isAdd) curVal += rows[i].cells[add].innerHTML;
 			if( curVal == tempVal ) {
@@ -73,17 +73,17 @@
 			}
 			tempVal = curVal;
 		}
-	
+
 		if(cnt > 0) {
 			merge(tbl, startRow, cnt, cNum, length);
 		}
 	}
-	
+
 	function merge(tbl, startRow, cnt, cellNum, length)
 	{
 		rows = tbl.rows;
 		row  = rows[startRow];
-	
+
 		for( i = startRow + 1; i < startRow + cnt; i++ ) {
 			for( j = 0; j < length; j++) {
 				rows[i].deleteCell(cellNum);
@@ -123,16 +123,15 @@
 %>
 <!---------//좌측  KPI 선택 전청 리스트//-------->
 <table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7">
-	<tr align="center" bgcolor="#D4DCF4">
-		<td width="200"><strong><font color="#003399">지표</font></strong></td>
-		<td ><strong><font color="#003399">주기</font></strong></td>
-<!--		<td><strong><font color="#003399">구분</font></strong></td>-->
+	<tr align="center" bgcolor="#375f9c" style="height:32px;">
+		<td width="200"><strong><font color="#ffffff">지표</font></strong></td>
+		<td ><strong><font color="#ffffff">주기</font></strong></td>
 	</tr>
 </table>
 <div style="overflow-y:auto;width:100%;height:480px;">
-<table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7" id='tbl0'>	
+<table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7" id='tbl0'>
 	<% int j=0;
-    
+
     if(ds != null){
         String tmpName = "";
    		while (ds.next()) {
@@ -140,7 +139,7 @@
    			if(!tmpName.equals(mName)){
    				String mChar = ds.getString("MEASCHAR").equals("I")?"고유지표":"공통지표";
    	 %>
-              <tr bgcolor="#FFFFFF"> 
+              <tr bgcolor="#FFFFFF">
                 <td  width="200" id="cell<%=ds.getInt("MSID")%>">
                 	<a style="cursor:hand;" onClick="javascript:funcSelectActual(<%=ds.getInt("MSID")%>, '<%=mName %>');">
                 	<font color="#0066FF"><%=mName%></font></a></td>
@@ -150,16 +149,16 @@
     <%
    			tmpName = mName;
    			}
-    	}	
+    	}
     	j++;	} %>
 </table>
 <%}else{ %>
-	<table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7" id='tbl0'>
-	<tr align="center" bgcolor="#D4DCF4">
-		<td width="200"><strong><font color="#003399">지표</font></strong></td>
-		<td ><strong><font color="#003399">주기</font></strong></td>
+<table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7">
+	<tr align="center" bgcolor="#375f9c" style="height:32px;">
+		<td width="200"><strong><font color="#ffffff">지표</font></strong></td>
+		<td ><strong><font color="#ffffff">주기</font></strong></td>
 	</tr>
-	</table>
+</table>
 	<table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7">
 	<tr>
 		<td colspan="2" align="center" bgcolor="#ffffff" height="120"><strong><font size=3 color='#cc0000'>해당 년월과 조직 선택 후 확인버튼을 누르십시요.</font></strong></td>

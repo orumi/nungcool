@@ -193,40 +193,40 @@
 <table width="98%" border="0" cellpadding="5" cellspacing="1"
 	bgcolor="#9DB5D7">
 	<tr bgcolor="#FFFFFF">
-		<td width="20%" align="center" bgcolor="#D4DCF4"><font color="#003399"><strong>지표</strong></font></td>
+		<td width="20%" align="center" bgcolor="#f6f6f6"><font color="#333333"><strong>지표</strong></font></td>
 		<td width="50%"><strong><font color="#3366CC"><%= mname %></font></strong></td>
-		<td width="15%" align="center" bgcolor="#D4DCF4"><font color="#003399"><strong>단위</strong></font></td>
+		<td width="15%" align="center" bgcolor="#f6f6f6"><font color="#333333"><strong>단위</strong></font></td>
 		<td width="20%"><strong><font color="#3366CC"><%= unit %></font></strong></td>
 	</tr>
 	<tr bgcolor="#FFFFFF">
-		<td width="20%" align="center" bgcolor="#D4DCF4"><font color="#003399"><strong>계산식</strong></font></td>
+		<td width="20%" align="center" bgcolor="#f6f6f6"><font color="#333333"><strong>계산식</strong></font></td>
 		<td width="50%"><strong><font color="#333333"><%=equation%></font></strong></td>
-		<td width="15%" align="center" bgcolor="#D4DCF4"><font color="#003399"><strong>가중치</strong></font></td>
+		<td width="15%" align="center" bgcolor="#f6f6f6"><font color="#333333"><strong>가중치</strong></font></td>
 		<td width="20%"><strong><font color="#3366CC"><%= weight %></font></strong></td>
 	</tr>
 	<tr bgcolor="#FFFFFF">
-		<td width="15%" align="center" bgcolor="#D4DCF4"><font color="#003399"><strong>실적담당자<br>(정/부)</strong></font></td>
+		<td width="15%" align="center" bgcolor="#f6f6f6"><font color="#333333"><strong>실적담당자<br>(정/부)</strong></font></td>
 		<td ><%= updater %></td>
-		<td width="15%" align="center" bgcolor="#D4DCF4"><font color="#003399"><strong>방향성</strong></font></td>
+		<td width="15%" align="center" bgcolor="#f6f6f6"><font color="#333333"><strong>방향성</strong></font></td>
 		<td width="20%"><strong><font color="#3366CC"><%= trend %></font></strong></td>
 	</tr>
 </table>
 <table><tr><td></td></tr></table>
 <table width="98%" border="0" cellspacing="1" cellpadding="5" bgcolor="#9DB5D7">
-	<tr align="center" bgcolor="#D2E1F0" height="23">
-		<td width="7%"><font color="#003399"><strong>구분</strong></font></td>
-		<td width="5%"><font color="#003399"><strong>S</strong></font></td>
-		<td width="5%"><font color="#003399"><strong>A+</strong></font></td>
-		<td width="5%"><font color="#003399"><strong>A</strong></font></td>
-		<td width="5%"><font color="#003399"><strong>B+</strong></font></td>
-		<td width="5%"><font color="#003399"><strong>B</strong></font></td>
-		<td width="5%"><font color="#003399"><strong>C+</strong></font></td>
-		<td width="5%"><font color="#003399"><strong>C</strong></font></td>
-		<td width="5%"><font color="#003399"><strong>D+</strong></font></td>
-		<td width="5%"><font color="#003399"><strong>D</strong></font></td>
+	<tr align="center" bgcolor="#375f9c" height="32">
+		<td width="7%"><font color="#ffffff"><strong>구분</strong></font></td>
+		<td width="5%"><font color="#ffffff"><strong>S</strong></font></td>
+		<td width="5%"><font color="#ffffff"><strong>A+</strong></font></td>
+		<td width="5%"><font color="#ffffff"><strong>A</strong></font></td>
+		<td width="5%"><font color="#ffffff"><strong>B+</strong></font></td>
+		<td width="5%"><font color="#ffffff"><strong>B</strong></font></td>
+		<td width="5%"><font color="#ffffff"><strong>C+</strong></font></td>
+		<td width="5%"><font color="#ffffff"><strong>C</strong></font></td>
+		<td width="5%"><font color="#ffffff"><strong>D+</strong></font></td>
+		<td width="5%"><font color="#ffffff"><strong>D</strong></font></td>
 	</tr>
-	<tr align="center" bgcolor="#FFFFFF" height="23">
-		<td bgcolor="#D2E1F0"><font color="#003399"><strong>목표구간</strong></font></td>
+	<tr align="center" bgcolor="#FFFFFF" height="32">
+		<td bgcolor="#375f9c"><font color="#ffffff"><strong>목표구간</strong></font></td>
 		<td><%=planned %></td>
 		<td><%=plannedbaseplus %></td>
 		<td><%=plannedbase %></td>
@@ -237,8 +237,8 @@
 		<td><%=limitplus %></td>
 		<td><%=limit %></td>
 	</tr>
-	<tr align="center" bgcolor="#FFFFFF" height="23">
-		<td bgcolor="#D2E1F0"><font color="#003399"><strong>평점</strong></font></td>
+	<tr align="center" bgcolor="#FFFFFF" height="32">
+		<td bgcolor="#375f9c"><font color="#ffffff"><strong>평점</strong></font></td>
 		<td><%=upper %></td>
 		<td><%=highplus %></td>
 		<td><%=high %></td>
@@ -255,7 +255,7 @@
 	          <!-- 근거 자료  -->
 	          	<table width="98%" border="0" cellpadding="3" cellspacing="1" bgcolor="#CCCCCC">
 			      <tr bgcolor="#EEEEEE">
-			        <td align="center" bgcolor="#DCEDF6"><font color="#006699"><strong>내부분석의견</strong></font></td>
+			        <td align="center" bgcolor="#375f9c" height=32><font color="#ffffff"><strong>내부분석의견</strong></font></td>
 			      </tr>
 			      <tr>
 			        <td valign="top" bgcolor="#ffffff"><textarea cols="75" rows="9" name="comments"><%=comments %></textarea></td>
@@ -268,7 +268,7 @@
 	          <!-- 첨부파일  -->
 	          	<table width="98%" border="0" cellpadding="3" cellspacing="1" bgcolor="#CCCCCC">
 			      <tr bgcolor="#EEEEEE">
-			        <td width="100" align="center" bgcolor="#DCEDF6"><font color="#006699"><strong>첨부문서</strong></font></td>
+			        <td width="100" align="center" bgcolor="#375f9c"><font color="#ffffff"><strong>첨부문서</strong></font></td>
 			        <td valign="top" bgcolor="#ffffff">
 			        <%=strFile%>
 			        <input name="attach_file" type="file" class="input_box" style="width:363;x;">
@@ -304,7 +304,7 @@
 </table>
 
 <table width="98%" border="0" cellpadding="1" cellspacing="1" bgcolor="#CCCCCC">
-	<tr align="center" bgcolor="#EEEEEE" height="20">
+	<tr align="center" bgcolor="#EEEEEE" height="32">
 <!--		<td width="08%" rowspan="2"><font color="#333333"><strong>코드</strong></font></td>-->
 		<td width="08%" ><font color="#333333"><strong>코드</strong></font></td>
 <!--		<td width="55%" colspan="2"><font color="#333333"><strong>항목</strong></font></td>-->
@@ -325,7 +325,7 @@
 			while(dsItem.next()){
 				itemCD += dsItem.getString("CODE")+"|";
 		%>
-			<tr align="center" bgcolor="#FFFFFF" height="23">
+			<tr align="center" bgcolor="#FFFFFF" height="32">
 <!--				<td rowspan="2"><%=dsItem.getString("CODE") %></td>-->
 				<td ><%=dsItem.getString("CODE") %></td>
 <!--				<td align="left" colspan="2"><%=dsItem.getString("ITEMNAME") %></td>-->
@@ -359,7 +359,7 @@
  <!---------//우측  항목실적 점수계산 결과  //-------->
 <br>
 <table width="98%" border="0" cellspacing="1" cellpadding="2">
-	<tr>
+	<tr height="34">
 		<td width="7%" align="center" bgcolor="#FFCC99"><strong><font color="#993300">실적</font></strong></td>
 		<td width="18%" bgcolor="#FFFFCC"><strong><%="".equals(actual)?"":Double.valueOf(actual)%></strong></td>
 		<td width="7%" align="center" bgcolor="#E1F0FF"><strong><font color="#006699">등급</font></strong></td>

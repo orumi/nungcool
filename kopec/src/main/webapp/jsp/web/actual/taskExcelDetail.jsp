@@ -10,7 +10,7 @@
 	DataSet ds = (DataSet)request.getAttribute("ds");
 	DataSet dsItem = (DataSet)request.getAttribute("dsItem");
 	DataSet dsItemAct = (DataSet)request.getAttribute("dsItemAct");
-	
+
 	int cnt = 0;
 	if(dsItem != null)
 		cnt = dsItem.getRowCount();
@@ -25,32 +25,32 @@
 	imgUri = imgUri.substring(1);
 	imgUri = "../../../../" + imgUri.substring(0, imgUri.indexOf("/"));
 %>
-<SCRIPT>                                  
-    var selectRow = null; 
-    var selectRow1 = null; 
+<SCRIPT>
+    var selectRow = null;
+    var selectRow1 = null;
     var selectRow2 = null;
     function funcSelectActual(id){
       if (selectRow != null) {
         selectRow.style.backgroundColor="F0F0F0";
         selectRow1.style.backgroundColor="F0F0F0";
-        selectRow2.style.backgroundColor="F0F0F0";        
+        selectRow2.style.backgroundColor="F0F0F0";
       }
       var sRow = eval("this.cell"+id);
       var sRow1 = eval("this.cella"+id);
 	  var sRow2 = eval("this.cellb"+id);
-	  
-	  	
-      selectRow = sRow; 
-      selectRow1 = sRow1; 
+
+
+      selectRow = sRow;
+      selectRow1 = sRow1;
       selectRow2 = sRow2;
-      
+
       selectRow.style.backgroundColor = "C4EAF9";
       selectRow1.style.backgroundColor = "C4EAF9";
       selectRow2.style.backgroundColor = "C4EAF9";
-      
+
       parent.openDetail(id);
     }
-    
+
 	function mergeCell(tbl, startRow, cNum, length, add)
 	{
 		var isAdd = false;
@@ -65,15 +65,15 @@
 		}
 		cNum   = parseInt(cNum);
 		length = parseInt(length);
-	
+
 		rows   = tbl.rows;
 		rowNum = rows.length;
-	
+
 		tempVal  = '';
 		cnt      = 0;
 		startRow = parseInt(startRow);
-	
-		for( i = startRow; i < rowNum; i++ ) { 
+
+		for( i = startRow; i < rowNum; i++ ) {
 			curVal = rows[i].cells[cNum].innerHTML;
 			if(isAdd) curVal += rows[i].cells[add].innerHTML;
 			if( curVal == tempVal ) {
@@ -90,17 +90,17 @@
 			}
 			tempVal = curVal;
 		}
-	
+
 		if(cnt > 0) {
 			merge(tbl, startRow, cnt, cNum, length);
 		}
 	}
-	
+
 	function merge(tbl, startRow, cnt, cellNum, length)
 	{
 		rows = tbl.rows;
 		row  = rows[startRow];
-	
+
 		for( i = startRow + 1; i < startRow + cnt; i++ ) {
 			for( j = 0; j < length; j++) {
 				rows[i].deleteCell(cellNum);
@@ -140,31 +140,31 @@ if(ds != null){
 %>
 <!---------//좌측  KPI 선택 전청 리스트//-------->
 <table width="<%=675+(105*cnt) %>" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7">
-	<tr align="center" bgcolor="#D4DCF4">
-		<td width="40" rowspan=2><strong><font color="#003399">년도</font></strong></td>
-		<td width="50" rowspan=2><strong><font color="#003399">ETLKEY</font></strong></td>
-		<td width="150" rowspan=2><strong><font color="#003399">지표</font></strong></td>
-		<td width="120" rowspan=2><strong><font color="#003399">산식</font></strong></td>
-		<td width="60" rowspan=2><strong><font color="#003399">실적<br>년월</font></strong></td>
-		<td width="100" rowspan=2><strong><font color="#003399">구분</font></strong></td>
-		<td width="120" rowspan=2><strong><font color="#003399">조직명</font></strong></td>
-		<td colspan="<%=cnt %>"><strong><font color="#003399">항목</font></strong></td>
+	<tr align="center" bgcolor="#375f9c" style="height:32px;">
+		<td width="40" rowspan=2><strong><font color="#ffffff">년도</font></strong></td>
+		<td width="50" rowspan=2><strong><font color="#ffffff">ETLKEY</font></strong></td>
+		<td width="150" rowspan=2><strong><font color="#ffffff">지표</font></strong></td>
+		<td width="120" rowspan=2><strong><font color="#ffffff">산식</font></strong></td>
+		<td width="60" rowspan=2><strong><font color="#ffffff">실적<br>년월</font></strong></td>
+		<td width="100" rowspan=2><strong><font color="#ffffff">구분</font></strong></td>
+		<td width="120" rowspan=2><strong><font color="#ffffff">조직명</font></strong></td>
+		<td colspan="<%=cnt %>"><strong><font color="#ffffff">항목</font></strong></td>
 	</tr>
 	<tr align="center" bgcolor="#D4DCF4">
 	<%if(dsItem != null){
 		while (dsItem.next()){
 	%>
-		<td width="100"><strong><font color="#003399"><%=dsItem.getString("Code")==null?"":dsItem.getString("Code") %>.<%=dsItem.getString("ITEMNAME")==null?"":dsItem.getString("ITEMNAME") %></font></strong></td>
-	<% 	} 
+		<td width="100" bgcolor="#375f9c"><strong><font color="#ffffff"><%=dsItem.getString("Code")==null?"":dsItem.getString("Code") %>.<%=dsItem.getString("ITEMNAME")==null?"":dsItem.getString("ITEMNAME") %></font></strong></td>
+	<% 	}
 	} %>
 	</tr>
-	<% 
+	<%
 	int i = 0;
-	while (ds.next()){		
+	while (ds.next()){
 		String strDate = ds.getString("STRDATE")==null?"":ds.getString("STRDATE");
 		strDate           = strDate.equals("")?"":strDate.substring(0,6);
 		String strYM   = ds.getString("YM")==null?"":ds.getString("YM");
-		
+
 		//out.println("EQU:"+(String)ds.getString("MSID")+"/"+((String)ds.getString("DID"))+"<br>");
     %>
         <tr bgcolor="#FFFFFF">
@@ -209,15 +209,15 @@ if(ds != null){
 </table>
 <%}else{ %>
 	<table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7" id='tbl0'>
-	<tr align="center" bgcolor="#D4DCF4">
-		<td width="40" rowspan=2><strong><font color="#003399">년도</font></strong></td>
-		<td width="50" rowspan=2><strong><font color="#003399">ETLKEY</font></strong></td>
-		<td width="90" rowspan=2><strong><font color="#003399">지표</font></strong></td>
-		<td width="70" rowspan=2><strong><font color="#003399">산식</font></strong></td>
-		<td width="50" rowspan=2><strong><font color="#003399">실적<br>년월</font></strong></td>
-		<td width="70" rowspan=2><strong><font color="#003399">구분</font></strong></td>
-		<td width="70" rowspan=2><strong><font color="#003399">조직명</font></strong></td>
-		<td ><strong><font color="#003399">항목</font></strong></td>
+	<tr align="center" bgcolor="#375f9c">
+		<td width="40" rowspan=2><strong><font color="#ffffff">년도</font></strong></td>
+		<td width="50" rowspan=2><strong><font color="#ffffff">ETLKEY</font></strong></td>
+		<td width="90" rowspan=2><strong><font color="#ffffff">지표</font></strong></td>
+		<td width="70" rowspan=2><strong><font color="#ffffff">산식</font></strong></td>
+		<td width="50" rowspan=2><strong><font color="#ffffff">실적<br>년월</font></strong></td>
+		<td width="70" rowspan=2><strong><font color="#ffffff">구분</font></strong></td>
+		<td width="70" rowspan=2><strong><font color="#ffffff">조직명</font></strong></td>
+		<td ><strong><font color="#ffffff">항목</font></strong></td>
 	</tr>
 	</table>
 	<table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7">

@@ -7,6 +7,7 @@ import ncsys.com.bsc.admin.service.model.Component;
 import ncsys.com.bsc.admin.service.model.HierarchyNode;
 import ncsys.com.bsc.admin.service.model.Item;
 import ncsys.com.bsc.admin.service.model.MeasureDefine;
+import ncsys.com.bsc.admin.service.model.MeasureDetail;
 import ncsys.com.bsc.admin.service.model.MeasureList;
 import ncsys.com.bsc.admin.service.model.MeasureUser;
 import ncsys.com.bsc.admin.service.model.TreeScoreTree;
@@ -54,4 +55,14 @@ public interface MeasureMapper {
 
 	public int clearTreescoreObject(MeasureDefine  measureDefine);
 	public int clearTreescorePst(MeasureDefine  measureDefine);
+
+
+
+
+	public List<MeasureDetail> selectMeasurePlanned(MeasureDefine measureDefine);
+	public int deleteMeasureDetailClear(MeasureDetail  measureDetail);
+
+	public int insertMeasureDetail(MeasureDetail  measureDetail);
+	public int updateMeasureDetail(MeasureDetail  measureDetail);
+
 }

@@ -268,24 +268,22 @@
 	</tr>
 </table>
 <!------//상단 검색//----->
-<table width="98%" border="0" align="center" cellpadding="5"
-	cellspacing="1" bgcolor="#A4CBE3">
+<table width="98%" border="0" align="center" cellpadding="5" cellspacing="1" bgcolor="#c1c1c1">
 	<form name="form1" method="post" action="">
 	<input type='hidden' name='yyyy'>
 	<tr bgcolor="#DCEDF6">
 		<td width="14%" align="center"><strong><font color="#006699">년월선택</font></strong></td>
-		<td width="86%" bgcolor="#FFFFFF">
+		<td width="86%" bgcolor="#f6f6f6">
 			<select name="year" onChange="javascript:changeYear();">
                     <script> funcSetDate(<%=curDate.substring(0,4)%>); </script>
-            </select>
-                    년
+            </select> 년
              <select name="month" onChange="onChangeDate()";>
 	                <script> funcSetMonth(<%=curDate.substring(4,6)%>); </script>
              </select>
         </td>
 	</tr>
 	<tr bgcolor="#DCEDF6">
-		<td align="center" bgcolor="#DCEDF6"><strong><font color="#006699">조직선택</font></strong></td>
+		<td align="center" bgcolor="#f6f6f6"><strong><font color="#006699">조직선택</font></strong></td>
 		<td bgcolor="#FFFFFF">
 		<select name="firstPart"  style="width:170;x;" onChange="javascript:chgOrg(1);closeList()">
         	<%=sbuBuf.toString()%>
@@ -298,12 +296,11 @@
 	</form>
 </table>
 <!------//상단 검색 끝//----->
-<table width="98%" border="0" align="center" cellpadding="0"
-	cellspacing="0">
+<!-- <table width="98%" border="0" align="center" cellpadding="0" cellspacing="0">
 	<tr>
 		<td>&nbsp;</td>
 	</tr>
-</table>
+</table> -->
 
 <table width="98%" border="0" align="center" cellpadding="0" cellspacing="0">
 	<tr valign="top">

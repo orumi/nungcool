@@ -8,20 +8,24 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 public class CoolInterceptorJson extends HandlerInterceptorAdapter{
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(CoolInterceptorJson.class);
-	
+
 	@Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        try { 
-        	
-        	LOGGER.info("called CoolInterceptorJson preHandle ..");
-        	
-        	request.setCharacterEncoding("UTF-8"); 
+        try {
+
+        	String userId = (String)request.getSession().getAttribute("userId");
+
+        	if(userId == null){
+        		response.sendRedirect(request.getContextPath()+"/jsp/web/loginProc.jsp");
+        		return false;
+        	}
+
+        	request.setCharacterEncoding("UTF-8");
         	response.setContentType("text/html;charset=UTF-8");
-        	
-        	LOGGER.info("CoolInterceptorJson End");
-        	
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }

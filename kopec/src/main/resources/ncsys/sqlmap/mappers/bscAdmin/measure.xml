@@ -387,4 +387,109 @@
 	</delete>
 
 
+	<select id="selectMeasurePlanned" parameterType="ncsys.com.bsc.admin.service.model.MeasureDefine"
+		resultType="ncsys.com.bsc.admin.service.model.MeasureDetail">
+
+		 SELECT  a.id, a.measureid, a.frequency, a.weight, #{year}||b.ym ym,
+		         a.planned, a.plannedbase, a.base , a.baselimit, a.limit,
+		         a.plannedbaseplus, a.baseplus, a.baselimitplus , a.limitplus
+		 FROM    tblmeasuredefine a,
+		         (
+		         <![CDATA[
+		         SELECT '년' freq, ltrim(to_char(rownum * 12,'00')) ym
+		         FROM   tbluser WHERE rownum <= 1
+		         UNION ALL
+		         SELECT '반기' freq, ltrim(to_char(rownum * 6,'00')) ym
+		         FROM   tbluser WHERE rownum <= 2
+		         UNION ALL
+		         SELECT '분기' freq, ltrim(to_char(rownum * 3,'00')) ym
+		         FROM   tbluser WHERE rownum <= 4
+		         UNION ALL
+		         SELECT '월' freq, ltrim(to_char(rownum * 1,'00')) ym
+		         FROM   tbluser WHERE rownum <= 12
+		         ]]>
+		         ) b
+		 WHERE  a.frequency = b.freq
+		 AND    a.year      = #{year}
+		 AND    a.id        = #{id}
+		 ORDER BY a.id, b.ym
+
+	</select>
+
+	<delete id="deleteMeasureDetailClear" parameterType="ncsys.com.bsc.admin.service.model.MeasureDetail">
+		delete tblmeasuredetail
+		where  measureid                = #{id}
+		and    substr(strdate,0,4)         = substr(#{ym},0,4)
+		<choose>
+            <when test="months.size != 0">
+                and    substr(strdate,5,2) not in
+                <foreach collection="months" item="item" index="index" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </when>
+        </choose>
+	</delete>
+
+
+
+	<insert id="insertMeasureDetail" parameterType="ncsys.com.bsc.admin.service.model.MeasureDetail">
+
+		insert into tblmeasuredetail
+		(
+			id,
+			measureid,
+			strdate,
+			weight,
+		 	planned,
+		 	base,
+		 	limit,
+		 	plannedbase,
+		 	baselimit,
+		 	plannedbaseplus,
+		 	baseplus,
+		 	baselimitplus,
+		 	limitplus,
+		 	inputdate
+		)
+		SELECT nvl(max(id) + 1,0) id,
+		       #{id},
+		       #{ym},
+		       #{weight},
+		       #{planned},
+		       #{base},
+		       #{limit},
+		       #{plannedbase},
+		       #{baselimit},
+		       #{plannedbaseplus},
+		       #{baseplus},
+		       #{baselimitplus},
+		       #{limitplus},
+		       sysdate
+		 FROM  tblmeasuredetail
+
+	</insert>
+
+
+	<update id="updateMeasureDetail" parameterType="ncsys.com.bsc.admin.service.model.MeasureDetail">
+
+		update tblmeasuredetail
+		 set    weight      = #{weight}
+		     ,  planned     = #{planned}
+		     ,  base        = #{base}
+		     ,  limit       = #{limit}
+		     ,  plannedbase = #{plannedbase}
+		     ,  baselimit   = #{baselimit}
+
+		     ,  plannedbaseplus   = #{plannedbaseplus}
+		     ,  baseplus          = #{baseplus}
+		     ,  baselimitplus     = #{baselimitplus}
+		     ,  limitplus         = #{limitplus}
+		     ,  updatedate        = sysdate
+		 where  measureid         = #{id}
+		 and    substr(strdate,0,6)  = #{ym}
+
+	</update>
+
+
+
 </mapper>

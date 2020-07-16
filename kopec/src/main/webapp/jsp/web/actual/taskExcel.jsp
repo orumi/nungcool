@@ -38,17 +38,26 @@
 
 		DataSet ds = (DataSet) request.getAttribute("ds");
 %>
+
+<!-- Link to Google CDN's jQuery + jQueryUI; fall back to local -->
+<script src="<%=imgUri%>/bootstrap/js/libs/jquery-2.1.1.min.js"></script>
+<script src="<%=imgUri%>/bootstrap/js/libs/jquery-ui-1.10.3.min.js"></script>
+
 <SCRIPT>
 	var initCon = false;
     function actionPerformed(){
     	initCon = true;
 
-		//list.listForm.sbuId.value=form1.firstPart.options[form1.firstPart.selectedIndex].value;
-		//list.listForm.bscId.value=form1.secondPart.options[form1.secondPart.selectedIndex].value;
-		list.listForm.year.value  =form1.year.options[form1.year.selectedIndex].value;
+    	$("#list").contents().find("input[name=year]").val(form1.year.options[form1.year.selectedIndex].value);
+    	$("#list").contents().find("input[name=month1]").val(form1.start_month.options[form1.start_month.selectedIndex].value);
+    	$("#list").contents().find("input[name=month2]").val(form1.start_month.options[form1.start_month.selectedIndex].value);
+
+    	$("#list").contents().find("form[name=listForm]").submit();
+
+		/* list.listForm.year.value  =form1.year.options[form1.year.selectedIndex].value;
 		list.listForm.month1.value=form1.start_month.options[form1.start_month.selectedIndex].value;
 		list.listForm.month2.value=form1.start_month.options[form1.start_month.selectedIndex].value;
-		list.listForm.submit();
+		list.listForm.submit(); */
     }
 
     function leftReload(){
@@ -89,13 +98,22 @@
     }
 
     function openDetail(id, m_name){
-      detail.detailForm.contentId.value = id;
-      //detail.detailForm.sbuId.value = pid;
+
+    	$("#detail").contents().find("input[name=contentId]").val(id);
+    	$("#detail").contents().find("input[name=year]").val(form1.year.options[form1.year.selectedIndex].value);
+    	$("#detail").contents().find("input[name=month1]").val(form1.start_month.options[form1.start_month.selectedIndex].value);
+    	$("#detail").contents().find("input[name=month2]").val(form1.start_month.options[form1.start_month.selectedIndex].value);
+    	$("#detail").contents().find("input[name=mode]").val("detail");
+
+    	$("#detail").contents().find("form[name=detailForm]").submit();
+
+
+     /*  detail.detailForm.contentId.value = id;
       detail.detailForm.year.value   = form1.year.options[form1.year.selectedIndex].value;
       detail.detailForm.month1.value = form1.start_month.options[form1.start_month.selectedIndex].value;
       detail.detailForm.month2.value = form1.start_month.options[form1.start_month.selectedIndex].value;
       detail.detailForm.mode.value = "detail";
-      detail.detailForm.submit();
+      detail.detailForm.submit(); */
 
       document.getElementById("detail").style.display="inline";
 
@@ -297,22 +315,22 @@
 </table>
 <!------//»ó´Ü °Ë»ö//----->
 <table width="98%" border="0" align="center" cellpadding="5"
-	cellspacing="1" bgcolor="#A4CBE3">
+	cellspacing="1" bgcolor="#c1c1c1">
 	<form name="form1" method="post" action="">
 	<input type='hidden' name='yyyy'>
-	<tr bgcolor="#DCEDF6">
-		<td width="14%" align="center"><strong><font color="#006699"> ³â ¿ù</font></strong></td>
+	<tr bgcolor="#f6f6f6">
+		<td width="14%" align="center" style="height:36px;font-size:13px;background-color:#f6f6f6;"><strong><font color="#333333"> ³â ¿ù</font></strong></td>
 		<td width="56%" colspan="5" bgcolor="#FFFFFF">
-			<select name="year" onChange="javascript:changeYear();">
+			<select name="year" onChange="javascript:changeYear();" style="height: 24px;">
                     <script> funcSetDate(<%=curDate.substring(0,4)%>); </script>
             </select>³â
-			<select name="start_month" onChange="javascript:changefirstMonth();">
+			<select name="start_month" onChange="javascript:changefirstMonth();" style="height: 24px;">
 	                <script> funcStartSetMonth(<%=curDate.substring(4,6)%>); </script>
              </select>
             <img src="<%=imgUri%>/jsp/web/images/btn_ok.gif"
 			alt="È®ÀÎ" onClick="javascript:changeBSC();" style="cursor:hand" width="50" height="20" border="0" align="absmiddle">
         </td>
-		<td width="14%" align="center"><strong><font color="#006699"> ¿¢¼¿µî·Ï</font></strong></td>
+		<td width="14%" align="center"><strong><font color="#333333" style="height:36px;font-size:13px;background-color:#f6f6f6;"> ¿¢¼¿µî·Ï</font></strong></td>
         <td width="16%" bgcolor="#FFFFFF">
         <a href="javascript:downLoadExl();"><img src="<%=imgUri%>/jsp/web/images/btn_excel_save.gif" alt="¿¢¼¿ÀúÀå" style="cursor:hand" border="0" align="absmiddle"></a>&nbsp
         <a href="javascript:upLoadFile();"><img src="<%=imgUri%>/jsp/web/images/btn_file_upload.gif" alt="°Ë»ö" style="cursor:hand" border="0" align="absmiddle"></a>

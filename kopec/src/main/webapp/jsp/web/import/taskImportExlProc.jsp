@@ -1,5 +1,5 @@
 <%@ page language    = "java"
-         contentType = "text/html; charset=euc-kr"
+         contentType = "text/html; charset=utf-8"
          import      = "java.util.*,
          				java.net.*,
          				java.io.*,
@@ -10,15 +10,15 @@
 	System.out.println("upload import...");
 	SmartUpload myUpload = new SmartUpload();
 	Common_Data cd = null;
-	
+
 	myUpload.init(config);
 	myUpload.service(request,response);
-	
+
 	myUpload.upload();
 	String jobProc = "";
 	try {
 		cd = new Common_Data();
-			
+
 		CoolFile myfile = myUpload.getFiles().getFile(0);
 		String filename = myfile.getFileName();
 		String filetype = myfile.getFileExt();
@@ -28,45 +28,45 @@
 		int result_val = 0;
 		String date_val = cd.getDate();
 		String file_no = "";
-		
+
 		if (!myfile.isMissing()) {
-			
-			savepath = "/import/";
+
+			savepath = ServerStatic.REAL_CONTEXT_ROOT+"/import/"; //"/import/";
 			int pos = 0;
-			
+
 			if((pos=filename.indexOf(".")) != -1){
-				String left = filename.substring(0, pos); 
+				String left = filename.substring(0, pos);
 				String right = filename.substring(pos, filename.length());
 				//new_filename = left + System.currentTimeMillis() + right;
 			}
-			
+
 			myfile.saveAs(savepath + filename);
-			
+
 			file_no = "F" + System.currentTimeMillis();
-			
+
 
 		}
-		//String error_msg = cd.Alert_Window("Á¤»óÀûÀ¸·Î µî·ÏµÇ¾ú½À´Ï´Ù.", 2, "./taskImportExl.jsp");
+		//String error_msg = cd.Alert_Window("ì •ìƒì ìœ¼ë¡œ ë“±ë¡ë˜ì—ˆìŠµë‹ˆë‹¤.", 2, "./taskImportExl.jsp");
 		//out.println(error_msg);
-		
-		//µî·ÏµÈ ÆÄÀÏÀ» Ã³¸®
+
+		//ë“±ë¡ëœ íŒŒì¼ì„ ì²˜ë¦¬
 		try{
 		response.setHeader("Pragma", "no-cache");
 		response.setHeader("Cache-Control", "no-cache");
 		} catch(Exception ee) {}
-		
+
 		String imgUri = request.getRequestURI();
 		imgUri = imgUri.substring(1);
 		imgUri = "../../../../"+imgUri.substring(0, imgUri.indexOf("/"));
-		
-		ImportUtil importutil = null; 
+
+		ImportUtil importutil = null;
 		HashMap rtnMap = new HashMap();
-		
+
 		try {
 			importutil = new ImportUtil();
 			//System.out.println("importing starting..."+filename);
 			importutil.importTaskActual(filename, rtnMap, request,response);
-			
+
 		}catch (Exception e) {
 			System.out.println("Importing Error :"+e);
 			String temp = e.toString();
@@ -77,11 +77,11 @@
 			rtnMap.put("error", temp);
 		} finally {
 			File file = new File(ServerStatic.REAL_CONTEXT_ROOT+File.separator+"import"+File.separator+filename);
-			System.out.println("ÆÄÀÏ »èÁ¦Áß..."+ServerStatic.REAL_CONTEXT_ROOT+File.separator+"import"+File.separator+filename);
+			System.out.println("íŒŒì¼ ì‚­ì œì¤‘..."+ServerStatic.REAL_CONTEXT_ROOT+File.separator+"import"+File.separator+filename);
 			try{
 	 			file.delete();
 	 		}catch(Exception e){
-	   			System.out.println("ÆÄÀÏ »èÁ¦ ½ÇÆÐ : "+ e.getMessage());
+	   			System.out.println("íŒŒì¼ ì‚­ì œ ì‹¤íŒ¨ : "+ e.getMessage());
 	 		}finally {
 	 		}
 		}

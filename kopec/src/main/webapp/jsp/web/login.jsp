@@ -94,7 +94,7 @@
                       </tr>
 					  <tr>
                         <td height="24">&nbsp;</td>
-                        <td><input name="userId" type="text"  size="20" value="38937" ><input type="checkbox" name="checksaveid" onClick="saveid(this.form)"><font size="1.5pt">ID ¿˙¿Â</font></td>
+                        <td><input name="userId" type="text"  size="20" value="38937" >
                       </tr>
                       <tr>
                         <td height="24">&nbsp;</td>
