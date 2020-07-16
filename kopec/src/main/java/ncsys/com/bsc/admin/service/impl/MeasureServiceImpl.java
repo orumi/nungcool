@@ -195,17 +195,19 @@ public class MeasureServiceImpl implements MeasureService{
 		List<String> months = new ArrayList<>();
 		MeasureDetail dtl = null;
 		for (MeasureDetail detail : measureDetail) {
-			if(measureMapper.updateMeasureDetail(detail)<1){
-				measureMapper.insertMeasureDetail(detail);
+			if(detail.getPlanned()!=null){
+				if(measureMapper.updateMeasureDetail(detail)<1){
+					measureMapper.insertMeasureDetail(detail);
+				}
+				months.add(detail.getYm().substring(4,6));
+				if(dtl == null) dtl = detail;
 			}
-			months.add(detail.getYm().substring(4,6));
-			if(dtl == null) dtl = detail;
 		}
 
-		dtl.setMonths(months);
-
-		measureMapper.deleteMeasureDetailClear(dtl);
-
+		if(dtl!=null){
+			dtl.setMonths(months);
+			measureMapper.deleteMeasureDetailClear(dtl);
+		}
 
 		return 0;
 	}

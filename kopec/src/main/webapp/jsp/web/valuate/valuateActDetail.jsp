@@ -6,7 +6,7 @@
 	DataSet rs = null;
 
 	ValuateUtil util = new ValuateUtil();
-	
+
 
 	request.setAttribute("config",config);
 	util.setActual(request,response);
@@ -22,18 +22,18 @@
 	String div_cd  = "B02";
 	String message = "실적  등록기간이 아닙니다.";
 	String year    = "";//request.getParameter("year");
-	
+
 	year = schDate.substring(0,4);
 	periodvalidate = periodutil.validatePeriod(div_cd, year);
 	periodvalidate = (periodvalidate == null || "".equals(periodvalidate)) ? "N" : periodvalidate;
-			
+
 	// 월마감 체크
-	String message2   = "마감되었습니다. 조회만 가능합니다.";                                   
+	String message2   = "마감되었습니다. 조회만 가능합니다.";
 	String month      = schDate.substring(4,6);
-	String mmclose_yn = periodutil.getCheckCloseMM(year, div_cd, month);  
-	if(mmclose_yn.equalsIgnoreCase("N")) message2 = "";	
-	// 마감일정검사 끝 =================================================================	
-				
+	String mmclose_yn = periodutil.getCheckCloseMM(year, div_cd, month);
+	if(mmclose_yn.equalsIgnoreCase("N")) message2 = "";
+	// 마감일정검사 끝 =================================================================
+
 	String mname="";
 	String planned="";
 	String actual="";
@@ -99,7 +99,7 @@
 </table>
 <table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7" style="display:none;">
 	<tr bgcolor="#FFFFFF">
-		<td width="13%" align="center" bgcolor="#D4DCF4"><font color="#003399"><strong>성과지표 명</strong></font></td>
+		<td width="13%" align="center" bgcolor="#375f9c" height=34><font color="#ffffff"><strong>성과지표 명</strong></font></td>
 		<td width="48%"><strong><font color="#3366CC"><%= mname %></font></strong></td>
 		<td width="13%" align="center" bgcolor="#D4DCF4"><strong><font color="#003399">자체평가 등급</font></strong></td-->
 		<td width="26%" align="center">
@@ -117,7 +117,7 @@
 </table>
 <table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7">
 	<tr bgcolor="#FFFFFF">
-		<td width="13%" align="center" bgcolor="#D4DCF4"><font color="#003399"><strong>성과지표 명</strong></font></td>
+		<td width="13%" align="center" bgcolor="#375f9c" height=34><font color="#ffffff"><strong>성과지표 명</strong></font></td>
 		<td width="87%"><strong><font color="#3366CC"><%= mname %></font></strong></td>
 	</tr>
 </table>
@@ -192,14 +192,14 @@
 	function actionPerformed(tag){
 
 		// 마감되었슴
-		if ("<%=mmclose_yn%>" == "Y") {	
+		if ("<%=mmclose_yn%>" == "Y") {
 				alert("<%=message2%>");
 				return;
-		}		
-		if ("<%=periodvalidate%>" == "N") {	
+		}
+		if ("<%=periodvalidate%>" == "N") {
 			alert("실적 등록기간이 아닙니다.");
 			return;
-		}		
+		}
 
 		if ("D"==tag){
 			if (confirm("실적정보를 삭제하시겠습니까?")){
@@ -208,7 +208,7 @@
 				return;
 			}
 		}
-		
+
 		parent.refresh = true;
 		detailForm.tag.value = tag;
 		detailForm.schDate.value = parent.form1.year.options[parent.form1.year.selectedIndex].value+parent.form1.month.options[parent.form1.month.selectedIndex].value;

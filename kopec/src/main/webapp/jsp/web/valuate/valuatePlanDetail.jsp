@@ -10,7 +10,7 @@
 	imgUri = "../../../../" + imgUri.substring(0, imgUri.indexOf("/"));
 
 	String schDate = request.getParameter("schDate")!=null?request.getParameter("schDate"):Util.getToDay().substring(0,6);
-		
+
 	DataSet rs = null;
 	ValuateUtil util = new ValuateUtil();
 
@@ -23,30 +23,30 @@
 	String div_cd = "B01";
 	String message = "계획  등록기간이 아닙니다.";
 	//String year = request.getParameter("year");
-	
+
 	//year = (year == null || "".equals(year)) ? Util.getToDay().substring(0,4) : year;
 	String year = (String)request.getAttribute("year");
 	year = (year == null || "".equals(year)) ? Util.getToDay().substring(0,4) : year;
-	
+
 	periodvalidate = periodutil.validatePeriod(div_cd, year);
 	periodvalidate = (periodvalidate == null || "".equals(periodvalidate)) ? "N" : periodvalidate;
-			
+
 	// 월마감 체크
-	String message2   = "마감되었습니다. 조회만 가능합니다.";                                   
+	String message2   = "마감되었습니다. 조회만 가능합니다.";
 	String month      = schDate.substring(4,6);
-	String mmclose_yn = periodutil.getCheckCloseMM(year, div_cd, month);  
-	if(mmclose_yn.equalsIgnoreCase("N")) message2 = "";	
-	// 마감일정검사 끝 =================================================================		
-	
+	String mmclose_yn = periodutil.getCheckCloseMM(year, div_cd, month);
+	if(mmclose_yn.equalsIgnoreCase("N")) message2 = "";
+	// 마감일정검사 끝 =================================================================
+
 	DataSet dsMea = (DataSet)request.getAttribute("dsMea");
 	String mid = (String)request.getAttribute("mid");
 
 	String mname="";
-	String planned="";	
-	String planned1="";	
-	String planned2="";	
-	String planned3="";	
-	String planned4="";	
+	String planned="";
+	String planned1="";
+	String planned2="";
+	String planned3="";
+	String planned4="";
 	String updateId="";
 	String effectivedate="";
 	String effectivedate2="";
@@ -54,23 +54,23 @@
 	String fileNm = "";
 	String filePath = "";
 	String freq1    = "";
-		
+
 	String fileNm1 = "";
 	String fileNm2 = "";
 	String fileNm3 = "";
 	String fileNm4 = "";
-	
+
 	String filePath1 = "";
 	String filePath2 = "";
 	String filePath3 = "";
 	String filePath4 = "";
-	
+
 	String fileIconStr1 = "";
 	String fileIconStr2 = "";
 	String fileIconStr3 = "";
 	String fileIconStr4 = "";
-	
-	
+
+
 	int pConf = 0;
 
 	if(dsMea != null)
@@ -82,12 +82,12 @@
 			updateId      = dsMea.isEmpty("UPDATEID")?"":dsMea.getString("UPDATEID");
 			effectivedate = dsMea.isEmpty("EFFECTIVEDATE")?"":dsMea.getString("EFFECTIVEDATE");
 			planned       = dsMea.isEmpty("PLANNED")?"":dsMea.getString("PLANNED");
-			pConf         = dsMea.isEmpty("pconfirm")?0:dsMea.getInt("pconfirm"); 
+			pConf         = dsMea.isEmpty("pconfirm")?0:dsMea.getInt("pconfirm");
 			freq          = dsMea.isEmpty("FREQUENCY")?"":dsMea.getString("FREQUENCY");
 			fileNm        = dsMea.isEmpty("FILENAME_PLAN")?"":dsMea.getString("FILENAME_PLAN");
 			filePath      = dsMea.isEmpty("FILEPATH_PLAN")?"":dsMea.getString("FILEPATH_PLAN");
 			//System.out.println("freq   ===>   "+freq);
-			
+
 			System.out.println("freq1   ===>   "+freq1);
 			freq1 = "년";
 			//freq1 = freq;
@@ -109,22 +109,22 @@
 					filePath2 = filePath;
 					if(!(filePath2==null?"":filePath2).equals("")){
 						fileIconStr2 = "<a href='#'> <img src='"+imgUri+"/jsp/web/images/icon_file.gif' width='12' height='12' onClick=\"download('"+filePath2+"','"+fileNm2+"');\"> </a>";
-					}					
+					}
 				}else if(effectivedate2.equals("09")){
 					planned3 = planned;
 					fileNm3 = fileNm;
 					filePath3 = filePath;
 					if(!(filePath3==null?"":filePath3).equals("")){
 						fileIconStr3 = "<a href='#'> <img src='"+imgUri+"/jsp/web/images/icon_file.gif' width='12' height='12' onClick=\"download('"+filePath3+"','"+fileNm3+"');\"> </a>";
-					}					
+					}
 				}else if(effectivedate2.equals("12")){
 					planned4 = planned;
 					fileNm4 = fileNm;
 					filePath4 = filePath;
 					if(!(filePath4==null?"":filePath4).equals("")){
 						fileIconStr4 = "<a href='#'> <img src='"+imgUri+"/jsp/web/images/icon_file.gif' width='12' height='12' onClick=\"download('"+filePath4+"','"+fileNm4+"');\"> </a>";
-					}					
-				}				
+					}
+				}
 			}
 			//out.println("mname  =============       "+mname+"<br>");
 			//out.println("updateId  ======   "+updateId+"<br>");
@@ -178,17 +178,17 @@
 		<td height="25"><strong> <img src="<%=imgUri%>/jsp/web/images/icon_point_01.gif" width="8"
 			height="8" align="absmiddle"> 실행계획 </strong></td>
 	</tr>
-</form>		
+</form>
 </table>
 <table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7" style="display:none;">
-	<tr bgcolor="#FFFFFF">
-		<td width="30%" align="center" bgcolor="#D4DCF4"><font color="#003399"><strong>성과지표 명</strong></font></td>
+	<tr bgcolor="#375f9c" style="height:32px;">
+		<td width="30%" align="center" bgcolor="#375f9c"><font color="#ffffff"><strong>성과지표 명</strong></font></td>
 		<td width="70%"><strong><font color="#3366CC"><%= mname %></font></strong></td>
 	</tr>
 </table>
 <table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7">
-	<tr bgcolor="#FFFFFF">
-		<td width="30%" align="center" bgcolor="#D4DCF4"><font color="#003399"><strong>성과지표 명</strong></font></td>
+	<tr bgcolor="#FFFFFF" style="height:32px;">
+		<td width="30%" align="center" bgcolor="#375f9c"><font color="#ffffff"><strong>성과지표 명</strong></font></td>
 		<td width="70%"><strong><font color="#3366CC"><%= mname %></font></strong></td>
 	</tr>
 </table>
@@ -199,15 +199,15 @@
 		<td width="30%"><font color="#333333"><strong></strong></font></td>
 		<td width="70%"><font color="#333333"><strong>실행계획(500자이내)</strong></font></td>
 	</tr>
-	
-<%-- 	
+
+<%--
 
 	String mname="";
-	String planned="";	
+	String planned="";
 	String updateId="";
 	String effectivedate="";
 	String effectivedate2="";
-	
+
 	int pConf = 0;
 
 	if(dsMea != null)
@@ -219,8 +219,8 @@
 			updateId = dsMea.isEmpty("UPDATEID")?"":dsMea.getString("UPDATEID");
 			effectivedate = dsMea.isEmpty("EFFECTIVEDATE")?"":dsMea.getString("EFFECTIVEDATE");
 			planned = dsMea.isEmpty("PLANNED")?"":dsMea.getString("PLANNED");
-			pConf = dsMea.isEmpty("pconfirm")?0:dsMea.getInt("pconfirm"); 
-			
+			pConf = dsMea.isEmpty("pconfirm")?0:dsMea.getInt("pconfirm");
+
 			if(!effectivedate.equals("")){
 				effectivedate2 = effectivedate.substring(2,4);
 				out.println("effectivedate2  =============       "+effectivedate2+"<br>");
@@ -234,16 +234,16 @@
 		}
 	}
 --%>
-		
+
 <%System.out.println("freq   ===>   "+freq1); if ("분기".equals(freq1)){ %>
-	<form name="file1" method="post" ENCTYPE="multipart/form-data">			
+	<form name="file1" method="post" ENCTYPE="multipart/form-data">
 	<tr align="center" bgcolor="#FFFFFF" >
 		<td ><font color="#333333"><strong>1/4분기</strong></font>
 		<%=fileIconStr1 %>
 		</td>
 		<td valign="top"><textArea name="planned1" style="width:98%;height:80px"><%=planned1 %></textArea></td>
 	</tr>
-	
+
 		<input type=hidden name=schDate >
 		<input type=hidden name=qtr value="1">
 		<input type=hidden name=tag>
@@ -257,13 +257,13 @@
 					<% } else { %>
 					<img src="<%=imgUri%>/jsp/web/images/btn_reset.gif" align="absmiddle" alt="계획초기화" width="65" height="20" border="0" onClick="javascript:actionPerformed('RP','file1');" style="cursor:hand">
 					<img src="<%=imgUri%>/jsp/web/images/btn_save.gif" align="absmiddle" alt="계획저장" width="50" height="20" border="0" onClick="javascript:actionPerformed('P','file1');" style="cursor:hand">
-					<%} %>					
+					<%} %>
 				</td>
 		</tr>
 	</form>
 <% } %>
-<% if ("분기".equals(freq1)||"반기".equals(freq1)){ %>	
-	<form name="file2" method="post" ENCTYPE="multipart/form-data">						
+<% if ("분기".equals(freq1)||"반기".equals(freq1)){ %>
+	<form name="file2" method="post" ENCTYPE="multipart/form-data">
 	<tr align="center" bgcolor="#FFFFFF" >
 		<td ><font color="#333333"><strong>2/4분기</strong></font>
 		<%=fileIconStr2 %>
@@ -283,12 +283,12 @@
 					<% } else { %>
 					<img src="<%=imgUri%>/jsp/web/images/btn_reset.gif" align="absmiddle" alt="계획초기화" width="65" height="20" border="0" onClick="javascript:actionPerformed('RP','file2');" style="cursor:hand">
 					<img src="<%=imgUri%>/jsp/web/images/btn_save.gif" align="absmiddle" alt="계획저장" width="50" height="20" border="0" onClick="javascript:actionPerformed('P','file2');" style="cursor:hand">
-					<%} %>	
+					<%} %>
 		</tr>
 	</form>
-<% } %>	
-<% if ("분기".equals(freq1)){ %>	
-<form name="file3" method="post" ENCTYPE="multipart/form-data">		
+<% } %>
+<% if ("분기".equals(freq1)){ %>
+<form name="file3" method="post" ENCTYPE="multipart/form-data">
 	<tr align="center" bgcolor="#FFFFFF" >
 		<td ><font color="#333333"><strong>3/4분기</strong></font>
 		<%=fileIconStr3 %>
@@ -311,9 +311,9 @@
 
 					<%} %>
 		</tr>
-	
+
 	</form>
-<% } %>	
+<% } %>
 <form name="file4" method="post" ENCTYPE="multipart/form-data">
 	<tr align="center" bgcolor="#FFFFFF" >
 		<td ><font color="#333333"><strong>년 계획</strong></font>
@@ -338,13 +338,13 @@
 
 					<%} %>
 		</tr>
-	
+
 	</form>
 
 </table>
 <form name="downForm" method="post" action="<%=imgUri%>/jsp/web/valuate/download.jsp">
 	<input type="hidden" name="fileName">
-	<input type="hidden" name="filePath">	
+	<input type="hidden" name="filePath">
 </form>
 <!---------//우측  항목실적 점수계산 결과  끝 //--------> <!----/저장버튼/--->
 <%// if (groupId<2){ %>
@@ -376,7 +376,7 @@
 		</td>
 		<% } --%>
 	</tr>
-	
+
 </table>
 -->
 <%// } %>
@@ -386,16 +386,16 @@
 	function actionPerformed(tag, div){
 
 		// 마감되었슴
-		if ("<%=mmclose_yn%>" == "Y") {	
+		if ("<%=mmclose_yn%>" == "Y") {
 				alert("<%=message2%>");
 				return;
-		}		
-			
-		if ("<%=periodvalidate%>" == "N") {	
+		}
+
+		if ("<%=periodvalidate%>" == "N") {
 				alert("계획 등록기간이 아닙니다.");
 				return;
 		}
-		
+
 		if ("D"==tag){
 			if (confirm("실적정보를 삭제하시겠습니까?")){
 
@@ -403,7 +403,7 @@
 				return;
 			}
 		}
-		
+
 		if ("RP"==tag){
 			if (confirm("계획을 초기화하시겠습니까?")){
 
@@ -411,7 +411,7 @@
 				return;
 			}
 		}
-		
+
 		if ("P"==tag){
 			if (confirm("계획을 저장하시겠습니까?")){
 
@@ -419,7 +419,7 @@
 				return;
 			}
 		}
-		
+
 		if(div == 'file1'){
 			parent.refresh = true;
 			file1.tag.value = tag;
@@ -432,26 +432,26 @@
 			file2.tag.value = tag;
 			//detailForm.schDate.value = parent.form1.year.options[parent.form1.year.selectedIndex].value+parent.form1.month.options[parent.form1.month.selectedIndex].value;
 			file2.schDate.value = parent.form1.year.options[parent.form1.year.selectedIndex].value+"06";
-			file2.submit();		
-		
+			file2.submit();
+
 		}
 		else if(div == 'file3'){
 			parent.refresh = true;
 			file3.tag.value = tag;
 			//detailForm.schDate.value = parent.form1.year.options[parent.form1.year.selectedIndex].value+parent.form1.month.options[parent.form1.month.selectedIndex].value;
 			file3.schDate.value = parent.form1.year.options[parent.form1.year.selectedIndex].value+"09";
-			file3.submit();		
-		
+			file3.submit();
+
 		}
 		else if(div == 'file4'){
 			parent.refresh = true;
 			file4.tag.value = tag;
 			//detailForm.schDate.value = parent.form1.year.options[parent.form1.year.selectedIndex].value+parent.form1.month.options[parent.form1.month.selectedIndex].value;
-			file4.schDate.value = parent.form1.year.options[parent.form1.year.selectedIndex].value+"12";;			
-			file4.submit();		
-		
+			file4.schDate.value = parent.form1.year.options[parent.form1.year.selectedIndex].value+"12";;
+			file4.submit();
+
 		}
-		
+
 
 	}
 

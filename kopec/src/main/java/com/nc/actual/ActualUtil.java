@@ -315,7 +315,6 @@ public class ActualUtil {
 			String type = request.getContentType()!=null?request.getContentType():"";
 			if (type.indexOf(";")>0) {
 				int ik = type.indexOf(";");
-
 				type = type.substring(0,ik);
 			}
 
@@ -335,7 +334,7 @@ public class ActualUtil {
 				//MultipartRequest multi=new MultipartRequest(request,UPLOADPATH,sizeLimit, new DefaultFileRenamePolicy()); // 이부분에서 upload가 됨. Unix 계열.
 				//MultipartRequest multi=new MultipartRequest(request,UPLOADPATH,sizeLimit,"euc-kr", new DefaultFileRenamePolicy()); // 이부분에서 upload가 됨.
 
-				MultipartRequest multi=new MultipartRequest(request,UPLOADPATH,sizeLimit,"euc-kr", new ByUserIdFileRenamePolicy());      // 한연 서버 한글 깨짐 ...
+				MultipartRequest multi=new MultipartRequest(request,UPLOADPATH,sizeLimit,"euc-kr", new ByUserIdFileRenamePolicy());      // 서버 한글 깨짐 ...
 				//위에서 업로드 하기전  new ByUserIdFileRenamePolicy() <-- 부분에서 특수문자 삭제
 				ArrayList filename = new ArrayList();
 				ArrayList originalFilename = new ArrayList();

@@ -75,6 +75,7 @@ public class CoolServer extends HttpServlet {
 
 	         //startScheduler();
 	        ServerStatic.REAL_CONTEXT_ROOT = systemProp.getProperty("REALPATH","");
+	        ServerStatic.SERVER_OS = systemProp.getProperty("SERVER_OS","WINDOWS");
 
 	        System.out.println("BSCManager.CoolCard System Starting... "+s );
 	    } catch(Exception exception) {

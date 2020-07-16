@@ -1,7 +1,6 @@
 package com.nc.eval;
 
 import java.io.File;
-import javax.swing.JOptionPane;
 
 
 
@@ -9,20 +8,15 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Vector;
-import javax.servlet.GenericServlet;
+import java.util.Enumeration;
+
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.JOptionPane;
 
 import com.nc.actual.MeasureDetail;
+import com.nc.cool.AppConfigUtil;
 import com.nc.cool.CoolServer;
-import com.nc.math.Expression;
-import com.nc.math.ExpressionParser;
 import com.nc.sql.CoolConnection;
 import com.nc.util.Common_Data;
 import com.nc.util.CoolFile;
@@ -30,16 +24,17 @@ import com.nc.util.DBObject;
 import com.nc.util.DataSet;
 import com.nc.util.SmartUpload;
 import com.nc.util.Util;
-import com.nc.util.ServerStatic;
-//import com.sun.rsasign.d;
 import com.oreilly.servlet.MultipartRequest;
+import com.oreilly.servlet.multipart.ByUserIdFileRenamePolicy;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
+import com.nc.util.ServerStatic;
+
 
 public class ValuateUtil {
-	
 
-		
-	
+
+
+
 	public void setMeasure(HttpServletRequest request, HttpServletResponse response) {
 		System.out.println("DataSetddddddd : ");
 		CoolConnection conn = null;
@@ -50,7 +45,7 @@ public class ValuateUtil {
 			String year    = schDate.substring(0,4);
 			String month   = schDate.substring(4,6);
 			String bscId   = request.getParameter("bscId");
-			
+
 			int groupId = new Integer((String)request.getSession().getAttribute("groupId")).intValue();
 
 			String userId = (String)request.getSession().getAttribute("userId");
@@ -81,7 +76,7 @@ public class ValuateUtil {
 	         .append(" LEFT JOIN    \n")
 	         .append(" (SELECT MEASUREID,EFFECTIVEDATE,PLANNED,DETAIL,FILEPATH,FILENAME,PCONFIRM,ACONFIRM,FILEPATH_PLAN,FILENAME_PLAN FROM TBLEVALMEASUREDETAIL WHERE EFFECTIVEDATE=?) DET  \n")
 	         .append(" ON MEA.MCID=DET.MEASUREID   \n")
-	         .append(" WHERE MEASUREMENT='∫Ò∞Ë∑Æ' AND MID IS NOT NULL   \n")
+	         .append(" WHERE MEASUREMENT='ÎπÑÍ≥ÑÎüâ' AND MID IS NOT NULL   \n")
 	         .append(" ORDER BY BRANK,BID,PRANK,PID,ORANK,OID,MRANK  \n");
 
 	         params = new Object[] {year,bscId,year,year,year,year,userId,year,userId, schDate};
@@ -94,7 +89,7 @@ public class ValuateUtil {
 			dbobject = new DBObject(conn.getConnection());
 
 			rs = dbobject.executePreparedQuery(sb.toString(),params);
-			
+
 			DataSet ds = new DataSet();
 			ds.load(rs);
 
@@ -109,13 +104,13 @@ public class ValuateUtil {
 	}
 
 	private String getFrequecny(int m){
-		String reval="'ø˘'";
+		String reval="'Ïõî'";
 		if ( (m==3) || (m==9)) {
-			reval = reval+",'∫–±‚'";
+			reval = reval+",'Î∂ÑÍ∏∞'";
 		} else if ((m == 6) ) {
-			reval = reval+",'∫–±‚','π›±‚'";
+			reval = reval+",'Î∂ÑÍ∏∞','Î∞òÍ∏∞'";
 		} else if (m==12) {
-			reval = reval+",'∫–±‚','π›±‚','≥‚'";
+			reval = reval+",'Î∂ÑÍ∏∞','Î∞òÍ∏∞','ÎÖÑ'";
 		}
 		return reval;
 	}
@@ -125,264 +120,308 @@ public class ValuateUtil {
 		DBObject dbobject = null;
 		ResultSet rs = null;
 		try {
-			SmartUpload smart = new SmartUpload();
-			ServletConfig config = (ServletConfig)request.getAttribute("config");
-			smart.init(config);
-			smart.service(request,response);
-			smart.upload();
 			Common_Data cd = new Common_Data();
 
-			String tag     = cd.ReplaceCode(smart.getRequest().getParameter("tag"));
-			String schDate = cd.ReplaceCode(smart.getRequest().getParameter("schDate"));
-			String mid     = cd.ReplaceCode(smart.getRequest().getParameter("contentId"));
-
-			if ((schDate==null)||(mid==null)) return;
-
-			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
-			conn.createStatement(false);
-
-			dbobject = new DBObject(conn.getConnection());
-
-			String year  = schDate.substring(0,4);
-			String month = schDate.substring(4,6);
-			System.out.println("schDate22222   ===>>   "+schDate);
-			if ("U".equals(tag)){
-				//String actual = Util.getEUCKR(cd.ReplaceCode(smart.getRequest().getParameter("actual")));
-				String actual = (cd.ReplaceCode(smart.getRequest().getParameter("actual")));
-				actual = actual.replaceAll("<br>","\n");
-				//System.out.println("con:"+actual);
-				CoolFile myfile = smart.getFiles().getFile(0);
-				String filename = myfile.getFileName();
-				String filetype = myfile.getFileExt();
-				String filesize = Long.toString(myfile.getSize());
-				String savepath = File.separator+"actual"+File.separator+"measurement"+File.separator;
-				String new_filename = "";
-				filename = cd.ReplaceCode1(filename);
-				//System.out.println("»Æ¿Â¿⁄∏¶ª´∆ƒ¿œ ¿Ã∏ß : "+filename);
-				
-				
-				
-			
-				
-				if (!("".equals(filename))) {
-					int pos = 0;
-
-					if((pos=filename.indexOf(".")) != -1){
-						String left  = filename.substring(0, pos);						
-					  	String right = filename.substring(pos, filename.length());
-//						new_filename = left +Util.getToDayTime()+ right;
-					  	new_filename = Util.getToDayTime()+ right;
-					}
-					// if isExit File delete file;;;
-
-					myfile.saveAs(savepath + new_filename);
-
-					String strU = "UPDATE TBLEVALMEASUREDETAIL SET DETAIL=?,ACONFIRM=0,FILEPATH=?,FILENAME=? WHERE MEASUREID=? AND EFFECTIVEDATE=?";
-					Object[] pmU = {actual,new_filename,filename,mid,schDate};
-
-					String strI = "INSERT INTO TBLEVALMEASUREDETAIL (MEASUREID,EFFECTIVEDATE,DETAIL,ACONFIRM,FILEPATH,FILENAME) VALUES (?,?,?,0,?,?)";
-					Object[] pmI = {mid,schDate,actual,new_filename,filename};
-
-					if (dbobject.executePreparedUpdate(strU,pmU)<1){
-						dbobject.executePreparedUpdate(strI,pmI);
-					}
-				} else {
-
-					String strU = "UPDATE TBLEVALMEASUREDETAIL SET DETAIL=?,ACONFIRM=0 WHERE MEASUREID=? AND EFFECTIVEDATE=?";
-					Object[] pmU = {actual,mid,schDate};
-
-					String strI = "INSERT INTO TBLEVALMEASUREDETAIL (MEASUREID,EFFECTIVEDATE,DETAIL,ACONFIRM) VALUES (?,?,?,0)";
-					Object[] pmI = {mid,schDate,actual};
-
-					if (dbobject.executePreparedUpdate(strU,pmU)<1){
-						dbobject.executePreparedUpdate(strI,pmI);
-					}
-				}
-			} else if ("D".equals(tag) ) {
-
-				String strD = "DELETE FROM TBLEVALMEASUREDETAIL WHERE MEASUREID=? AND EFFECTIVEDATE=?";
-				Object[] pmD = {mid,schDate};
-
-				dbobject.executePreparedUpdate(strD,pmD);
-
-			} else if ("T".equals(tag)){     // save tempo
-				//String actual = Util.getEUCKR(cd.ReplaceCode(smart.getRequest().getParameter("actual")));
-				String actual = (cd.ReplaceCode(smart.getRequest().getParameter("actual")));
-				actual = actual.replaceAll("<br>","\n");
-
-
-				CoolFile myfile = smart.getFiles().getFile(0);
-				String filename = myfile.getFileName();
-				String filetype = myfile.getFileExt();
-				String filesize = Long.toString(myfile.getSize());
-				String savepath = File.separator+"actual"+File.separator+"measurement"+File.separator;
-				String new_filename = "";
-
-				if (!("".equals(filename))) {
-					int pos = 0;
-
-					if((pos=filename.indexOf(".")) != -1){
-						String left = filename.substring(0, pos);
-						String right = filename.substring(pos, filename.length());
-						new_filename = left +Util.getToDayTime()+ right;
-					}
-
-
-					// if isExit File delete file;;;
-
-					myfile.saveAs(savepath + new_filename);
-
-					String strU = "UPDATE TBLEVALMEASUREDETAIL SET DETAIL=?,ACONFIRM=0,FILEPATH=?,FILENAME=? WHERE MEASUREID=? AND EFFECTIVEDATE=?";
-					Object[] pmU = {actual,new_filename,filename,mid,schDate};
-
-					String strI = "INSERT INTO TBLEVALMEASUREDETAIL (MEASUREID,EFFECTIVEDATE,DETAIL,ACONFIRM,FILEPATH,FILENAME) VALUES (?,?,?,0,?,?)";
-					Object[] pmI = {mid,schDate,actual,new_filename,filename};
-
-					if (dbobject.executePreparedUpdate(strU,pmU)<1){
-						dbobject.executePreparedUpdate(strI,pmI);
-					}
-				} else {
-					String strU = "UPDATE TBLEVALMEASUREDETAIL SET DETAIL=?,ACONFIRM=0WHERE MEASUREID=? AND EFFECTIVEDATE=?";
-					Object[] pmU = {actual,mid,schDate};
-
-					String strI = "INSERT INTO TBLEVALMEASUREDETAIL (MEASUREID,EFFECTIVEDATE,DETAIL,ACONFIRM) VALUES (?,?,?,0)";
-					Object[] pmI = {mid,schDate,actual};
-
-					if (dbobject.executePreparedUpdate(strU,pmU)<1){
-						dbobject.executePreparedUpdate(strI,pmI);
-					}
-				}
-			} else if ("P".equals(tag)){      // save planned
-				String planned = (cd.ReplaceCode(smart.getRequest().getParameter("planned")));
-				planned = planned.replaceAll("<br>","\n");
-
-				String strU = "UPDATE TBLEVALMEASUREDETAIL SET PLANNED=?,PCONFIRM=1 WHERE MEASUREID=? AND EFFECTIVEDATE=?";
-				Object[] pmU = {planned,mid,schDate};
-
-				String strI = "INSERT INTO TBLEVALMEASUREDETAIL (MEASUREID,EFFECTIVEDATE,PLANNED,PCONFIRM) VALUES (?,?,?,1)";
-				Object[] pmI = {mid,schDate,planned};
-
-				if (dbobject.executePreparedUpdate(strU,pmU)<1){
-					dbobject.executePreparedUpdate(strI,pmI);
-				}
-			} else if ("RP".equals(tag)){     // reset planned
-				String strU = "UPDATE TBLEVALMEASUREDETAIL SET PCONFIRM=0 WHERE MEASUREID=? AND EFFECTIVEDATE=?";
-				Object[] pmU = {mid,schDate};
-
-				dbobject.executePreparedUpdate(strU,pmU);
-			} else if ("RA".equals(tag)){     // reset actual
-				String strU = "UPDATE TBLEVALMEASUREDETAIL SET ACONFIRM=0, DETAIL=NULL, FILEPATH=NULL, FILENAME=NULL WHERE MEASUREID=? AND EFFECTIVEDATE=?";
-				Object[] pmU = {mid,schDate};
-
-				dbobject.executePreparedUpdate(strU,pmU);
-			} else if ("E".equals(tag)){	//save estimate
-				String estimate = (cd.ReplaceCode(smart.getRequest().getParameter("estimate")));
-				estimate = estimate.replaceAll("<br>","\n");
-				String estigrade = cd.ReplaceCode(smart.getRequest().getParameter("rdoEst"));
-
-				String strU = "UPDATE TBLEVALMEASUREDETAIL SET ESTIMATE=?,PCONFIRM=1,ESTIGRADE=? WHERE MEASUREID=? AND EFFECTIVEDATE=?";
-				Object[] pmU = {estimate,estigrade,mid,schDate};
-
-				String strI = "INSERT INTO TBLEVALMEASUREDETAIL (ESTIMATE,EFFECTIVEDATE,PLANNED,PCONFIRM,ESTIGRADE) VALUES (?,?,?,1,?)";
-				Object[] pmI = {mid,schDate,estimate,estigrade};
-
-				if (dbobject.executePreparedUpdate(strU,pmU)<1){
-					dbobject.executePreparedUpdate(strI,pmI);
-				}
-
-				if(!estigrade.equals("")){
-					String strC = "SELECT ESTIRSLT FROM TBLMEASUREDEFINE WHERE ID=?";
-					Object[] pmC = {mid};
-					if (rs!=null){rs.close(); rs=null;}
-					rs = dbobject.executePreparedQuery(strC,pmC);
-					String estirslt="";
-					while(rs.next()){
-						estirslt = rs.getString("ESTIRSLT");
-					}
-
-					if(estirslt.equals("Y")){
-
-						String strEqu = "SELECT EQUATION,WEIGHT,TREND,FREQUENCY,MEASUREID FROM TBLMEASUREDEFINE WHERE ID=?";
-						Object[] pmEqu = {mid};
-
-						if (rs!=null){rs.close(); rs=null;}
-
-						rs = dbobject.executePreparedQuery(strEqu,pmEqu);
-						String equ = "";
-						String weight = null;
-						String trend = null;
-						String frequency = null;
-						String measureid = "";
-						while(rs.next()){
-							equ = rs.getString("EQUATION");
-							weight = rs.getString("WEIGHT");
-							trend = rs.getString("TREND");
-							frequency = rs.getString("FREQUENCY");
-							measureid = rs.getString("MEASUREID");
-						}
-
-						double actual=0;
-						double score=0;
-						if(estigrade.equals("S")){
-			   				score = ServerStatic.UPPER;
-			   				actual = ServerStatic.UPPER;
-			   			}else if(estigrade.equals("A")){
-			   				score = ServerStatic.HIGH;
-			   				actual = ServerStatic.HIGH;
-			   			}else if(estigrade.equals("B")){
-			   				score = ServerStatic.LOW;
-			   				actual = ServerStatic.LOW;
-			   			}else if(estigrade.equals("C")){
-			   				score = ServerStatic.LOWER;
-			   				actual = ServerStatic.LOWER;
-			   			}else if(estigrade.equals("D")){
-			   				score = ServerStatic.LOWST;
-			   				actual = ServerStatic.LOWST;
-			   			}else {
-			   				score = 0;
-			   				actual = 0;
-			   			}
-
-						//System.out.println("Save:"+i+"/"+mIds[i]+"/"+measureid+"/"+actual+"/"+score+"/"+grade);
-
-						MeasureDetail measuredetail = getMeasureDetail (dbobject,mid,year+month);
-						measuredetail.actual = actual;
-						measuredetail.strDate = Util.getLastMonth(year+month);
-						measuredetail.weight = new Float(weight).floatValue();
-						//measuredetail.id = new Integer(mIds[i]).intValue();
-						measuredetail.measureId = new Integer(mid).intValue();
-						measuredetail.trend = (trend==null)?"ªÛ«‚":trend;
-						measuredetail.frequency = frequency;
-						measuredetail.score = score;
-						measuredetail.grade = estigrade;
-						//System.out.println("chek:"+measuredetail.measureId+"/"+measuredetail.strDate);
-						updateMeasureDetail(dbobject,measuredetail);
-					}
-				}
+			ServletConfig config = (ServletConfig)request.getAttribute("config");
+			String type = request.getContentType()!=null?request.getContentType():"";
+			if (type.indexOf(";")>0) {
+				int ik = type.indexOf(";");
+				type = type.substring(0,ik);
 			}
 
+			if ("multipart/form-data".equals(type)) {
+			    int sizeLimit = 10 * 1024 * 1024; // 10M, ÌååÏùº ÏÇ¨Ïù¥Ï¶à Ï†úÌïú, Ï†úÌïú ÏÇ¨Ïù¥Ï¶à Ï¥àÍ≥ºÏãú exceptionÎ∞úÏÉù.
+			    String UPLOADROOT = ServerStatic.REAL_CONTEXT_ROOT+File.separator+"actual"+File.separator+"measurementplan"; // Í≤ΩÎ°ú ÏßÄÏ†ï(Ï†àÎåÄ Í≤ΩÎ°ú | ROOTÎ•º Í∏∞Ï§ÄÏúºÎ°ú Ìïú ÏÉÅÎåÄÍ≤ΩÎ°ú)
+			    String UPLOADPATH = UPLOADROOT + File.separator;
+			    String PYSICALPATH = File.separator+"actual"+File.separator+"measurementplan"+File.separator;
 
-			StringBuffer sbMea = new StringBuffer();
-			sbMea.append(" SELECT * FROM ")
-				.append(" (SELECT D.ID, C.NAME,D.EQUATION,D.TREND,D.UPDATEID FROM TBLMEASUREDEFINE D, TBLMEASURE C WHERE D.MEASUREID=C.ID AND D.ID=?) DEF ")
-				.append(" LEFT JOIN  ")
-				.append(" (SELECT MEASUREID,EFFECTIVEDATE,PLANNED,DETAIL,FILEPATH,FILENAME,PCONFIRM,ACONFIRM,ESTIMATE,ESTIGRADE FROM TBLEVALMEASUREDETAIL ) ACT ")
-				.append(" ON DEF.ID=ACT.MEASUREID AND ACT.EFFECTIVEDATE=? ");
+				File upfolder = new File(UPLOADROOT);
 
-			Object[] pmMea = {mid,schDate};
+				if(!upfolder.isDirectory()){upfolder.mkdir();}
 
-			if (rs!=null){rs.close(); rs=null;}
-			rs = dbobject.executePreparedQuery(sbMea.toString(),pmMea);
+				//MultipartRequest multi=new MultipartRequest(request,UPLOADPATH,sizeLimit,"EUC-KR", new DefaultFileRenamePolicy()); // Ïù¥Î∂ÄÎ∂ÑÏóêÏÑú uploadÍ∞Ä Îê®.
+				MultipartRequest multi=new MultipartRequest(request,UPLOADPATH,sizeLimit,"EUC-KR", new ByUserIdFileRenamePolicy());      // ÏÑúÎ≤Ñ ÌïúÍ∏Ä Íπ®Ïßê ...
 
-			DataSet dsMea = new DataSet();
-			dsMea.load(rs);
 
-			request.setAttribute("dsMea", dsMea);
+				String tag     = cd.ReplaceCode(multi.getParameter("tag"));
+				String schDate = cd.ReplaceCode(multi.getParameter("schDate"));
+				String mid     = cd.ReplaceCode(multi.getParameter("contentId"));	// ÏßÄÌëúÏ†ïÏùòÏÑú ID
 
-			request.setAttribute("mid",mid);
-			request.setAttribute("schDate",schDate);
 
-			conn.commit();
+				if ((schDate==null)||(mid==null)) return;
+
+				conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
+				conn.createStatement(false);
+
+				dbobject = new DBObject(conn.getConnection());
+
+				String year  = schDate.substring(0,4);
+				String month = schDate.substring(4,6);
+				System.out.println("schDate22222   ===>>   "+schDate);
+				if ("U".equals(tag)){
+					ArrayList fileList = new ArrayList();
+					ArrayList originalFilename = new ArrayList();
+					Enumeration filenames = multi.getFileNames();
+
+					while(filenames.hasMoreElements())   {
+						String formName = (String)filenames.nextElement();
+						fileList.add(multi.getFilesystemName(formName));
+					    originalFilename.add(cd.ReplaceCode1(multi.getOriginalFileName(formName)));
+					}
+
+					String fileName = (String)fileList.get(0);
+					fileName = cd.ReplaceCode1(fileName);             //String ÏóêÏÑú ' Î•º Ï†úÍ∞Ä ÌïòÎäî Ìï®Ïàò
+					String originalFile = (String)originalFilename.get(0);
+
+
+					String actual = (cd.ReplaceCode(multi.getParameter("actual")));
+					actual = actual.replaceAll("<br>","\n");
+					//System.out.println("con:"+actual);
+					//String filename = myfile.getFileName();
+					//String filetype = myfile.getFileExt();
+					//String filesize = Long.toString(myfile.getSize());
+					//String savepath = File.separator+"actual"+File.separator+"measurement"+File.separator;
+					//String new_filename = "";
+					//filename = cd.ReplaceCode1(filename);
+					//System.out.println("ÌôïÏû•ÏûêÎ•ºÎ∫ÄÌååÏùº Ïù¥Î¶Ñ : "+filename);
+
+
+					String pysicalPath = PYSICALPATH + fileName;
+					if("WINDOWS".equals(ServerStatic.SERVER_OS)){
+						pysicalPath = pysicalPath.replace("\\", "\\\\");
+					}
+
+
+					if (!("".equals(fileName))) {
+						int pos = 0;
+
+						if((pos=fileName.indexOf(".")) != -1){
+							String left  = fileName.substring(0, pos);
+						  	String right = fileName.substring(pos, fileName.length());
+						}
+						// if isExit File delete file;;;
+
+						String strU = "UPDATE TBLEVALMEASUREDETAIL SET DETAIL=?,ACONFIRM=0,FILEPATH=?,FILENAME=? WHERE MEASUREID=? AND EFFECTIVEDATE=?";
+						Object[] pmU = {actual,pysicalPath,originalFile,mid,schDate};
+
+						String strI = "INSERT INTO TBLEVALMEASUREDETAIL (MEASUREID,EFFECTIVEDATE,DETAIL,ACONFIRM,FILEPATH,FILENAME) VALUES (?,?,?,0,?,?)";
+						Object[] pmI = {mid,schDate,actual,pysicalPath,originalFile};
+
+						if (dbobject.executePreparedUpdate(strU,pmU)<1){
+							dbobject.executePreparedUpdate(strI,pmI);
+						}
+					} else {
+
+						String strU = "UPDATE TBLEVALMEASUREDETAIL SET DETAIL=?,ACONFIRM=0 WHERE MEASUREID=? AND EFFECTIVEDATE=?";
+						Object[] pmU = {actual,mid,schDate};
+
+						String strI = "INSERT INTO TBLEVALMEASUREDETAIL (MEASUREID,EFFECTIVEDATE,DETAIL,ACONFIRM) VALUES (?,?,?,0)";
+						Object[] pmI = {mid,schDate,actual};
+
+						if (dbobject.executePreparedUpdate(strU,pmU)<1){
+							dbobject.executePreparedUpdate(strI,pmI);
+						}
+					}
+				} else if ("D".equals(tag) ) {
+
+					String strD = "DELETE FROM TBLEVALMEASUREDETAIL WHERE MEASUREID=? AND EFFECTIVEDATE=?";
+					Object[] pmD = {mid,schDate};
+
+					dbobject.executePreparedUpdate(strD,pmD);
+
+				} else if ("T".equals(tag)){     // save tempo
+					//String actual = Util.getEUCKR(cd.ReplaceCode(smart.getRequest().getParameter("actual")));
+					String actual = (cd.ReplaceCode(multi.getParameter("actual")));
+					actual = actual.replaceAll("<br>","\n");
+
+					ArrayList fileList = new ArrayList();
+					ArrayList originalFilename = new ArrayList();
+					Enumeration filenames = multi.getFileNames();
+
+					while(filenames.hasMoreElements())   {
+						String formName = (String)filenames.nextElement();
+						fileList.add(multi.getFilesystemName(formName));
+					    originalFilename.add(cd.ReplaceCode1(multi.getOriginalFileName(formName)));
+					}
+
+					String fileName = (String)fileList.get(0);
+					fileName = cd.ReplaceCode1(fileName);             //String ÏóêÏÑú ' Î•º Ï†úÍ∞Ä ÌïòÎäî Ìï®Ïàò
+					String originalFile = (String)originalFilename.get(0);
+
+					/*
+					CoolFile myfile = smart.getFiles().getFile(0);
+					String filename = myfile.getFileName();
+					String filetype = myfile.getFileExt();
+					String filesize = Long.toString(myfile.getSize());
+					String savepath = File.separator+"actual"+File.separator+"measurement"+File.separator;
+					String new_filename = "";*/
+
+					if (!("".equals(fileName))) {
+						int pos = 0;
+
+						if((pos=fileName.indexOf(".")) != -1){
+							String left = fileName.substring(0, pos);
+							String right = fileName.substring(pos, fileName.length());
+						}
+
+						String pysicalPath = PYSICALPATH + fileName;
+						if("WINDOWS".equals(ServerStatic.SERVER_OS)){
+							pysicalPath = pysicalPath.replace("\\", "\\\\");
+						}
+
+
+						String strU = "UPDATE TBLEVALMEASUREDETAIL SET DETAIL=?,ACONFIRM=0,FILEPATH=?,FILENAME=? WHERE MEASUREID=? AND EFFECTIVEDATE=?";
+						Object[] pmU = {actual,pysicalPath,originalFile,mid,schDate};
+
+						String strI = "INSERT INTO TBLEVALMEASUREDETAIL (MEASUREID,EFFECTIVEDATE,DETAIL,ACONFIRM,FILEPATH,FILENAME) VALUES (?,?,?,0,?,?)";
+						Object[] pmI = {mid,schDate,actual,pysicalPath,originalFile};
+
+						if (dbobject.executePreparedUpdate(strU,pmU)<1){
+							dbobject.executePreparedUpdate(strI,pmI);
+						}
+					} else {
+						String strU = "UPDATE TBLEVALMEASUREDETAIL SET DETAIL=?,ACONFIRM=0WHERE MEASUREID=? AND EFFECTIVEDATE=?";
+						Object[] pmU = {actual,mid,schDate};
+
+						String strI = "INSERT INTO TBLEVALMEASUREDETAIL (MEASUREID,EFFECTIVEDATE,DETAIL,ACONFIRM) VALUES (?,?,?,0)";
+						Object[] pmI = {mid,schDate,actual};
+
+						if (dbobject.executePreparedUpdate(strU,pmU)<1){
+							dbobject.executePreparedUpdate(strI,pmI);
+						}
+					}
+				} else if ("P".equals(tag)){      // save planned
+					String planned = (cd.ReplaceCode(multi.getParameter("planned")));
+					planned = planned.replaceAll("<br>","\n");
+
+					String strU = "UPDATE TBLEVALMEASUREDETAIL SET PLANNED=?,PCONFIRM=1 WHERE MEASUREID=? AND EFFECTIVEDATE=?";
+					Object[] pmU = {planned,mid,schDate};
+
+					String strI = "INSERT INTO TBLEVALMEASUREDETAIL (MEASUREID,EFFECTIVEDATE,PLANNED,PCONFIRM) VALUES (?,?,?,1)";
+					Object[] pmI = {mid,schDate,planned};
+
+					if (dbobject.executePreparedUpdate(strU,pmU)<1){
+						dbobject.executePreparedUpdate(strI,pmI);
+					}
+				} else if ("RP".equals(tag)){     // reset planned
+					String strU = "UPDATE TBLEVALMEASUREDETAIL SET PCONFIRM=0 WHERE MEASUREID=? AND EFFECTIVEDATE=?";
+					Object[] pmU = {mid,schDate};
+
+					dbobject.executePreparedUpdate(strU,pmU);
+				} else if ("RA".equals(tag)){     // reset actual
+					String strU = "UPDATE TBLEVALMEASUREDETAIL SET ACONFIRM=0, DETAIL=NULL, FILEPATH=NULL, FILENAME=NULL WHERE MEASUREID=? AND EFFECTIVEDATE=?";
+					Object[] pmU = {mid,schDate};
+
+					dbobject.executePreparedUpdate(strU,pmU);
+				} else if ("E".equals(tag)){	//save estimate
+					String estimate = (cd.ReplaceCode(multi.getParameter("estimate")));
+					estimate = estimate.replaceAll("<br>","\n");
+					String estigrade = cd.ReplaceCode(multi.getParameter("rdoEst"));
+
+					String strU = "UPDATE TBLEVALMEASUREDETAIL SET ESTIMATE=?,PCONFIRM=1,ESTIGRADE=? WHERE MEASUREID=? AND EFFECTIVEDATE=?";
+					Object[] pmU = {estimate,estigrade,mid,schDate};
+
+					String strI = "INSERT INTO TBLEVALMEASUREDETAIL (ESTIMATE,EFFECTIVEDATE,PLANNED,PCONFIRM,ESTIGRADE) VALUES (?,?,?,1,?)";
+					Object[] pmI = {mid,schDate,estimate,estigrade};
+
+					if (dbobject.executePreparedUpdate(strU,pmU)<1){
+						dbobject.executePreparedUpdate(strI,pmI);
+					}
+
+					if(!estigrade.equals("")){
+						String strC = "SELECT ESTIRSLT FROM TBLMEASUREDEFINE WHERE ID=?";
+						Object[] pmC = {mid};
+						if (rs!=null){rs.close(); rs=null;}
+						rs = dbobject.executePreparedQuery(strC,pmC);
+						String estirslt="";
+						while(rs.next()){
+							estirslt = rs.getString("ESTIRSLT");
+						}
+
+						if(estirslt.equals("Y")){
+
+							String strEqu = "SELECT EQUATION,WEIGHT,TREND,FREQUENCY,MEASUREID FROM TBLMEASUREDEFINE WHERE ID=?";
+							Object[] pmEqu = {mid};
+
+							if (rs!=null){rs.close(); rs=null;}
+
+							rs = dbobject.executePreparedQuery(strEqu,pmEqu);
+							String equ = "";
+							String weight = null;
+							String trend = null;
+							String frequency = null;
+							String measureid = "";
+							while(rs.next()){
+								equ = rs.getString("EQUATION");
+								weight = rs.getString("WEIGHT");
+								trend = rs.getString("TREND");
+								frequency = rs.getString("FREQUENCY");
+								measureid = rs.getString("MEASUREID");
+							}
+
+							double actual=0;
+							double score=0;
+							if(estigrade.equals("S")){
+				   				score = ServerStatic.UPPER;
+				   				actual = ServerStatic.UPPER;
+				   			}else if(estigrade.equals("A")){
+				   				score = ServerStatic.HIGH;
+				   				actual = ServerStatic.HIGH;
+				   			}else if(estigrade.equals("B")){
+				   				score = ServerStatic.LOW;
+				   				actual = ServerStatic.LOW;
+				   			}else if(estigrade.equals("C")){
+				   				score = ServerStatic.LOWER;
+				   				actual = ServerStatic.LOWER;
+				   			}else if(estigrade.equals("D")){
+				   				score = ServerStatic.LOWST;
+				   				actual = ServerStatic.LOWST;
+				   			}else {
+				   				score = 0;
+				   				actual = 0;
+				   			}
+
+							//System.out.println("Save:"+i+"/"+mIds[i]+"/"+measureid+"/"+actual+"/"+score+"/"+grade);
+
+							MeasureDetail measuredetail = getMeasureDetail (dbobject,mid,year+month);
+							measuredetail.actual = actual;
+							measuredetail.strDate = Util.getLastMonth(year+month);
+							measuredetail.weight = new Float(weight).floatValue();
+							//measuredetail.id = new Integer(mIds[i]).intValue();
+							measuredetail.measureId = new Integer(mid).intValue();
+							measuredetail.trend = (trend==null)?"ÏÉÅÌñ•":trend;
+							measuredetail.frequency = frequency;
+							measuredetail.score = score;
+							measuredetail.grade = estigrade;
+							//System.out.println("chek:"+measuredetail.measureId+"/"+measuredetail.strDate);
+							updateMeasureDetail(dbobject,measuredetail);
+						}
+					}
+				}
+
+
+				StringBuffer sbMea = new StringBuffer();
+				sbMea.append(" SELECT * FROM ")
+					.append(" (SELECT D.ID, C.NAME,D.EQUATION,D.TREND,D.UPDATEID FROM TBLMEASUREDEFINE D, TBLMEASURE C WHERE D.MEASUREID=C.ID AND D.ID=?) DEF ")
+					.append(" LEFT JOIN  ")
+					.append(" (SELECT MEASUREID,EFFECTIVEDATE,PLANNED,DETAIL,FILEPATH,FILENAME,PCONFIRM,ACONFIRM,ESTIMATE,ESTIGRADE FROM TBLEVALMEASUREDETAIL ) ACT ")
+					.append(" ON DEF.ID=ACT.MEASUREID AND ACT.EFFECTIVEDATE=? ");
+
+				Object[] pmMea = {mid,schDate};
+
+				if (rs!=null){rs.close(); rs=null;}
+				rs = dbobject.executePreparedQuery(sbMea.toString(),pmMea);
+
+				DataSet dsMea = new DataSet();
+				dsMea.load(rs);
+
+				request.setAttribute("dsMea", dsMea);
+
+				request.setAttribute("mid",mid);
+				request.setAttribute("schDate",schDate);
+
+				conn.commit();
+			}
 		} catch (IOException ie){
 			System.out.print(ie);
 		} catch (Exception e) {
@@ -560,9 +599,9 @@ public class ValuateUtil {
 
 			String str = "SELECT SCORE FROM TBLMEASURESCORE WHERE MEASUREID=? AND STRDATE=?";
 			Object[] pm = {new Integer(measuredetail.measureId),null};
-			if (measuredetail.frequency.equals("ø˘")){
+			if (measuredetail.frequency.equals("Ïõî")){
 				list.add(year+month);
-			} else if (measuredetail.frequency.equals("∫–±‚")){
+			} else if (measuredetail.frequency.equals("Î∂ÑÍ∏∞")){
 				if (m==3){
 					list.add(year+"01"); list.add(year+"02"); list.add(year+"03");
 					pm[1]=year+"06";
@@ -610,7 +649,7 @@ public class ValuateUtil {
 						list.add(String.valueOf(nYear)+"01"); list.add(String.valueOf(nYear)+"02");
 					}
 				}
-			} else if (measuredetail.frequency.equals("π›±‚")){
+			} else if (measuredetail.frequency.equals("Î∞òÍ∏∞")){
 				if (m==6){
 					list.add(year+"01"); list.add(year+"02"); list.add(year+"03");list.add(year+"04"); list.add(year+"05"); list.add(year+"06");
 					pm[1]=year+"12";
@@ -636,7 +675,7 @@ public class ValuateUtil {
 						list.add(String.valueOf(nYear)+"01"); list.add(String.valueOf(nYear)+"02"); list.add(String.valueOf(nYear)+"03"); list.add(String.valueOf(nYear)+"04"); list.add(String.valueOf(nYear)+"05");
 					}
 				}
-			} else if (measuredetail.frequency.equals("≥‚")){
+			} else if (measuredetail.frequency.equals("ÎÖÑ")){
 				list.add(year+"01"); list.add(year+"02"); list.add(year+"03");list.add(year+"04"); list.add(year+"05"); list.add(year+"06");
 				list.add(year+"07"); list.add(year+"08"); list.add(year+"09");list.add(year+"10"); list.add(year+"11"); list.add(year+"12");
 
@@ -726,8 +765,12 @@ public class ValuateUtil {
 		ResultSet rs = null;
 		try {
 			String year = request.getParameter("year")!=null?request.getParameter("year"):null;
-			if (year == null){ 
-				year = request.getAttribute("year")!= null?request.getAttribute("year").toString():Util.getPrevQty(null).substring(0,4); 
+			if (year == null){
+				//year = request.getAttribute("year")!= null?request.getAttribute("year").toString():Util.getPrevQty(null).substring(0,4);
+				AppConfigUtil app = new AppConfigUtil();
+				String showym = app.getShowYM()!= null?app.getShowYM():Util.getPrevQty(null);
+				String qtr    = showym.substring(0,6);
+				year   = qtr.substring(0,4);
 			}
 			int groupId = 1; // session.getAttribute();
 			String userId = "admin"; //session.getAttribute();
@@ -819,23 +862,23 @@ public class ValuateUtil {
 		DBObject dbobject = null;
 		ResultSet rs = null;
 		try {
-			
+
 			String schDate = request.getParameter("schDate");
 			String year = schDate.substring(0,4);
 			System.out.println("year    ===>>   "+year);
 			String month = schDate.substring(4,6);
 			System.out.println("month    ===>>   "+month);
 
-//∆Ú∞° ±◊∑Ï ∞°¡Æø¿±‚
+//ÌèâÍ∞Ä Í∑∏Î£π Í∞ÄÏ†∏Ïò§Í∏∞
 
 			String userId = (String)request.getSession().getAttribute("userId");
 			//userId = "admin";
 			StringBuffer sbGrp = new StringBuffer();
 			sbGrp.append("SELECT * FROM TBLMEAEVALGRP WHERE GRPID IN (SELECT GRPID FROM TBLMEAEVALR WHERE EVALRID=?) AND YEAR=? AND MONTH=?");
 			Object[] params = {userId,year,month};
-			
+
 			System.out.println(sbGrp);
-			
+
 			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
 			conn.createStatement(false);
 
@@ -846,21 +889,21 @@ public class ValuateUtil {
 			DataSet ds = new DataSet();
 			ds.load(rs);
 			request.setAttribute("dsGrp", ds);
-			
-//¡ˆ«•∏Ì ∞°¡Æø¿±‚ 
-			
+
+//ÏßÄÌëúÎ™Ö Í∞ÄÏ†∏Ïò§Í∏∞
+
 			System.out.println("-----------------------------------------------------------------");
 			StringBuffer strDetail = new StringBuffer();
 			strDetail.append(" SELECT DISTINCT(MEASUREID),MNAME,GRPID,GRPNM FROM  ")
 	         .append(" (SELECT GRPID,GRPNM,YEAR,MONTH FROM TBLMEAEVALGRP WHERE GRPID IN (SELECT GRPID FROM TBLMEAEVALR WHERE EVALRID=?)   ")
 	         .append(" AND YEAR=? AND MONTH=? ) GRP  ")
 	         .append(" LEFT JOIN  ")
-	         .append(" (SELECT D.GRPID GID,D.EVALDEPTID,B.ID,B.NAME FROM TBLMEAEVALDEPT D, TBLBSC B ) DEP  ") //Tblbsc b µ⁄ø° ¡ˆøˆ¡‹ WHERE D.EVALDEPTID=B.ID
+	         .append(" (SELECT D.GRPID GID,D.EVALDEPTID,B.ID,B.NAME FROM TBLMEAEVALDEPT D, TBLBSC B ) DEP  ") //Tblbsc b Îí§Ïóê ÏßÄÏõåÏ§å WHERE D.EVALDEPTID=B.ID
 	         .append(" ON GRP.GRPID=DEP.GID   ")
 	         .append(" LEFT JOIN  ")
 	         .append(" (SELECT T.ID MID,T.PARENTID MPID,T.CONTENTID MCID,T.TREELEVEL MLEVEL,T.RANK MRANK,T.WEIGHT MWEIGHT,C.NAME MNAME,D.MEASUREID,  ")
-	         .append(" CASE WHEN (C.MEASCHAR='I') THEN '∞Ì¿Ø' ELSE '∞¯≈Î' END MKIND, C.MEASCHAR, D.MEASUREMENT ")
-	         .append(" FROM TBLTREESCORE T,TBLMEASUREDEFINE D, TBLMEASURE C WHERE T.CONTENTID=D.ID AND D.MEASUREID=C.ID AND T.TREELEVEL=5 AND T.YEAR=? AND MEASUREMENT='∫Ò∞Ë∑Æ' ) MEA  ")
+	         .append(" CASE WHEN (C.MEASCHAR='I') THEN 'Í≥†Ïú†' ELSE 'Í≥µÌÜµ' END MKIND, C.MEASCHAR, D.MEASUREMENT ")
+	         .append(" FROM TBLTREESCORE T,TBLMEASUREDEFINE D, TBLMEASURE C WHERE T.CONTENTID=D.ID AND D.MEASUREID=C.ID AND T.TREELEVEL=5 AND T.YEAR=? AND MEASUREMENT='ÎπÑÍ≥ÑÎüâ' ) MEA  ")
 	         .append(" ON DEP.EVALDEPTID=MEA.MEASUREID   ")
 	         .append(" LEFT JOIN  ")
 	         .append(" (SELECT T.ID OID,T.PARENTID OPID,T.CONTENTID OCID,T.TREELEVEL OLEVEL,T.RANK ORANK,T.WEIGHT OWEIGHT,C.NAME ONAME   ")
@@ -890,7 +933,7 @@ public class ValuateUtil {
 			request.setAttribute("dsDtl",dsDtl);
 			System.out.println("-----------------------------------------------------------------");
 
-			
+
 		} catch (Exception e) {
 			System.out.println(e);
 		} finally {
@@ -915,9 +958,9 @@ public class ValuateUtil {
 
 			String userId = (String)request.getSession().getAttribute("userId");
 			System.out.println("id"+userId);
-			System.out.println("ø˘"+month);
-			System.out.println("≥‚"+year);
-			
+			System.out.println("Ïõî"+month);
+			System.out.println("ÎÖÑ"+year);
+
 			StringBuffer sbGrp = new StringBuffer();
 			sbGrp.append("SELECT * FROM TBLMEAEVALGRP WHERE GRPID IN (SELECT GRPID FROM TBLMEAEVALR WHERE EVALRID=?) AND YEAR=? AND MONTH=?");
 			Object[] params = {userId,year,month};
@@ -943,8 +986,8 @@ public class ValuateUtil {
 	         .append(" ON GRP.GRPID=DEP.GID   ")
 	         .append(" LEFT JOIN  ")
 	         .append(" (SELECT T.ID MID,T.PARENTID MPID,T.CONTENTID MCID,T.TREELEVEL MLEVEL,T.RANK MRANK,T.WEIGHT MWEIGHT,C.NAME MNAME,D.MEASUREID,  ")
-	         .append(" CASE WHEN (C.MEASCHAR='I') THEN '∞Ì¿Ø' ELSE '∞¯≈Î' END MKIND, C.MEASCHAR, D.MEASUREMENT ")
-	         .append(" FROM TBLTREESCORE T,TBLMEASUREDEFINE D, TBLMEASURE C WHERE T.CONTENTID=D.ID AND D.MEASUREID=C.ID AND T.TREELEVEL=5 AND T.YEAR=? AND MEASUREMENT='∫Ò∞Ë∑Æ' ) MEA  ")
+	         .append(" CASE WHEN (C.MEASCHAR='I') THEN 'Í≥†Ïú†' ELSE 'Í≥µÌÜµ' END MKIND, C.MEASCHAR, D.MEASUREMENT ")
+	         .append(" FROM TBLTREESCORE T,TBLMEASUREDEFINE D, TBLMEASURE C WHERE T.CONTENTID=D.ID AND D.MEASUREID=C.ID AND T.TREELEVEL=5 AND T.YEAR=? AND MEASUREMENT='ÎπÑÍ≥ÑÎüâ' ) MEA  ")
 	         .append(" ON DEP.EVALDEPTID=MEA.MEASUREID   ")
 	         .append(" LEFT JOIN  ")
 	         .append(" (SELECT T.ID OID,T.PARENTID OPID,T.CONTENTID OCID,T.TREELEVEL OLEVEL,T.RANK ORANK,T.WEIGHT OWEIGHT,C.NAME ONAME   ")
@@ -979,7 +1022,7 @@ public class ValuateUtil {
 			if (conn != null) {conn.close(); conn = null;}
 		}
 	}
-	//«√∑∫Ω∫øÎ  ∫Ò∞Ë∑Æ ≥‚∆Ú∞°  √≥∏Æ ∫Œ∫–
+	//ÌîåÎ†âÏä§Ïö©  ÎπÑÍ≥ÑÎüâ ÎÖÑÌèâÍ∞Ä  Ï≤òÎ¶¨ Î∂ÄÎ∂Ñ
 	public void flexsetEvalMeasure(HttpServletRequest request, HttpServletResponse response) {
 		CoolConnection conn = null;
 		DBObject dbobject = null;
@@ -995,7 +1038,7 @@ public class ValuateUtil {
 			String measureId = request.getParameter("measureId");
 
 			String userId = (String)request.getSession().getAttribute("userId");
-			
+
 			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
 			conn.createStatement(false);
 
@@ -1012,15 +1055,15 @@ public class ValuateUtil {
 
 				String strI = "INSERT INTO TBLMEAEVALDETAIL (EVALID,EVALRID,YEAR,MONTH,EVALGRADE,EVALSCORE,REGIR,CONFIRM) VALUES (?,?,?,?,?,?,?,1)";
 				Object[] pmI = {null,userId,year,month,null,null,userId};
-				
+
 				for (int i = 0; i < mids.length; i++) {
 					if (!"".equals(mids[i])){
 						//System.out.println("I1 : "+ i);
 						String grades = request.getParameter("appraise");
-						
+
 						//System.out.println("I2 : "+ grades);
 						grade = grades.split(",");
-						
+
 						String grd = grade[i-1];
 						int scr = 0;
 						if(grd.equals("S")){
@@ -1035,7 +1078,7 @@ public class ValuateUtil {
 							scr = 1;
 						}
 						//String scr = grade[1];
-						System.out.println("µÓ±ﬁ :   " + grd + "    ¡°ºˆ :   "+ scr);
+						System.out.println("Îì±Í∏â :   " + grd + "    Ï†êÏàò :   "+ scr);
 						pmU[0]=grd;
 						pmU[1]=scr;
 						pmU[3]=mids[i];
@@ -1045,7 +1088,7 @@ public class ValuateUtil {
 							pmI[5]=scr;
 							dbobject.executePreparedUpdate(strI,pmI);
 						}
-					
+
 					}
 				}
 			} else if ("E".equals(mode)){
@@ -1073,8 +1116,8 @@ public class ValuateUtil {
 	         .append(" ON GRP.GRPID=DEP.GID  ")
 	         .append(" LEFT JOIN ")
 	         .append(" (SELECT T.ID MID,T.PARENTID MPID,T.CONTENTID MCID,T.TREELEVEL MLEVEL,T.RANK MRANK,T.WEIGHT MWEIGHT,C.NAME MNAME,D.MEASUREID, ")
-	         .append(" CASE WHEN (C.MEASCHAR='I') THEN '∞Ì¿Ø' ELSE '∞¯≈Î' END MKIND,C.MEASCHAR  ")
-	         .append(" FROM TBLTREESCORE T,TBLMEASUREDEFINE D, TBLMEASURE C WHERE T.CONTENTID=D.ID AND D.MEASUREID=C.ID AND T.TREELEVEL=5 AND T.YEAR=? AND D.MEASUREMENT='∫Ò∞Ë∑Æ' ) MEA ")
+	         .append(" CASE WHEN (C.MEASCHAR='I') THEN 'Í≥†Ïú†' ELSE 'Í≥µÌÜµ' END MKIND,C.MEASCHAR  ")
+	         .append(" FROM TBLTREESCORE T,TBLMEASUREDEFINE D, TBLMEASURE C WHERE T.CONTENTID=D.ID AND D.MEASUREID=C.ID AND T.TREELEVEL=5 AND T.YEAR=? AND D.MEASUREMENT='ÎπÑÍ≥ÑÎüâ' ) MEA ")
 	         .append(" ON DEP.EVALDEPTID=MEA.MEASUREID ")
 	         .append(" LEFT JOIN ")
 	         .append(" (SELECT T.ID OID,T.PARENTID OPID,T.CONTENTID OCID,T.TREELEVEL OLEVEL,T.RANK ORANK,T.WEIGHT OWEIGHT,C.NAME ONAME  ")
@@ -1109,16 +1152,16 @@ public class ValuateUtil {
 			System.out.println("-----"+month);
 			System.out.println("-----"+grpId);
 			System.out.println("-----"+measureId);
-			
+
 			DataSet ds = new DataSet();
 			ds.load(rs);
-			
+
 			int cnt = ds.getRowCount();
 
 			StringBuffer sbCnt = new StringBuffer();
 			sbCnt.append("SELECT * FROM TBLMEAEVALGRADE WHERE CNT=? AND TYPE=1");
 			Object[] obj = {String.valueOf(cnt)};
-			
+
 			if (rs!=null){rs.close(); rs=null;}
 
 			rs = dbobject.executePreparedQuery(sbCnt.toString(),obj);
@@ -1145,11 +1188,11 @@ public class ValuateUtil {
 			if (conn != null) {conn.close(); conn = null;}
 		}
 	}
-//ø¯ jsp ∫Ò∞Ë∑Æ ≥‚∆Ú∞° √≥∏Æ ∫Œ∫–
+//Ïõê jsp ÎπÑÍ≥ÑÎüâ ÎÖÑÌèâÍ∞Ä Ï≤òÎ¶¨ Î∂ÄÎ∂Ñ
 	public void setEvalMeasure(HttpServletRequest request, HttpServletResponse response) {
 		CoolConnection conn = null;
 		DBObject dbobject = null;
-		ResultSet rs = null; 
+		ResultSet rs = null;
 		try {
 			String year = request.getParameter("year");
 			String month = request.getParameter("month");
@@ -1161,7 +1204,7 @@ public class ValuateUtil {
 			String measureId = request.getParameter("measureId");
 
 			String userId = (String)request.getSession().getAttribute("userId");
-			
+
 			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
 			conn.createStatement(false);
 
@@ -1172,7 +1215,7 @@ public class ValuateUtil {
 				System.out.println("I");
 				String aMCID = request.getParameter("aMCID")!=null?request.getParameter("aMCID"):"";
 				String[] mids = aMCID.split("\\|");
-				
+
 				String strU = "UPDATE TBLMEAEVALDETAIL SET EVALGRADE=?,EVALSCORE=?,MODIR=?,MODIDATE=SYSDATE,CONFIRM=1 WHERE EVALID=? AND EVALRID=? AND YEAR=? AND MONTH=?";
 				Object[] pmU = {null,null,userId,null,userId,year,month};
 
@@ -1225,8 +1268,8 @@ public class ValuateUtil {
 	         .append(" ON GRP.GRPID=DEP.GID  ")
 	         .append(" LEFT JOIN ")
 	         .append(" (SELECT T.ID MID,T.PARENTID MPID,T.CONTENTID MCID,T.TREELEVEL MLEVEL,T.RANK MRANK,T.WEIGHT MWEIGHT,C.NAME MNAME,D.MEASUREID, ")
-	         .append(" CASE WHEN (C.MEASCHAR='I') THEN '∞Ì¿Ø' ELSE '∞¯≈Î' END MKIND,C.MEASCHAR  ")
-	         .append(" FROM TBLTREESCORE T,TBLMEASUREDEFINE D, TBLMEASURE C WHERE T.CONTENTID=D.ID AND D.MEASUREID=C.ID AND T.TREELEVEL=5 AND T.YEAR=? AND D.MEASUREMENT='∫Ò∞Ë∑Æ' ) MEA ")
+	         .append(" CASE WHEN (C.MEASCHAR='I') THEN 'Í≥†Ïú†' ELSE 'Í≥µÌÜµ' END MKIND,C.MEASCHAR  ")
+	         .append(" FROM TBLTREESCORE T,TBLMEASUREDEFINE D, TBLMEASURE C WHERE T.CONTENTID=D.ID AND D.MEASUREID=C.ID AND T.TREELEVEL=5 AND T.YEAR=? AND D.MEASUREMENT='ÎπÑÍ≥ÑÎüâ' ) MEA ")
 	         .append(" ON DEP.EVALDEPTID=MEA.MEASUREID ")
 	         .append(" LEFT JOIN ")
 	         .append(" (SELECT T.ID OID,T.PARENTID OPID,T.CONTENTID OCID,T.TREELEVEL OLEVEL,T.RANK ORANK,T.WEIGHT OWEIGHT,C.NAME ONAME  ")
@@ -1261,16 +1304,16 @@ public class ValuateUtil {
 			System.out.println("-----"+month);
 			System.out.println("-----"+grpId);
 			System.out.println("-----"+measureId);
-			
+
 			DataSet ds = new DataSet();
 			ds.load(rs);
-			
+
 			int cnt = ds.getRowCount();
 
 			StringBuffer sbCnt = new StringBuffer();
 			sbCnt.append("SELECT * FROM TBLMEAEVALGRADE WHERE CNT=? AND TYPE=1");
 			Object[] obj = {String.valueOf(cnt)};
-			
+
 			if (rs!=null){rs.close(); rs=null;}
 
 			rs = dbobject.executePreparedQuery(sbCnt.toString(),obj);
@@ -1297,9 +1340,9 @@ public class ValuateUtil {
 			if (conn != null) {conn.close(); conn = null;}
 		}
 	}
-	
+
 	/**
-	 * ∫Ò∞Ë∑Æ ¡ˆ«•∆Ú∞°(∫Œº≠)2008
+	 * ÎπÑÍ≥ÑÎüâ ÏßÄÌëúÌèâÍ∞Ä(Î∂ÄÏÑú)2008
 	 *
 	 * @param request
 	 * @param response
@@ -1319,11 +1362,11 @@ public class ValuateUtil {
 
                String userId = (String)request.getSession().getAttribute("userId");
 
-               //System.out.println("setEvalMeasureOrg : ym " + year + month + " : " + grpId);                    
+               //System.out.println("setEvalMeasureOrg : ym " + year + month + " : " + grpId);
                int groupId = new Integer((String)request.getSession().getAttribute("groupId")).intValue();
 
                System.out.println("setEvalMeasureOrg : ym " + year + month + " , mcid " + measureId + ", User " + userId);
-                              
+
                conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
                conn.createStatement(false);
 
@@ -1336,11 +1379,11 @@ public class ValuateUtil {
 
                       String strU  = "UPDATE TBLMEAEVALDETAIL SET EVALGRADE=?,EVALSCORE=?,MODIR=?,MODIDATE=SYSDATE,CONFIRM=1 WHERE EVALID=? AND EVALRID=? AND YEAR=? AND MONTH=?";
                       Object[] pmU = {null,null,userId,null,userId,year,month};
-                      
-                      // ¡ﬂ∞£∆Ú∞°¿Œ ∞ÊøÏ 
+
+                      // Ï§ëÍ∞ÑÌèâÍ∞ÄÏù∏ Í≤ΩÏö∞
                       String strDM = "DELETE TBLMEAEVALDETAIL WHERE EVALID=? AND YEAR=? AND MONTH=?";
                       Object[] pmDM  = {null,year,month};
-                      
+
                       String strI = "INSERT INTO TBLMEAEVALDETAIL (EVALID,EVALRID,YEAR,MONTH,EVALGRADE,EVALSCORE,REGIR,CONFIRM) VALUES (?,?,?,?,?,?,?,1)";
                       Object[] pmI = {null,userId,year,month,null,null,userId};
 
@@ -1356,12 +1399,12 @@ public class ValuateUtil {
                                    pmU[3]=mids[i];
                                    if (dbobject.executePreparedUpdate(strU,pmU)<1){
 
-                                         // ¡ﬂ∞£∆Ú∞°¿Œ ∞ÊøÏ : ∫Œº≠¿Â∏∏ ¿‘∑¬«‘...
+                                         // Ï§ëÍ∞ÑÌèâÍ∞ÄÏù∏ Í≤ΩÏö∞ : Î∂ÄÏÑúÏû•Îßå ÏûÖÎ†•Ìï®...
                                          //if ("06".equals(month)){
                                                 //pmDM[0]=mids[i];
-                                                //dbobject.executePreparedUpdate(strDM,pmDM);                                                  
-                                         //}                                             
-                                         
+                                                //dbobject.executePreparedUpdate(strDM,pmDM);
+                                         //}
+
                                          pmI[0]=mids[i];
                                          pmI[4]=grd;
                                          pmI[5]=scr;
@@ -1385,10 +1428,10 @@ public class ValuateUtil {
                             }
                       }
                }
-               
+
 /*               if (groupId == 1) {
                    userId = "%";
-               }  */             
+               }  */
                //System.out.println("list:"+grpId+"/"+measureId);
                StringBuffer sb = new StringBuffer();
                Object[] params = null;
@@ -1427,7 +1470,7 @@ public class ValuateUtil {
                .append("                d.planned,d.plannedbase, d.base, d.baselimit, d.limit ")
                .append("         from    tbltreescore    t, tblmeasure c,  tblmeasuredefine d ")
                .append("         where  t.contentid=d.id  and t.treelevel=5 and t.year =? and d.measureid=c.id ")
-               .append("         and    d.measurement = '∫Ò∞Ë∑Æ' ")
+               .append("         and    d.measurement = 'ÎπÑÍ≥ÑÎüâ' ")
                .append("         and    d.measureid = ? ")
                .append("        ) mea,  ")
                .append("        ( ")
@@ -1440,7 +1483,7 @@ public class ValuateUtil {
                .append("        ) emp,  ")
                .append("        ( ")
                .append("         select  a.effectivedate, a.measureid  amid,  max(a.filepath) filepath, max(a.filename) filename ,  ")
-               .append("                 max(b.evalgrade) evalgrade, max(b.evalscore) evalscore, max(b.evalid)  evalid  ")               
+               .append("                 max(b.evalgrade) evalgrade, max(b.evalscore) evalscore, max(b.evalid)  evalid  ")
                .append("         from   tblevalmeasuredetail a, tblmeaevaldetail b  ")
                .append("         where  a.effectivedate = b.year(+)||b.month(+) ")
                .append("         and    a.measureid     = b.evalid(+) ")
@@ -1474,10 +1517,10 @@ public class ValuateUtil {
                if (dbobject != null){dbobject.close(); dbobject = null;}
                if (conn != null) {conn.close(); conn = null;}
         }
-  }      
+  }
 
 	/**
-	 * ∫Ò∞Ë∑Æ ¡ˆ«•∆Ú∞° 2007
+	 * ÎπÑÍ≥ÑÎüâ ÏßÄÌëúÌèâÍ∞Ä 2007
 	 *
 	 * @param request
 	 * @param response
@@ -1591,7 +1634,7 @@ public class ValuateUtil {
 			.append("                d.planned,d.plannedbase, d.base, d.baselimit, d.limit ")
 			.append("         from    tbltreescore    t, tblmeasure c,  tblmeasuredefine d ")
 			.append("         where  t.contentid=d.id  and t.treelevel=5 and t.year =? and d.measureid=c.id ")
-			.append("         and    d.measurement = '∫Ò∞Ë∑Æ' ")
+			.append("         and    d.measurement = 'ÎπÑÍ≥ÑÎüâ' ")
 			.append("         and    d.measureid = ? ")
 			.append("        ) mea,  ")
 			.append("        ( ")
@@ -1680,7 +1723,7 @@ public class ValuateUtil {
 			dbobject = new DBObject(conn.getConnection());
 
 			String[] grade=null;
-			if ("I".equals(mode)){  // ¥‹º¯ ∆Ú∞° ∞·∞˙ ¿‘∑¬ ∞˙¡§
+			if ("I".equals(mode)){  // Îã®Ïàú ÌèâÍ∞Ä Í≤∞Í≥º ÏûÖÎ†• Í≥ºÏ†ï
 				String aMCID = request.getParameter("aMCID")!=null?request.getParameter("aMCID"):"";
 				String[] mids = aMCID.split("\\|");
 
@@ -1708,7 +1751,7 @@ public class ValuateUtil {
 						}
 					}
 				}
-			} else if("A".equals(mode)){  // ∆Ú∞° ∞·∞˙ ¿‘∑¬ »ƒ BSC Ω«¿˚ π›øµ ∞˙¡§
+			} else if("A".equals(mode)){  // ÌèâÍ∞Ä Í≤∞Í≥º ÏûÖÎ†• ÌõÑ BSC Ïã§Ï†Å Î∞òÏòÅ Í≥ºÏ†ï
 				String aMCID = request.getParameter("aMCID")!=null?request.getParameter("aMCID"):"";
 				String[] mids = aMCID.split("\\|");
 
@@ -1721,7 +1764,7 @@ public class ValuateUtil {
 				for (int i = 0; i < mids.length; i++) {
 					if (!"".equals(mids[i])){
 
-						// ∆Ú∞° ¡°ºˆ ¿‘∑¬ ∞˙¡§
+						// ÌèâÍ∞Ä Ï†êÏàò ÏûÖÎ†• Í≥ºÏ†ï
 						String grades = request.getParameter("rdo"+mids[i]);
 						grade = grades.split("\\|");
 						String grd = grade[0];
@@ -1737,7 +1780,7 @@ public class ValuateUtil {
 							dbobject.executePreparedUpdate(strI,pmI);
 						}
 
-						//////////////////////////////// bsc Ω«¿˚ π›øµ ∞˙¡§
+						//////////////////////////////// bsc Ïã§Ï†Å Î∞òÏòÅ Í≥ºÏ†ï
 						String strEqu = "SELECT EQUATION,WEIGHT,TREND,FREQUENCY FROM TBLMEASUREDEFINE WHERE ID=?";
 						Object[] pmEqu = {mids[i]};
 
@@ -1762,7 +1805,7 @@ public class ValuateUtil {
 						measuredetail.strDate = Util.getLastMonth(year+"12");
 						measuredetail.weight = new Float(weight).floatValue();
 						measuredetail.measureId = new Integer(mids[i]).intValue();
-						measuredetail.trend = (trend==null)?"ªÛ«‚":trend;
+						measuredetail.trend = (trend==null)?"ÏÉÅÌñ•":trend;
 						measuredetail.frequency = frequency;
 
 						updateMeasureDetail(dbobject,measuredetail);
@@ -1808,8 +1851,8 @@ public class ValuateUtil {
 	         .append(" ON PST.PID=OBJ.OPID  ")
 	         .append(" LEFT JOIN  ")
 	         .append(" (SELECT T.ID MID,T.PARENTID MPID,T.CONTENTID MCID,T.TREELEVEL MLEVEL,T.RANK MRANK,T.WEIGHT MWEIGHT,C.NAME MNAME,D.MEASUREID, ")
-	         .append(" D.MEASUREMENT,CASE WHEN (C.MEASCHAR='I') THEN '∞Ì¿Ø' ELSE '∞¯≈Î' END MKIND,C.MEASCHAR   ")
-	         .append(" FROM TBLTREESCORE T,TBLMEASUREDEFINE D, TBLMEASURE C WHERE T.CONTENTID=D.ID AND D.MEASUREID=C.ID AND T.TREELEVEL=5 AND T.YEAR=? AND D.MEASUREMENT='∫Ò∞Ë∑Æ' ) MEA  ")
+	         .append(" D.MEASUREMENT,CASE WHEN (C.MEASCHAR='I') THEN 'Í≥†Ïú†' ELSE 'Í≥µÌÜµ' END MKIND,C.MEASCHAR   ")
+	         .append(" FROM TBLTREESCORE T,TBLMEASUREDEFINE D, TBLMEASURE C WHERE T.CONTENTID=D.ID AND D.MEASUREID=C.ID AND T.TREELEVEL=5 AND T.YEAR=? AND D.MEASUREMENT='ÎπÑÍ≥ÑÎüâ' ) MEA  ")
 	         .append(" ON OBJ.OID=MEA.MPID  ")
 	         .append(" LEFT JOIN ")
 	         .append(" (SELECT EVALGRADE,EVALSCORE,EVALID FROM TBLMEAEVALDETAIL WHERE YEAR=? AND MONTH=12 AND EVALRID=?) EVAL ")
@@ -1990,8 +2033,8 @@ public class ValuateUtil {
 	         .append(" ON PST.PID=OBJ.OPID  ")
 	         .append(" LEFT JOIN  ")
 	         .append(" (SELECT T.ID MID,T.PARENTID MPID,T.CONTENTID MCID,T.TREELEVEL MLEVEL,T.RANK MRANK,T.WEIGHT MWEIGHT,C.NAME MNAME,D.MEASUREID, ")
-	         .append(" D.MEASUREMENT,CASE WHEN (C.MEASCHAR='I') THEN '∞Ì¿Ø' ELSE '∞¯≈Î' END MKIND,C.MEASCHAR   ")
-	         .append(" FROM TBLTREESCORE T,TBLMEASUREDEFINE D, TBLMEASURE C WHERE T.CONTENTID=D.ID AND D.MEASUREID=C.ID AND T.TREELEVEL=5 AND T.YEAR=? AND D.MEASUREMENT='∫Ò∞Ë∑Æ' ) MEA  ")
+	         .append(" D.MEASUREMENT,CASE WHEN (C.MEASCHAR='I') THEN 'Í≥†Ïú†' ELSE 'Í≥µÌÜµ' END MKIND,C.MEASCHAR   ")
+	         .append(" FROM TBLTREESCORE T,TBLMEASUREDEFINE D, TBLMEASURE C WHERE T.CONTENTID=D.ID AND D.MEASUREID=C.ID AND T.TREELEVEL=5 AND T.YEAR=? AND D.MEASUREMENT='ÎπÑÍ≥ÑÎüâ' ) MEA  ")
 	         .append(" ON OBJ.OID=MEA.MPID  ")
 	         .append(" LEFT JOIN ")
 	         .append(" (SELECT EVALGRADE,EVALSCORE,EVALID FROM TBLMEAEVALDETAIL WHERE YEAR=? AND MONTH=12 AND EVALRID=?) EVAL ")
@@ -2080,8 +2123,8 @@ public class ValuateUtil {
 	         .append(" ON PST.PID=OBJ.OPID ")
 	         .append(" LEFT JOIN ")
 	         .append(" (SELECT T.ID MID,T.PARENTID MPID,T.CONTENTID MCID,T.TREELEVEL MLEVEL,T.RANK MRANK,T.WEIGHT MWEIGHT,C.NAME MNAME,D.MEASUREID, ")
-	         .append(" D.MEASUREMENT, CASE WHEN (C.MEASCHAR='I') THEN '∞Ì¿Ø' ELSE '∞¯≈Î' END MKIND,C.MEASCHAR  ")
-	         .append(" FROM TBLTREESCORE T,TBLMEASUREDEFINE D, TBLMEASURE C WHERE T.CONTENTID=D.ID AND D.MEASUREID=C.ID AND T.TREELEVEL=5 AND T.YEAR=? AND D.MEASUREMENT='∫Ò∞Ë∑Æ' ) MEA ")
+	         .append(" D.MEASUREMENT, CASE WHEN (C.MEASCHAR='I') THEN 'Í≥†Ïú†' ELSE 'Í≥µÌÜµ' END MKIND,C.MEASCHAR  ")
+	         .append(" FROM TBLTREESCORE T,TBLMEASUREDEFINE D, TBLMEASURE C WHERE T.CONTENTID=D.ID AND D.MEASUREID=C.ID AND T.TREELEVEL=5 AND T.YEAR=? AND D.MEASUREMENT='ÎπÑÍ≥ÑÎüâ' ) MEA ")
 	         .append(" ON OBJ.OID=MEA.MPID ")
 	         .append(" LEFT JOIN ")
 	         .append(" (SELECT EVALID,EVALGRADE,NVL(EVALSCORE,0) EVALSCORE FROM TBLMEAEVALDETAIL WHERE EVALRID=? AND YEAR=? AND MONTH=12) EVAL ")
@@ -2111,8 +2154,8 @@ public class ValuateUtil {
 	         .append(" ON PST.PID=OBJ.OPID ")
 	         .append(" LEFT JOIN ")
 	         .append(" (SELECT T.ID MID,T.PARENTID MPID,T.CONTENTID MCID,T.TREELEVEL MLEVEL,T.RANK MRANK,T.WEIGHT MWEIGHT,C.NAME MNAME,D.MEASUREID, ")
-	         .append(" D.MEASUREMENT, CASE WHEN (C.MEASCHAR='I') THEN '∞Ì¿Ø' ELSE '∞¯≈Î' END MKIND,C.MEASCHAR  ")
-	         .append(" FROM TBLTREESCORE T,TBLMEASUREDEFINE D, TBLMEASURE C WHERE T.CONTENTID=D.ID AND D.MEASUREID=C.ID AND T.TREELEVEL=5 AND T.YEAR=? AND D.MEASUREMENT='∫Ò∞Ë∑Æ' ) MEA ")
+	         .append(" D.MEASUREMENT, CASE WHEN (C.MEASCHAR='I') THEN 'Í≥†Ïú†' ELSE 'Í≥µÌÜµ' END MKIND,C.MEASCHAR  ")
+	         .append(" FROM TBLTREESCORE T,TBLMEASUREDEFINE D, TBLMEASURE C WHERE T.CONTENTID=D.ID AND D.MEASUREID=C.ID AND T.TREELEVEL=5 AND T.YEAR=? AND D.MEASUREMENT='ÎπÑÍ≥ÑÎüâ' ) MEA ")
 	         .append(" ON OBJ.OID=MEA.MPID ")
 	         .append(" LEFT JOIN ")
 	         .append(" (SELECT EVALID,EVALGRADE,NVL(EVALSCORE,0) EVALSCORE FROM TBLMEAEVALDETAIL WHERE EVALRID=? AND YEAR=? AND MONTH=12) EVAL ")
@@ -2318,7 +2361,7 @@ public class ValuateUtil {
 
 			String mid = request.getParameter("mid");
 
-			  
+
 			StringBuffer sb = new StringBuffer();
 			sb.append(" SELECT * FROM  ")
 	         .append(" (SELECT T.ID MID,T.PARENTID MPID,T.CONTENTID MCID,C.NAME,C.ID CID  ")
@@ -2348,7 +2391,7 @@ public class ValuateUtil {
 			request.setAttribute("ds", ds);
 			System.out.println(""+ds.toString());
 
-	
+
 		} catch (Exception e) {
 			System.out.println(e);
 		} finally {
@@ -2375,13 +2418,13 @@ public class ValuateUtil {
 			if (year==null || month==null) return;
 
 			String userId = (String)request.getSession().getAttribute("userId");
-			
-			
+
+
 			System.out.println("mcId : "+mcId);
 			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
 			conn.createStatement(false);
-			
-			
+
+
 			dbobject = new DBObject(conn.getConnection());
 
 			if ("A".equals(mode)) {
@@ -2402,12 +2445,12 @@ public class ValuateUtil {
 				dbobject.executePreparedUpdate(strD,objU);
 			}
 			StringBuffer sb = new StringBuffer();
-			
-				sb.append(" SELECT * FROM TBLMEAEVALDETAIL WHERE YEAR=? AND EVALID=?  ");//2008≥‚ 11ø˘ 3¿œ ∫Ò∞Ë∑Æ"∆Ú∞° ¿«∞ﬂº≠ √‚∑¬∂ßπÆø° ºˆ¡§
+
+				sb.append(" SELECT * FROM TBLMEAEVALDETAIL WHERE YEAR=? AND EVALID=?  ");//2008ÎÖÑ 11Ïõî 3Ïùº ÎπÑÍ≥ÑÎüâ"ÌèâÍ∞Ä ÏùòÍ≤¨ÏÑú Ï∂úÎ†•ÎïåÎ¨∏Ïóê ÏàòÏ†ï
 				Object[] pm = {year,mcId};
 				rs = dbobject.executePreparedQuery(sb.toString(),pm);
 
-				//sb.append(" SELECT * FROM TBLMEAEVALDETAIL WHERE YEAR=? AND EVALID=? AND EVALRID=? "); 
+				//sb.append(" SELECT * FROM TBLMEAEVALDETAIL WHERE YEAR=? AND EVALID=? AND EVALRID=? ");
 				//Object[] pm = {year,mcId,userId};
 
 
@@ -2481,7 +2524,7 @@ public class ValuateUtil {
 	         .append(" LEFT JOIN  ")
 	         .append(" (SELECT MEASUREID,EFFECTIVEDATE,PLANNED,DETAIL,FILEPATH,FILENAME,PCONFIRM,ACONFIRM FROM TBLEVALMEASUREDETAIL WHERE EFFECTIVEDATE LIKE  ?% ) DET ")
 	         .append(" ON MEA.MCID=DET.MEASUREID ")
-	         .append(" WHERE MEASUREMENT='∫Ò∞Ë∑Æ' AND MID IS NOT NULL  ")
+	         .append(" WHERE MEASUREMENT='ÎπÑÍ≥ÑÎüâ' AND MID IS NOT NULL  ")
 	         .append(" ORDER BY BRANK,BID,PRANK,PID,ORANK,OID,MRANK ");
 
 	         params = new Object[] {year,bscId,year,year,year,schDate};
@@ -2506,7 +2549,7 @@ public class ValuateUtil {
 			if (conn != null) {conn.close(); conn = null;}
 		}
 	}
-	
+
 	public void UpdadePland(HttpServletRequest request, HttpServletResponse response) {
 		CoolConnection conn = null;
 		DBObject dbobject = null;
@@ -2516,82 +2559,82 @@ public class ValuateUtil {
 			String year = Util.getUTF(request.getParameter("year"));//year
 			String jugi = Util.getUTF(request.getParameter("jugi"));
 			String planned4 = Util.getUTF(request.getParameter("PLANNED"));
-			
+
 			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
 			conn.createStatement(false);
 
 			dbobject = new DBObject(conn.getConnection());
-			
+
 			System.out.println("MId : "+mid);
 			System.out.println("year : "+year);
 			System.out.println("jugi : "+jugi);
 			System.out.println("PLANNED4 : "+planned4);
 
-				System.out.println("¡÷±‚ √‚∑¬ : "+jugi);
-			// π›±‚¿œ ∞ÊøÏ  ∞Ë»π ¿‘∑¬ πﬁ¿∫ ∞™(4/4)∏¶ 2/4∫–±‚ø°µµ ¿˙¿Â¿ª«‘
+				System.out.println("Ï£ºÍ∏∞ Ï∂úÎ†• : "+jugi);
+			// Î∞òÍ∏∞Ïùº Í≤ΩÏö∞  Í≥ÑÌöç ÏûÖÎ†• Î∞õÏùÄ Í∞í(4/4)Î•º 2/4Î∂ÑÍ∏∞ÏóêÎèÑ Ï†ÄÏû•ÏùÑÌï®
 
-			
-			// 2008.10.02 JJJ πË±§¡¯ ø‰√ª
-			// 1. ¡ˆ«•¿« ¡÷±‚∏¶ ±∏«—¥Ÿ.(JSPø°º≠ ¿¸¥ﬁπﬁ¿Ω)
-			// 2. ¡ˆ«•¿« ¡÷±‚ø° µ˚∂Û 4/4∫–±‚(12ø˘)∞Ë»π¿ª «ÿ¥Á ¡ˆ«•¡÷±‚¿« ø˘ø° ¿⁄µøª˝º∫
-			
-			String planned1 = planned4;	
+
+			// 2008.10.02 JJJ Î∞∞Í¥ëÏßÑ ÏöîÏ≤≠
+			// 1. ÏßÄÌëúÏùò Ï£ºÍ∏∞Î•º Íµ¨ÌïúÎã§.(JSPÏóêÏÑú Ï†ÑÎã¨Î∞õÏùå)
+			// 2. ÏßÄÌëúÏùò Ï£ºÍ∏∞Ïóê Îî∞Îùº 4/4Î∂ÑÍ∏∞(12Ïõî)Í≥ÑÌöçÏùÑ Ìï¥Îãπ ÏßÄÌëúÏ£ºÍ∏∞Ïùò ÏõîÏóê ÏûêÎèôÏÉùÏÑ±
+
+			String planned1 = planned4;
 			String planned2 = planned4;
 			String planned3 = planned4;
-			
+
 			planned1 = planned1.replaceAll("<br>","\n");
 			planned2 = planned2.replaceAll("<br>","\n");
 			planned3 = planned3.replaceAll("<br>","\n");
-			planned4 = planned4.replaceAll("<br>","\n"); 
+			planned4 = planned4.replaceAll("<br>","\n");
 
 			System.out.println("planned1   ===>>   "+planned1);
 			System.out.println("planned2   ===>>   "+planned2);
 			System.out.println("planned3   ===>>   "+planned3);
 			System.out.println("planned4   ===>>   "+planned4);
-			
+
 			String new_filename = "dd";
 			String filename = "dd";
 			//==UPDATE (03)
-			System.out.println("√º≈©0");
+			System.out.println("Ï≤¥ÌÅ¨0");
 
-			if(jugi.equals("∫–±‚")){
-				System.out.println("√º≈©0-1");
+			if(jugi.equals("Î∂ÑÍ∏∞")){
+				System.out.println("Ï≤¥ÌÅ¨0-1");
 				String strU1 = "UPDATE TBLEVALMEASUREDETAIL SET PLANNED=?,PCONFIRM=1, FILEPATH_PLAN=?, FILENAME_PLAN=? WHERE MEASUREID=? AND EFFECTIVEDATE=?";
 				Object[] pmU1 = {planned1,new_filename, filename,mid,year+"03"};
 				rs = dbobject.executePreparedQuery(strU1,pmU1);
 
-				System.out.println("√º≈©1");
+				System.out.println("Ï≤¥ÌÅ¨1");
 			}
-			//==UPDATE (06)	
-			if(jugi.equals("π›±‚")||jugi.equals("∫–±‚")){
+			//==UPDATE (06)
+			if(jugi.equals("Î∞òÍ∏∞")||jugi.equals("Î∂ÑÍ∏∞")){
 				String strU2 = "UPDATE TBLEVALMEASUREDETAIL SET PLANNED=?,PCONFIRM=1, FILEPATH_PLAN=?, FILENAME_PLAN=? WHERE MEASUREID=? AND EFFECTIVEDATE=?";
 				Object[] pmU2 = {planned2,new_filename, filename,mid,year+"06"};
 				rs = dbobject.executePreparedQuery(strU2,pmU2);
-				System.out.println("√º≈©2");
+				System.out.println("Ï≤¥ÌÅ¨2");
 			}
 
-			// 09ø˘ 
-			if(jugi.equals("∫–±‚")){
+			// 09Ïõî
+			if(jugi.equals("Î∂ÑÍ∏∞")){
 				String strU3 = "UPDATE TBLEVALMEASUREDETAIL SET PLANNED=?,PCONFIRM=1, FILEPATH_PLAN=?, FILENAME_PLAN=? WHERE MEASUREID=? AND EFFECTIVEDATE=?";
 				Object[] pmU3 = {planned3,new_filename, filename,mid,year+"09"};
 				rs = dbobject.executePreparedQuery(strU3,pmU3);
-				System.out.println("√º≈©3");
+				System.out.println("Ï≤¥ÌÅ¨3");
 			}
 
-			// 12ø˘ 
-			if(jugi.equals("≥‚")||jugi.equals("π›±‚")||jugi.equals("∫–±‚")){
+			// 12Ïõî
+			if(jugi.equals("ÎÖÑ")||jugi.equals("Î∞òÍ∏∞")||jugi.equals("Î∂ÑÍ∏∞")){
 				String strU4 = "UPDATE TBLEVALMEASUREDETAIL SET PLANNED=?,PCONFIRM=1, FILEPATH_PLAN=?, FILENAME_PLAN=? WHERE MEASUREID=? AND EFFECTIVEDATE=?";
 				Object[] pmU4 = {planned4,new_filename, filename,mid,year+"12"};
 				System.out.println("---------------"+strU4);
 				System.out.println("+++++++++++++++"+planned2 +"/"+ new_filename+"/" + filename+"/"+mid+"/"+ year+"06");
 
 				rs = dbobject.executePreparedQuery(strU4,pmU4);
-				System.out.println("√º≈©4");
+				System.out.println("Ï≤¥ÌÅ¨4");
 			}
-			
+
 			conn.commit();
-			
-					
+
+
 		} catch (Exception e) {
 			System.out.println(e);
 		} finally {
@@ -2609,187 +2652,183 @@ public class ValuateUtil {
 		DBObject dbobject = null;
 		ResultSet rs = null;
 		try {
-			SmartUpload smart = new SmartUpload();
-			ServletConfig config = (ServletConfig)request.getAttribute("config");
-			smart.init(config);
-			smart.service(request,response);
-			smart.upload();
 			Common_Data cd = new Common_Data();
 
-
-
-
-//		    int sizeLimit = 10 * 1024 * 1024; // 10M, ∆ƒ¿œ ªÁ¿Ã¡Ó ¡¶«—, ¡¶«— ªÁ¿Ã¡Ó √ ∞˙Ω√ exceptionπﬂª˝.
-//
-//		    String UPLOADROOT = config.getServletContext().getRealPath("jsp/web/upload"); // ∞Ê∑Œ ¡ˆ¡§(¿˝¥Î ∞Ê∑Œ | ROOT∏¶ ±‚¡ÿ¿∏∑Œ «— ªÛ¥Î∞Ê∑Œ)
-//
-//		    String UPLOADPATH = UPLOADROOT + File.separator;
-//
-//			MultipartRequest multi=new MultipartRequest(request,UPLOADPATH,sizeLimit, new DefaultFileRenamePolicy()); // ¿Ã∫Œ∫–ø°º≠ upload∞° µ .
-//
-
-			System.out.println("freq1¿«∞™ : " + request.getParameter("freq1"));
-			String tag = cd.ReplaceCode(smart.getRequest().getParameter("tag"));
-			String schDate = cd.ReplaceCode(smart.getRequest().getParameter("schDate"));
-			String mid     = cd.ReplaceCode(smart.getRequest().getParameter("contentId"));	// ¡ˆ«•¡§¿«º≠ ID
-			String jugi    = cd.ReplaceCode(smart.getRequest().getParameter("qtr"));		// ¡÷±‚ 
-
-//			String tag = multi.getParameter("tag");
-//			String schDate = multi.getParameter("schDate");
-//			String mid = multi.getParameter("contentId");
-
-			if ((schDate==null)||(mid==null)) return;
-
-			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
-			conn.createStatement(false);
-
-			dbobject = new DBObject(conn.getConnection());
-
-			String year = schDate.substring(0,4);//
-			String month = schDate.substring(4,6);
-
-			request.setAttribute("year", year);
-			
-			System.out.println("schDate22222   ===>>   "+schDate);
-			System.out.println("year   ===>>   "+year);
-			System.out.println("month   ===>>   "+month);
-			String savepath = File.separator+"actual"+File.separator+"measurementplan"+File.separator;
-
-			if ("P".equals(tag)){      // save planned
-
-				CoolFile myfile = smart.getFiles().getFile(0);
-				String filename = myfile.getFileName();
-				String new_filename = "";
-				filename = cd.ReplaceCode1(filename);
-				//System.out.println("»Æ¿Â¿⁄∏¶ª´∆ƒ¿œ ¿Ã∏ß : "+filename);
-
-				int pos = 0;
-				
-				if((pos=filename.indexOf(".")) != -1){
-					String left = filename.substring(0, pos);
-					
-					String right = filename.substring(pos, filename.length());
-//					new_filename = left +Util.getToDayTime()+ right;
-					new_filename = Util.getToDayTime()+ right;
-					myfile.saveAs(savepath + new_filename);
-
-					
-				}
-				
-				
-				String planned1 = (cd.ReplaceCode(smart.getRequest().getParameter("planned1")));
-				String planned2 = (cd.ReplaceCode(smart.getRequest().getParameter("planned2")));
-				String planned3 = (cd.ReplaceCode(smart.getRequest().getParameter("planned3")));
-				String planned4 = (cd.ReplaceCode(smart.getRequest().getParameter("planned4")));
-				
-				System.out.println("√‚∑¬ : "+jugi);
-				// π›±‚¿œ ∞ÊøÏ  ∞Ë»π ¿‘∑¬ πﬁ¿∫ ∞™(4/4)∏¶ 2/4∫–±‚ø°µµ ¿˙¿Â¿ª«‘
-
-				
-				// 2008.10.02 JJJ πË±§¡¯ ø‰√ª
-				// 1. ¡ˆ«•¿« ¡÷±‚∏¶ ±∏«—¥Ÿ.(JSPø°º≠ ¿¸¥ﬁπﬁ¿Ω)
-				// 2. ¡ˆ«•¿« ¡÷±‚ø° µ˚∂Û 4/4∫–±‚(12ø˘)∞Ë»π¿ª «ÿ¥Á ¡ˆ«•¡÷±‚¿« ø˘ø° ¿⁄µøª˝º∫
-				planned1 = planned4;	
-				planned2 = planned4;
-				planned3 = planned4;
-				
-				planned1 = planned1.replaceAll("<br>","\n");
-				planned2 = planned2.replaceAll("<br>","\n");
-				planned3 = planned3.replaceAll("<br>","\n");
-				planned4 = planned4.replaceAll("<br>","\n");
-
-				System.out.println("planned1   ===>>   "+planned1);
-				System.out.println("planned2   ===>>   "+planned2);
-				System.out.println("planned3   ===>>   "+planned3);
-				System.out.println("planned4   ===>>   "+planned4);
-				//System.out.println("frwq  ===>>   "+freq);
-
-				
-				//==UPDATE (03)
-				if(jugi.equals("∫–±‚")){
-				
-					String strU1 = "UPDATE TBLEVALMEASUREDETAIL SET PLANNED=?,PCONFIRM=1, FILEPATH_PLAN=?, FILENAME_PLAN=? WHERE MEASUREID=? AND EFFECTIVEDATE=?";
-					Object[] pmU1 = {planned1,new_filename, filename,mid,year+"03"};
-					String strI1 = "INSERT INTO TBLEVALMEASUREDETAIL (MEASUREID,EFFECTIVEDATE,PLANNED,PCONFIRM, FILEPATH_PLAN, FILENAME_PLAN) VALUES (?,?,?,1,?,?)";
-					Object[] pmI1 = {mid,year+"03",planned1,new_filename, filename};
-						if (dbobject.executePreparedUpdate(strU1,pmU1)<1){
-							dbobject.executePreparedUpdate(strI1,pmI1);
-						}
-				}
-
-				//==UPDATE (06)	
-				if(jugi.equals("π›±‚")||jugi.equals("∫–±‚")){
-					String strU2 = "UPDATE TBLEVALMEASUREDETAIL SET PLANNED=?,PCONFIRM=1, FILEPATH_PLAN=?, FILENAME_PLAN=? WHERE MEASUREID=? AND EFFECTIVEDATE=?";
-					Object[] pmU2 = {planned2,new_filename, filename,mid,year+"06"};
-					String strI2 = "INSERT INTO TBLEVALMEASUREDETAIL (MEASUREID,EFFECTIVEDATE,PLANNED,PCONFIRM, FILEPATH_PLAN, FILENAME_PLAN) VALUES (?,?,?,1,?,?)";
-					Object[] pmI2 = {mid,year+"06",planned2,new_filename, filename};
-					if (dbobject.executePreparedUpdate(strU2,pmU2)<1){
-						dbobject.executePreparedUpdate(strI2,pmI2);
-					}
-				}
-
-				// 09ø˘ 
-				if(jugi.equals("∫–±‚")){
-					String strU3 = "UPDATE TBLEVALMEASUREDETAIL SET PLANNED=?,PCONFIRM=1, FILEPATH_PLAN=?, FILENAME_PLAN=? WHERE MEASUREID=? AND EFFECTIVEDATE=?";
-					Object[] pmU3 = {planned3,new_filename, filename,mid,year+"09"};
-					String strI3 = "INSERT INTO TBLEVALMEASUREDETAIL (MEASUREID,EFFECTIVEDATE,PLANNED,PCONFIRM, FILEPATH_PLAN, FILENAME_PLAN) VALUES (?,?,?,1,?,?)";
-					Object[] pmI3 = {mid,year+"09",planned3,new_filename, filename};
-						if (dbobject.executePreparedUpdate(strU3,pmU3)<1){
-							dbobject.executePreparedUpdate(strI3,pmI3);
-						}
-				}
-
-				// 12ø˘ 
-				if(jugi.equals("≥‚")||jugi.equals("π›±‚")||jugi.equals("∫–±‚")){
-					String strU4 = "UPDATE TBLEVALMEASUREDETAIL SET PLANNED=?,PCONFIRM=1, FILEPATH_PLAN=?, FILENAME_PLAN=? WHERE MEASUREID=? AND EFFECTIVEDATE=?";
-					Object[] pmU4 = {planned4,new_filename, filename,mid,year+"12"};
-					String strI4 = "INSERT INTO TBLEVALMEASUREDETAIL (MEASUREID,EFFECTIVEDATE,PLANNED,PCONFIRM, FILEPATH_PLAN, FILENAME_PLAN) VALUES (?,?,?,1,?,?)";
-					Object[] pmI4 = {mid,year+"12",planned4,new_filename, filename};
-						if (dbobject.executePreparedUpdate(strU4,pmU4)<1){
-							dbobject.executePreparedUpdate(strI4,pmI4);
-						}
-
-					
-				}
-
-			} else if ("RP".equals(tag)){     // reset planned
-
-				//String strU = "UPDATE TBLEVALMEASUREDETAIL SET PCONFIRM=0 WHERE MEASUREID=? AND EFFECTIVEDATE=?";
-				//Object[] pmU = {mid,schDate};
-				String strQ = "SELECT FILEPATH_PLAN,FILENAME_PLAN FROM TBLEVALMEASUREDETAIL WHERE MEASUREID=? AND EFFECTIVEDATE LIKE ?";
-				rs = dbobject.executePreparedQuery(strQ, new Object[]{mid,year+month});
-				rs.next();
-				String fi = request.getRealPath(File.separator)+savepath+File.separator+rs.getString("FILEPATH_PLAN");
-				File f = new File(fi);
-				f.delete();
-				String strU = "UPDATE TBLEVALMEASUREDETAIL SET PLANNED='',PCONFIRM=0, FILEPATH_PLAN='' ,FILENAME_PLAN='' WHERE MEASUREID=? AND EFFECTIVEDATE LIKE ?||'%'";
-				Object[] pmU = {mid, year};
-
-				dbobject.executePreparedUpdate(strU,pmU);
+			ServletConfig config = (ServletConfig)request.getAttribute("config");
+			String type = request.getContentType()!=null?request.getContentType():"";
+			if (type.indexOf(";")>0) {
+				int ik = type.indexOf(";");
+				type = type.substring(0,ik);
 			}
 
+			if ("multipart/form-data".equals(type)) {
+			    int sizeLimit = 10 * 1024 * 1024; // 10M, ÌååÏùº ÏÇ¨Ïù¥Ï¶à Ï†úÌïú, Ï†úÌïú ÏÇ¨Ïù¥Ï¶à Ï¥àÍ≥ºÏãú exceptionÎ∞úÏÉù.
+			    String UPLOADROOT = ServerStatic.REAL_CONTEXT_ROOT+File.separator+"actual"+File.separator+"measurementplan"; // Í≤ΩÎ°ú ÏßÄÏ†ï(Ï†àÎåÄ Í≤ΩÎ°ú | ROOTÎ•º Í∏∞Ï§ÄÏúºÎ°ú Ìïú ÏÉÅÎåÄÍ≤ΩÎ°ú)
+			    String UPLOADPATH = UPLOADROOT + File.separator;
+			    String PYSICALPATH = File.separator+"actual"+File.separator+"measurementplan"+File.separator;
 
-			StringBuffer sbMea = new StringBuffer();
-			sbMea.append(" SELECT * FROM ")
-				.append(" (SELECT D.ID, C.NAME,D.EQUATION,D.TREND,D.UPDATEID, D.FREQUENCY FROM TBLMEASUREDEFINE D, TBLMEASURE C WHERE D.MEASUREID=C.ID AND D.ID=?) DEF ")
-				.append(" LEFT JOIN  ")
-				.append(" (SELECT MEASUREID,EFFECTIVEDATE,PLANNED,DETAIL,FILEPATH,FILENAME,PCONFIRM,ACONFIRM,ESTIMATE,ESTIGRADE, FILEPATH_PLAN, FILENAME_PLAN FROM TBLEVALMEASUREDETAIL ) ACT ")
-				.append(" ON DEF.ID=ACT.MEASUREID AND ACT.EFFECTIVEDATE LIKE ? ");
+				File upfolder = new File(UPLOADROOT);
 
-			Object[] pmMea = {mid,year+"%"};
+				if(!upfolder.isDirectory()){upfolder.mkdir();}
 
-			if (rs!=null){rs.close(); rs=null;}
-			rs = dbobject.executePreparedQuery(sbMea.toString(),pmMea);
+				//MultipartRequest multi=new MultipartRequest(request,UPLOADPATH,sizeLimit,"EUC-KR", new DefaultFileRenamePolicy()); // Ïù¥Î∂ÄÎ∂ÑÏóêÏÑú uploadÍ∞Ä Îê®.
+				MultipartRequest multi=new MultipartRequest(request,UPLOADPATH,sizeLimit,"EUC-KR", new ByUserIdFileRenamePolicy());      // ÏÑúÎ≤Ñ ÌïúÍ∏Ä Íπ®Ïßê ...
 
-			DataSet dsMea = new DataSet();
-			dsMea.load(rs);
-			
-			request.setAttribute("dsMea", dsMea);
-			System.out.println("dsMea : " + dsMea);
-			
-			request.setAttribute("mid",mid);
 
-			conn.commit();
+				String tag     = cd.ReplaceCode(multi.getParameter("tag"));
+				String schDate = cd.ReplaceCode(multi.getParameter("schDate"));
+				String mid     = cd.ReplaceCode(multi.getParameter("contentId"));	// ÏßÄÌëúÏ†ïÏùòÏÑú ID
+				String jugi    = cd.ReplaceCode(multi.getParameter("qtr"));		// Ï£ºÍ∏∞
+
+
+
+
+				if ((schDate==null)||(mid==null)) return;
+
+				conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
+				conn.createStatement(false);
+
+				dbobject = new DBObject(conn.getConnection());
+
+				String year = schDate.substring(0,4);//
+				String month = schDate.substring(4,6);
+
+				request.setAttribute("year", year);
+
+				System.out.println("schDate22222   ===>>   "+schDate);
+				System.out.println("year   ===>>   "+year);
+				System.out.println("month   ===>>   "+month);
+
+				if ("P".equals(tag)){      // save planned
+					ArrayList fileList = new ArrayList();
+					ArrayList originalFilename = new ArrayList();
+					Enumeration filenames = multi.getFileNames();
+
+					while(filenames.hasMoreElements())   {
+						String formName = (String)filenames.nextElement();
+						fileList.add(multi.getFilesystemName(formName));
+					    originalFilename.add(cd.ReplaceCode1(multi.getOriginalFileName(formName)));
+					}
+
+					String fileName = (String)fileList.get(0);
+					fileName = cd.ReplaceCode1(fileName);             //String ÏóêÏÑú ' Î•º Ï†úÍ∞Ä ÌïòÎäî Ìï®Ïàò
+					String originalFile = (String)originalFilename.get(0);
+
+
+					String planned1 = (cd.ReplaceCode(multi.getParameter("planned1")));
+					String planned2 = (cd.ReplaceCode(multi.getParameter("planned2")));
+					String planned3 = (cd.ReplaceCode(multi.getParameter("planned3")));
+					String planned4 = (cd.ReplaceCode(multi.getParameter("planned4")));
+
+					// System.out.println("Ï∂úÎ†• : "+jugi);
+					// Î∞òÍ∏∞Ïùº Í≤ΩÏö∞  Í≥ÑÌöç ÏûÖÎ†• Î∞õÏùÄ Í∞í(4/4)Î•º 2/4Î∂ÑÍ∏∞ÏóêÎèÑ Ï†ÄÏû•ÏùÑÌï®
+
+
+					// 2008.10.02 JJJ Î∞∞Í¥ëÏßÑ ÏöîÏ≤≠
+					// 1. ÏßÄÌëúÏùò Ï£ºÍ∏∞Î•º Íµ¨ÌïúÎã§.(JSPÏóêÏÑú Ï†ÑÎã¨Î∞õÏùå)
+					// 2. ÏßÄÌëúÏùò Ï£ºÍ∏∞Ïóê Îî∞Îùº 4/4Î∂ÑÍ∏∞(12Ïõî)Í≥ÑÌöçÏùÑ Ìï¥Îãπ ÏßÄÌëúÏ£ºÍ∏∞Ïùò ÏõîÏóê ÏûêÎèôÏÉùÏÑ±
+					planned1 = planned4;
+					planned2 = planned4;
+					planned3 = planned4;
+
+					planned1 = planned1.replaceAll("<br>","\n");
+					planned2 = planned2.replaceAll("<br>","\n");
+					planned3 = planned3.replaceAll("<br>","\n");
+					planned4 = planned4.replaceAll("<br>","\n");
+
+
+					String pysicalPath = PYSICALPATH + fileName;
+					if("WINDOWS".equals(ServerStatic.SERVER_OS)){
+						pysicalPath = pysicalPath.replace("\\", "\\\\");
+					}
+
+					//==UPDATE (03)
+					if(jugi.equals("Î∂ÑÍ∏∞")){
+
+						String strU1 = "UPDATE TBLEVALMEASUREDETAIL SET PLANNED=?,PCONFIRM=1, FILEPATH_PLAN=?, FILENAME_PLAN=? WHERE MEASUREID=? AND EFFECTIVEDATE=?";
+						Object[] pmU1 = {planned1, pysicalPath, originalFile, mid,year+"03"};
+						String strI1 = "INSERT INTO TBLEVALMEASUREDETAIL (MEASUREID,EFFECTIVEDATE,PLANNED,PCONFIRM, FILEPATH_PLAN, FILENAME_PLAN) VALUES (?,?,?,1,?,?)";
+						Object[] pmI1 = {mid,year+"03", planned1, pysicalPath, originalFile};
+							if (dbobject.executePreparedUpdate(strU1,pmU1)<1){
+								dbobject.executePreparedUpdate(strI1,pmI1);
+							}
+					}
+
+					//==UPDATE (06)
+					if(jugi.equals("Î∞òÍ∏∞")||jugi.equals("Î∂ÑÍ∏∞")){
+						String strU2 = "UPDATE TBLEVALMEASUREDETAIL SET PLANNED=?,PCONFIRM=1, FILEPATH_PLAN=?, FILENAME_PLAN=? WHERE MEASUREID=? AND EFFECTIVEDATE=?";
+						Object[] pmU2 = {planned2,pysicalPath, originalFile,mid,year+"06"};
+						String strI2 = "INSERT INTO TBLEVALMEASUREDETAIL (MEASUREID,EFFECTIVEDATE,PLANNED,PCONFIRM, FILEPATH_PLAN, FILENAME_PLAN) VALUES (?,?,?,1,?,?)";
+						Object[] pmI2 = {mid,year+"06", planned2, pysicalPath, originalFile};
+						if (dbobject.executePreparedUpdate(strU2,pmU2)<1){
+							dbobject.executePreparedUpdate(strI2,pmI2);
+						}
+					}
+
+					// 09Ïõî
+					if(jugi.equals("Î∂ÑÍ∏∞")){
+						String strU3 = "UPDATE TBLEVALMEASUREDETAIL SET PLANNED=?,PCONFIRM=1, FILEPATH_PLAN=?, FILENAME_PLAN=? WHERE MEASUREID=? AND EFFECTIVEDATE=?";
+						Object[] pmU3 = {planned3,pysicalPath, originalFile,mid,year+"09"};
+						String strI3 = "INSERT INTO TBLEVALMEASUREDETAIL (MEASUREID,EFFECTIVEDATE,PLANNED,PCONFIRM, FILEPATH_PLAN, FILENAME_PLAN) VALUES (?,?,?,1,?,?)";
+						Object[] pmI3 = {mid,year+"09", planned3, pysicalPath, originalFile};
+							if (dbobject.executePreparedUpdate(strU3,pmU3)<1){
+								dbobject.executePreparedUpdate(strI3,pmI3);
+							}
+					}
+
+					// 12Ïõî
+					if(jugi.equals("ÎÖÑ")||jugi.equals("Î∞òÍ∏∞")||jugi.equals("Î∂ÑÍ∏∞")){
+						String strU4 = "UPDATE TBLEVALMEASUREDETAIL SET PLANNED=?,PCONFIRM=1, FILEPATH_PLAN=?, FILENAME_PLAN=? WHERE MEASUREID=? AND EFFECTIVEDATE=?";
+						Object[] pmU4 = {planned4,pysicalPath, originalFile,mid,year+"12"};
+						String strI4 = "INSERT INTO TBLEVALMEASUREDETAIL (MEASUREID,EFFECTIVEDATE,PLANNED,PCONFIRM, FILEPATH_PLAN, FILENAME_PLAN) VALUES (?,?,?,1,?,?)";
+						Object[] pmI4 = {mid,year+"12", planned4, pysicalPath, originalFile};
+							if (dbobject.executePreparedUpdate(strU4,pmU4)<1){
+								dbobject.executePreparedUpdate(strI4,pmI4);
+							}
+
+
+					}
+
+				} else if ("RP".equals(tag)){     // reset planned
+
+					//String strU = "UPDATE TBLEVALMEASUREDETAIL SET PCONFIRM=0 WHERE MEASUREID=? AND EFFECTIVEDATE=?";
+					//Object[] pmU = {mid,schDate};
+					String strQ = "SELECT FILEPATH_PLAN,FILENAME_PLAN FROM TBLEVALMEASUREDETAIL WHERE MEASUREID=? AND EFFECTIVEDATE LIKE ?";
+					rs = dbobject.executePreparedQuery(strQ, new Object[]{mid,year+month});
+					rs.next();
+					/*String fi = request.getRealPath(File.separator)+savepath+File.separator+rs.getString("FILEPATH_PLAN");
+					File f = new File(fi);
+					f.delete();*/
+					String strU = "UPDATE TBLEVALMEASUREDETAIL SET PLANNED='',PCONFIRM=0, FILEPATH_PLAN='' ,FILENAME_PLAN='' WHERE MEASUREID=? AND EFFECTIVEDATE LIKE ?||'%'";
+					Object[] pmU = {mid, year};
+
+					dbobject.executePreparedUpdate(strU,pmU);
+				}
+
+
+				StringBuffer sbMea = new StringBuffer();
+				sbMea.append(" SELECT * FROM ")
+					.append(" (SELECT D.ID, C.NAME,D.EQUATION,D.TREND,D.UPDATEID, D.FREQUENCY FROM TBLMEASUREDEFINE D, TBLMEASURE C WHERE D.MEASUREID=C.ID AND D.ID=?) DEF ")
+					.append(" LEFT JOIN  ")
+					.append(" (SELECT MEASUREID,EFFECTIVEDATE,PLANNED,DETAIL,FILEPATH,FILENAME,PCONFIRM,ACONFIRM,ESTIMATE,ESTIGRADE, FILEPATH_PLAN, FILENAME_PLAN FROM TBLEVALMEASUREDETAIL ) ACT ")
+					.append(" ON DEF.ID=ACT.MEASUREID AND ACT.EFFECTIVEDATE LIKE ? ");
+
+				Object[] pmMea = {mid,year+"%"};
+
+				if (rs!=null){rs.close(); rs=null;}
+				rs = dbobject.executePreparedQuery(sbMea.toString(),pmMea);
+
+				DataSet dsMea = new DataSet();
+				dsMea.load(rs);
+
+				request.setAttribute("dsMea", dsMea);
+				System.out.println("dsMea : " + dsMea);
+
+				request.setAttribute("mid",mid);
+
+				conn.commit();
+
+			}
 		} catch (IOException ie){
 			System.out.print(ie);
 		} catch (Exception e) {
@@ -2803,7 +2842,7 @@ public class ValuateUtil {
 	}
 
 	/**
-	 * ∫Ò∞Ë∑Æ ¡ˆ«• ∫Œº≠ ∆Ú∞° (2008≥‚ ¿Ã»ƒ)
+	 * ÎπÑÍ≥ÑÎüâ ÏßÄÌëú Î∂ÄÏÑú ÌèâÍ∞Ä (2008ÎÖÑ Ïù¥ÌõÑ)
 	 *
 	 * @param request
 	 * @param response
@@ -2818,32 +2857,32 @@ public class ValuateUtil {
 			if ((appraiser==null)||(!"1".equals(appraiser))) return;
 
 			String qtr = Util.getPrevQty(null);
-			
+
 			String ym    = request.getParameter("curDate")!=null?request.getParameter("curDate"):null;
-			if (ym == null){ 
-				ym = request.getAttribute("curDate")!= null?request.getAttribute("curDate").toString():qtr.substring(0,6); 
-			}			
+			if (ym == null){
+				ym = request.getAttribute("curDate")!= null?request.getAttribute("curDate").toString():qtr.substring(0,6);
+			}
 			String year  = ym.substring(0,4);
 			String month = ym.substring(4,6);
-			
+
 			if ("01".equals(month)||"02".equals(month)||"03".equals(month)) month = "03";
 			if ("04".equals(month)||"05".equals(month)||"06".equals(month)) month = "06";
-			if ("07".equals(month)||"08".equals(month)||"09".equals(month)) month = "09";			
+			if ("07".equals(month)||"08".equals(month)||"09".equals(month)) month = "09";
 			if ("10".equals(month)||"11".equals(month)||"12".equals(month)) month = "12";
 
 			String userId  = (String)request.getSession().getAttribute("userId");
-			String groupId = (String)request.getSession().getAttribute("groupId");	
+			String groupId = (String)request.getSession().getAttribute("groupId");
 			int group = 5;
-			
+
 			if (groupId!=null) group = Integer.parseInt(groupId);
 			if (group==1){
 				userId = "%";
 			}
 			String frq = getFrequecny(new Integer(month).intValue());
-			
+
 			System.out.println("1.setEvalGroupOrg : " + year + month + ", userId :" + userId);
-			
-			StringBuffer sbGrp = new StringBuffer(); 
+
+			StringBuffer sbGrp = new StringBuffer();
 
 			sbGrp.append(" SELECT  distinct cid, ccid, clevel, crank, cname,    ")
 				 .append("          sid, scid GRPID, slevel, srank, sname GRPNM ")
@@ -2869,9 +2908,9 @@ public class ValuateUtil {
 				 .append(" and    sid  = bpid        ")
 				 .append(" and    bcid = evaldeptid  ")
 				 .append(" order by crank, srank     ");
-			
+
 			Object[] params = {year,year,year,year,month};
-			
+
 			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
 			conn.createStatement(false);
 			if (dbobject==null) dbobject = new DBObject(conn.getConnection());
@@ -2880,9 +2919,9 @@ public class ValuateUtil {
 			DataSet ds = new DataSet();
 			ds.load(rs);
 			request.setAttribute("dsGrp", ds);
-			
+
 			System.out.println("GRPID LOOP ==> " + year + month + frq);
-			
+
 			rs2 = dbobject.executePreparedQuery(sbGrp.toString(),params);
 			String scidTemp = "";
 
@@ -2935,7 +2974,7 @@ public class ValuateUtil {
 			strDetail.append("                 d.planned,d.plannedbase, d.base, d.baselimit, d.limit                                                            ");
 			strDetail.append("          from    tbltreescore    t, tblmeasure c,  tblmeasuredefine d                                                            ");
 			strDetail.append("          where  t.contentid=d.id  and t.treelevel=5 and t.year = ? and d.measureid=c.id                                          ");
-			strDetail.append("          and    d.measurement = '∫Ò∞Ë∑Æ' and d.frequency IN ("+frq+")                                                             ");
+			strDetail.append("          and    d.measurement = 'ÎπÑÍ≥ÑÎüâ' and d.frequency IN ("+frq+")                                                             ");
 			strDetail.append("         ) mea ,                                                                                                                  ");
 			strDetail.append("         (                                                                                                                        ");
 			strDetail.append("          select evaldeptid from tblmeaevaldept                                                                                   ");
@@ -2973,7 +3012,7 @@ public class ValuateUtil {
 	}
 
 	/**
-	 * ∫Ò∞Ë∑Æ ¡ˆ«• ªÁ¿Â ∆Ú∞° (2007)
+	 * ÎπÑÍ≥ÑÎüâ ÏßÄÌëú ÏÇ¨Ïû• ÌèâÍ∞Ä (2007)
 	 *
 	 * @param request
 	 * @param response
@@ -3084,7 +3123,7 @@ public class ValuateUtil {
 					.append("                d.planned,d.plannedbase, d.base, d.baselimit, d.limit ")
 					.append("         from    tbltreescore    t, tblmeasure c,  tblmeasuredefine d ")
 					.append("         where  t.contentid=d.id  and t.treelevel=5 and t.year = ? and d.measureid=c.id ")
-					.append("         and    d.measurement = '∫Ò∞Ë∑Æ' ")
+					.append("         and    d.measurement = 'ÎπÑÍ≥ÑÎüâ' ")
 					.append("        ) mea ")
 					.append(" where  cid = spid (+) ")
 					.append(" and    sid = bpid (+) ")
@@ -3116,7 +3155,7 @@ public class ValuateUtil {
 	}
 
 	/**
-	 * ∫Ò∞Ë∑Æ ¡ˆ«• ªÁ¿Â ∆Ú∞° (2007)
+	 * ÎπÑÍ≥ÑÎüâ ÏßÄÌëú ÏÇ¨Ïû• ÌèâÍ∞Ä (2007)
 	 *
 	 * @param request
 	 * @param response
@@ -3213,7 +3252,7 @@ public class ValuateUtil {
 					.append("                d.planned,d.plannedbase, d.base, d.baselimit, d.limit ")
 					.append("         from    tbltreescore    t, tblmeasure c,  tblmeasuredefine d ")
 					.append("         where  t.contentid=d.id  and t.treelevel=5 and t.year = ? and d.measureid=c.id ")
-					.append("         and    d.measurement = '∫Ò∞Ë∑Æ' ")
+					.append("         and    d.measurement = 'ÎπÑÍ≥ÑÎüâ' ")
 					.append("        ) mea ")
 					.append(" where  cid = spid (+) ")
 					.append(" and    sid = bpid (+) ")

@@ -10,108 +10,108 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Name			: FileDownload <br>
- * Summary		: ÆÄÀÏ ´Ù¿î·Îµå <br>
- * Description	: À¥È¯°æ¿¡¼­ ÆÄÀÏ ´Ù¿î·Îµå Áö¿ø
- * 
- * @author 	KCCÁ¤º¸Åë½Å(ÁÖ)
+ * Summary		: íŒŒì¼ ë‹¤ìš´ë¡œë“œ <br>
+ * Description	: ì›¹í™˜ê²½ì—ì„œ íŒŒì¼ ë‹¤ìš´ë¡œë“œ ì§€ì›
+ *
+ * @author 	KCCì •ë³´í†µì‹ (ì£¼)
  * @version	1.0	2003/02/11
- * 
- */    
-public class FileDownload 
-{	  
-	
+ *
+ */
+public class FileDownload
+{
+
 	/**
 	 * Method Name : flush <br>
-	 * Method Description	: À¥È¯°æ¿¡¼­ ÆÄÀÏ ´Ù¿î·Îµå¸¦ Áö¿øÇÑ´Ù <br>
-	 * 
+	 * Method Description	: ì›¹í™˜ê²½ì—ì„œ íŒŒì¼ ë‹¤ìš´ë¡œë“œë¥¼ ì§€ì›í•œë‹¤ <br>
+	 *
 	 * @param			HttpServletRequest
 	 * @param			HttpServletResponse
-	 * @param			´Ù¿î·ÎµåµÉ ÆÄÀÏÀÇ Àı´ë°æ·Î
+	 * @param			ë‹¤ìš´ë¡œë“œë  íŒŒì¼ì˜ ì ˆëŒ€ê²½ë¡œ
 	 * @throws			Exception
 	 */
 	public static void flush(HttpServletRequest objRequest, HttpServletResponse objResponse, String strFilePathName) throws Exception
-	{		
-			flush(objRequest, objResponse, strFilePathName, new File(strFilePathName).getName());	
+	{
+			flush(objRequest, objResponse, strFilePathName, new File(strFilePathName).getName());
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Method Name : flush <br>
-	 * Method Description	: À¥È¯°æ¿¡¼­ ÆÄÀÏ ´Ù¿î·Îµå¸¦ Áö¿øÇÑ´Ù <br>
-	 * 
+	 * Method Description	: ì›¹í™˜ê²½ì—ì„œ íŒŒì¼ ë‹¤ìš´ë¡œë“œë¥¼ ì§€ì›í•œë‹¤ <br>
+	 *
 	 * @param			HttpServletRequest
 	 * @param			HttpServletResponse
-	 * @param			´Ù¿î·ÎµåµÉ ÆÄÀÏÀÇ Àı´ë°æ·Î
-	 * @param			´Ù¿î·Îµå½Ã º¸¿©Áú ÆÄÀÏÀÇ ÀÌ¸§
+	 * @param			ë‹¤ìš´ë¡œë“œë  íŒŒì¼ì˜ ì ˆëŒ€ê²½ë¡œ
+	 * @param			ë‹¤ìš´ë¡œë“œì‹œ ë³´ì—¬ì§ˆ íŒŒì¼ì˜ ì´ë¦„
 	 * @throws			Exception
 	 */
 	public static void flush(HttpServletRequest objRequest, HttpServletResponse objResponse, String strFilePathName, String strFileName) throws Exception
-	{			
+	{
 		try
-		{	
+		{
 			if(strFileName == null || strFileName.trim().equals(""))
 			{
-				throw new Exception("ÆÄÀÏÀÌ¸§ÀÌ À¯È¿ÇÏÁö ¾Ê½À´Ï´Ù.");
+				throw new Exception("íŒŒì¼ì´ë¦„ì´ ìœ íš¨í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.");
 			}
-			
-			String strBrowserVer  = objRequest.getHeader("user-agent"); 			
+
+			String strBrowserVer  = objRequest.getHeader("user-agent");
 			String strEncFileName = new String(strFileName.trim().getBytes("euc-kr"), "ISO8859_1");
 			//String strEncFileName = strFileName.trim();
-			objResponse.setContentType("application/x-msdownload; charset=euc-kr");			
-			
-			if(strBrowserVer.indexOf("MSIE 5.5") != -1) 
-			{  				
+			objResponse.setContentType("application/x-msdownload; charset=euc-kr");
+
+			if(strBrowserVer.indexOf("MSIE 5.5") != -1)
+			{
 				objResponse.setHeader("Content-Disposition", "filename=" + strEncFileName + ";");
-			} 
-			else 
-			{					
+			}
+			else
+			{
 				objResponse.setHeader("Content-Disposition", "attachment;filename=" + strEncFileName + ";");
-			} 
-			
-			File objFile = new File(strFilePathName);//ÆÄÀÏ¸íÆ÷ÇÔ
-			
+			}
+
+			File objFile = new File(strFilePathName);//íŒŒì¼ëª…í¬í•¨
+
 			if(!objFile.isAbsolute())
 		   	{
-			    throw new Exception("Àı´ë °æ·Î°¡ ¾Æ´Õ´Ï´Ù.(°øÅë)");
+			    throw new Exception("ì ˆëŒ€ ê²½ë¡œê°€ ì•„ë‹™ë‹ˆë‹¤.(ê³µí†µ)");
 		   	}
 			else if(!objFile.exists())
 			{
-				throw new Exception("´ë»ó ÆÄÀÏÀÌ Á¸ÀçÇÏÁö ¾Ê½À´Ï´Ù.(°øÅë)");
+				throw new Exception("ëŒ€ìƒ íŒŒì¼ì´ ì¡´ì¬í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.(ê³µí†µ)");
 			}
 			else if(!objFile.isFile())
 			{
-				throw new Exception("ÆÄÀÏÀÌ ¾Æ´Õ´Ï´Ù.(°øÅë)");
+				throw new Exception("íŒŒì¼ì´ ì•„ë‹™ë‹ˆë‹¤.(ê³µí†µ)");
 			}
-			
+
 			objResponse.setContentLength((int)objFile.length());
 			objResponse.resetBuffer();
-			
+
 			byte[] aryByte  = new byte[(int)objFile.length()];
 
-			if((int)objFile.length()>0 && objFile.isFile()) 
-			{    
-				BufferedInputStream objFileInput = new BufferedInputStream(new FileInputStream(objFile)); 
-				BufferedOutputStream objResponseOutput = new BufferedOutputStream(objResponse.getOutputStream()); 
-				int intRead = 0; 
-				while ((intRead = objFileInput.read(aryByte)) != -1) 
-				{ 
-					objResponseOutput.write(aryByte, 0, intRead); 
-				} 
-	
-				objResponseOutput.close(); 
-				objFileInput.close(); 
+			if((int)objFile.length()>0 && objFile.isFile())
+			{
+				BufferedInputStream objFileInput = new BufferedInputStream(new FileInputStream(objFile));
+				BufferedOutputStream objResponseOutput = new BufferedOutputStream(objResponse.getOutputStream());
+				int intRead = 0;
+				while ((intRead = objFileInput.read(aryByte)) != -1)
+				{
+					objResponseOutput.write(aryByte, 0, intRead);
+				}
+
+				objResponseOutput.close();
+				objFileInput.close();
 				objResponseOutput.flush();
 			}
 		}
 		catch (Exception objExcept)
-		{			
+		{
 			objExcept.printStackTrace();
 
 			objResponse.setContentType("text/html;charset=euc-kr");
 			objResponse.setHeader("Content-Disposition", "");
-			
-			throw objExcept;	
-		} 
+
+			throw objExcept;
+		}
 	}
 }
