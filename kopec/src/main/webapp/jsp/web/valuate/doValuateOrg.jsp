@@ -1,4 +1,4 @@
-<%-- 
+<%--
 	// 2007년도 4/4분기 비계량 본부평가
 --%>
 <%@ page contentType="text/html; charset=euc-kr"%>
@@ -12,15 +12,15 @@
 
 	// 년월고정.
 	AppConfigUtil app = new AppConfigUtil();
-	String showym = app.getShowYM()!= null?app.getShowYM():Util.getPrevQty(null);	
+	String showym = app.getShowYM()!= null?app.getShowYM():Util.getPrevQty(null);
 	String qtr    = showym.substring(0,6);
 	String year   = request.getParameter("year") !=null?request.getParameter("year"):qtr.substring(0,4);
-	String month  = request.getParameter("month")!=null?request.getParameter("month"):qtr.substring(4,6);	
-	
+	String month  = request.getParameter("month")!=null?request.getParameter("month"):qtr.substring(4,6);
+
 	String userId = (String)session.getAttribute("userId");
 
 	//System.out.println("QTR :" + qtr + ", YEAR : " + year);
-	
+
 	if (userId == null){ %>
 		<script>
 			alert("다시 접속하여 주십시오");
@@ -29,15 +29,19 @@
 	<%} else {
 		String curDate = year + month;
 
-		request.setAttribute("curDate",curDate);			
+		request.setAttribute("curDate",curDate);
 		ValuateUtil util = new ValuateUtil();
 		util.setEvalGroupOrg(request, response);
-		
+
 		System.out.println("month    ===>>   "+month);
 		DataSet dsGrp = (DataSet) request.getAttribute("dsGrp");
 		DataSet dsDtl = (DataSet) request.getAttribute("dsDtl");
 		String  scid  = (String) request.getAttribute("scid");
 %>
+<!-- Link to Google CDN's jQuery + jQueryUI; fall back to local -->
+<script src="<%=imgUri%>/bootstrap/js/libs/jquery-2.1.1.min.js"></script>
+<script src="<%=imgUri%>/bootstrap/js/libs/jquery-ui-1.10.3.min.js"></script>
+
 <SCRIPT>
 	var initCon = false;
     function actionPerformed(){
@@ -49,13 +53,24 @@
     	}
     	initCon = true;
 
-		var frm = list.listForm;
+    	$("#list").contents().find("input[name=mode]").val("G");
+    	$("#list").contents().find("input[name=year]").val(form1.year.options[form1.year.selectedIndex].value);
+    	$("#list").contents().find("input[name=month]").val(form1.month.options[form1.month.selectedIndex].value);
+
+    	$("#list").contents().find("input[name=grpId]").val(form1.firstPart.options[form1.firstPart.selectedIndex].value);
+    	$("#list").contents().find("input[name=measureId]").val(form1.secondPart.options[form1.secondPart.selectedIndex].value);
+
+
+    	$("#list").contents().find("form[name=listForm]").submit();
+
+
+		/* var frm = list.listForm;
 		frm.mode.value="G";
 		frm.year.value= form1.year.options[form1.year.selectedIndex].value;
 		frm.month.value= form1.month.options[form1.month.selectedIndex].value;
 		frm.grpId.value = form1.firstPart.options[form1.firstPart.selectedIndex].value;
 		frm.measureId.value = form1.secondPart.options[form1.secondPart.selectedIndex].value;
-		frm.submit();
+		frm.submit(); */
 
 		showList();
     }
@@ -78,9 +93,9 @@
     	form1.month.options[1] = new Option("2/4분기","06");
     	form1.month.options[2] = new Option("3/4분기","09");
     	form1.month.options[3] = new Option("4/4분기","12");
-    	
-    	form1.month.options[(curMonth/3) - 1].selected=true;    	
-    }    
+
+    	form1.month.options[(curMonth/3) - 1].selected=true;
+    }
 
     function changeYear(){
       	form1.submit();
@@ -102,22 +117,22 @@
     		// 평가조직이 있으면
     		} else {
 	    		var parentcode = form1.firstPart.options[form1.firstPart.selectedIndex].value;
-	
+
 	    		form1.secondPart.length = 0;
-	
+
 	    		for ( i = 0; i < length; i++ ){
 	    			if ( arrayOrg[i].levelgb == '1'){
 	    				if ( arrayOrg[i].parent_cd == parentcode ){
 	    					form1.secondPart.options[form1.secondPart.length] = new Option(arrayOrg[i].name, arrayOrg[i].code);
 	    				}
-	    			} 
+	    			}
 	    		}
 			}
     	}
-    			
+
 		thisFormSubmit();
     }
-    
+
     function thisFormSubmit() {
     	if (document.form1.firstPart.selectedIndex != -1) {
 	    	document.form1.scid.value = form1.firstPart.options[document.form1.firstPart.selectedIndex].value;
@@ -223,7 +238,7 @@
 	int i = 0;
 	int parent = 0;
 	int tempCnt = 0;	// 평가조직 유무
-	
+
 	if (dsGrp!=null) {
 
 		while (dsGrp.next()) {
@@ -246,18 +261,18 @@
 			}
 			tempCnt++;
 		}
-	
-		
+
+
 		if (tempCnt != 0) {		// 평가조직이 하나라도 없으면 지표명 콤보박스에 데이터를 뿌리지 말라.
 			if (dsDtl!=null) {
 				while (dsDtl.next()) {
-		
+
 						%>
 							<script>
 							initrs('<%=dsDtl.getInt("MEASUREID")%>','<%=dsDtl.getString("MNAME")%>','<%=dsDtl.getInt("GRPID")%>',1,<%=i++%>);
 							</script>
 						<%
-		
+
 						//if (parent==dsDtl.getInt("GRPID")){
 							dtlBuf.append("<option value='" + dsDtl.getInt("MEASUREID") + "'");
 							dtlBuf.append(">");
@@ -273,31 +288,30 @@
 <!---------///본문 컨텐츠 삽입영역 ///--------->
 
 <!------//상단 검색//----->
-<table width="98%" border="0" align="center" cellpadding="5"
-	cellspacing="1" bgcolor="#A4CBE3">
+<table width="98%" border="0" align="center" cellpadding="5" cellspacing="1" bgcolor="#c1c1c1">
 	<form name="form1" method="post" action="">
 	<input type="hidden" name="scid" />
-	
-	<tr bgcolor="#DCEDF6">
-		<td width="14%" align="center"><strong><font color="#006699">평가년월</font></strong></td>
+
+	<tr bgcolor="#f6f6f6">
+		<td width="14%" align="center" style="height:36px;font-size:13px;background-color:#f6f6f6;"><strong><font color="#333333">평가년월</font></strong></td>
 		<td width="86%" bgcolor="#FFFFFF">
-			<select name="year" onChange="javascript:changeYear();">
+			<select name="year" onChange="javascript:changeYear();" style="height: 24px;">
                     <script> funcSetDate(<%=curDate.substring(0,4)%>); </script>
             </select> 년
-             <select  name="month" onChange="javascript:getEvalDiv();";>
+             <select  name="month" onChange="javascript:getEvalDiv();" style="height: 24px;">
 	                <script> funcSetMonth(<%=month%>); </script>
              </select>
-             <!-- img src="<%=imgUri%>/jsp/web/images/btn_ok.gif" alt="확인" onClick="javascript:getEvalDiv();" style="cursor:hand" width="50" height="20" border="0" align="absmiddle" -->  
+             <!-- img src="<%=imgUri%>/jsp/web/images/btn_ok.gif" alt="확인" onClick="javascript:getEvalDiv();" style="cursor:hand" width="50" height="20" border="0" align="absmiddle" -->
           </td>
 	</tr>
-	<tr bgcolor="#DCEDF6">
-		<td align="center" bgcolor="#DCEDF6"><strong><font color="#006699">조직선택</font></strong></td>
+	<tr bgcolor="#f6f6f6">
+		<td align="center" style="height:36px;font-size:13px;background-color:#f6f6f6;"><strong><font color="#333333">조직선택</font></strong></td>
 		<td bgcolor="#FFFFFF">평가조직 :
-		<select name="firstPart"  style="width:170;x;" onChange="javascript:chgOrg(1);closeList()" align="absmiddle">
+		<select name="firstPart"  style="width:170;height: 24px;;" onChange="javascript:chgOrg(1);closeList()" align="absmiddle">
         	<%=grpBuf.toString()%>
         </select>
        	 지표명 :
-        <select name="secondPart" onChange="javascript:closeList();chgMea();" align="absmiddle" style="width:180px;">
+        <select name="secondPart" onChange="javascript:closeList();chgMea();" align="absmiddle" style="width:180px;height: 24px;">
         	<%=dtlBuf.toString()%>
         </select>
         <img src="<%=imgUri%>/jsp/web/images/btn_ok.gif" alt="확인" onClick="javascript:actionPerformed();" style="cursor:hand" width="50" height="20" border="0" align="absmiddle"></td>

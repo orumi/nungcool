@@ -8,6 +8,10 @@
 <html>
 <head>
 <link href="<%=imgUri %>/jsp/web/css/bsc.css" rel="stylesheet" type="text/css">
+<!-- Link to Google CDN's jQuery + jQueryUI; fall back to local -->
+<script src="<%=imgUri%>/bootstrap/js/libs/jquery-2.1.1.min.js"></script>
+<script src="<%=imgUri%>/bootstrap/js/libs/jquery-ui-1.10.3.min.js"></script>
+
 <script language="JavaScript" type="text/JavaScript">
 <!--
 function MM_swapImgRestore() { //v3.0
@@ -41,57 +45,57 @@ var oldObj3;
 var oldObj4;
 
 function openFrame(tag, obj1, obj2, obj3, obj4){
-		
+
 	if (oldObj1 == null) oldObj1 = document.images.sub11;
 	if (oldObj2 == null) oldObj2 = document.all.sub12;
 	if (oldObj3 == null) oldObj3 = document.images.sub13
 	if (oldObj4 == null) oldObj4 = document.images.sub14;
-	
+
 	if (obj1 == oldObj1) return 0;
 	if (obj2 == oldObj2) return 0;
 	if (obj3 == oldObj3) return 0;
-	if (obj4 == oldObj4) return 0;	
-	
-	if (tag == 'company'){		
-		adminContent.location.href="company.jsp";					
-	} else if (tag == 'SBU'){		
-		adminContent.location.href="SBU.jsp";						
+	if (obj4 == oldObj4) return 0;
+
+	if (tag == 'company'){
+		adminContent.src = "company.jsp";
+	} else if (tag == 'SBU'){
+		adminContent.src = "SBU.jsp";
 	} else if (tag == 'BSC'){
-	    adminContent.location.href="BSC.jsp";
+	    adminContent.src="BSC.jsp";
 	} else if (tag == 'PST'){
-	    adminContent.location.href="PST.jsp";
+	    adminContent.src="PST.jsp";
 	} else if (tag == 'objective'){
-	    adminContent.location.href="objective.jsp";
+	    adminContent.src="objective.jsp";
 	} else if (tag == 'measure'){
-	    adminContent.location.href="measure.jsp";    
+	    adminContent.src="measure.jsp";
 	}
-	
+
 	obj1.src = "<%=imgUri%>/jsp/web/images/tap_over_01.gif";
-	obj2.background = "<%=imgUri%>/jsp/web/images/tap_over_bg.gif";
+	obj2.setAttribute("background", "<%=imgUri%>/jsp/web/images/tap_over_bg.gif") ;
 	obj3.src = "<%=imgUri%>/jsp/web/images/tap_over_point.gif";
 	obj4.src = "<%=imgUri%>/jsp/web/images/tap_over_02.gif";
-	
+
   	oldObj1.src = "<%=imgUri%>/jsp/web/images/tap_off_01.gif";
-  	oldObj2.background = "<%=imgUri%>/jsp/web/images/tap_off_bg.gif";	  	
+  	oldObj2.setAttribute("background","<%=imgUri%>/jsp/web/images/tap_off_bg.gif");
 	oldObj3.src = "";
-	oldObj4.src = "<%=imgUri%>/jsp/web/images/tap_off_02.gif";	
-  		
+	oldObj4.src = "<%=imgUri%>/jsp/web/images/tap_off_02.gif";
+
   	oldObj1 = obj1;
   	oldObj2 = obj2;
   	oldObj3 = obj3;
   	oldObj4 = obj4;
-	
+
 }
 
 //-->
 </script>
 </head>
 
-<body leftmargin="5" topmargin="0" marginwidth="5" onLoad="MM_preloadImages('<%=imgUri%>/jsp/web/images/sumenu8_01_over.gif','images/sumenu8_02_over.gif','images/sumenu8_03_over.gif','images/sumenu8_04_over.gif','images/sumenu8_05_over.gif')">
+<body leftmargin="5" topmargin="0" marginwidth="5" >
 	<!-----//Box layout//----->
 	<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
-        <tr> 
-          <td colspan="2" valign="top" bgcolor="#FFFFFF"> 
+        <tr>
+          <td colspan="2" valign="top" bgcolor="#FFFFFF">
 				<!-----//탭메뉴 8개구분하는 테이블//----->
 			<br>
 			<table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -103,7 +107,7 @@ function openFrame(tag, obj1, obj2, obj3, obj4){
 					  <table border="0" cellspacing="0" cellpadding="0">
                           <tr>
                             <td width="5"><img src="<%=imgUri%>/jsp/web/images/tap_over_01.gif" id = 'sub11'   width="5" height="23"></td>
-                            <td align="center" background="<%=imgUri%>/jsp/web/images/tap_over_bg.gif" id = 'sub12'><img src="<%=imgUri%>/jsp/web/images/tap_over_point.gif"  id = 'sub13' width="5" height="3" align="absmiddle"> 
+                            <td align="center" background="<%=imgUri%>/jsp/web/images/tap_over_bg.gif" id = 'sub12'><img src="<%=imgUri%>/jsp/web/images/tap_over_point.gif"  id = 'sub13' width="5" height="3" align="absmiddle">
                               <strong><a href="#"  onClick = "javascript:openFrame('company', sub11, sub12, sub13, sub14);"><font color="#003399">회사&nbsp;</font></a></strong></td>
                             <td width="6"><img src="<%=imgUri%>/jsp/web/images/tap_over_02.gif"  id = 'sub14' width="6" height="23"></td>
                           </tr>
@@ -112,9 +116,9 @@ function openFrame(tag, obj1, obj2, obj3, obj4){
 					</td><td>
 					  <!----//탭메뉴2//---->
 					  <table border="0" cellspacing="0" cellpadding="0">
-                          <tr> 
+                          <tr>
                             <td width="5"><img src="<%=imgUri%>/jsp/web/images/tap_off_01.gif" id = 'sub21' width="5" height="23"></td>
-                            <td align="center" background="<%=imgUri%>/jsp/web/images/tap_off_bg.gif" id = 'sub22'><img src="#"  id = 'sub23' width="5" height="3" align="absmiddle"> 
+                            <td align="center" background="<%=imgUri%>/jsp/web/images/tap_off_bg.gif" id = 'sub22'><img src="#"  id = 'sub23' width="5" height="3" align="absmiddle">
                             <strong><a href="#" onClick = "javascript:openFrame('SBU', sub21, sub22, sub23, sub24);"><font color="#003399">조직구분</font></a></strong></td>
                             <td width="6"><img src="<%=imgUri%>/jsp/web/images/tap_off_02.gif"  id = 'sub24' width="6" height="23"></td>
                           </tr>
@@ -123,9 +127,9 @@ function openFrame(tag, obj1, obj2, obj3, obj4){
 					</td><td>
 					  <!----//탭메뉴3//---->
 					  <table border="0" cellspacing="0" cellpadding="0">
-                          <tr> 
+                          <tr>
                             <td width="5"><img src="<%=imgUri%>/jsp/web/images/tap_off_01.gif" id = 'sub31' width="5" height="23"></td>
-                            <td align="center" background="<%=imgUri%>/jsp/web/images/tap_off_bg.gif" id = 'sub32'><img src="#"  id = 'sub33' width="5" height="3" align="absmiddle"> 
+                            <td align="center" background="<%=imgUri%>/jsp/web/images/tap_off_bg.gif" id = 'sub32'><img src="#"  id = 'sub33' width="5" height="3" align="absmiddle">
                             <strong><a href="#" onClick = "javascript:openFrame('BSC', sub31, sub32, sub33, sub34);"><font color="#003399">조직</font></a></strong></td>
                             <td width="6"><img src="<%=imgUri%>/jsp/web/images/tap_off_02.gif"  id = 'sub34' width="6" height="23"></td>
                           </tr>
@@ -134,9 +138,9 @@ function openFrame(tag, obj1, obj2, obj3, obj4){
 					</td><td>
 					  <!----//탭메뉴4//---->
 					  <table border="0" cellspacing="0" cellpadding="0">
-                          <tr> 
+                          <tr>
                             <td width="5"><img src="<%=imgUri%>/jsp/web/images/tap_off_01.gif" id = 'sub41' width="5" height="23"></td>
-                            <td align="center" background="<%=imgUri%>/jsp/web/images/tap_off_bg.gif" id = 'sub42'><img src="#"  id = 'sub43' width="5" height="3" align="absmiddle"> 
+                            <td align="center" background="<%=imgUri%>/jsp/web/images/tap_off_bg.gif" id = 'sub42'><img src="#"  id = 'sub43' width="5" height="3" align="absmiddle">
                             <strong><a href="#" onClick = "javascript:openFrame('PST', sub41, sub42, sub43, sub44);" ><font color="#003399">관점</font></a></strong></td>
                             <td width="6"><img src="<%=imgUri%>/jsp/web/images/tap_off_02.gif" id = 'sub44' width="6" height="23"></td>
                           </tr>
@@ -145,9 +149,9 @@ function openFrame(tag, obj1, obj2, obj3, obj4){
 					</td><td>
 					  <!----//탭메뉴5//---->
 					  <table border="0" cellspacing="0" cellpadding="0">
-                          <tr> 
+                          <tr>
                             <td width="5"><img src="<%=imgUri%>/jsp/web/images/tap_off_01.gif" id = 'sub51' width="5" height="23"></td>
-                            <td align="center" background="<%=imgUri%>/jsp/web/images/tap_off_bg.gif" id = 'sub52'><img src="#"  id = 'sub53' width="5" height="3" align="absmiddle"> 
+                            <td align="center" background="<%=imgUri%>/jsp/web/images/tap_off_bg.gif" id = 'sub52'><img src="#"  id = 'sub53' width="5" height="3" align="absmiddle">
                             <strong><a href="#" onClick = "javascript:openFrame('objective', sub51, sub52, sub53, sub54);"><font color="#003399">전략과제</font></a></strong></td>
                             <td width="6"><img src="<%=imgUri%>/jsp/web/images/tap_off_02.gif" id = 'sub54' width="6" height="23"></td>
                           </tr>
@@ -156,9 +160,9 @@ function openFrame(tag, obj1, obj2, obj3, obj4){
 					</td><td>
 					  <!----//탭메뉴6//---->
 					  <table border="0" cellspacing="0" cellpadding="0">
-                          <tr> 
+                          <tr>
                             <td width="5"><img src="<%=imgUri%>/jsp/web/images/tap_off_01.gif" id = 'sub61' width="5" height="23"></td>
-                            <td align="center" background="<%=imgUri%>/jsp/web/images/tap_off_bg.gif" id = 'sub62'><img src="#"  id = 'sub63' width="5" height="3" align="absmiddle"> 
+                            <td align="center" background="<%=imgUri%>/jsp/web/images/tap_off_bg.gif" id = 'sub62'><img src="#"  id = 'sub63' width="5" height="3" align="absmiddle">
                             <strong><a href="#"  onClick = "javascript:openFrame('measure', sub61, sub62, sub63, sub64);"><font color="#003399">성과지표</font></a></strong></td>
                             <td width="6"><img src="<%=imgUri%>/jsp/web/images/tap_off_02.gif" id = 'sub64' width="6" height="23"></td>
                           </tr>
@@ -172,7 +176,7 @@ function openFrame(tag, obj1, obj2, obj3, obj4){
               <tr>
                   <td>&nbsp;</td>
               </tr>
-            </table> 
+            </table>
             <table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0"><tr><td>
 		        <iframe frameborder="0" id="adminContent" src="company.jsp" style="body" width="100%" height="100%" scrolling="no">&nbsp;</iframe>
             </td></tr>

@@ -1436,7 +1436,7 @@ public class ValuateUtil {
                StringBuffer sb = new StringBuffer();
                Object[] params = null;
 
-               sb.append(" SELECT  grpid, evaldeptid, year,  month, ")
+               sb.append(" SELECT   ")
                .append("         cid, ccid, clevel, crank, cname,   ")
                .append("         sid, scid, slevel, srank, sname,   ")
                .append("         bid, bcid, blevel, brank, bname,   ")
@@ -1474,21 +1474,12 @@ public class ValuateUtil {
                .append("         and    d.measureid = ? ")
                .append("        ) mea,  ")
                .append("        ( ")
-               .append("         select distinct a.grpid, evaldeptid, year, month ")
-               .append("         from   tblmeaevaldept a,  tblmeaevalr  b ")
-               .append("         where  a.grpid = b.grpid  ")
-               .append("         and    b.evalrid like ?  ")
-               .append("         and    b.year = ?  ")
-               .append("         and    b.month = ? ")
-               .append("        ) emp,  ")
-               .append("        ( ")
                .append("         select  a.effectivedate, a.measureid  amid,  max(a.filepath) filepath, max(a.filename) filename ,  ")
                .append("                 max(b.evalgrade) evalgrade, max(b.evalscore) evalscore, max(b.evalid)  evalid  ")
                .append("         from   tblevalmeasuredetail a, tblmeaevaldetail b  ")
                .append("         where  a.effectivedate = b.year(+)||b.month(+) ")
                .append("         and    a.measureid     = b.evalid(+) ")
                .append("         and    a.effectivedate = ?    ")
-               .append("         and    b.evalrid(+)    like ? ")
                .append("         group by a.effectivedate, a.measureid ")
                .append("         ) act                         ")
                .append(" where  cid  = spid (+) ")
@@ -1496,11 +1487,10 @@ public class ValuateUtil {
                .append(" and    bid  = ppid (+) ")
                .append(" and    pid  = opid (+) ")
                .append(" and    oid  = mpid ")
-               .append(" and    bcid = evaldeptid ")
                .append(" and    mcid = amid (+)   ")
                .append(" order by crank, srank, brank, prank, orank, mrank ");
 
-               params = new Object[] {year,year,grpId,year,year,year,year, measureId, userId, year,month, year+month, userId};
+               params = new Object[] {year,year,grpId,year,year,year,year, measureId, year+month};
 
                rs = dbobject.executePreparedQuery(sb.toString(),params);
 
@@ -2898,18 +2888,12 @@ public class ValuateUtil {
 				 .append("        (select t.id bid,t.parentid bpid,t.contentid bcid,t.treelevel blevel, t.rank brank,t.weight bweight,c.name bname ")
 				 .append("         from   tblhierarchy t,tblbsc c ")
 				 .append("         where  t.contentid=c.id  and t.treelevel=2 and t.year =? ")
-				 .append("        ) bsc, ")
-				 .append("        ( ")
-				 .append("         select evaldeptid from tblmeaevaldept  ")
-				 .append("         where  grpid in (select grpid from tblmeaevalr  ")
-				 .append("                          where evalrid like '"+userId+"' and year = ? and month = ?) ")
-				 .append("        ) emp ")
+				 .append("        ) bsc ")
 				 .append(" where  cid  = spid        ")
 				 .append(" and    sid  = bpid        ")
-				 .append(" and    bcid = evaldeptid  ")
 				 .append(" order by crank, srank     ");
 
-			Object[] params = {year,year,year,year,month};
+			Object[] params = {year,year,year};
 
 			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
 			conn.createStatement(false);
@@ -2975,23 +2959,17 @@ public class ValuateUtil {
 			strDetail.append("          from    tbltreescore    t, tblmeasure c,  tblmeasuredefine d                                                            ");
 			strDetail.append("          where  t.contentid=d.id  and t.treelevel=5 and t.year = ? and d.measureid=c.id                                          ");
 			strDetail.append("          and    d.measurement = '비계량' and d.frequency IN ("+frq+")                                                             ");
-			strDetail.append("         ) mea ,                                                                                                                  ");
-			strDetail.append("         (                                                                                                                        ");
-			strDetail.append("          select evaldeptid from tblmeaevaldept                                                                                   ");
-			strDetail.append("          where  grpid in (select grpid from tblmeaevalr                                                                          ");
-			strDetail.append("                           where evalrid like ? and year = ? and month = ?)                                                       ");
-			strDetail.append("         ) emp                                                                                                                    ");
+			strDetail.append("         ) mea                                                                                                                 ");
 			strDetail.append("  where  cid = spid (+)                                                                                                           ");
 			strDetail.append("  and    sid = bpid (+)                                                                                                           ");
 			strDetail.append("  and    bid = ppid (+)                                                                                                           ");
 			strDetail.append("  and    pid = opid (+)                                                                                                           ");
 			strDetail.append("  and    oid = mpid                                                                                                               ");
-			strDetail.append("  and    bcid = evaldeptid                                                                                                        ");
 			strDetail.append("  order by crank, srank, brank, prank, orank, mrank                                                                               ");
 			strDetail.append("  )                                                                                                                               ");
 			strDetail.append("  group by measureid, mname, scid order by crnk, srnk, brnk, prnk, ornk, mrnk                                                                                  ");
 
-			Object[] obj = {year,year,year,year,year,year,userId,year,month};
+			Object[] obj = {year,year,year,year,year,year};
 			if (rs!=null) {rs.close(); rs=null;}
 
 			rs = dbobject.executePreparedQuery(strDetail.toString(),obj);

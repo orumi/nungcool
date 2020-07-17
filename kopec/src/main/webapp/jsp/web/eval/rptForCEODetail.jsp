@@ -74,20 +74,20 @@
 	</tr>
 </table>
 <table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7">
-	<tr bgcolor="#FFFFFF">
-		<td align="center" bgcolor="#D4DCF4" rowspan="2"><font color="#003399"><strong>조직명</strong></font></td>
-		<td width="10%" align="center" bgcolor="#D4DCF4" rowspan="2"><font color="#003399"><strong>상태</strong></font></td>
-		<td width="10%" align="center" bgcolor="#D4DCF4" rowspan="2"><font color="#003399"><strong>종합성과</strong></font></td>
-		<td width="250" align="center" bgcolor="#D4DCF4" colspan="7"><font color="#003399"><strong>성과지표</strong></font></td>
+	<tr bgcolor="#375f9c">
+		<td align="center" rowspan="2"><font color="#ffffff"><strong>조직명</strong></font></td>
+		<td width="10%" align="center" rowspan="2"><font color="#ffffff"><strong>상태</strong></font></td>
+		<td width="10%" align="center" rowspan="2"><font color="#ffffff"><strong>종합성과</strong></font></td>
+		<td width="250" align="center" colspan="7"><font color="#ffffff"><strong>성과지표</strong></font></td>
 	</tr>
-	<tr bgcolor="#FFFFFF">
-		<td width="50" align="center" bgcolor="#D4DCF4"><font color="#003399"><strong>탁월</strong></font></td>
-		<td width="50" align="center" bgcolor="#D4DCF4"><font color="#003399"><strong>우수</strong></font></td>
-		<td width="50" align="center" bgcolor="#D4DCF4"><font color="#003399"><strong>보통</strong></font></td>
-		<td width="50" align="center" bgcolor="#D4DCF4"><font color="#003399"><strong>미흡</strong></font></td>
-		<td width="50" align="center" bgcolor="#D4DCF4"><font color="#003399"><strong>저조</strong></font></td>
-		<td width="50" align="center" bgcolor="#D4DCF4"><font color="#003399"><strong>미등록</strong></font></td>
-		<td width="50" align="center" bgcolor="#D4DCF4"><font color="#003399"><strong>소계</strong></font></td>
+	<tr bgcolor="#375f9c">
+		<td width="50" align="center" ><font color="#ffffff"><strong>탁월</strong></font></td>
+		<td width="50" align="center" ><font color="#ffffff"><strong>우수</strong></font></td>
+		<td width="50" align="center" ><font color="#ffffff"><strong>보통</strong></font></td>
+		<td width="50" align="center" ><font color="#ffffff"><strong>미흡</strong></font></td>
+		<td width="50" align="center" ><font color="#ffffff"><strong>저조</strong></font></td>
+		<td width="50" align="center" ><font color="#ffffff"><strong>미등록</strong></font></td>
+		<td width="50" align="center" ><font color="#ffffff"><strong>소계</strong></font></td>
 	</tr>
 <% if(dsBsc != null){
 		int j=0;

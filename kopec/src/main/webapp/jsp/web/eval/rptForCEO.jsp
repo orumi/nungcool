@@ -8,20 +8,20 @@
 	imgUri = "../../../../" + imgUri.substring(0, imgUri.indexOf("/"));
 
 	//String qtr    = Util.getPrevQty(null);
-	
+
 	// 년월고정.
 	AppConfigUtil app = new AppConfigUtil();
-	String showym = app.getShowYM()!= null?app.getShowYM():Util.getPrevQty(null);	
+	String showym = app.getShowYM()!= null?app.getShowYM():Util.getPrevQty(null);
 	String qtr    = showym.substring(0,6);
 	String year   = request.getParameter("year") !=null?request.getParameter("year"):qtr.substring(0,4);
-	
-	request.setAttribute("year",year);	
+
+	request.setAttribute("year",year);
 	ActualUtil util = new ActualUtil();
 	util.setDivision(request, response);
-	
+
 	String strId = (String)session.getAttribute("userId");
-	
-	
+
+
 	if (strId == null){ %>
 		<script>
 			alert("다시 접속하여 주십시오");
@@ -31,12 +31,16 @@
 		String curDate= request.getParameter("year")!=null?request.getParameter("year")+qtr.substring(4,6):qtr.substring(0,6);
 		DataSet ds = (DataSet) request.getAttribute("ds");
 %>
+<!-- Link to Google CDN's jQuery + jQueryUI; fall back to local -->
+<script src="<%=imgUri%>/bootstrap/js/libs/jquery-2.1.1.min.js"></script>
+<script src="<%=imgUri%>/bootstrap/js/libs/jquery-ui-1.10.3.min.js"></script>
+
 <SCRIPT>
 	var initCon = false;
     function actionPerformed(){
-    	
-    	initCon = true;    	
-    	
+
+    	initCon = true;
+
     	var state = "";
 		if(form1.state_s.checked == true)
 			state = state + form1.state_s.value + "|";
@@ -49,15 +53,25 @@
 		if(form1.state_d.checked == true)
 			state = state + form1.state_d.value + "|";
 
-		list.detailForm.sbuid.value = form1.firstPart.options[form1.firstPart.selectedIndex].value;
+    	$("#list").contents().find("input[name=sbuid]").val(form1.firstPart.options[form1.firstPart.selectedIndex].value);
+    	$("#list").contents().find("input[name=sname]").val(form1.firstPart.options[form1.firstPart.selectedIndex].text);
+    	$("#list").contents().find("input[name=ym]").val(form1.year.options[form1.year.selectedIndex].value+form1.month.options[form1.month.selectedIndex].value);
+    	$("#list").contents().find("input[name=year]").val(form1.year.options[form1.year.selectedIndex].value);
+    	$("#list").contents().find("input[name=state]").val(state);
+
+    	$("#list").contents().find("form[name=detailForm]").submit();
+
+
+
+		/* list.detailForm.sbuid.value = form1.firstPart.options[form1.firstPart.selectedIndex].value;
 		list.detailForm.year.value = form1.year.options[form1.year.selectedIndex].value;
 		list.detailForm.ym.value = form1.year.options[form1.year.selectedIndex].value+form1.month.options[form1.month.selectedIndex].value;
 		list.detailForm.sname.value = form1.firstPart.options[form1.firstPart.selectedIndex].text;
 		list.detailForm.state.value = state;
 		//alert(list.detailForm.sbuid.value+"/"+list.detailForm.year.value+"/"+list.detailForm.ym.value+"/"+list.detailForm.sName.value);
-		list.detailForm.submit();
+		list.detailForm.submit(); */
     }
-    
+
     function leftReload(){
     	list.listForm.schDate.value = form1.year.options[form1.year.selectedIndex].value+form1.month.options[form1.month.selectedIndex].value;
 		list.listForm.submit();
@@ -76,78 +90,78 @@
     	form1.month.options[1] = new Option("2/4분기","06");
     	form1.month.options[2] = new Option("3/4분기","09");
     	form1.month.options[3] = new Option("4/4분기","12");
-    	
+
     	form1.month.options[(curMonth/3) - 1].selected=true;
-    }    
-    
-    
+    }
+
+
     function changeYear(){
       this.form1.yyyy.value = this.form1.year.value;
       document.getElementById("list").style.display = "none";
-      this.form1.submit();    
+      this.form1.submit();
     }
-    
+
     function onChangeSelect(){
       if (!initCon) return false;
-      
+
       list.listForm.schDate.value = form1.year.options[form1.year.selectedIndex].value+form1.month.options[form1.month.selectedIndex].value;
 	  list.listForm.submit();
     }
-    
+
     function onChangeDate(){
       if (!initCon) return false;
-    	
+
       changeBSC();
     }
-    
+
     function closeList(){
     	document.getElementById("list").style.display = "none";
-    	
+
     }
-    
+
      function openList(){
-    	document.getElementById("list").style.display = "";    	
+    	document.getElementById("list").style.display = "";
     }
-    
+
     function sendDetail(){
         detail.detailForm.submit();
-        
+
         alert("실적이 등록되었습니다.");
         list.listForm.defineId.value=detail.detailForm.contentId.value;
         actionPerformed();
     }
-    
+
     var arrayOrg = new Array();
-  
+
 	function initrs(code,name,parent_code,levelgb,i){
 		   var rslength = 0;
 	       arrayOrg[i] = new orgCD(code, name, parent_code, levelgb);
 	}
-	
+
 	function orgCD(code, name, parent_cd, levelgb){
        this.code = code;
        this.name = name;
        this.parent_cd = parent_cd;
        this.levelgb = levelgb;
    	}
-    
-    
+
+
     var refresh = false;
-    
+
     function refreshList() {
     	if (refresh){
 			actionPerformed();
-			
-			refresh = false;  	
+
+			refresh = false;
     	}
     }
-    
+
     function printReport(){
     	//list.printReport();
     	//document.print.reportPrint();
-    	var printwin; 
- 		printwin = window.open("","prtWin","left=10px;top=10px;height=500,width=700,scrollbars=yes,toolbar=yes,menubar=yes"); 
- 		
+    	var printwin;
+ 		printwin = window.open("","prtWin","left=10px;top=10px;height=500,width=700,scrollbars=yes,toolbar=yes,menubar=yes");
+
  		var state = "";
 		if(form1.state_s.checked == true)
 			state = state + form1.state_s.value + "|";
@@ -159,19 +173,19 @@
 			state = state + form1.state_c.value + "|";
 		if(form1.state_d.checked == true)
 			state = state + form1.state_d.value + "|";
-			
+
  		form1.sbuid.value = form1.firstPart.options[form1.firstPart.selectedIndex].value;
 		form1.ym.value = form1.year.options[form1.year.selectedIndex].value+form1.month.options[form1.month.selectedIndex].value;
 		form1.sname.value = form1.firstPart.options[form1.firstPart.selectedIndex].text;
 		form1.state.value = state;
-		
+
     	form1.target="prtWin";
     	form1.action="rptForCEOPrint.jsp";
     	form1.submit();
-    	
+
  		printwin.focus();
     }
-    
+
     function excelReport(){
     	var state = "";
 		if(form1.state_s.checked == true)
@@ -184,12 +198,12 @@
 			state = state + form1.state_c.value + "|";
 		if(form1.state_d.checked == true)
 			state = state + form1.state_d.value + "|";
-			
+
  		form1.sbuid.value = form1.firstPart.options[form1.firstPart.selectedIndex].value;
 		form1.ym.value = form1.year.options[form1.year.selectedIndex].value+form1.month.options[form1.month.selectedIndex].value;
 		form1.sname.value = form1.firstPart.options[form1.firstPart.selectedIndex].text;
 		form1.state.value = state;
-		
+
 		form1.target="_blank";
     	form1.action="rptForCEOExcel.jsp";
     	form1.submit();
@@ -209,14 +223,14 @@
 <%
 	StringBuffer sbuBuf = new StringBuffer();
 	StringBuffer bscBuf = new StringBuffer();
-	
+
 	int treeText = 0;
 	int firstCode = 0;
 	int i = 0;
 	int parent = 0;
 	if (ds!=null)
 	while (ds.next()) {
-		
+
 		if (firstCode != ds.getInt("SID")){
 			firstCode = ds.getInt("SID");
 			if (i==0) parent = firstCode;
@@ -225,12 +239,12 @@
 				<script>
 				initrs('<%=ds.getInt("SID")%>','<%=name%>','<%=ds.getInt("SPID")%>',0,<%=i++%>);
 				</script>
-			<%	
+			<%
 			sbuBuf.append("<option value='" + ds.getInt("SID") + "'");
 			sbuBuf.append(">");
 			sbuBuf.append(name);
-			sbuBuf.append("</option>");	
-			
+			sbuBuf.append("</option>");
+
 		}
 	}
 
@@ -243,7 +257,7 @@
 	</tr>
 </table>
 <!------//상단 검색//----->
-<table width="98%" border="0" align="center" cellpadding="5" cellspacing="1" bgcolor="#A4CBE3">
+<table width="98%" border="0" align="center" cellpadding="5" cellspacing="1" bgcolor="#c1c1c1">
 	<form name="form1" method="post" action="">
 	<input type=hidden name=yyyy>
 	<input type=hidden name=sbuid>
@@ -251,13 +265,13 @@
 	<input type=hidden name=ym>
 	<input type=hidden name=sname>
 	<input type=hidden name=state>
-	<tr bgcolor="#DCEDF6">
-		<td width="12%" align="center"><strong><font color="#006699"> 년월선택</font></strong></td>
+	<tr bgcolor="#f6f6f6">
+		<td width="12%" align="center" style="height:36px;font-size:13px;background-color:#f6f6f6;"><strong><font color="#333333"> 년월선택</font></strong></td>
 		<td width="30%" bgcolor="#FFFFFF">
-			<select name="year" onChange="javascript:changeYear();">
+			<select name="year" onChange="javascript:changeYear();" style="height: 24px;">
                     <script> funcSetDate(<%=curDate.substring(0,4)%>); </script>
-            </select>년 
-             <select name="month" onChange="onChangeDate()";>
+            </select>년
+             <select name="month" onChange="onChangeDate();" style="height: 24px;">
 	                <script> funcSetMonth(<%=curDate.substring(4,6)%>); </script>
              </select>
         </td>
@@ -266,21 +280,21 @@
 			<img src="<%=imgUri%>/jsp/web/images/btn_excel_save.gif" alt="엑셀" onClick="javascript:excelReport();" style="cursor:hand" border="0" align="absmiddle">
 		</td>
     </tr>
-	<tr bgcolor="#DCEDF6">
-		<td width="12%" align="center" bgcolor="#DCEDF6"><strong><font color="#006699">조직선택</font></strong></td>
+	<tr bgcolor="#f6f6f6">
+		<td width="12%" align="center" style="height:36px;font-size:13px;background-color:#f6f6f6;"><strong><font color="#333333">조직선택</font></strong></td>
 		<td width="36%" bgcolor="#FFFFFF">
-			<select name="firstPart"  style="width:150;x;" onChange="closeList()">
+			<select name="firstPart"  style="width:150;height:24px;" onChange="closeList()" >
         	<%=sbuBuf.toString()%>
         	</select> <img src="<%=imgUri%>/jsp/web/images/btn_ok.gif" alt="확인" onClick="javascript:actionPerformed();" style="cursor:hand" width="50" height="20" border="0" align="absmiddle">
 		</td>
-		<td width="12%" align="center" bgcolor="#DCEDF6"><strong><font color="#006699">대상지표</font></strong></td>
+		<td width="12%" align="center" style="height:36px;font-size:13px;background-color:#f6f6f6;"><strong><font color="#333333">대상지표</font></strong></td>
 		<td width="40%" bgcolor="#FFFFFF">
 			<input type="checkbox" name="state_s" value="S">탁월
 			<input type="checkbox" name="state_a" value="A">우수
 			<input type="checkbox" name="state_b" value="B">보통
 			<input type="checkbox" name="state_c" value="C" checked>미흡
 			<input type="checkbox" name="state_d" value="D" checked>저조
-		</td>	
+		</td>
 	</tr>
 	</form>
 </table>

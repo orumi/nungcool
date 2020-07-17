@@ -1,6 +1,6 @@
 
 <%@ page contentType = "text/html; charset=euc-kr" %>
-<%@ page import ="com.nc.util.Common, 
+<%@ page import ="com.nc.util.Common,
 					com.nc.component.ComponentUtil" %>
 
 <%
@@ -9,6 +9,9 @@
   	imgUri = imgUri.substring(1);
   	imgUri = "../../../../"+imgUri.substring(0, imgUri.indexOf("/"));
 %>
+<!-- Link to Google CDN's jQuery + jQueryUI; fall back to local -->
+<script src="<%=imgUri%>/bootstrap/js/libs/jquery-2.1.1.min.js"></script>
+<script src="<%=imgUri%>/bootstrap/js/libs/jquery-ui-1.10.3.min.js"></script>
 
 <html>
 <head>
@@ -16,32 +19,33 @@
 <link href="<%=imgUri %>/jsp/web/css/bsc.css" rel="stylesheet" type="text/css">
 
 <script type="text/javascript">
-<!--
-	//초기화 
+	//초기화
 	var vRefresh;
 	function fnRefresh()
 	{
-		if (vRefresh  != null) {			
-			if (vRefresh == true) {				
-				frameDetail.document.frmDetail.mode.value = 'Q';
-				frameDetail.document.frmDetail.searchKey.value = txtSearch.value;
-				frameDetail.document.frmDetail.submit();
-				vRefresh = false;		
+		if (vRefresh  != null) {
+			if (vRefresh == true) {
+				$("#frameDetail").contents().find("input[name=mode]").val('Q');
+		    	$("#frameDetail").contents().find("input[name=searchKey]").val($("#txtSearch").val());
+
+		    	$("#frameDetail").contents().find("form[name=frmDetail]").submit();
+
+				vRefresh = false;
 			}
-		}	
+		}
 	}
 
-	function fnSearch(mode){	
-		//search일때 
-		if (mode=='Q') {			
+	function fnSearch(mode){
+		//search일때
+		if (mode=='Q') {
 			//frameDetail의 searchkey에 값을 넘겨주고 submit한다.
-			frameDetail.document.frmDetail.kind.value = "obj";
-			frameDetail.document.frmDetail.mode.value = mode;
-			frameDetail.document.frmDetail.searchKey.value = txtSearch.value;
-			frameDetail.document.frmDetail.submit();					
-		}		
+			$("#frameDetail").contents().find("input[name=kind]").val('obj');
+			$("#frameDetail").contents().find("input[name=mode]").val(mode);
+		    $("#frameDetail").contents().find("input[name=searchKey]").val($("#txtSearch").val());
+
+		    $("#frameDetail").contents().find("form[name=frmDetail]").submit();
+		}
 	}
-//-->
 </script>
 </head>
 
@@ -59,7 +63,7 @@
         <tr>
           <td>
             <!--iframe 시작-->
-            <iframe id="frameDetail" frameborder="0" src="objectiveDetail.jsp" width="100%" height="100%" scrolling="no">&nbsp;</iframe>	
+            <iframe id="frameDetail" frameborder="0" src="objectiveDetail.jsp" width="100%" height="100%" scrolling="no">&nbsp;</iframe>
             <!--iframe 끝-->
           </td>
         </tr>

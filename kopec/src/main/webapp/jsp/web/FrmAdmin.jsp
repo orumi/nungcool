@@ -381,8 +381,15 @@ body {
 									<td colspan="2" align="center"><img
 										src="images/dot_line.jpg" width="149" height="1" /></td>
 								</tr>
-								<tr>
 
+<!--                 <tr>
+                  <td height="25">&nbsp;</td>
+                  <td align="left"><a href="javascript:openContents(20);">평가그룹설정</a></td>
+                </tr>
+                <tr>
+                  <td colspan="2" align="center"><img src="images/dot_line.jpg" width="149" height="1" /></td>
+                  </tr>
+                <tr> -->
 
 									<!--
                 <tr>

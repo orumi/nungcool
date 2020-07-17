@@ -275,10 +275,10 @@
 	<tr bgcolor="#f6f6f6">
 		<td width="14%" align="center" style="height:36px;font-size:13px;background-color:#f6f6f6;"><strong><font color="#333333"> 년월선택</font></strong></td>
 		<td width="86%" bgcolor="#FFFFFF">
-			<select name="year" onChange="javascript:changeYear();">
+			<select name="year" onChange="javascript:changeYear();" style="height: 24px;">
                     <script> funcSetDate(<%=curDate.substring(0,4)%>); </script>
             </select> 년
-             <select name="month" onChange="onChangeDate()";>
+             <select name="month" onChange="onChangeDate();" style="height: 24px;">
 	                <script> funcSetMonth(<%=curDate.substring(4,6)%>); </script>
              </select>
              </td>
