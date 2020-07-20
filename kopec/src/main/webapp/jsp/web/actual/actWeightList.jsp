@@ -214,15 +214,15 @@
 %>
 <!---------//좌측  KPI 선택 전청 리스트//-------->
 <table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7">
-	<tr align="center" bgcolor="#D4DCF4">
-		<td width="120"><strong><font color="#003399">관점 (가중치)</font></strong></td>
-		<td width="80"><strong><font color="#003399">관점 순서</font></strong></td>
-		<td width="180"><strong><font color="#003399">전략과제 (가중치)</font></strong></td>
-		<td width="80"><strong><font color="#003399">과제 순서</font></strong></td>
-		<td width=""><strong><font color="#003399">성과지표</font></strong></td>
-		<td width="90"><strong><font color="#003399">KPI No</font></strong></td>
-		<td width="90"><strong><font color="#003399">지표순서</font></strong></td>
-		<td width="97"><strong><font color="#003399">가중치</font></strong></td>
+	<tr align="center" bgcolor="#375f9c" style="height:32px;">
+		<td width="120"><strong><font color="#ffffff">관점 (가중치)</font></strong></td>
+		<td width="80"><strong><font color="#ffffff">관점 순서</font></strong></td>
+		<td width="180"><strong><font color="#ffffff">전략과제 (가중치)</font></strong></td>
+		<td width="80"><strong><font color="#ffffff">과제 순서</font></strong></td>
+		<td width=""><strong><font color="#ffffff">성과지표</font></strong></td>
+		<td width="90"><strong><font color="#ffffff">KPI No</font></strong></td>
+		<td width="90"><strong><font color="#ffffff">지표순서</font></strong></td>
+		<td width="97"><strong><font color="#ffffff">가중치</font></strong></td>
 	</tr>
 </table>
 <div style="overflow-y:scroll;width:100%;height:400px;">
@@ -259,18 +259,18 @@
     <%} %>
 </table>
 <%}else{ %>
-	<table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7" >
-	<tr align="center" bgcolor="#D4DCF4">
-		<td width="120"><strong><font color="#003399">관점</font></strong></td>
-		<td width="90"><strong><font color="#003399">관점순서</font></strong></td>
-		<td width="180"><strong><font color="#003399">전략과제</font></strong></td>
-		<td width="90"><strong><font color="#003399">과제순서</font></strong></td>
-		<td width=""><strong><font color="#003399">성과지표</font></strong></td>
-		<td width="90"><strong><font color="#003399">KPI No</font></strong></td>
-		<td width="90"><strong><font color="#003399">지표순서</font></strong></td>
-		<td width="90"><strong><font color="#003399">가중치</font></strong></td>
+<table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7">
+	<tr align="center" bgcolor="#375f9c" style="height:32px;">
+		<td width="120"><strong><font color="#ffffff">관점 (가중치)</font></strong></td>
+		<td width="80"><strong><font color="#ffffff">관점 순서</font></strong></td>
+		<td width="180"><strong><font color="#ffffff">전략과제 (가중치)</font></strong></td>
+		<td width="80"><strong><font color="#ffffff">과제 순서</font></strong></td>
+		<td width=""><strong><font color="#ffffff">성과지표</font></strong></td>
+		<td width="90"><strong><font color="#ffffff">KPI No</font></strong></td>
+		<td width="90"><strong><font color="#ffffff">지표순서</font></strong></td>
+		<td width="97"><strong><font color="#ffffff">가중치</font></strong></td>
 	</tr>
-	</table>
+</table>
 	<table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7">
 	<tr>
 		<td colspan="2" align="center" bgcolor="#ffffff" height="150"><strong><font size=4 color='#cc0000'>평가년도와  조직 선택 후 확인버튼을 누르십시요. </font></strong></td>

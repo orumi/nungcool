@@ -81,12 +81,12 @@ function fnDetailView(userId,userName,email,groupId,auth01,app,charge,bscId,dept
 
 	</form>
 <table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7" >
-      <tr align="center" bgcolor="#D4DCF4">
-        <td width="70"><strong><font color="#003399">아이디</font></strong></td>
-        <td width="60"><strong><font color="#003399">사용자명</font></strong></td>
-        <td width="150"><strong><font color="#003399">평가부서명</font></strong></td>
-        <td width="90"><strong><font color="#003399">성과관리권한</font></strong></td>
-        <td><strong><font color="#003399">경영정보권한</font></strong></td>
+      <tr align="center" bgcolor="#375f9c" style="height:32px;">
+        <td width="70"><strong><font color="#ffffff">아이디</font></strong></td>
+        <td width="60"><strong><font color="#ffffff">사용자명</font></strong></td>
+        <td width="150"><strong><font color="#ffffff">평가부서명</font></strong></td>
+        <td width="90"><strong><font color="#ffffff">성과관리권한</font></strong></td>
+        <td><strong><font color="#ffffff">경영정보권한</font></strong></td>
       </tr>
 </table>
 <div style="width:100%;height:515px;overflow:auto;overflow-x:hidden;">

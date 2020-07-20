@@ -1,26 +1,38 @@
 <%@ page contentType="text/html; charset=euc-kr"%>
 <%@ page import="com.nc.actual.*,
+				 com.nc.cool.*,
 				 com.nc.util.*"%>
 <%
 	String imgUri = request.getRequestURI();
 	imgUri = imgUri.substring(1);
 	imgUri = "../../../../" + imgUri.substring(0, imgUri.indexOf("/"));
-	
+
+	AppConfigUtil app = new AppConfigUtil();
+	String showym = app.getShowYM()!= null?app.getShowYM():Util.getPrevQty(null);
+	String qtr    = showym.substring(0,6);
+	String year   = request.getParameter("year") !=null?request.getParameter("year"):qtr.substring(0,4);
+
+	request.setAttribute("year",year);
+
 	ActualUtil util = new ActualUtil();
 	util.setDivision(request, response);
-	
+
 	String strId = "admin";//(String)session.getAttribute("id");
-	
-	
+
+
 	if (strId == null){ %>
 		<script>
 			alert("다시 접속하여 주십시오");
 		  	top.location.href = "<%=imgUri%>/jsp/web/loginProc.jsp";
 		</script>
 	<%} else {
-		String curDate= request.getParameter("year")!=null?request.getParameter("year")+Util.getToDay().substring(4,6):Util.getToDay().substring(0,6);
+		String curDate= request.getParameter("year")!=null?request.getParameter("year")+qtr.substring(4,6):qtr.substring(0,6);
 		DataSet ds = (DataSet) request.getAttribute("ds");
 %>
+<!-- Link to Google CDN's jQuery + jQueryUI; fall back to local -->
+<script src="<%=imgUri%>/bootstrap/js/libs/jquery-2.1.1.min.js"></script>
+<script src="<%=imgUri%>/bootstrap/js/libs/jquery-ui-1.10.3.min.js"></script>
+
 <SCRIPT>
 	var initCon = false;
     function actionPerformed(){
@@ -31,12 +43,19 @@
     	}
     	initCon = true;
 
-		list.listForm.sbuId.value=form1.firstPart.options[form1.firstPart.selectedIndex].value;
+    	$("#list").contents().find("input[name=sbuId]").val(form1.firstPart.options[form1.firstPart.selectedIndex].value);
+    	$("#list").contents().find("input[name=bscId]").val(form1.secondPart.options[form1.secondPart.selectedIndex].value);
+    	$("#list").contents().find("input[name=schDate]").val(form1.year.options[form1.year.selectedIndex].value);
+
+    	$("#list").contents().find("form[name=listForm]").submit();
+
+
+		/* list.listForm.sbuId.value=form1.firstPart.options[form1.firstPart.selectedIndex].value;
 		list.listForm.bscId.value=form1.secondPart.options[form1.secondPart.selectedIndex].value;
 		list.listForm.schDate.value=form1.year.options[form1.year.selectedIndex].value;
-		list.listForm.submit();
+		list.listForm.submit(); */
     }
-    
+
     function leftReload(){
     	list.listForm.sbuId.value=form1.secondPart.options[form1.secondPart.selectedIndex].value;
 		list.listForm.submit();
@@ -49,25 +68,25 @@
       form1.year.options[2].selected=true;
       onChangeDate();
     }
-    
+
     function changeYear(){
       this.form1.yyyy.value= this.form1.year.value;
       document.getElementById("list").style.display = "none";
       document.getElementById("detail").style.display="none";
-      this.form1.submit();    
+      this.form1.submit();
     }
-    
-    function chgOrg(level){ 
+
+    function chgOrg(level){
     	var length = arrayOrg.length;
 
     	if ( level == 1 ){ //change level 1
-    		
+
     		var parentcode = form1.firstPart.options[form1.firstPart.selectedIndex].value;
-    		
+
     		form1.secondPart.length = 0;
     		//form1.thirdPart.length = 0;
     		//form1.thirdPart.options[form1.thirdPart.length] = new Option(" ==== 전 체 ====    ", "");
-    
+
     		for ( i = 0; i < length; i++ ){
     			if ( arrayOrg[i].levelgb == '1'){
     				if ( arrayOrg[i].parent_cd == parentcode ){
@@ -75,27 +94,35 @@
     				}
     			}
     		}
-    
-    
-    	} 
+
+
+    	}
 
     }
-    
+
     function openDetail(id){
-      detail.detailForm.contentId.value=id;
+    	$("#detail").contents().find("input[name=contentId]").val(id);
+    	$("#detail").contents().find("input[name=schDate]").val(form1.year.options[form1.year.selectedIndex].value);
+
+    	$("#detail").contents().find("form[name=detailForm]").submit();
+
+
+
+      /* detail.detailForm.contentId.value=id;
       detail.detailForm.schDate.value = form1.year.options[form1.year.selectedIndex].value;
-      detail.detailForm.submit();
+      detail.detailForm.submit(); */
+
       document.getElementById("detail").style.display="inline";
     }
-    
+
     function funcDivVisible(){
     	document.getElementById("list").style.display="inline";
    		document.getElementById("detail").style.display="none";
-    }    
-    
+    }
+
     function onChangeSelect(){
       if (!initCon) return false;
-      
+
       if(form1.secondPart.options[form1.secondPart.selectedIndex].value==""){
     		return false;
     	}
@@ -103,14 +130,14 @@
 		list.listForm.sbuId.value=form1.secondPart.options[form1.secondPart.selectedIndex].value;
 		list.listForm.submit();
     }
-    
+
     function onChangeDate(){
       if (!initCon) return false;
-      
+
       if(form1.secondPart.options[form1.secondPart.selectedIndex].value==""){
     		return false;
     	}
-    	
+
       list.listForm.sbuId.value=form1.secondPart.options[form1.secondPart.selectedIndex].value;
       //list.listForm.bscId.value=form1.thirdPart.options[form1.thirdPart.selectedIndex].value;
       list.listForm.defineId.value = detail.detailForm.contentId.value;
@@ -118,46 +145,46 @@
 
     	if(document.getElementById("detail").style.display == "inline"){
           document.getElementById("detail").style.display = "none";
-        
+
 	    }
     }
-    
+
     function closeList(){
     	document.getElementById("list").style.display = "none";
     	document.getElementById("detail").style.display = "none";
-    	
+
     }
-    
+
     function sendDetail(){
         detail.detailForm.submit();
-        
+
         alert("실적이 등록되었습니다.");
         list.listForm.defineId.value=detail.detailForm.contentId.value;
         actionPerformed();
     }
-    
+
     var arrayOrg = new Array();
-  
+
 	function initrs(code,name,parent_code,levelgb,i){
 		   var rslength = 0;
 	       arrayOrg[i] = new orgCD(code, name, parent_code, levelgb);
 	}
-	
+
 	function orgCD(code, name, parent_cd, levelgb){
        this.code = code;
        this.name = name;
        this.parent_cd = parent_cd;
        this.levelgb = levelgb;
    	}
-    
-    
+
+
     var refresh = false;
-    
+
     function refreshList() {
     	if (refresh){
 			actionPerformed();
-			
-			refresh = false;  	
+
+			refresh = false;
     	}
     }
 </SCRIPT>
@@ -175,14 +202,14 @@
 <%
 	StringBuffer sbuBuf = new StringBuffer();
 	StringBuffer bscBuf = new StringBuffer();
-	
+
 	int treeText = 0;
 	int firstCode = 0;
 	int i = 0;
 	int parent = 0;
 	if (ds!=null)
 	while (ds.next()) {
-		
+
 		if (firstCode != ds.getInt("SID")){
 			firstCode = ds.getInt("SID");
 			if (i==0) parent = firstCode;
@@ -191,58 +218,56 @@
 				<script>
 				initrs('<%=ds.getInt("SID")%>','<%=name%>','<%=ds.getInt("SPID")%>',0,<%=i++%>);
 				</script>
-			<%	
+			<%
 			sbuBuf.append("<option value='" + ds.getInt("SID") + "'");
 			sbuBuf.append(">");
 			sbuBuf.append(name);
-			sbuBuf.append("</option>");	
-			
+			sbuBuf.append("</option>");
+
 		}
 		String bname = ds.getString("BNAME").trim();
 		%>
 				<script>
 				initrs('<%=ds.getInt("BID")%>','<%=bname%>','<%=ds.getInt("BPID")%>',1,<%=i++%>);
 				</script>
-		<%		
+		<%
 
 		if (parent == firstCode) {
 			bscBuf.append("<option value='" + ds.getInt("BID") + "'");
 			bscBuf.append(">");
 			bscBuf.append(bname);
 			bscBuf.append("</option>");
-		} 
+		}
 	}
 
 %>
 <!------//Page Box//------>
 <!---------///본문 컨텐츠 삽입영역 ///--------->
-<table width="98%" border="0" align="center" cellpadding="0"
-	cellspacing="0">
+<table width="98%" border="0" align="center" cellpadding="0" cellspacing="0">
 	<tr>
 		<td>&nbsp;</td>
 	</tr>
 </table>
 <!------//상단 검색//----->
-<table width="98%" border="0" align="center" cellpadding="5"
-	cellspacing="1" bgcolor="#A4CBE3">
+<table width="98%" border="0" align="center" cellpadding="5" cellspacing="1" bgcolor="#c1c1c1">
 	<form name="form1" method="post" action="">
 	<input type='hidden' name='yyyy'>
-	<tr bgcolor="#DCEDF6">
-		<td width="14%" align="center"><strong><font color="#006699">년도선택</font></strong></td>
+	<tr bgcolor="#f6f6f6">
+		<td width="14%" align="center" style="height:36px;font-size:13px;background-color:#f6f6f6;"><strong><font color="#333333">년도선택</font></strong></td>
 		<td width="86%" bgcolor="#FFFFFF">
-			<select name="year" onChange="javascript:changeYear();">
+			<select name="year" onChange="javascript:changeYear();" style="height: 24px;">
                     <script> funcSetDate(<%=curDate.substring(0,4)%>); </script>
             </select>
-                    년 
+                    년
              </td>
 	</tr>
 	<tr bgcolor="#DCEDF6">
-		<td align="center" bgcolor="#DCEDF6"><strong><font color="#006699">조직선택</font></strong></td>
+		<td align="center" style="height:36px;font-size:13px;background-color:#f6f6f6;"><strong><font color="#333333">조직선택</font></strong></td>
 		<td bgcolor="#FFFFFF">
-		<select name="firstPart"  style="width:170;x;" onChange="javascript:chgOrg(1);closeList()">
+		<select name="firstPart"  style="width:170;height: 24px;" onChange="javascript:chgOrg(1);closeList()">
         	<%=sbuBuf.toString()%>
         </select>
-        <select name="secondPart" style="width:170;x;" onChange="javascript:closeList()">
+        <select name="secondPart" style="width:170;height: 24px;" onChange="javascript:closeList()">
         	<%=bscBuf.toString()%>
         </select> <img src="<%=imgUri%>/jsp/web/images/btn_ok.gif"
 			alt="확인" onClick="javascript:actionPerformed();funcDivVisible();" style="cursor:hand" width="50" height="20" border="0" align="absmiddle"></td>
@@ -250,8 +275,7 @@
 	</form>
 </table>
 <!------//상단 검색 끝//----->
-<table width="98%" border="0" align="center" cellpadding="0"
-	cellspacing="0">
+<table width="98%" border="0" align="center" cellpadding="0" cellspacing="0">
 	<tr>
 		<td>&nbsp;</td>
 	</tr>

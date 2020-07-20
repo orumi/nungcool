@@ -53,7 +53,7 @@
     		console.log("actionInit error : "+error);
     	});
 
-
+    	searchDept();
     }
 
 
@@ -92,6 +92,35 @@
 		})
 
     }
+    function adjustBsc(bsc){
+    	curBsc = null;
+    	$("#bd_bsc").empty();
+
+    	curDeptMapping = null;
+    	$("#bd_deptMapping").empty();
+
+    	curDept = null;
+		$("#bd_dept").empty();
+
+
+    	for(var i in bsc){
+    		var aBsc = bsc[i];
+    		var tmpHtml = bscHtml.replace("###bcid###",aBsc.bcid)
+    		.replace("###sname###",aBsc.sname)
+    		.replace("###bname###",aBsc.bname)
+    		.replace("###deptCnt###",aBsc.deptCnt);
+
+    		$("#bd_bsc").append(tmpHtml);
+    	}
+
+		$("#bd_bsc tr").click(function(){
+			actionClickBsc($(this));
+		})
+
+		searchDept();
+
+    }
+
     function actionClickBsc(rowObj){
     	$(curBsc).removeClass("select_row");
     	curBsc = $(rowObj)
@@ -256,7 +285,7 @@
     	_xAjax(adjustDeptMappingURL, param)
     	.done(function(data){
     		if(data.selectBsc.length > 0){
-    			displayBsc(data.selectBsc);
+    			adjustBsc(data.selectBsc);
     			alert("저장되었습니다.");
     		} else {
 

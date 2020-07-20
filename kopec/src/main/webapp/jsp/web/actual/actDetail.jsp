@@ -53,11 +53,29 @@
 	String grade_score="";
 	String weight="";
 
+	String plannedbaseplus = "";
+	String baseplus        = "";
+	String baselimitplus   = "";
+	String limitplus       = "";
+
+	/*
 	String upper= Integer.toString(ServerStatic.UPPER);
 	String high= Integer.toString(ServerStatic.HIGH);
 	String low= Integer.toString(ServerStatic.LOW);
 	String lower= Integer.toString(ServerStatic.LOWER);
 	String lowst= Integer.toString(ServerStatic.LOWST);
+	*/
+
+	String upper     = "100";
+	String highplus  = "87.5";
+	String high      = "75";
+	String lowplus   = "62.5";
+	String low       = "50";
+	String lowerplus = "37.5";
+	String lower     = "25";
+	String lowstplus = "12.5";
+	String lowst     = "0";
+
 
 	if (dsMea!=null) while(dsMea.next()){
 		mname = dsMea.getString("NAME");
@@ -76,12 +94,14 @@
 		updater = dsMea.isEmpty("UNAME")?"":dsMea.getString("UNAME");
 		trend = dsMea.getString("TREND");
 		weight = dsMea.getString("WEIGHT");
-		//upper = dsMea.isEmpty("UPPER")?"":dsMea.getString("UPPER");
-		//high = dsMea.isEmpty("HIGH")?"":dsMea.getString("HIGH");
-		//low = dsMea.isEmpty("LOW")?"":dsMea.getString("LOW");
-		//lower = dsMea.isEmpty("LOWER")?"":dsMea.getString("LOWER");
 
-		strFile = dsMea.isEmpty("FILENAME")?"":"<a href='#'> <img src='"+imgUri+"/jsp/web/images/icon_file.gif' width='12' height='12' onClick=\"download('"+dsMea.getString("FILENAME")+"');\"> </a>"+dsMea.getString("FILENAME")+((bAut)?"&nbsp;&nbsp;&nbsp;&nbsp; <img src='"+imgUri+"/jsp/web/images/btn_file_delete.gif' width='70' height='18' onClick=\"actionDeleteFile();\" style=\"cursor:hand\"> <br>":"");
+		plannedbaseplus = dsMea.isEmpty("PLANNEDBASEPLUS")?"":dsMea.getString("PLANNEDBASEPLUS");
+		baseplus        = dsMea.isEmpty("BASEPLUS")?"":dsMea.getString("BASEPLUS");
+		baselimitplus   = dsMea.isEmpty("BASELIMITPLUS")?"":dsMea.getString("BASELIMITPLUS");
+		limitplus       = dsMea.isEmpty("LIMITPLUS")?"":dsMea.getString("LIMITPLUS");
+
+
+		strFile = dsMea.isEmpty("FILENAME")?"":"<a href='#'> <img src='"+imgUri+"/jsp/web/images/icon_file.gif' width='12' height='12' onClick=\"download('"+dsMea.getString("FILENAME")+"','"+dsMea.getString("FILEPATH")+"');\"> </a>"+dsMea.getString("FILENAME")+((bAut)?"&nbsp;&nbsp;&nbsp;&nbsp; <img src='"+imgUri+"/jsp/web/images/btn_file_delete.gif' width='70' height='18' onClick=\"actionDeleteFile();\" style=\"cursor:hand\"> <br>":"");
 
 		if(planned.equals("") || plannedbase.equals("") || base.equals("") || baselimit.equals("") || limit.equals("")){
 			out.println("<script language=javascript>alert('해당 지표에 목표값이 없습니다. 목표값부터 입력하세요!'); parent.actionPerformed();parent.funcDivVisible();</script>");
@@ -145,50 +165,62 @@
 
 <!---------//우측  변수(항목)실적입력 //-------->
 <table width="98%" border="0" cellpadding="5" cellspacing="1"
-	bgcolor="#9DB5D7">
+	bgcolor="#c1c1c1">
 	<tr bgcolor="#FFFFFF">
-		<td width="20%" align="center" bgcolor="#D4DCF4"><font color="#003399"><strong>지표</strong></font></td>
+		<td width="20%" align="center" bgcolor="#f6f6f6"><font color="#333333"><strong>지표</strong></font></td>
 		<td width="50%"><strong><font color="#3366CC"><%= mname %></font></strong></td>
-		<td width="15%" align="center" bgcolor="#D4DCF4"><font color="#003399"><strong>단위</strong></font></td>
+		<td width="15%" align="center" bgcolor="#f6f6f6"><font color="#333333"><strong>단위</strong></font></td>
 		<td width="20%"><strong><font color="#3366CC"><%= unit %></font></strong></td>
 	</tr>
 	<tr bgcolor="#FFFFFF">
-		<td width="20%" align="center" bgcolor="#D4DCF4"><font color="#003399"><strong>계산식</strong></font></td>
+		<td width="20%" align="center" bgcolor="#f6f6f6"><font color="#333333"><strong>계산식</strong></font></td>
 		<td width="50%"><strong><font color="#333333"><%=equation%></font></strong></td>
-		<td width="15%" align="center" bgcolor="#D4DCF4"><font color="#003399"><strong>가중치</strong></font></td>
+		<td width="15%" align="center" bgcolor="#f6f6f6"><font color="#333333"><strong>가중치</strong></font></td>
 		<td width="20%"><strong><font color="#3366CC"><%= weight %></font></strong></td>
 	</tr>
 	<tr bgcolor="#FFFFFF">
-		<td width="15%" align="center" bgcolor="#D4DCF4"><font color="#003399"><strong>실적담당자<br>(정/부)</strong></font></td>
+		<td width="15%" align="center" bgcolor="#f6f6f6"><font color="#333333"><strong>실적담당자<br>(정/부)</strong></font></td>
 		<td ><%= updater %></td>
-		<td width="15%" align="center" bgcolor="#D4DCF4"><font color="#003399"><strong>방향성</strong></font></td>
+		<td width="15%" align="center" bgcolor="#f6f6f6"><font color="#333333"><strong>방향성</strong></font></td>
 		<td width="20%"><strong><font color="#3366CC"><%= trend %></font></strong></td>
 	</tr>
 </table>
 <table><tr><td></td></tr></table>
 <table width="98%" border="0" cellspacing="1" cellpadding="5" bgcolor="#9DB5D7">
-	<tr align="center" bgcolor="#D2E1F0" height="23">
-		<td width="20%"><font color="#003399"><strong>구분</strong></font></td>
-		<td width="16%"><font color="#003399"><strong>S</strong></font></td>
-		<td width="16%"><font color="#003399"><strong>A</strong></font></td>
-		<td width="16%"><font color="#003399"><strong>B</strong></font></td>
-		<td width="16%"><font color="#003399"><strong>C</strong></font></td>
-		<td width="16%"><font color="#003399"><strong>D</strong></font></td>
+	<tr align="center" bgcolor="#375f9c" height="32">
+		<td width="7%"><font color="#ffffff"><strong>구분</strong></font></td>
+		<td width="5%"><font color="#ffffff"><strong>S</strong></font></td>
+		<td width="5%"><font color="#ffffff"><strong>A+</strong></font></td>
+		<td width="5%"><font color="#ffffff"><strong>A</strong></font></td>
+		<td width="5%"><font color="#ffffff"><strong>B+</strong></font></td>
+		<td width="5%"><font color="#ffffff"><strong>B</strong></font></td>
+		<td width="5%"><font color="#ffffff"><strong>C+</strong></font></td>
+		<td width="5%"><font color="#ffffff"><strong>C</strong></font></td>
+		<td width="5%"><font color="#ffffff"><strong>D+</strong></font></td>
+		<td width="5%"><font color="#ffffff"><strong>D</strong></font></td>
 	</tr>
-	<tr align="center" bgcolor="#FFFFFF" height="23">
-		<td bgcolor="#D2E1F0"><font color="#003399"><strong>목표구간</strong></font></td>
+	<tr align="center" bgcolor="#FFFFFF" height="32">
+		<td bgcolor="#375f9c"><font color="#ffffff"><strong>목표구간</strong></font></td>
 		<td><%=planned %></td>
+		<td><%=plannedbaseplus %></td>
 		<td><%=plannedbase %></td>
+		<td><%=baseplus %></td>
 		<td><%=base %></td>
+		<td><%=baselimitplus %></td>
 		<td><%=baselimit %></td>
+		<td><%=limitplus %></td>
 		<td><%=limit %></td>
 	</tr>
-	<tr align="center" bgcolor="#FFFFFF" height="23">
-		<td bgcolor="#D2E1F0"><font color="#003399"><strong>평점</strong></font></td>
+	<tr align="center" bgcolor="#FFFFFF" height="32">
+		<td bgcolor="#375f9c"><font color="#ffffff"><strong>평점</strong></font></td>
 		<td><%=upper %></td>
+		<td><%=highplus %></td>
 		<td><%=high %></td>
+		<td><%=lowplus %></td>
 		<td><%=low %></td>
+		<td><%=lowerplus %></td>
 		<td><%=lower %></td>
+		<td><%=lowstplus %></td>
 		<td><%=lowst %></td>
 	</tr>
 </table>
@@ -197,7 +229,7 @@
 	          <!-- 근거 자료  -->
 	          	<table width="98%" border="0" cellpadding="3" cellspacing="1" bgcolor="#CCCCCC">
 			      <tr bgcolor="#EEEEEE">
-			        <td align="center" bgcolor="#DCEDF6"><font color="#006699"><strong>내부분석의견</strong></font></td>
+			        <td align="center" bgcolor="#375f9c" height=32><font color="#ffffff"><strong>내부분석의견</strong></font></td>
 			      </tr>
 			      <tr>
 			        <td valign="top" bgcolor="#ffffff"><textarea cols="75" rows="9" name="comments"><%=comments %></textarea></td>
@@ -210,7 +242,7 @@
 	          <!-- 첨부파일  -->
 	          	<table width="98%" border="0" cellpadding="3" cellspacing="1" bgcolor="#CCCCCC">
 			      <tr bgcolor="#EEEEEE">
-			        <td width="100" align="center" bgcolor="#DCEDF6"><font color="#006699"><strong>실적 첨부문서</strong></font></td>
+			        <td width="100" align="center" bgcolor="#375f9c"><font color="#ffffff"><strong>실적 첨부문서</strong></font></td>
 			        <td valign="top" bgcolor="#ffffff">
 			        <%=strFile%>
 			        <input name="attach_file" type="file" class="input_box" style="width:363;x;">
@@ -247,19 +279,10 @@
 
 <table width="98%" border="0" cellpadding="1" cellspacing="1" bgcolor="#CCCCCC">
 	<tr align="center" bgcolor="#EEEEEE" height="20">
-<!--		<td width="08%" rowspan="2"><font color="#333333"><strong>코드</strong></font></td>-->
 		<td width="08%" ><font color="#333333"><strong>코드</strong></font></td>
-<!--		<td width="55%" colspan="2"><font color="#333333"><strong>항목</strong></font></td>-->
 		<td width="55%" ><font color="#333333"><strong>항목</strong></font></td>
-<!--		<td width="12%" rowspan="2"><font color="#333333"><strong>산식적용</strong></font></td>-->
-<!--		<td width="12%" ><font color="#333333"><strong>산식적용</strong></font></td>-->
-<!--		<td width="25%" rowspan="2"><font color="#333333"><strong>주기별<br>항목실적(누적)</strong></font></td>-->
 		<td width="25%"><font color="#333333"><strong>주기별<br>항목실적(누적)</strong></font></td>
 	</tr>
-<!--	<tr align="center" bgcolor="#EEEEEE" height="23">-->
-<!--		<td width="15%"><font color="#333333"><strong>누적값</strong></font></td>-->
-<!--		<td width="15%"><font color="#333333"><strong>평균값</strong></font></td>	-->
-<!--	</tr>-->
 	<input type=hidden name=itemCode value="<%=contentId%>">
 	<%
 		if(dsItem!=null){
@@ -268,20 +291,11 @@
 				itemCD += dsItem.getString("CODE")+"|";
 		%>
 			<tr align="center" bgcolor="#FFFFFF" height="23">
-<!--				<td rowspan="2"><%=dsItem.getString("CODE") %></td>-->
 				<td ><%=dsItem.getString("CODE") %></td>
-<!--				<td align="left" colspan="2"><%=dsItem.getString("ITEMNAME") %></td>-->
 				<td align="left" ><%=dsItem.getString("ITEMNAME") %></td>
-<!--				<td rowspan="2"><%=dsItem.getString("ITEMTYPE") %></td>-->
-<!--				<td><%=dsItem.getString("ITEMTYPE") %></td>-->
 
-<!--				<td rowspan="2"><input type=text name="itemAcutal<%=dsItem.getString("CODE")%>"  style="text-align:right" value=<%=dsItem.isEmpty("ACTUAL")?"":dsItem.getString("ACTUAL") %>></td>-->
 				<td><input type=text name="itemAcutal<%=dsItem.getString("CODE")%>"  style="text-align:right" value=<%=dsItem.isEmpty("ACTUAL")?"":dsItem.getString("ACTUAL") %>></td>
 			</tr>
-<!--			<tr align="center" bgcolor="#FFFFFF" height="23">-->
-<!--				<td ><%=dsItem.isEmpty("ACCUM")?"":dsItem.getString("ACCUM") %></td>-->
-<!--				<td ><%=dsItem.isEmpty("AVERAGE")?"":dsItem.getString("AVERAGE") %></td>			-->
-<!--			</tr>-->
 			<input type="hidden" name="itemType<%=dsItem.getString("CODE")%>" value="<%=dsItem.getString("ITEMTYPE") %>" >
 		<%
 			}  %>
@@ -301,7 +315,7 @@
  <!---------//우측  항목실적 점수계산 결과  //-------->
 <br>
 <table width="98%" border="0" cellspacing="1" cellpadding="2">
-	<tr>
+	<tr height="34">
 		<td width="7%" align="center" bgcolor="#FFCC99"><strong><font color="#993300">실적</font></strong></td>
 		<td width="18%" bgcolor="#FFFFCC"><strong><%="".equals(actual)?"":actual%></strong></td>
 		<td width="7%" align="center" bgcolor="#E1F0FF"><strong><font color="#006699">등급</font></strong></td>
@@ -320,6 +334,7 @@
 
 <form name="downForm" method="post" action="<%=imgUri%>/jsp/web/actual/download.jsp">
 	<input type="hidden" name="fileName">
+	<input type="hidden" name="filePath">
 </form>
 
 <script language=javascript>
@@ -339,8 +354,9 @@
 
 	}
 
-	function download(filename){
+	function download(filename, filepath){
 		downForm.fileName.value=filename;
+		downForm.filePath.value=filepath;
 		downForm.submit();
 	}
 

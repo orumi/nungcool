@@ -7,10 +7,6 @@
 	imgUri = imgUri.substring(1);
 	imgUri = "../../../../" + imgUri.substring(0, imgUri.indexOf("/"));
 
-//	String qtr    = Util.getPrevQty(null);	// 분기처리
-//	String qtr    = Util.getPrevMonth(null);
-//	String year   = request.getParameter("year") !=null?request.getParameter("year"):qtr.substring(0,4);
-
 	// 년월고정.
 	AppConfigUtil app = new AppConfigUtil();
 	String showym = app.getShowYM()!= null?app.getShowYM():Util.getPrevQty(null);
@@ -332,8 +328,8 @@
 
 <table width="98%" border="0" align="center" cellpadding="0" cellspacing="0">
 	<tr valign="top">
-		<td width="100%">
-			<iframe frameborder="0" id="list" src="deptActList.jsp?mode=none" style="body" width="100%" height="540">&nbsp;</iframe>
+		<td width="100%" style="height:540px;">
+			<iframe frameborder="0" id="list" src="deptActList.jsp?mode=none" style="body" width="100%" height="540px">&nbsp;</iframe>
 			<iframe frameborder="0" id="detail" style="display:inline" src="deptActDetail.jsp?mode=none" style="body" width="0%" height="0%">&nbsp;</iframe>
 		</td>
 	</tr>

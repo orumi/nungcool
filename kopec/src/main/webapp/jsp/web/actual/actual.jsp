@@ -28,7 +28,9 @@
 		String curDate= request.getParameter("year")!=null?request.getParameter("year")+qtr.substring(4,6):qtr.substring(0,6);
 		DataSet ds = (DataSet) request.getAttribute("ds");
 	%>
-<script src="<%=imgUri %>/bootstrap/js/libs/jquery-2.1.1.min.js"></script>
+<!-- Link to Google CDN's jQuery + jQueryUI; fall back to local -->
+<script src="<%=imgUri%>/bootstrap/js/libs/jquery-2.1.1.min.js"></script>
+<script src="<%=imgUri%>/bootstrap/js/libs/jquery-ui-1.10.3.min.js"></script>
 
 <SCRIPT>
 	var initCon = false;
@@ -40,10 +42,17 @@
     	}
     	initCon = true;
 
-    	document.getElementById('list').contentWindow.document.listForm.sbuId.value = form1.firstPart.options[form1.firstPart.selectedIndex].value;
+    	$("#list").contents().find("input[name=sbuId]").val(form1.firstPart.options[form1.firstPart.selectedIndex].value);
+    	$("#list").contents().find("input[name=bscId]").val(form1.secondPart.options[form1.secondPart.selectedIndex].value);
+    	$("#list").contents().find("input[name=schDate]").val(form1.year.options[form1.year.selectedIndex].value+form1.month.options[form1.month.selectedIndex].value);
+
+    	$("#list").contents().find("form[name=listForm]").submit();
+
+
+    	/* document.getElementById('list').contentWindow.document.listForm.sbuId.value = form1.firstPart.options[form1.firstPart.selectedIndex].value;
     	document.getElementById('list').contentWindow.document.listForm.bscId.value = form1.secondPart.options[form1.secondPart.selectedIndex].value;
     	document.getElementById('list').contentWindow.document.listForm.schDate.value  = form1.year.options[form1.year.selectedIndex].value+form1.month.options[form1.month.selectedIndex].value;
-    	document.getElementById('list').contentWindow.document.listForm.submit();
+    	document.getElementById('list').contentWindow.document.listForm.submit(); */
     }
 
     function leftReload(){
@@ -112,9 +121,15 @@
     }
 
     function openDetail(id){
-      document.getElementById('detail').contentWindow.document.detailForm.contentId.value = id;
+    	$("#detail").contents().find("input[name=contentId]").val(id);
+    	$("#detail").contents().find("input[name=schDate]").val(form1.year.options[form1.year.selectedIndex].value+form1.month.options[form1.month.selectedIndex].value);
+
+    	$("#detail").contents().find("form[name=detailForm]").submit();
+
+
+      /* document.getElementById('detail').contentWindow.document.detailForm.contentId.value = id;
       document.getElementById('detail').contentWindow.document.detailForm.schDate.value = form1.year.options[form1.year.selectedIndex].value+form1.month.options[form1.month.selectedIndex].value;
-      document.getElementById('detail').contentWindow.document.detailForm.submit();
+      document.getElementById('detail').contentWindow.document.detailForm.submit(); */
 
       document.getElementById("list").style.display="none";
  	  document.getElementById("detail").style.display="inline";
@@ -272,23 +287,23 @@
 	<form name="form1" method="post" action="">
 	<input type='hidden' name='yyyy'>
 	<tr bgcolor="#DCEDF6">
-		<td width="14%" align="center"><strong><font color="#006699">년월선택</font></strong></td>
-		<td width="86%" bgcolor="#f6f6f6">
-			<select name="year" onChange="javascript:changeYear();">
+		<td width="14%" align="center" style="height:36px;font-size:13px;background-color:#f6f6f6;"><strong><font color="#333333">년월선택</font></strong></td>
+		<td width="86%" bgcolor="#ffffff">
+			<select name="year" onChange="javascript:changeYear();" style="height: 24px;">
                     <script> funcSetDate(<%=curDate.substring(0,4)%>); </script>
             </select> 년
-             <select name="month" onChange="onChangeDate()";>
+             <select name="month" onChange="onChangeDate()" style="height: 24px;">
 	                <script> funcSetMonth(<%=curDate.substring(4,6)%>); </script>
              </select>
         </td>
 	</tr>
 	<tr bgcolor="#DCEDF6">
-		<td align="center" bgcolor="#f6f6f6"><strong><font color="#006699">조직선택</font></strong></td>
+		<td align="center" style="height:36px;font-size:13px;background-color:#f6f6f6;"><strong><font color="#333333">조직선택</font></strong></td>
 		<td bgcolor="#FFFFFF">
-		<select name="firstPart"  style="width:170;x;" onChange="javascript:chgOrg(1);closeList()">
+		<select name="firstPart"  style="width:170;height: 24px;" onChange="javascript:chgOrg(1);closeList()">
         	<%=sbuBuf.toString()%>
         </select>
-        <select name="secondPart" style="width:170;x;" onChange="javascript:changeBSC()">
+        <select name="secondPart" style="width:170;height: 24px;" onChange="javascript:changeBSC()">
         	<%=bscBuf.toString()%>
         </select> <img src="<%=imgUri%>/jsp/web/images/btn_ok.gif"
 			alt="확인" onClick="javascript:actionPerformed();funcDivVisible();" style="cursor:hand" width="50" height="20" border="0" align="absmiddle"></td>

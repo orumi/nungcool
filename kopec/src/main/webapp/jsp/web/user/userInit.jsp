@@ -59,17 +59,17 @@
 		        <tr>
 		          <td width="100%" valign="top">
 		            <!------//상단검색//----->
-		            <table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#A4CBE3">
+		            <table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#c1c1c1">
 
-		                <tr bgcolor="#DCEDF6">
-		                  <td align="center" bgcolor="#DCEDF6" style = "width:100px"><strong><font color="#006699">사용자명</font></strong></td>
+		                <tr bgcolor="#f6f6f6">
+		                  <td align="center" style="width:100px;height:36px;font-size:13px;background-color:#f6f6f6;"><strong><font color="#333333">사용자명</font></strong></td>
 		                  <td bgcolor="#FFFFFF">
-		                  	<input name="txtSearch" id="txtSearch" type="text" class="input_box" size = 35 onKeypress="javascript: if (event.keyCode =='13') fnSearch('Q');"> </input>
+		                  	<input name="txtSearch" id="txtSearch" type="text" style="height: 24px;" class="input_box" size = 35 onKeypress="javascript: if (event.keyCode =='13') fnSearch('Q');"> </input>
 						  </td>
 
-		                  <td align="center" bgcolor="#DCEDF6" style = "width:100px"><strong><font color="#006699">평가부서명</font></strong></td>
+		                  <td align="center" style="width:100px;height:36px;font-size:13px;background-color:#f6f6f6;"><strong><font color="#333333">평가부서명</font></strong></td>
 		                  <td bgcolor="#FFFFFF">
-		                  	<select name="selDiv" id="selDiv">
+		                  	<select name="selDiv" id="selDiv" style="height: 24px;">
 		                  		<option value=-1> 전체</option>
 						        <% if (ds!=null) {
 						         		while(ds.next()){ %>

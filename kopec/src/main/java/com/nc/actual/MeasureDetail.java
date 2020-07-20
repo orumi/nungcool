@@ -23,16 +23,16 @@ public class MeasureDetail {
 	public String filePath;
 	public String fileName;
 	public String updater;
-	
+
 	public String plannedflag;
-	
-	/*	
-	 * PLANNEDFLAG : KOPECÀÇ ¸ñÇ¥°ª Æ¯¼ö»óÈ²Àû¿ë
-	 * 	µî±Þ±¸°£ : ÃÊ°ú(O)
-	 *  µî±Þ±¸°£ : ÀÌ»ó(U)
-	 * 
+
+	/*
+	 * PLANNEDFLAG : KOPECì˜ ëª©í‘œê°’ íŠ¹ìˆ˜ìƒí™©ì ìš©
+	 * 	ë“±ê¸‰êµ¬ê°„ : ì´ˆê³¼(O)
+	 *  ë“±ê¸‰êµ¬ê°„ : ì´ìƒ(U)
+	 *
 	 */
-	
+
 	public double upper;
 	public double highplus;
 	public double high;
@@ -42,22 +42,22 @@ public class MeasureDetail {
 	public double lower;
 	public double lowstplus;
 	public double lowst;
-	
-	
+
+
 	public String grade;
 	public double grade_score;
 	public double score;
-	
+
 	public double getScore(){
 		try {
-			
+
 			//System.out.println("plannedflag : " + plannedflag);
-			
+
 			// -----------------------------------------------------------------------------
-			// µî±Þ±¸°£ ÃÊ°úÀÎ °æ¿ì 
-			//------------------------------------------------------------------------------	
+			// ë“±ê¸‰êµ¬ê°„ ì´ˆê³¼ì¸ ê²½ìš°
+			//------------------------------------------------------------------------------
 			if ("O".equals(plannedflag)){
-					if ("»óÇâ".equals(trend)){
+					if ("ìƒí–¥".equals(trend)){
 						if (actual>planned) {
 							grade = "S";
 							score = ServerStatic.UPPER;
@@ -77,7 +77,7 @@ public class MeasureDetail {
 							grade = "";
 							score = 0;
 						}
-						
+
 						if ((planned==0)&&(plannedbase==0)&&(base==0)&&(baselimit==0)&&(limit==0)) score=0;
 						grade_score = grade_score * weight / 100;
 						return grade_score;
@@ -101,18 +101,18 @@ public class MeasureDetail {
 							grade = "";
 							score = 0;
 						}
-						
+
 						if ((planned==0)&&(plannedbase==0)&&(base==0)&&(baselimit==0)&&(limit==0)) score=0;
 						grade_score = score * weight / 100;
 						return grade_score;
-					}				
-				
-				
-			} else { 
+					}
+
+
+			} else {
 					// -----------------------------------------------------------------------------
-					// 	// µî±Þ±¸°£ ÀÌ»óÀÎ °æ¿ì (ÀÏ¹ÝÀûÀÎ »óÈ²ÀÓ)
-					//------------------------------------------------------------------------------	
-					if ("»óÇâ".equals(trend)){
+					// 	// ë“±ê¸‰êµ¬ê°„ ì´ìƒì¸ ê²½ìš° (ì¼ë°˜ì ì¸ ìƒí™©ìž„)
+					//------------------------------------------------------------------------------
+					if ("ìƒí–¥".equals(trend)){
 						if (actual>=planned) {
 							grade = "S";
 							score = ServerStatic.UPPER;
@@ -132,7 +132,7 @@ public class MeasureDetail {
 							grade = "";
 							score = 0;
 						}
-						
+
 						if ((planned==0)&&(plannedbase==0)&&(base==0)&&(baselimit==0)&&(limit==0)) score=0;
 						grade_score = grade_score * weight / 100;
 						return grade_score;
@@ -156,258 +156,258 @@ public class MeasureDetail {
 							grade = "";
 							score = 0;
 						}
-						
+
 						if ((planned==0)&&(plannedbase==0)&&(base==0)&&(baselimit==0)&&(limit==0)) score=0;
 						grade_score = score * weight / 100;
 						return grade_score;
 					}
-			}	
+			}
 		} catch (Exception e) {
 			return -1;
 		}
 	}
-	
+
 	public double getScoreVariable(){
 		try {
 			//System.out.println("plannedflag : " + plannedflag);
-			
+
 			// -----------------------------------------------------------------------------
-			// µî±Þ±¸°£ ÃÊ°úÀÎ °æ¿ì 
-			//------------------------------------------------------------------------------	
+			// ë“±ê¸‰êµ¬ê°„ ì´ˆê³¼ì¸ ê²½ìš°
+			//------------------------------------------------------------------------------
 			if ("O".equals(plannedflag)){
-				
-				if ("»óÇâ".equals(trend)){
+
+				if ("ìƒí–¥".equals(trend)){
 					if (actual        > planned) {
-						
+
 						grade = "S";
 						score = this.upper;
-						
+
 					} else if (actual > plannedbaseplus){
-						
+
 						grade = "A+";
 						score = this.highplus;
-						
+
 					} else if (actual > plannedbase){
-						
+
 						grade = "A";
 						score = this.high;
-						
+
 					} else if (actual > baseplus){
-						
+
 						grade = "B+";
 						score = this.lowplus;
-						
+
 					} else if (actual > base){
-						
+
 						grade = "B";
 						score = this.low;
-						
+
 					} else if (actual > baselimitplus){
-						
+
 						grade = "C+";
 						score = this.lowerplus;
-						
+
 					} else if (actual > baselimit){
-						
+
 						grade = "C";
 						score = this.lower;
-						
+
 					} else if (actual > limitplus){
-						
+
 						grade = "D+";
 						score = this.lowstplus;
-						
+
 					} else if (actual <= limit){
-						
+
 						grade = "D";
 						score = this.lowst;
-						
+
 					} else {
-						
+
 						grade = "";
 						score = 0;
-						
+
 					}
-					
-					grade_score = score * weight / 100;				
+
+					grade_score = score * weight / 100;
 					return grade_score;
 				} else {
 					if (actual        < planned) {
-						
+
 						grade = "S";
 						score = this.upper;
-						
+
 					} else if (actual < plannedbaseplus){
-						
+
 						grade = "A+";
 						score = this.highplus;
-						
+
 					} else if (actual < plannedbase){
-						
+
 						grade = "A";
 						score = this.high;
-						
+
 					} else if (actual < baseplus){
-						
+
 						grade = "B+";
 						score = this.lowplus;
-						
+
 					} else if (actual < base){
-						
+
 						grade = "B";
 						score = this.low;
-						
+
 					} else if (actual < baselimitplus){
-						
+
 						grade = "C+";
 						score = this.lowerplus;
-						
+
 					} else if (actual < baselimit){
-						
+
 						grade = "C";
 						score = this.lower;
-						
+
 					} else if (actual < limitplus){
-						
+
 						grade = "D+";
 						score = this.lowstplus;
-						
+
 					} else if (actual <= limit){
-						
+
 						grade = "D";
 						score = this.lowst;
-						
+
 					} else {
-						
+
 						grade = "";
 						score = 0;
-						
-					}
-					
-					
 
-					grade_score = score * weight / 100;				
+					}
+
+
+
+					grade_score = score * weight / 100;
 					return grade_score;
 				}
-				
+
 			}else {
 			// -----------------------------------------------------------------------------
-			// 	// µî±Þ±¸°£ ÀÌ»óÀÎ °æ¿ì (ÀÏ¹ÝÀûÀÎ »óÈ²ÀÓ)
-			//------------------------------------------------------------------------------	
-					
-				if ("»óÇâ".equals(trend)){
+			// 	// ë“±ê¸‰êµ¬ê°„ ì´ìƒì¸ ê²½ìš° (ì¼ë°˜ì ì¸ ìƒí™©ìž„)
+			//------------------------------------------------------------------------------
+
+				if ("ìƒí–¥".equals(trend)){
 					if (actual        >= planned) {
-						
+
 						grade = "S";
 						score = this.upper;
-						
+
 					} else if (actual >= plannedbaseplus){
-						
+
 						grade = "A+";
 						score = this.highplus;
-						
+
 					} else if (actual >= plannedbase){
-						
+
 						grade = "A";
 						score = this.high;
-						
+
 					} else if (actual >= baseplus){
-						
+
 						grade = "B+";
 						score = this.lowplus;
-						
+
 					} else if (actual >= base){
-						
+
 						grade = "B";
 						score = this.low;
-						
+
 					} else if (actual >= baselimitplus){
-						
+
 						grade = "C+";
 						score = this.lowerplus;
-						
+
 					} else if (actual >= baselimit){
-						
+
 						grade = "C";
 						score = this.lower;
-						
+
 					} else if (actual >= limitplus){
-						
+
 						grade = "D+";
 						score = this.lowstplus;
-						
+
 					} else if (actual < limit){
-						
+
 						grade = "D";
 						score = this.lowst;
-						
+
 					} else {
-						
+
 						grade = "";
 						score = 0;
-						
+
 					}
-					
-					grade_score = score * weight / 100;				
+
+					grade_score = score * weight / 100;
 					return grade_score;
 				} else {
 					if (actual        <= planned) {
-						
+
 						grade = "S";
 						score = this.upper;
-						
+
 					} else if (actual <= plannedbaseplus){
-						
+
 						grade = "A+";
 						score = this.highplus;
-						
+
 					} else if (actual <= plannedbase){
-						
+
 						grade = "A";
 						score = this.high;
-						
+
 					} else if (actual <= baseplus){
-						
+
 						grade = "B+";
 						score = this.lowplus;
-						
+
 					} else if (actual <= base){
-						
+
 						grade = "B";
 						score = this.low;
-						
+
 					} else if (actual <= baselimitplus){
-						
+
 						grade = "C+";
 						score = this.lowerplus;
-						
+
 					} else if (actual <= baselimit){
-						
+
 						grade = "C";
 						score = this.lower;
-						
+
 					} else if (actual <= limitplus){
-						
+
 						grade = "D+";
 						score = this.lowstplus;
-						
+
 					} else if (actual < limit){
-						
+
 						grade = "D";
 						score = this.lowst;
-						
+
 					} else {
-						
+
 						grade = "";
 						score = 0;
-						
+
 					}
-					grade_score = score * weight / 100;				
+					grade_score = score * weight / 100;
 					return grade_score;
 				}
-			}	
+			}
 		} catch (Exception e) {
 			return -1;
 		}
-	}	
+	}
 }

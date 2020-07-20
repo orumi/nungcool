@@ -3,7 +3,7 @@
 				 com.nc.util.*"%>
 <%
 	String schDate = (String) request.getAttribute("schDate");
-	
+
 	ActualUtil util = new ActualUtil();
 	util.setMeasure(request, response);
 
@@ -11,21 +11,21 @@
 
 	java.text.NumberFormat nf = java.text.NumberFormat.getInstance();
 	nf.setMaximumFractionDigits(2);
-	
+
 	String imgUri = request.getRequestURI();
 	imgUri = imgUri.substring(1);
 	imgUri = "../../../../" + imgUri.substring(0, imgUri.indexOf("/"));
 %>
 <SCRIPT>
-    var selectRow=null; 
-    var selectRow1=null; 
-    var selectRow2=null; 
-    var selectRow3=null; 
+    var selectRow=null;
+    var selectRow1=null;
+    var selectRow2=null;
+    var selectRow3=null;
     var selectRow4=null;
-    
+
     function funcSelectActual(id){
     	parent.openDetail(id);
-    	
+
     	/*
       if (selectRow != null) {
         selectRow.style.backgroundColor="F0F0F0";
@@ -39,20 +39,20 @@
       var sRow2 = eval("this.cellb"+id);
       var sRow3 = eval("this.cellc"+id);
 	  var sRow4 = eval("this.celld"+id);
-	  
-      selectRow = sRow; 
-      selectRow1 = sRow1; 
-      selectRow2 = sRow2; 
-      selectRow3 = sRow3; 
+
+      selectRow = sRow;
+      selectRow1 = sRow1;
+      selectRow2 = sRow2;
+      selectRow3 = sRow3;
       selectRow4 = sRow4;
-      
+
       selectRow.style.backgroundColor = "C4EAF9";
       selectRow1.style.backgroundColor = "C4EAF9";
       selectRow2.style.backgroundColor = "C4EAF9";
       selectRow3.style.backgroundColor = "C4EAF9";
       selectRow4.style.backgroundColor = "C4EAF9";
       */
-      
+
     }
 
 	function mergeCell(tbl, startRow, cNum, length, add)
@@ -69,15 +69,15 @@
 		}
 		cNum   = parseInt(cNum);
 		length = parseInt(length);
-	
+
 		rows   = tbl.rows;
 		rowNum = rows.length;
-	
+
 		tempVal  = '';
 		cnt      = 0;
 		startRow = parseInt(startRow);
-	
-		for( i = startRow; i < rowNum; i++ ) { 
+
+		for( i = startRow; i < rowNum; i++ ) {
 			curVal = rows[i].cells[cNum].innerHTML;
 			if(isAdd) curVal += rows[i].cells[add].innerHTML;
 			if( curVal == tempVal ) {
@@ -94,17 +94,17 @@
 			}
 			tempVal = curVal;
 		}
-	
+
 		if(cnt > 0) {
 			merge(tbl, startRow, cnt, cNum, length);
 		}
 	}
-	
+
 	function merge(tbl, startRow, cnt, cellNum, length)
 	{
 		rows = tbl.rows;
 		row  = rows[startRow];
-	
+
 		for( i = startRow + 1; i < startRow + cnt; i++ ) {
 			for( j = 0; j < length; j++) {
 				rows[i].deleteCell(cellNum);
@@ -141,31 +141,31 @@
 %>
 <!---------//좌측  KPI 선택 전청 리스트//-------->
 <table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7">
-	<tr align="center" bgcolor="#D4DCF4">
-		<td width="150"><strong><font color="#003399">관점</font></strong></td>
-		<td><strong><font color="#003399">성과지표 </font></strong></td>
-		<td width="50"><strong><font color="#003399">주기</font></strong></td>
-		<td width="70"><strong><font color="#003399">실적</font></strong></td>
-		<td width="70" bgcolor="#D4DCF4"><strong><font color="#003399">득점</font></strong></td>
-		<td width="70" bgcolor="#D4DCF4"><strong><font color="#003399">첨부</font></strong></td>
+	<tr align="center" bgcolor="#375f9c" style="height:32px;">
+		<td width="150"><strong><font color="#ffffff">관점</font></strong></td>
+		<td><strong><font color="#ffffff">성과지표 </font></strong></td>
+		<td width="50"><strong><font color="#ffffff">주기</font></strong></td>
+		<td width="70"><strong><font color="#ffffff">실적</font></strong></td>
+		<td width="70"><strong><font color="#ffffff">득점</font></strong></td>
+		<td width="70"><strong><font color="#ffffff">첨부</font></strong></td>
 	</tr>
 </table>
 <div style="overflow-y:scroll;width:100%;height:385px;">
 <table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7" id='tbl0'>
 	<% int j=0;
-    
+
     if(ds != null){
-        
+
    		while (ds.next()) {
    			String sName = ((String)ds.getString("PNAME")).trim();
    			String mName = ((String)ds.getString("MNAME")).trim();
    			String sActual = ds.isEmpty("ACTUAL")?"":ds.getString("ACTUAL");
    			String sScore = ds.isEmpty("GRADE_SCORE")?"":ds.getString("GRADE_SCORE");
    			String divName = ds.isEmpty("DIVNAME")?"":ds.getString("DIVNAME");
-   			
-   			String file = ds.isEmpty("FILENAME")?"":"<a href='#'> <img src='"+imgUri+"/jsp/web/images/icon_file.gif' width='12' height='12' onClick=\"download('"+ds.getString("FILENAME")+"');\"> </a>";
+
+   			String file = ds.isEmpty("FILENAME")?"":"<a href='#'> <img src='"+imgUri+"/jsp/web/images/icon_file.gif' width='12' height='12' onClick=\"download('"+ds.getString("FILENAME")+"','"+ds.getString("FILEPATH")+"');\"> </a>";
     %>
-              <tr bgcolor="#FFFFFF"> 
+              <tr bgcolor="#FFFFFF">
                 <td width="150" align="center" bgcolor="#F0F0F0">
                   <%=sName%>
                 </td>
@@ -178,18 +178,18 @@
                 <td width="53" align="center" id="celle<%=ds.getInt("MCID")%>"><%=file%></td>
               </tr>
     <%
-    	}	
+    	}
     	j++;	} %>
 </table>
 <%}else{ %>
 	<table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7" id='tbl0'>
-	<tr align="center" bgcolor="#D4DCF4">
-		<td width="150"><strong><font color="#003399">관점</font></strong></td>
-		<td><strong><font color="#003399">성과지표 </font></strong></td>
-		<td width="50"><strong><font color="#003399">주기</font></strong></td>
-		<td width="70"><strong><font color="#003399">실적</font></strong></td>
-		<td width="70" bgcolor="#D4DCF4"><strong><font color="#003399">득점</font></strong></td>
-		<td width="70" bgcolor="#D4DCF4"><strong><font color="#003399">첨부</font></strong></td>
+	<tr align="center" bgcolor="#375f9c" style="height:32px;">
+		<td width="150"><strong><font color="#ffffff">관점</font></strong></td>
+		<td><strong><font color="#ffffff">성과지표 </font></strong></td>
+		<td width="50"><strong><font color="#ffffff">주기</font></strong></td>
+		<td width="70"><strong><font color="#ffffff">실적</font></strong></td>
+		<td width="70"><strong><font color="#ffffff">득점</font></strong></td>
+		<td width="70"><strong><font color="#ffffff">첨부</font></strong></td>
 	</tr>
 	</table>
 	<table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7">
@@ -202,22 +202,24 @@
 
 <form name="downForm" method="post" action="<%=imgUri%>/jsp/web/actual/download.jsp">
 	<input type="hidden" name="fileName">
+	<input type="hidden" name="filePath">
 </form>
 
 <!---------//좌측  KPI 선택 전청 리스트 끝//-------->
 <SCRIPT>
-<!--
 
-	function download(filename){
+	function download(filename, filepath){
 		downForm.fileName.value=filename;
+		downForm.filePath.value=filepath;
 		downForm.submit();
 	}
-	
-	
+
+
 	mergeCell(document.getElementById('tbl0'), '0', '2', '1','1');
 	mergeCell(document.getElementById('tbl0'), '0', '1', '1','0');
 	mergeCell(document.getElementById('tbl0'), '0', '0', '1','');
-//-->
+
+
 </SCRIPT>
 </body>
 </html>

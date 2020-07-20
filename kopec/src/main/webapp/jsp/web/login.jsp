@@ -57,15 +57,7 @@
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
   <tr>
     <td height="35" background="images/login_top_line_bg.jpg">
-	<script type="text/javascript" src="./FlashactiveX.js"></script>
-	<script type="text/javascript">
-	<!--
-		swf('images/login_top_text.swf',300,35);
-	//-->
-	</script>
-<!--  예전 이미지
-<img src="images/login_top_text.gif" width="220" height="35">
--->
+		<!-- <img src="images/login_top_text.gif" width="220" height="35"> -->
     </td>
   </tr>
 
@@ -94,11 +86,11 @@
                       </tr>
 					  <tr>
                         <td height="24">&nbsp;</td>
-                        <td><input name="userId" type="text"  size="20" value="38937" >
+                        <td><input name="userId" type="text"  size="20" value="38937" style="width:180px;">
                       </tr>
                       <tr>
                         <td height="24">&nbsp;</td>
-                        <td><input name="passwd" type="password"  size="20"></td>
+                        <td><input name="passwd" type="password"  size="20" style="width:180px;"></td>
                       </tr>
                       <tr>
                         <td height="34"><br>&nbsp;</td>

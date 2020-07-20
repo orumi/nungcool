@@ -127,11 +127,11 @@
 %>
 <!---------//좌측  KPI 선택 전청 리스트//-------->
 <table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7">
-	<tr align="center" bgcolor="#D4DCF4">
-		<td width="80"><strong><font color="#003399">관점</font></strong></td>
-		<td><strong><font color="#003399">성과지표</font></strong></td>
-		<td width="50"><strong><font color="#003399">주기</font></strong></td>
-		<td width="60"><strong><font color="#003399">단위</font></strong></td>
+	<tr align="center" bgcolor="#375f9c" style="height:32px;">
+		<td width="80"><strong><font color="#ffffff">관점</font></strong></td>
+		<td><strong><font color="#ffffff">성과지표</font></strong></td>
+		<td width="50"><strong><font color="#ffffff">주기</font></strong></td>
+		<td width="60"><strong><font color="#ffffff">단위</font></strong></td>
 	</tr>
 </table>
 <div style="overflow-y:scroll;width:100%;height:420px;">
@@ -160,13 +160,13 @@
     	j++;	} %>
 </table>
 <%}else{ %>
-	<table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7" id='tbl0'>
-	<tr align="center" bgcolor="#D4DCF4">
-		<td width="60"><strong><font color="#003399">관점</font></strong></td>
-		<td><strong><font color="#003399">성과지표</font></strong></td>
-		<td width="40"><strong><font color="#003399">주기</font></strong></td>
-		<td width="50"><strong><font color="#003399">단위</font></strong></td>
-	</tr>
+	<table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7">
+		<tr align="center" bgcolor="#375f9c" style="height:32px;">
+			<td width="80"><strong><font color="#ffffff">관점</font></strong></td>
+			<td><strong><font color="#ffffff">성과지표</font></strong></td>
+			<td width="50"><strong><font color="#ffffff">주기</font></strong></td>
+			<td width="60"><strong><font color="#ffffff">단위</font></strong></td>
+		</tr>
 	</table>
 	<table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7">
 	<tr>

@@ -4,12 +4,12 @@
 				 com.nc.util.*"%>
 <%
 	String schDate = (String) request.getAttribute("schDate");
-	
+
 	AdjustValuateUtil util = new AdjustValuateUtil();
 	util.setEvalMeasure(request, response);
 
 	EvalMeasureUtil meautil = (EvalMeasureUtil)request.getAttribute("meautil");
-	
+
 	String year = request.getParameter("year");
 	String month = request.getParameter("month");
 	String grpId = request.getParameter("grpId");
@@ -20,7 +20,7 @@
 			alert("정상처리 되었습니다.");
 		</script>
 	<%
-		
+
 	}
 %>
 <%
@@ -28,7 +28,7 @@
 	imgUri = imgUri.substring(1);
 	imgUri = "../../../../" + imgUri.substring(0, imgUri.indexOf("/"));
 %>
-<SCRIPT>                                  
+<SCRIPT>
     function funcSelectActual(id){
      // parent.openDetail(id);
     }
@@ -47,15 +47,15 @@
 		}
 		cNum   = parseInt(cNum);
 		length = parseInt(length);
-	
+
 		rows   = tbl.rows;
 		rowNum = rows.length;
-	
+
 		tempVal  = '';
 		cnt      = 0;
 		startRow = parseInt(startRow);
-	
-		for( i = startRow; i < rowNum; i++ ) { 
+
+		for( i = startRow; i < rowNum; i++ ) {
 			curVal = rows[i].cells[cNum].innerHTML;
 			if(isAdd) curVal += rows[i].cells[add].innerHTML;
 			if( curVal == tempVal ) {
@@ -72,17 +72,17 @@
 			}
 			tempVal = curVal;
 		}
-	
+
 		if(cnt > 0) {
 			merge(tbl, startRow, cnt, cNum, length);
 		}
 	}
-	
+
 	function merge(tbl, startRow, cnt, cellNum, length)
 	{
 		rows = tbl.rows;
 		row  = rows[startRow];
-	
+
 		for( i = startRow + 1; i < startRow + cnt; i++ ) {
 			for( j = 0; j < length; j++) {
 				rows[i].deleteCell(cellNum);
@@ -92,8 +92,8 @@
 			row.cells[cellNum + j].rowSpan = cnt;
 		}
 	}
-	
-	
+
+
 	function actionPerformed(){
 		if (confirm("비계량 평가결과를 지표실적에 적용 하시겠습니까?") == true) {
 			var frm = this.listForm;
@@ -101,24 +101,24 @@
 			frm.submit();
 		}
 	}
-	
+
 	// 실적 초기화
 	function actualReset() {
 		if (confirm("평가단 입력실적을 초기화 하시겠습니까?") == true) {
 			var frm = this.listForm;
 			frm.tag.value="R";
 			frm.submit();
-		}	
+		}
 	}
-	
+
 	// 실적 초기화
 	function evalReset() {
 		if (confirm("평가반영 실적을 초기화 하시겠습니까?") == true) {
 			var frm = this.listForm;
 			frm.tag.value="E";
 			frm.submit();
-		}	
-	}	
+		}
+	}
 </SCRIPT>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
@@ -149,23 +149,23 @@
 	%>
 
 	<table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7" id='tbl0'>
-		<tr align="center" bgcolor="#D4DCF4">
+		<tr align="center" bgcolor="#375f9c" style="height:32px;">
 			<%-- <td align=center width="80" rowspan=1><strong><font color="#003399">지표구분</font></strong></td> --%>
-			<td align=center  rowspan=1><strong><font color="#003399">지표</font></strong></td>
-			<td align=center width="150" rowspan=1><strong><font color="#003399">구분</font></strong></td>
-			<td align=center width="180" rowspan=1><strong><font color="#003399">조직명</font></strong></td>
-			<td align=center width="90" rowspan=1><strong><font color="#003399">평균점수</font></strong></td>
-			<td align=center width="80" rowspan=1><strong><font color="#003399">평균등급</font></strong></td>
-			<td align=center width="80" rowspan=1><strong><font color="#003399">가중치</font></strong></td>
-			<td align=center width="90" rowspan=1><strong><font color="#003399">득점 </font></strong></td>				
+			<td align=center  rowspan=1><strong><font color="#ffffff">지표</font></strong></td>
+			<td align=center width="150" rowspan=1><strong><font color="#ffffff">구분</font></strong></td>
+			<td align=center width="180" rowspan=1><strong><font color="#ffffff">조직명</font></strong></td>
+			<td align=center width="90" rowspan=1><strong><font color="#ffffff">평균점수</font></strong></td>
+			<td align=center width="80" rowspan=1><strong><font color="#ffffff">평균등급</font></strong></td>
+			<td align=center width="80" rowspan=1><strong><font color="#ffffff">가중치</font></strong></td>
+			<td align=center width="90" rowspan=1><strong><font color="#ffffff">득점 </font></strong></td>
 		</tr>
 
-		<% 
+		<%
 	    ArrayList meaList = meautil.meaList;
 	   		for (int i=0;i<meaList.size();i++) {
 	   			EvalMeasure mea = (EvalMeasure)meaList.get(i);
 	   			amId += "|"+mea.mId;
-	   			
+
 	   			int score = 0;
 	   			String grade = "";
 	   			if(100 <= mea.getAvg()){
@@ -173,7 +173,7 @@
 	   				grade = "S";
 	   			}else if(95 <= mea.getAvg()){
 	   				score = 95;
-	   				grade = "A"; 
+	   				grade = "A";
 	   			}else if(90 <= mea.getAvg()){
 	   				score = 90;
 	   				grade = "B";
@@ -189,7 +189,7 @@
 	   			}
 	    %>
 	              <tr bgcolor="#FFFFFF">
-	               <%--  <td><font color="#333333"><%=mea.belong%></font></td> 
+	               <%--  <td><font color="#333333"><%=mea.belong%></font></td>
 	                <td bgcolor="#F0F0F0"><font color="#333333"><%=mea.name%></font></td>
 	                <td ><%=mea.sname%></td>
 	                <td ><%=mea.bname%></td>
@@ -205,12 +205,12 @@
 	                <td align="center" ><font color="#333333"><%=mea.belong!=null?mea.belong:""%></font></td>
 	                <td align="right" ><font color="#333333"><%=mea.weight%></font></td>
 	                <td align="right" ><font color="#333333"><%=mea.frequency!=null?mea.frequency:""%> </font></td>
-	                
+
 	              </tr>
-	              <input type=hidden name="avgact<%=mea.mId %>" value="<%=mea.bname!=null?mea.bname:""%>"> 
+	              <input type=hidden name="avgact<%=mea.mId %>" value="<%=mea.bname!=null?mea.bname:""%>">
 	              <input type=hidden name="avgscr<%=mea.mId %>" value="<%=mea.score%>">
 	              <input type=hidden name="avggrd<%=mea.mId %>" value="<%=mea.belong!=null?mea.belong:""%>">
-	              
+
 	             <%--  <input type=hidden name="avgact<%=mea.mId %>" value="<%=mea.getAvg()%>">
 	              <input type=hidden name="avgscr<%=mea.mId %>" value="<%=score%>">
 	              <input type=hidden name="avggrd<%=mea.mId %>" value="<%=grade%>"> --%>
@@ -218,28 +218,30 @@
 	    <input type=hidden name="amId" value="<%=amId %>">
 	</table>
 	<table width="98%" border="0" align="center" cellpadding="5" cellspacing="0" bgcolor="#9DB5D7">
-        <tr bgcolor="#FFFFFF"> 
-            <td colspan="9" align="right"> 
-              <a href="javascript:evalReset();"><img src="<%=imgUri %>/jsp/web/images/btn_reset_eval.gif" alt="평가초기화" height="20" border="0" align="absmiddle"></a>               
-              <a href="javascript:actualReset();"><img src="<%=imgUri %>/jsp/web/images/btn_reset_actual.gif" alt="실적초기화" height="20" border="0" align="absmiddle"></a> 
-              <a href="javascript:actionPerformed();"><img src="<%=imgUri %>/jsp/web/images/btn_save.gif" alt="저장" width="50" height="20" border="0" align="absmiddle"></a> 
+        <tr bgcolor="#FFFFFF">
+            <td colspan="9" align="right">
+              <a href="javascript:evalReset();"><img src="<%=imgUri %>/jsp/web/images/btn_reset_eval.gif" alt="평가초기화" height="20" border="0" align="absmiddle"></a>
+              <a href="javascript:actualReset();"><img src="<%=imgUri %>/jsp/web/images/btn_reset_actual.gif" alt="실적초기화" height="20" border="0" align="absmiddle"></a>
+              <a href="javascript:actionPerformed();"><img src="<%=imgUri %>/jsp/web/images/btn_save.gif" alt="저장" width="50" height="20" border="0" align="absmiddle"></a>
             </td>
         </tr>
-    </table>  
+    </table>
 <%
-	} else { // 선택한 목록이 없을 경우   
-	
+	} else { // 선택한 목록이 없을 경우
+
 %>
 	<table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7" id='tbl0'>
 	<tr align="center" bgcolor="#D4DCF4">
-		<%--  <td align=center width="80" rowspan=1><strong><font color="#003399">지표구분</font></strong></td> --%>
-		<td align=center  rowspan=1><strong><font color="#003399">지표</font></strong></td>
-		<td align=center width="150" rowspan=1><strong><font color="#003399">구분</font></strong></td>
-		<td align=center width="180" rowspan=1><strong><font color="#003399">조직명</font></strong></td>
-		<td align=center width="90" rowspan=1><strong><font color="#003399">평균점수</font></strong></td>
-		<td align=center width="80" rowspan=1><strong><font color="#003399">평균등급</font></strong></td>
-		<td align=center width="80" rowspan=1><strong><font color="#003399">가중치</font></strong></td>
-		<td align=center width="90" rowspan=1><strong><font color="#003399">득점 </font></strong></td>				
+		<tr align="center" bgcolor="#375f9c" style="height:32px;">
+			<%-- <td align=center width="80" rowspan=1><strong><font color="#003399">지표구분</font></strong></td> --%>
+			<td align=center  rowspan=1><strong><font color="#ffffff">지표</font></strong></td>
+			<td align=center width="150" rowspan=1><strong><font color="#ffffff">구분</font></strong></td>
+			<td align=center width="180" rowspan=1><strong><font color="#ffffff">조직명</font></strong></td>
+			<td align=center width="90" rowspan=1><strong><font color="#ffffff">평균점수</font></strong></td>
+			<td align=center width="80" rowspan=1><strong><font color="#ffffff">평균등급</font></strong></td>
+			<td align=center width="80" rowspan=1><strong><font color="#ffffff">가중치</font></strong></td>
+			<td align=center width="90" rowspan=1><strong><font color="#ffffff">득점 </font></strong></td>
+		</tr>
 	</tr>
 	</table>
 	<table width="100%" border="0" cellpadding="5" cellspacing="1" bgcolor="#9DB5D7">
@@ -256,7 +258,6 @@
 
 <!---------//좌측  KPI 선택 전청 리스트 끝//-------->
 <SCRIPT>
-<!--
 
 	var WinDetail;
  	function openDetail(evalrId){
@@ -264,18 +265,17 @@
 		var year = parent.form1.year.options[parent.form1.year.selectedIndex].value;
 		var grpId = parent.form1.firstPart.options[parent.form1.firstPart.selectedIndex].value;
 		var url = "popDetail.jsp?year="+year+"&evalrId="+evalrId+"&grpId="+grpId;
-		WinApp = window.open(url,"","toolbar=no,width=700,height=500,scrollbars=yes,resizable=yes,menubar=no,status=no" ); 	
+		WinApp = window.open(url,"","toolbar=no,width=700,height=500,scrollbars=yes,resizable=yes,menubar=no,status=no" );
  	}
-	
+
 	function download(filename){
 		downForm.fileName.value=filename;
 		downForm.submit();
 	}
-	
-	mergeCell(document.getElementById('tbl0'), '0', '2', '1','1');
+
+	/* mergeCell(document.getElementById('tbl0'), '0', '2', '1','1'); */
 	mergeCell(document.getElementById('tbl0'), '0', '1', '1','0');
 	mergeCell(document.getElementById('tbl0'), '0', '0', '1','');
-//-->
 </SCRIPT>
 </body>
 </html>

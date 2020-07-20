@@ -226,25 +226,24 @@
 	</tr>
 </table>
 <!------//상단 검색//----->
-<table width="98%" border="0" align="center" cellpadding="5"
-	cellspacing="1" bgcolor="#A4CBE3">
+<table width="98%" border="0" align="center" cellpadding="5" cellspacing="1" bgcolor="#c1c1c1">
 	<form name="form1" method="post" action="">
 	<input type='hidden' name='yyyy'>
 	<tr bgcolor="#DCEDF6">
-		<td width="14%" align="center"><strong><font color="#006699">평가년도</font></strong></td>
+		<td width="14%" align="center" style="height:36px;font-size:13px;background-color:#f6f6f6;"><strong><font color="#333333">평가년도</font></strong></td>
 		<td width="86%" bgcolor="#FFFFFF">
-			<select name="year" onChange="javascript:changeYear();">
+			<select name="year" onChange="javascript:changeYear();" style="height: 24px;">
                     <script> funcSetDate(<%=curDate.substring(0,4)%>); </script>
             </select>
                     년
              </td>
 	</tr>
 	<tr bgcolor="#DCEDF6">
-		<td align="center" bgcolor="#DCEDF6"><strong><font color="#006699">조직선택</font></strong></td>
-		<td bgcolor="#FFFFFF"><select name="firstPart"  style="width:170;x;" onChange="javascript:chgOrg(1);closeList()">
+		<td align="center" style="height:36px;font-size:13px;background-color:#f6f6f6;"><strong><font color="#333333">조직선택</font></strong></td>
+		<td bgcolor="#FFFFFF"><select name="firstPart"  style="width:170;height: 24px;" onChange="javascript:chgOrg(1);closeList()">
         	<%=sbuBuf.toString()%>
         </select>
-        <select name="secondPart" style="width:170;x;" onChange="javascript:closeList()">
+        <select name="secondPart" style="width:170;height: 24px;" onChange="javascript:closeList()">
         	<%=bscBuf.toString()%>
         </select> <img src="<%=imgUri%>/jsp/web/images/btn_ok.gif"
 			alt="확인" onClick="javascript:actionPerformed();funcDivVisible();" style="cursor:hand" width="50" height="20" border="0" align="absmiddle"></td>

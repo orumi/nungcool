@@ -191,7 +191,7 @@
 
 <!---------//우측  변수(항목)실적입력 //-------->
 <table width="98%" border="0" cellpadding="5" cellspacing="1"
-	bgcolor="#9DB5D7">
+	bgcolor="#c1c1c1">
 	<tr bgcolor="#FFFFFF">
 		<td width="20%" align="center" bgcolor="#f6f6f6"><font color="#333333"><strong>지표</strong></font></td>
 		<td width="50%"><strong><font color="#3366CC"><%= mname %></font></strong></td>
@@ -305,19 +305,10 @@
 
 <table width="98%" border="0" cellpadding="1" cellspacing="1" bgcolor="#CCCCCC">
 	<tr align="center" bgcolor="#EEEEEE" height="32">
-<!--		<td width="08%" rowspan="2"><font color="#333333"><strong>코드</strong></font></td>-->
 		<td width="08%" ><font color="#333333"><strong>코드</strong></font></td>
-<!--		<td width="55%" colspan="2"><font color="#333333"><strong>항목</strong></font></td>-->
 		<td width="55%" ><font color="#333333"><strong>항목</strong></font></td>
-<!--		<td width="12%" rowspan="2"><font color="#333333"><strong>산식적용</strong></font></td>-->
-<!--		<td width="12%" ><font color="#333333"><strong>산식적용</strong></font></td>-->
-<!--		<td width="25%" rowspan="2"><font color="#333333"><strong>주기별<br>항목실적(누적)</strong></font></td>-->
 		<td width="25%"><font color="#333333"><strong>주기별<br>항목실적(누적)</strong></font></td>
 	</tr>
-<!--	<tr align="center" bgcolor="#EEEEEE" height="23">-->
-<!--		<td width="15%"><font color="#333333"><strong>누적값</strong></font></td>-->
-<!--		<td width="15%"><font color="#333333"><strong>평균값</strong></font></td>	-->
-<!--	</tr>-->
 	<input type=hidden name=itemCode value="<%=contentId%>">
 	<%
 		if(dsItem!=null){
@@ -326,20 +317,10 @@
 				itemCD += dsItem.getString("CODE")+"|";
 		%>
 			<tr align="center" bgcolor="#FFFFFF" height="32">
-<!--				<td rowspan="2"><%=dsItem.getString("CODE") %></td>-->
 				<td ><%=dsItem.getString("CODE") %></td>
-<!--				<td align="left" colspan="2"><%=dsItem.getString("ITEMNAME") %></td>-->
 				<td align="left" ><%=dsItem.getString("ITEMNAME") %></td>
-<!--				<td rowspan="2"><%=dsItem.getString("ITEMTYPE") %></td>-->
-<!--				<td><%=dsItem.getString("ITEMTYPE") %></td>-->
-
-<!--				<td rowspan="2"><input type=text name="itemAcutal<%=dsItem.getString("CODE")%>"  style="text-align:right" value=<%=dsItem.isEmpty("ACTUAL")?"":dsItem.getString("ACTUAL") %>></td>-->
 				<td><input type=text name="itemAcutal<%=dsItem.getString("CODE")%>"  style="text-align:right" value=<%=dsItem.isEmpty("ACTUAL")?"":dsItem.getString("ACTUAL") %>></td>
 			</tr>
-<!--			<tr align="center" bgcolor="#FFFFFF" height="23">-->
-<!--				<td ><%=dsItem.isEmpty("ACCUM")?"":dsItem.getString("ACCUM") %></td>-->
-<!--				<td ><%=dsItem.isEmpty("AVERAGE")?"":dsItem.getString("AVERAGE") %></td>			-->
-<!--			</tr>-->
 			<input type="hidden" name="itemType<%=dsItem.getString("CODE")%>" value="<%=dsItem.getString("ITEMTYPE") %>" >
 		<%
 			}  %>

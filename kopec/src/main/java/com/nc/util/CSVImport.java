@@ -41,7 +41,10 @@ public class CSVImport implements Importer{
 		rows =0;
 		String s = null;
 		try {
-			bufferedreader = new BufferedReader(new FileReader(filename));
+
+			FileInputStream input = new FileInputStream(filename);
+			InputStreamReader reader = new InputStreamReader(input, "EUC-KR");
+			bufferedreader = new BufferedReader(reader);
 			rowData = new ArrayList();
 			map = new HashMap<String, Integer>();
 			while(addRowData(bufferedreader));
