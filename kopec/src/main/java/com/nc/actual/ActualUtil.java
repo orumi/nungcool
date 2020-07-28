@@ -1256,11 +1256,11 @@ public class ActualUtil {
 							pmI[5]=pmU[1];
 							pmI[6]=pmU[2];
 							pmI[7]=pmU[3];
-							pmI[9]=pmU[4];
-							pmI[10]=pmU[5];
-							pmI[11]=pmU[6];
-							pmI[12]=pmU[7];
-							pmI[13]=pmU[8];
+							pmI[8]=pmU[4];
+							pmI[9]=pmU[5];
+							pmI[10]=pmU[6];
+							pmI[11]=pmU[7];
+							pmI[12]=pmU[8];
 
 							dbobject.executePreparedUpdate(strI,pmI);
 						}

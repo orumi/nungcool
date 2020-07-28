@@ -279,6 +279,7 @@
 	 	INSERT INTO TBLMEASUREDEFINE
 		(
 		     ID
+		    ,YEAR
 		    ,MEASUREID
 		    ,MEAN
 		    ,DETAILDEFINE
@@ -305,6 +306,7 @@
 		VALUES
 		(
 			 #{id}
+			,#{year, jdbcType=VARCHAR }
 			,#{measureid, jdbcType=VARCHAR }
 			,#{mean, jdbcType=VARCHAR }
 			,#{detaildefine, jdbcType=VARCHAR }
