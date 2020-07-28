@@ -266,40 +266,41 @@ var selectMeasureActualUrl = "<c:url value='/scorecard/score/selectMeasureActual
     }
 
     function actionDownloadCSV(tblNm){
+    	if(confirm("본 문서는 한국전력기술㈜의 비밀, 재산적 정보를 포함하며 한국전력기술㈜의 사전 서면 승인된 경우를 제외하고는 일체의 복사, 복제, 공개, 제공 및/또는 사을 금합니다.\n\nTHIS DOCUMENT CONTAINS CONFIDENTIAL AND PROPRIETARY INFORMATION OF KEPCO ENGINEERING & CONSTRUCTION CO.,INC. (“KEPCO E&C”) AND MAY NOT BE COPIED, REPRODUCED, DISCLOSED, TRANSFERRED AND/OR USED IN THE WHOLE OR IN PART EXCEPT IN ACCORDANCE WITH PRIOR WRITTEN APPROVAL OF KEPCO E&C.")){
+	    	var tblObj = $("#"+tblNm);
+	    	var csvCntnt = "";
+	    	$("#"+tblNm+" thead tr th").each(function(i){
+	    		csvCntnt += $(this).text().replace(/"/g, '""').replace(/,/g , '\\,')+",";
+	    	});
+	    	csvCntnt += "\r\n";
 
-    	var tblObj = $("#"+tblNm);
-    	var csvCntnt = "";
-    	$("#"+tblNm+" thead tr th").each(function(i){
-    		csvCntnt += $(this).text().replace(/"/g, '""').replace(/,/g , '\\,')+",";
-    	});
-    	csvCntnt += "\r\n";
-
-    	$("#"+tblNm+" tbody tr").each(function(i){
-    		$(this).find("td").each(function(j){
-    			/*console.log(","+$(this).text());*/
-    			csvCntnt += $(this).text()
-    			.replace(/(\r\n|\n|\r|\s+|\t|&nbsp;)/gm,' ')
-    			.replace(/"/g, '""')
-    			.replace(/,/g, ' ') +",";
-    		});
-    		csvCntnt += "\r\n";
-    	});
+	    	$("#"+tblNm+" tbody tr").each(function(i){
+	    		$(this).find("td").each(function(j){
+	    			/*console.log(","+$(this).text());*/
+	    			csvCntnt += $(this).text()
+	    			.replace(/(\r\n|\n|\r|\s+|\t|&nbsp;)/gm,' ')
+	    			.replace(/"/g, '""')
+	    			.replace(/,/g, ' ') +",";
+	    		});
+	    		csvCntnt += "\r\n";
+	    	});
 
 
-    	if ( window.navigator.msSaveOrOpenBlob && window.Blob ) {
-    	    var blob = new Blob( [ "\ufeff"+csvCntnt ], { type: "text/csv" } );
-    	    navigator.msSaveOrOpenBlob( blob, tblNm+".csv" );
-    	} else {
-    		var downloadLink = document.createElement("a");
-    		var csvFile = new Blob(["\ufeff"+csvCntnt], {type: 'text/csv;charset=utf-8;'});
+	    	if ( window.navigator.msSaveOrOpenBlob && window.Blob ) {
+	    	    var blob = new Blob( [ "\ufeff"+csvCntnt ], { type: "text/csv" } );
+	    	    navigator.msSaveOrOpenBlob( blob, tblNm+".csv" );
+	    	} else {
+	    		var downloadLink = document.createElement("a");
+	    		var csvFile = new Blob(["\ufeff"+csvCntnt], {type: 'text/csv;charset=utf-8;'});
 
-    		downloadLink.download = tblNm+".csv";
-    		downloadLink.href = window.URL.createObjectURL(csvFile);
-    		downloadLink.style.display = "none";
+	    		downloadLink.download = tblNm+".csv";
+	    		downloadLink.href = window.URL.createObjectURL(csvFile);
+	    		downloadLink.style.display = "none";
 
-    		document.body.appendChild(downloadLink);
-    		downloadLink.click();
+	    		document.body.appendChild(downloadLink);
+	    		downloadLink.click();
 
+	    	}
     	}
 
 
@@ -940,6 +941,7 @@ var gaugeOptions = {
                 height: '100%',
                 caption : "조직 성과",
                 rowNum: 10000,
+                footerrow:true,
                 beforeSelectRow: function () {
                     return false;
                 },
@@ -950,6 +952,12 @@ var gaugeOptions = {
 	                total: 'pageMaker.endPage',
 	                records: 'pageMaker.totCnt', */
 	                repeatitems: true
+	            },
+	            loadComplete : function() {
+	            	var $grid = $("#jqgrid");
+	            	var colSum = $grid.jqGrid('getCol','gradeScore',false,'sum');
+	            	$grid.jqGrid('footerData','set',{pname : '합계', gradeScore : colSum});
+
 	            },
 	            gridComplete : function() {
 	            	resizeGrid();
@@ -1009,6 +1017,8 @@ var gaugeOptions = {
 
 			$("#selVersion").change(function(){ reloadGrid(); });
 			$("#selField").change(function(){ reloadGrid(); });
+
+
 
         });
 

@@ -247,7 +247,7 @@
                  </tr><tr>
                   <td height="20">&nbsp;</td>
                   <td class="fc_b3" valign="top">
-                  	<strong>담당자 김지우</strong><br>&nbsp;054)421-8291
+                  	<strong>담당자 김새롬</strong><br>&nbsp;054)421-4268
                   </td>
                 </tr>
               </table>
