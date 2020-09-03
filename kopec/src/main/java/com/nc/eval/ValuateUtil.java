@@ -131,9 +131,9 @@ public class ValuateUtil {
 
 			if ("multipart/form-data".equals(type)) {
 			    int sizeLimit = 10 * 1024 * 1024; // 10M, 파일 사이즈 제한, 제한 사이즈 초과시 exception발생.
-			    String UPLOADROOT = ServerStatic.REAL_CONTEXT_ROOT+File.separator+"actual"+File.separator+"measurementplan"; // 경로 지정(절대 경로 | ROOT를 기준으로 한 상대경로)
+			    String UPLOADROOT = ServerStatic.REAL_CONTEXT_ROOT+File.separator+"actual"+File.separator+"measurement"; // 경로 지정(절대 경로 | ROOT를 기준으로 한 상대경로)
 			    String UPLOADPATH = UPLOADROOT + File.separator;
-			    String PYSICALPATH = File.separator+"actual"+File.separator+"measurementplan"+File.separator;
+			    String PYSICALPATH = File.separator+"actual"+File.separator+"measurement"+File.separator;
 
 				File upfolder = new File(UPLOADROOT);
 

@@ -314,7 +314,9 @@
         <select name="secondPart" style="width:170;height: 24px;" onChange="javascript:changeBSC()">
 			<option value="%">=== 전체 ===</option>
         	<%=bscBuf.toString()%>
-        </select> <img src="<%=imgUri%>/jsp/web/images/btn_ok.gif" alt="확인" onClick="javascript:actionPerformed();funcDivVisible();" style="cursor:hand" width="50" height="20" border="0" align="absmiddle"></td>
+        </select> <img src="<%=imgUri%>/jsp/web/images/btn_ok.gif" alt="확인" onClick="javascript:actionPerformed();funcDivVisible();" style="cursor:hand" width="50" height="20" border="0" align="absmiddle">
+        	&nbsp;&nbsp; ※ 부서담당자는 상위부서를 선택하여 조회바랍니다.
+        </td>
 	</tr>
 	</form>
 </table>

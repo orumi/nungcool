@@ -152,8 +152,97 @@ public class ConfigController {
 
 
 
+    @RequestMapping(value="/deptOwner.do")
+    public String deptOwner(Model model) throws Exception {
+
+    	return "ncsys/bsc/admin/config/deptOwner.tiles";
+    }
+
+    @RequestMapping(value = "/selectHierachySBU.json", method=RequestMethod.POST )
+	public ModelAndView selectHierachySBU(
+			@RequestParam HashMap<String, Object> param
+			,HttpServletRequest request, HttpServletResponse response
+			)  {
+    	ModelAndView mv = new ModelAndView("jsonView");
+    	try{
+    		List<Map<String, Object>> node = appConfigService.selectHierarchySBU(param);
+
+    		mv.addObject("node", node);
+
+    		mv.addObject("reCode", "SUCCESS");
+    	} catch (Exception e ){
+    		System.out.println(e);
+    		mv.addObject("reCode", "FAILURE");
+    	}
+    	return mv;
+	}
+
+    @RequestMapping(value = "/selectUserList.json", method=RequestMethod.POST )
+	public ModelAndView selectUserList(
+			@RequestParam HashMap<String, Object> param
+			,HttpServletRequest request, HttpServletResponse response)  {
+    	ModelAndView mv = new ModelAndView("jsonView");
+    	try{
+    		List<Map<String, Object>> userList = appConfigService.selectUserList();
+
+    		mv.addObject("userList", userList);
+
+    		mv.addObject("reCode", "SUCCESS");
+    	} catch (Exception e ){
+    		System.out.println(e);
+    		mv.addObject("reCode", "FAILURE");
+    	}
+    	return mv;
+	}
 
 
+    @RequestMapping(value = "/selectOwnerBySbuId.json", method=RequestMethod.POST )
+	public ModelAndView selectOwnerBySbuId(
+			@RequestParam HashMap<String, Object> param
+			,HttpServletRequest request, HttpServletResponse response)  {
+    	ModelAndView mv = new ModelAndView("jsonView");
+    	try{
+    		List<Map<String, Object>> ownerBySbuId = appConfigService.selectOwnerBySbuId(param);
+
+    		mv.addObject("ownerBySbuId", ownerBySbuId);
+
+    		mv.addObject("reCode", "SUCCESS");
+    	} catch (Exception e ){
+    		System.out.println(e);
+    		mv.addObject("reCode", "FAILURE");
+    	}
+    	return mv;
+	}
 
 
+    @RequestMapping(value = "/adjustOwners.json", method=RequestMethod.POST, produces="application/json" )
+	public ModelAndView adjustOwners(
+			@RequestParam HashMap<String, Object> param
+			,HttpServletRequest request, HttpServletResponse response)  {
+    	ModelAndView mv = new ModelAndView("jsonView");
+    	try{
+    		String userId = (String)request.getSession().getAttribute("userId");
+
+    		JSONArray owners = JSONArray.fromObject(JSONSerializer.toJSON(param.get("owners")));
+    		List<Object> listOwners = Util.TOLIST(owners);
+
+    		appConfigService.deleteSbuOwner(param);
+    		for(Object owner:listOwners){
+    			Map<String, Object> map = (Map<String, Object>) owner;
+    			map.put("loginid", userId);
+    			map.put("year", param.get("year"));
+    			appConfigService.insertSbuOwner(map);
+    		}
+
+    		List<Map<String, Object>> userList = appConfigService.selectUserList();
+
+    		mv.addObject("userList", userList);
+
+    		mv.addObject("reCode", "SUCCESS");
+    	} catch (Exception e ){
+    		System.out.println(e);
+    		mv.addObject("reCode", "FAILURE");
+    	}
+    	return mv;
+	}
 }

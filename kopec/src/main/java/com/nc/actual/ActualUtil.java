@@ -54,54 +54,104 @@ public class ActualUtil {
 
 			if (groupId!=null) group = Integer.parseInt(groupId);
 
-			if (group>3) return;
-			if (group==1){
-				userId = "%";
-			}
+			if (group > 3) return;
 
-			String frq = getFrequecny(new Integer(month).intValue());
-
-			StringBuffer sb = new StringBuffer();
-			Object[] params = null;
-		   sb.append(" SELECT * FROM ")
-	         .append(" (SELECT A.YEAR AYEAR,A.MEASUREID AMID FROM TBLAUTHORITY A WHERE A.USERID like ? AND YEAR=? ")
-	         .append(" UNION ")
-	         .append(" SELECT D.YEAR AYEAR,D.ID AMID  FROM TBLMEASUREDEFINE D WHERE D.UPDATEID like ? AND YEAR=?) AUT ")
-	         .append(" LEFT JOIN ")
-	         .append(" (SELECT T.ID MID,T.PARENTID MPID,T.CONTENTID MCID,T.TREELEVEL MLEVEL,T.RANK MRANK,T.WEIGHT MWEIGHT,C.NAME MNAME,D.FREQUENCY,T.YEAR MTYEAR,D.MEASUREMENT  ")
-	         .append(" FROM TBLTREESCORE T,TBLMEASUREDEFINE D, TBLMEASURE C WHERE T.CONTENTID=D.ID AND D.MEASUREID=C.ID AND T.TREELEVEL=5 AND T.YEAR=? AND D.FREQUENCY IN ("+frq+") AND MEASUREMENT='계량' ) MEA ")
-	         .append(" ON AUT.AMID=MEA.MCID AND AUT.AYEAR=MTYEAR ")
-	         .append(" LEFT JOIN ")
-	         .append(" (SELECT T.ID OID,T.PARENTID OPID,T.CONTENTID OCID,T.TREELEVEL OLEVEL,T.RANK ORANK,T.WEIGHT OWEIGHT,C.NAME ONAME  ")
-	         .append(" FROM TBLTREESCORE T,TBLOBJECTIVE C WHERE T.CONTENTID=C.ID AND T.TREELEVEL=4 AND T.YEAR=? ) OBJ ")
-	         .append(" ON MEA.MPID=OBJ.OID ")
-	         .append(" LEFT JOIN ")
-	         .append(" (SELECT T.ID PID,T.PARENTID PPID,T.CONTENTID PCID,T.TREELEVEL PLEVEL,T.RANK PRANK,T.WEIGHT PWEIGHT,C.NAME PNAME  ")
-	         .append(" FROM TBLTREESCORE T,TBLPST C WHERE T.CONTENTID=C.ID AND T.TREELEVEL=3 AND T.YEAR=? ) PST ")
-	         .append(" ON OBJ.OPID=PST.PID ")
-	         .append(" LEFT JOIN ")
-	         .append(" (SELECT T.ID BID,T.PARENTID BPID,T.CONTENTID BCID,T.TREELEVEL BLEVEL,T.RANK BRANK,T.WEIGHT BWEIGHT,C.NAME BNAME  ")
-	         .append(" FROM TBLHIERARCHY T,TBLBSC C WHERE T.CONTENTID=C.ID AND T.TREELEVEL=2 AND T.YEAR=? AND T.ID LIKE ?) BSC ")
-	         .append(" ON PST.PPID=BSC.BID ")
-	         .append(" JOIN ")
-	         .append(" (SELECT T.ID SID,T.PARENTID SPID,T.CONTENTID SCID,T.TREELEVEL SLEVEL,T.RANK SRANK,T.WEIGHT SWEIGHT,C.NAME SNAME  ")
-	         .append(" FROM TBLHIERARCHY T,TBLBSC C WHERE T.CONTENTID=C.ID AND T.TREELEVEL=1 AND T.YEAR=? AND T.ID LIKE ?) SBU ")
-	         .append(" ON BSC.BPID=SBU.SID ")
-	         .append(" LEFT JOIN ")
-	         .append("(SELECT ROUND(D.ACTUAL,3) ACTUAL,D.PLANNED,D.PLANNEDBASE,D.BASE,D.BASELIMIT,D.LIMIT,FILEPATH,FILENAME,D.MEASUREID,ROUND(S.SCORE,3) SCORE,S.GRADE,S.GRADE_SCORE FROM TBLMEASUREDETAIL D, TBLMEASURESCORE S ")
-	         .append(" WHERE D.MEASUREID=S.MEASUREID AND substr(D.STRDATE,1,6)=substr(S.STRDATE,1,6) AND SUBSTR(D.STRDATE,0,6)=?) DET ")
-	         .append(" ON AUT.AMID=DET.MEASUREID ")
-	         .append(" WHERE MID IS NOT NULL ORDER BY OID,ORANK,PRANK,PID,MRANK");
-
-	         params = new Object[] {userId,year,userId,year, year,year,year,
-	        		                year,bscId, year,sbuId, year+month};
+			boolean allStep = false;
 
 			conn = CoolServer.getDBService().getConnectionManager().getCoolConnection();
 			conn.createStatement(false);
 
 			dbobject = new DBObject(conn.getConnection());
 
-			rs = dbobject.executePreparedQuery(sb.toString(),params);
+
+			if (group == 1){
+				allStep = true;
+			} else {
+				if(!"%".equals(sbuId)){
+					String strTemp = "SELECT * FROM TBLSBUOWNER WHERE YEAR=? AND USERID=? AND SBUID=(SELECT CONTENTID FROM TBLHIERARCHY WHERE YEAR=? AND TREELEVEL=1 AND ID=?)";
+					Object[] pmTemp = {year, userId, year, sbuId};
+					if(rs!=null) {rs.close(); rs=null;}
+
+					rs = dbobject.executePreparedQuery(strTemp, pmTemp);
+					if(rs.next()){
+						allStep = true;
+					}
+				}
+			}
+
+			String frq = getFrequecny(new Integer(month).intValue());
+
+			StringBuffer sb = new StringBuffer();
+			Object[] params = null;
+
+			if(allStep){
+				sb.append("SELECT * FROM  ")
+				.append(" (SELECT T.ID SID,T.PARENTID SPID,T.CONTENTID SCID,T.TREELEVEL SLEVEL,T.RANK SRANK,T.WEIGHT SWEIGHT,C.NAME SNAME   ")
+				.append("  FROM TBLHIERARCHY T,TBLBSC C WHERE T.CONTENTID=C.ID AND T.TREELEVEL=1 AND T.YEAR=? AND T.ID LIKE ? ) SBU  ")
+				.append(" LEFT JOIN  ")
+				.append(" (SELECT T.ID BID,T.PARENTID BPID,T.CONTENTID BCID,T.TREELEVEL BLEVEL,T.RANK BRANK,T.WEIGHT BWEIGHT,C.NAME BNAME   ")
+				.append("  FROM TBLHIERARCHY T,TBLBSC C WHERE T.CONTENTID=C.ID AND T.TREELEVEL=2 AND T.YEAR=? AND T.ID LIKE ? ) BSC  ")
+				.append(" ON BSC.BPID=SBU.SID  ")
+				.append(" LEFT JOIN  ")
+				.append(" (SELECT T.ID PID,T.PARENTID PPID,T.CONTENTID PCID,T.TREELEVEL PLEVEL,T.RANK PRANK,T.WEIGHT PWEIGHT,C.NAME PNAME   ")
+				.append("  FROM TBLTREESCORE T,TBLPST C WHERE T.CONTENTID=C.ID AND T.TREELEVEL=3 AND T.YEAR=? ) PST  ")
+				.append(" ON PST.PPID=BSC.BID ")
+				.append(" LEFT JOIN  ")
+				.append(" (SELECT T.ID OID,T.PARENTID OPID,T.CONTENTID OCID,T.TREELEVEL OLEVEL,T.RANK ORANK,T.WEIGHT OWEIGHT,C.NAME ONAME   ")
+				.append("  FROM TBLTREESCORE T,TBLOBJECTIVE C WHERE T.CONTENTID=C.ID AND T.TREELEVEL=4 AND T.YEAR=? ) OBJ  ")
+				.append(" ON OBJ.OPID=PST.PID ")
+				.append(" LEFT JOIN  ")
+				.append(" (SELECT T.ID MID,T.PARENTID MPID,T.CONTENTID MCID,T.TREELEVEL MLEVEL,T.RANK MRANK,T.WEIGHT MWEIGHT,C.NAME MNAME,D.FREQUENCY,T.YEAR MTYEAR,D.MEASUREMENT   ")
+				.append("  FROM TBLTREESCORE T,TBLMEASUREDEFINE D, TBLMEASURE C WHERE T.CONTENTID=D.ID AND D.MEASUREID=C.ID AND T.TREELEVEL=5 AND T.YEAR=? AND D.FREQUENCY IN ("+frq+") ")
+				.append("  AND MEASUREMENT='계량'  ")
+				.append(" ) MEA     ")
+				.append(" ON MEA.MPID=OBJ.OID  ")
+				.append(" LEFT JOIN  ")
+				.append("(SELECT ROUND(D.ACTUAL,3) ACTUAL,D.PLANNED,D.PLANNEDBASE,D.BASE,D.BASELIMIT,D.LIMIT,FILEPATH,FILENAME,D.MEASUREID,ROUND(S.SCORE,3) SCORE,S.GRADE,S.GRADE_SCORE FROM TBLMEASUREDETAIL D, TBLMEASURESCORE S  ")
+				.append(" WHERE D.MEASUREID=S.MEASUREID AND substr(D.STRDATE,1,6)=substr(S.STRDATE,1,6) AND SUBSTR(D.STRDATE,0,6)=?) DET  ")
+				.append(" ON MEA.MCID=DET.MEASUREID  ")
+				.append(" WHERE MID IS NOT NULL ORDER BY OID,ORANK,PRANK,PID,MRANK  ");
+
+				params = new Object[] {year, sbuId, year, bscId, year, year,    year, year+month};
+
+
+			} else {
+				sb.append("SELECT * FROM  ")
+				.append(" (SELECT T.ID SID,T.PARENTID SPID,T.CONTENTID SCID,T.TREELEVEL SLEVEL,T.RANK SRANK,T.WEIGHT SWEIGHT,C.NAME SNAME   ")
+				.append("  FROM TBLHIERARCHY T,TBLBSC C WHERE T.CONTENTID=C.ID AND T.TREELEVEL=1 AND T.YEAR=? AND T.ID LIKE ?) SBU  ")
+				.append(" LEFT JOIN  ")
+				.append(" (SELECT T.ID BID,T.PARENTID BPID,T.CONTENTID BCID,T.TREELEVEL BLEVEL,T.RANK BRANK,T.WEIGHT BWEIGHT,C.NAME BNAME   ")
+				.append("  FROM TBLHIERARCHY T,TBLBSC C WHERE T.CONTENTID=C.ID AND T.TREELEVEL=2 AND T.YEAR=? AND T.ID LIKE ?) BSC  ")
+				.append(" ON BSC.BPID=SBU.SID  ")
+				.append(" LEFT JOIN  ")
+				.append(" (SELECT T.ID PID,T.PARENTID PPID,T.CONTENTID PCID,T.TREELEVEL PLEVEL,T.RANK PRANK,T.WEIGHT PWEIGHT,C.NAME PNAME   ")
+				.append("  FROM TBLTREESCORE T,TBLPST C WHERE T.CONTENTID=C.ID AND T.TREELEVEL=3 AND T.YEAR=? ) PST  ")
+				.append(" ON PST.PPID=BSC.BID ")
+				.append(" LEFT JOIN  ")
+				.append(" (SELECT T.ID OID,T.PARENTID OPID,T.CONTENTID OCID,T.TREELEVEL OLEVEL,T.RANK ORANK,T.WEIGHT OWEIGHT,C.NAME ONAME   ")
+				.append("  FROM TBLTREESCORE T,TBLOBJECTIVE C WHERE T.CONTENTID=C.ID AND T.TREELEVEL=4 AND T.YEAR=? ) OBJ  ")
+				.append(" ON OBJ.OPID=PST.PID ")
+				.append(" LEFT JOIN  ")
+				.append(" (SELECT T.ID MID,T.PARENTID MPID,T.CONTENTID MCID,T.TREELEVEL MLEVEL,T.RANK MRANK,T.WEIGHT MWEIGHT,C.NAME MNAME,D.FREQUENCY,T.YEAR MTYEAR,D.MEASUREMENT   ")
+				.append("  FROM TBLTREESCORE T,TBLMEASUREDEFINE D, TBLMEASURE C WHERE T.CONTENTID=D.ID AND D.MEASUREID=C.ID AND T.TREELEVEL=5 AND T.YEAR=? AND D.FREQUENCY IN ("+frq+") ")
+				.append("  AND MEASUREMENT='계량'  ")
+				.append("  AND D.ID IN   ")
+				.append("    (SELECT A.MEASUREID FROM TBLAUTHORITY A WHERE A.USERID like ? AND YEAR=?  ")
+				.append("        UNION  ")
+				.append("     SELECT D.ID FROM TBLMEASUREDEFINE D WHERE D.UPDATEID like ? AND YEAR=?) ")
+				.append(" ) MEA     ")
+				.append(" ON MEA.MPID=OBJ.OID  ")
+				.append(" LEFT JOIN  ")
+				.append("(SELECT ROUND(D.ACTUAL,3) ACTUAL,D.PLANNED,D.PLANNEDBASE,D.BASE,D.BASELIMIT,D.LIMIT,FILEPATH,FILENAME,D.MEASUREID,ROUND(S.SCORE,3) SCORE,S.GRADE,S.GRADE_SCORE FROM TBLMEASUREDETAIL D, TBLMEASURESCORE S  ")
+				.append(" WHERE D.MEASUREID=S.MEASUREID AND substr(D.STRDATE,1,6)=substr(S.STRDATE,1,6) AND SUBSTR(D.STRDATE,0,6)=?) DET  ")
+				.append(" ON MEA.MCID=DET.MEASUREID  ")
+				.append(" WHERE MID IS NOT NULL ORDER BY OID,ORANK,PRANK,PID,MRANK  ");
+
+				params = new Object[] {year, sbuId, year, bscId, year, year,    year,  userId, year, userId, year,     year+month};
+			}
+
+			if(rs!=null){rs.close(); rs=null;}
+			rs = dbobject.executePreparedQuery(sb.toString(), params);
 
 			DataSet ds = new DataSet();
 			ds.load(rs);
@@ -157,8 +207,8 @@ public class ActualUtil {
 		         .append(" FROM TBLTREESCORE T,TBLMEASUREDEFINE D, TBLMEASURE C WHERE T.CONTENTID=D.ID AND D.MEASUREID=C.ID AND T.TREELEVEL=5 AND T.YEAR=? ) MEA ")
 		         .append(" ON OBJ.OID=MEA.MPID ")
 		         .append(" WHERE MID IS NOT NULL ")
-		         .append(" GROUP BY CID,CRANK,SID,SCID,SPID,SNAME,SRANK,BID,BCID,BPID,BNAME,BRANK ")
-		         .append(" ORDER BY CRANK,CID,SRANK,SID,BRANK,BID ");
+		         .append(" GROUP BY CID,CRANK,SID,SCID,SPID,SNAME,SRANK,BID,BCID,BPID,BNAME,BRANK \\")
+		         .append(" ORDER BY CRANK,CID,SRANK,SID,BRANK,BID \\");
 
 		         params = new Object[] {year,year,year,year,year,year};
 			} else {
@@ -190,10 +240,23 @@ public class ActualUtil {
 				 .append("                           SELECT A.MEASUREID AMID FROM TBLAUTHORITY A WHERE A.USERID like ? AND YEAR=? ) ) MEA ")
 		         .append(" ON OBJ.OID=MEA.MPID ")
 		         .append(" WHERE MID IS NOT NULL ")
-		         .append(" GROUP BY CID,CRANK,SID,SCID,SPID,SNAME,SRANK,BID,BCID,BPID,BNAME,BRANK ")
-		         .append(" ORDER BY CRANK,CID,SRANK,SID,BRANK,BID ");
+		         .append(" UNION ALL  ")
+        		 .append(" SELECT CID,CRANK,SID,SCID,SPID,SNAME,SRANK,BID,BCID,BPID,BNAME,BRANK FROM    ")
+        		 .append(" (SELECT T.ID CID,T.PARENTID CPID,T.CONTENTID CCID,T.TREELEVEL CLEVEL,T.RANK CRANK,T.WEIGHT CWEIGHT,C.NAME CNAME    ")
+        		 .append(" FROM TBLHIERARCHY T,TBLCOMPANY C WHERE T.CONTENTID=C.ID AND T.TREELEVEL=0 AND T.YEAR=? ) COM   ")
+        		 .append(" LEFT JOIN  ")
+        		 .append(" (SELECT T.ID SID,T.PARENTID SPID,T.CONTENTID SCID,T.TREELEVEL SLEVEL,T.RANK SRANK,T.WEIGHT SWEIGHT,C.NAME SNAME    ")
+        		 .append(" FROM TBLHIERARCHY T,TBLSBU C WHERE T.CONTENTID=C.ID AND T.TREELEVEL=1 AND T.YEAR=?   ")
+        		 .append(" AND C.ID IN (SELECT SBUID FROM TBLSBUOWNER WHERE YEAR=? AND USERID=?) ) SBU   ")
+        		 .append(" ON COM.CID=SBU.SPID  ")
+        		 .append(" LEFT JOIN  ")
+        		 .append(" (SELECT T.ID BID,T.PARENTID BPID,T.CONTENTID BCID,T.TREELEVEL BLEVEL,T.RANK BRANK,T.WEIGHT BWEIGHT,C.NAME BNAME    ")
+        		 .append(" FROM TBLHIERARCHY T,TBLBSC C WHERE T.CONTENTID=C.ID AND T.TREELEVEL=2 AND T.YEAR=? ) BSC   ")
+        		 .append(" ON SBU.SID=BSC.BPID   ")
+        		 .append(" GROUP BY CID,CRANK,SID,SCID,SPID,SNAME,SRANK,BID,BCID,BPID,BNAME,BRANK   ")
+        		 .append(" ORDER BY CRANK,CID,SRANK,SID,BRANK,BID    ");
 
-		         params = new Object[] {year,year,year,year,year,year,userId, year, userId, year};
+		         params = new Object[] {year,year,year,year,year,year,userId, year, userId, year,   year, year, year, userId, year};
 			}
 
 
@@ -470,23 +533,6 @@ public class ActualUtil {
 
 
 
-					/* 2014 11 20 구간 9등급으로 변경
-					int upper = ServerStatic.UPPER;
-					int high  = ServerStatic.HIGH;
-					int low   = ServerStatic.LOW;
-					int lower = ServerStatic.LOWER;
-					int lowst = ServerStatic.LOWST;
-					*/
-					/*int upper     = 100;
-					int highplus  = 95;
-					int high      = 90;
-					int lowplus   = 85;
-					int low       = 80;
-					int lowerplus = 75;
-					int lower     = 70;
-					int lowstplus = 65;
-					int lowst     = 60;*/
-
 					double upper     = 100;
 					double highplus  = 87.5;
 					double high      = 75;
@@ -754,9 +800,10 @@ public class ActualUtil {
 				boolean aut = false;
 				if (group==1) {
 					aut = true;
-				} else if (group==3) {
+				} else if (group == 3) {
 					if (dsMea!=null) dsMea.next();
 					String updater = dsMea.getString("UPDATEID");
+					String scid = dsMea.getString("SCID");
 					if (updater!=null){
 						if (updater.equals(userId)){
 							aut=true;
@@ -772,7 +819,20 @@ public class ActualUtil {
 						}
 					}
 					dsMea.resetCursor();
+
+					// sbu owner is ?
+					if(!aut){
+						String strTemp = "SELECT * FROM TBLSBUOWNER WHERE YEAR=? AND USERID=? AND SBUID=?";
+						Object[] pmTemp = {year, userId, scid};
+						if(rs!=null) {rs.close(); rs=null;}
+
+						rs = dbobject.executePreparedQuery(strTemp, pmTemp);
+						if(rs.next()){
+							aut = true;
+						}
+					}
 				}
+
 				request.setAttribute("dsMea", dsMea);
 
 				request.setAttribute("aut",new Boolean(aut));

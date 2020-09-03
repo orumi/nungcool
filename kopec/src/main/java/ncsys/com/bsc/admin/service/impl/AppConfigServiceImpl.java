@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import ncsys.com.bsc.admin.service.AppConfigService;
 import ncsys.com.bsc.admin.service.mapper.AppConfigMapper;
+import ncsys.com.bsc.admin.service.model.HierarchyNode;
 
 
 @Service("appConfigService")
@@ -52,5 +53,32 @@ public class AppConfigServiceImpl implements AppConfigService{
 		appConfigMapper.clearScheduleByYear(map);
 		appConfigMapper.insertScheduleByYear(map);
 	}
+
+	@Override
+	public List<Map<String, Object>> selectHierarchySBU(Map<String, Object> map) throws Exception{
+		return appConfigMapper.selectHierarchySBU(map);
+	}
+
+	@Override
+	public List<Map<String, Object>> selectUserList() throws Exception {
+		return appConfigMapper.selectUserList();
+	}
+
+	@Override
+	public List<Map<String, Object>> selectOwnerBySbuId(Map<String, Object> map) throws Exception {
+		return appConfigMapper.selectOwnerBySbuId(map);
+	}
+
+	@Override
+	public int deleteSbuOwner(Map<String, Object> map) throws Exception{
+		return appConfigMapper.deleteSbuOwner(map);
+	}
+
+	@Override
+	public int insertSbuOwner(Map<String, Object> map) throws Exception {
+		return appConfigMapper.insertSbuOwner(map);
+	}
+
+
 
 }

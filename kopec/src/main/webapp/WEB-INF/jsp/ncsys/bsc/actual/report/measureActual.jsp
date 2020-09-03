@@ -596,10 +596,10 @@ table td{
 
 							<ul class="nav nav-tabs pull-left in" id="myTab">
 								<li class="active">
-									<a data-toggle="tab" href="#s1"><i class="fa fa-recycle"></i> <span class="hidden-mobile hidden-tablet">결과개요</span></a>
+									<a data-toggle="tab" href="#s1"><i class="fa fa-recycle"></i> <span class="hidden-mobile hidden-tablet">계량</span></a>
 								</li>
 								<li>
-									<a data-toggle="tab" href="#s2"><i class="fa fa-recycle"></i> <span class="hidden-mobile hidden-tablet">지표실적</span></a>
+									<a data-toggle="tab" href="#s2"><i class="fa fa-recycle"></i> <span class="hidden-mobile hidden-tablet">비계량</span></a>
 								</li>
 							</ul>
 

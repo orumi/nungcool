@@ -197,6 +197,11 @@ body {
 			document.getElementById("titleText").innerText="코드관리";
 			document.getElementById("titleText_1").innerText="코드관리";
 			document.getElementById("titleText_2").innerText="기준정보관리";
+		} else if ("31" == tag){
+			document.getElementById("page").src = "<%=imgUri%>/admin/config/deptOwner.do";
+			document.getElementById("titleText").innerText="부서별담당자";
+			document.getElementById("titleText_1").innerText="부서별담당자";
+			document.getElementById("titleText_2").innerText="기준정보관리";
 		}
 	}
 	var viewMenu = true;
@@ -319,6 +324,14 @@ body {
 								<tr>
 									<td height="25">&nbsp;</td>
 									<td align="left"><a href="javascript:openContents(7);">부서매핑</a></td>
+								</tr>
+								<tr>
+									<td colspan="2" align="center"><img
+										src="images/dot_line.jpg" width="149" height="1" /></td>
+								</tr>
+								<tr>
+									<td height="25">&nbsp;</td>
+									<td align="left"><a href="javascript:openContents(31);">부서별 담당자</a></td>
 								</tr>
 								<tr>
 									<td colspan="2" align="center"><img

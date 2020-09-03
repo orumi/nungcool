@@ -162,10 +162,108 @@
 
 
 
+ 	<select id="selectHierarchySBU" parameterType="String"	resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT * FROM
+		(
+		            SELECT T.YEAR YEAR,
+		                T.ID CID,
+		                T.PARENTID CPID,
+		                T.CONTENTID CCID,
+		                C.NAME CNAME,
+		                T.TREELEVEL CLVL,
+		                T.RANK CRANK
+		            FROM TBLHIERARCHY T, TBLCOMPANY C
+		            WHERE T.TREELEVEL = 0
+		            AND T.CONTENTID = C.ID AND T.YEAR = #{year}
+		) C
+		            LEFT JOIN
+		(
+		            SELECT
+		                T.ID SID,
+		                T.PARENTID SPID,
+		                T.CONTENTID SCID,
+		                C.NAME SNAME,
+		                T.TREELEVEL SLVL,
+		                T.RANK SRANK
+		            FROM TBLHIERARCHY T, TBLSBU C
+		            WHERE T.TREELEVEL = 1
+		            AND T.CONTENTID = C.ID AND T.YEAR = #{year}
+		) S
+		ON C.CID = S.SPID
+        LEFT JOIN
+        (
+            SELECT SBUID, COUNT(USERID) CNT
+            FROM
+            (
+            SELECT YEAR, SBUID,USERID
+            FROM TBLSBUOWNER
+            WHERE YEAR = #{year}
+            ) GROUP BY SBUID
+        ) CT
+        ON S.SCID=CT.SBUID
+		ORDER BY CRANK, CID, SRANK, SID
+ 	</select>
+
+
+ 	<select id="selectUserList" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT USERID, USERNAME,DEPT_CD,DIVCODE,
+		    (SELECT DEPT_NM FROM TBLDEPT D WHERE D.DEPT_CD=U.DEPT_CD) DEPT_NM
+		FROM TBLUSER U
+		<![CDATA[
+		WHERE U.GROUPID<4
+		]]>
+		ORDER BY USERNAME
+
+ 	</select>
+
+
+
+	<select id="selectOwnerBySbuId" parameterType="map" resultType="ncsys.com.util.LowerHashMap">
+
+		SELECT YEAR, SBUID SCID, (SELECT NAME FROM TBLSBU WHERE ID=SBUID) SNAME, USERID,
+		(SELECT USERNAME FROM TBLUSER U WHERE U.USERID=O.USERID) USERNAME
+		FROM TBLSBUOWNER O
+		WHERE YEAR = #{year}
+		AND SBUID = #{scid}
+
+	</select>
 
 
 
 
 
+
+
+
+
+
+
+	<delete id="deleteSbuOwner" parameterType="map">
+
+		DELETE FROM TBLSBUOWNER WHERE YEAR = #{year} AND SBUID = #{scid}
+
+	</delete>
+
+
+
+	<insert id="insertSbuOwner" parameterType="map">
+
+		INSERT INTO TBLSBUOWNER (
+		     YEAR
+		    ,SBUID
+		    ,USERID
+		    ,INPUTID
+		    ,INPUTDT
+		) VALUES (
+			 #{year}
+			,#{scid}
+			,#{userid}
+			,#{loginid}
+			,sysdate
+		)
+
+	</insert>
 
 </mapper>

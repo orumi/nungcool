@@ -26,5 +26,14 @@ public interface AppConfigService {
 
 	public void adjustCopySchedule(Map<String, Object> map) throws Exception;
 
+	public List<Map<String, Object>> selectHierarchySBU(Map<String, Object> map) throws Exception;
+
+	public List<Map<String, Object>> selectUserList() throws Exception;
+
+	public List<Map<String, Object>> selectOwnerBySbuId(Map<String, Object> map) throws Exception;
+
+
+	public int deleteSbuOwner(Map<String, Object> map) throws Exception;
+	public int insertSbuOwner(Map<String, Object> map) throws Exception;
 }
 

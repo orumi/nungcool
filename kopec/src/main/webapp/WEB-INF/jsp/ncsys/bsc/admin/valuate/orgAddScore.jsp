@@ -18,7 +18,7 @@ var selectOrgAddScoreDetailURL = "<c:url value='/admin/valuate/selectOrgAddScore
 var adjustOrgAddScrURL = "<c:url value='/admin/valuate/adjustOrgAddScr.json'/>";
 var deleteOrgAddScoreURL = "<c:url value='/admin/valuate/deleteOrgAddScore.json'/>";
 
-
+var selectSBUURL = "<c:url value='/actual/measure/selectSBU.json'/>";
 
 
 </script>
@@ -35,7 +35,9 @@ var deleteOrgAddScoreURL = "<c:url value='/admin/valuate/deleteOrgAddScore.json'
 		actionInit();
 
 		$("#selYear").change(function(){ actionInit(); });
-		$("#selMonth").change(function(){ actionInit(); });
+		$("#selMonth").change(function(){ selectList(); });
+
+		$("#selSBU").change(function(){ selectList(); });
 
 	});
 
@@ -48,11 +50,43 @@ var deleteOrgAddScoreURL = "<c:url value='/admin/valuate/deleteOrgAddScore.json'
     }
 
     function actionInit(){
+
+    	var param = new Object();
+    	param.year = $("#selYear option:selected").val();
+
+    	_xAjax(selectSBUURL, param)
+    	.done(function(data){
+    		setSBU(data.selectSBU);
+    	}).fail(function(error){
+    		console.log("actionInit error : "+error);
+    	});
+    }
+
+	function setSBU(sbu){
+		$('#selSBU').empty();
+
+		var option = $("<option value='-1'>::전체::</option>");
+        $('#selSBU').append(option);
+
+        for(var i in sbu){
+			var obj = sbu[i];
+			var option = $("<option value='"+obj.sid+"'>"+obj.sname+"</option>");
+	        $('#selSBU').append(option);
+		}
+
+		selectList();
+	}
+
+
+    function selectList(){
     	/* select tblpsnbaseline */
 
     	var param = new Object();
     	param.year = $("#selYear option:selected").val();
     	param.month = $("#selMonth option:selected").val();
+    	if("-1" != $("#selSBU option:selected").val()){
+			param.sid = $("#selSBU option:selected").val();
+		}
 
     	_xAjax(selectInitURL, param)
     	.done(function(data){
@@ -237,6 +271,10 @@ var deleteOrgAddScoreURL = "<c:url value='/admin/valuate/deleteOrgAddScore.json'
     	param.totalscr = scoretot;
     	param.addscrCmt = $("#addscrCmt").val();
 
+    	if("-1" != $("#selSBU option:selected").val()){
+			param.sid = $("#selSBU option:selected").val();
+		}
+
     	_xAjax(adjustOrgAddScrURL, param)
     	.done(function(data){
 
@@ -257,6 +295,10 @@ var deleteOrgAddScoreURL = "<c:url value='/admin/valuate/deleteOrgAddScore.json'
     	param.month = $("#selMonth option:selected").val();
 
     	param.bid = $("#bid").val();
+
+    	if("-1" != $("#selSBU option:selected").val()){
+			param.sid = $("#selSBU option:selected").val();
+		}
 
     	_xAjax(deleteOrgAddScoreURL, param)
     	.done(function(data){
@@ -482,8 +524,18 @@ table td{
 							</select>
 						</div>
 					</div>
+					<label class="control-label col-md-1" for="prepend"
+						style="padding-top: 6px;">조직구분 </label>
+					<div class="col-md-2" style="padding-right: 6px; padding-left: 1px;">
+						<div class="icon-addon addon-md">
+							<select class="form-control" id="selSBU">
+							</select>
+
+						</div>
+					</div>
+
 					<div class="col-md-4">
-					<a onClick="javascript:actionInit();"  class="btn btn-primary pull-left" style="padding: 6px 18px; margin: 0px 2px;">조회</a>
+					<a onClick="javascript:selectList();"  class="btn btn-primary pull-left" style="padding: 6px 18px; margin: 0px 2px;">조회</a>
 					<a onClick="javascript:actionDownloadCSV('tb_bsc');"  class="btn btn-default pull-left" style="padding: 6px 18px; margin: 0px 2px;">엑셀</a>
 					</div>
 				</div>

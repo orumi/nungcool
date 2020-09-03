@@ -172,7 +172,11 @@
 	          (select c.name cname,t.id cid,t.contentid ccid,t.parentid cpid,t.rank crank
 	          from tblcompany c, tblhierarchy t where t.treelevel=0 and t.year = #{year} and t.contentid=c.id) com,
 	          (select c.name sname,t.id sid,t.contentid scid,t.parentid spid,t.rank srank
-	          from tblsbu c, tblhierarchy t where t.treelevel=1 and t.year=#{year} and t.contentid=c.id  and t.id like '%' ) sbu,
+	          from tblsbu c, tblhierarchy t where t.treelevel=1 and t.year=#{year} and t.contentid=c.id
+	          <if test="sid != null">
+	          	and t.id = #{sid}
+	          </if>
+	          ) sbu,
 	          (select c.name bname,t.id bid,t.contentid bcid,t.parentid bpid,t.rank brank, c.link blink
 	          from tblbsc c, tblhierarchy t where t.treelevel=2 and t.year=#{year} and t.contentid=c.id ) bsc,
 	          (select c.name pname,t.id pid,t.contentid pcid,t.parentid ppid,t.rank prank
