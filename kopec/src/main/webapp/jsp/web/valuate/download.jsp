@@ -16,20 +16,20 @@
 
 			String fullPathPlan = "";
 			String fullPathAct = "";
-			String pysicalPath = Util.getEUCKR(request.getParameter("filePath"));
 			String fileName = Util.getEUCKR(request.getParameter("fileName"));
+			String filePath = Util.getEUCKR(request.getParameter("filePath"));
 
 
-			fullPathPlan = UPLOADROOT+File.separator+"actual"+File.separator+"measurementplan"+File.separator+fileName;
-			fullPathAct = UPLOADROOT+File.separator+"actual"+File.separator+"measurement"+File.separator+fileName;
+			fullPathPlan = UPLOADROOT+File.separator+"actual"+File.separator+"measurementplan"+File.separator+filePath;
+			fullPathAct = UPLOADROOT+File.separator+"actual"+File.separator+"measurement"+File.separator+filePath;
 
 
-			File file = new File(UPLOADROOT+pysicalPath);
+			File file = new File(UPLOADROOT+filePath);
 			File file1 = new File(fullPathAct);
 			File file2 = new File(fullPathPlan);
 
 			if(file.exists()){
-				FileDownload.flush( request,  response, UPLOADROOT+pysicalPath, fileName );
+				FileDownload.flush( request,  response, UPLOADROOT+filePath, fileName );
 			} else if (file1.exists()){
 				FileDownload.flush( request,  response, fullPathAct, fileName );
 			} else {

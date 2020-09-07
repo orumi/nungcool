@@ -20,8 +20,8 @@
 
 //			System.out.println(strFileName);
 			//String strFileName = Util.getEUCKR(request.getParameter("fileName"));
-			fullPath = request.getRealPath(File.separator)+File.separator+"bsc_pdsfile"+File.separator+fileName;
-			//fullPath = request.getRealPath(File.separator)+fileName;
+			//fullPath = request.getRealPath(File.separator)+File.separator+"bsc_pdsfile"+File.separator+fileName;
+			fullPath = ServerStatic.REAL_CONTEXT_ROOT+File.separator+"bsc_pdsfile"+File.separator+fileName;
 			//System.out.println("fullPath="+fullPath);
 
 
