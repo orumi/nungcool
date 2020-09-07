@@ -378,13 +378,13 @@
 
 	<delete id="clearTreescoreObject" parameterType="ncsys.com.bsc.admin.service.model.MeasureDefine">
 		DELETE FROM TBLTREESCORE WHERE YEAR=#{year} AND ID NOT IN (
-			SELECT PARENTID FROM TBLTREESCORE WHERE YEAR=2020 AND TREELEVEL=5
+			SELECT PARENTID FROM TBLTREESCORE WHERE YEAR=#{year} AND TREELEVEL=5
 		) AND TREELEVEL=4
 	</delete>
 
 	<delete id="clearTreescorePst" parameterType="ncsys.com.bsc.admin.service.model.MeasureDefine">
 		DELETE FROM TBLTREESCORE WHERE YEAR=#{year} AND ID NOT IN (
-			SELECT PARENTID FROM TBLTREESCORE WHERE YEAR=2020 AND TREELEVEL=4
+			SELECT PARENTID FROM TBLTREESCORE WHERE YEAR=#{year} AND TREELEVEL=4
 		) AND TREELEVEL=3
 	</delete>
 
