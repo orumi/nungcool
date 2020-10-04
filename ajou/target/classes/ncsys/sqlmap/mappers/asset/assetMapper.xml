@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="ncsys.com.isms.asset.service.mapper.AssetMapper">
+ 	
+ 	<!-- Asset Version  -->
+ 	<select id="selectAssetVersionList" resultType="ncsys.com.isms.asset.service.model.AssetVersion">
+	    
+		SELECT 
+		     ASTVERID
+		    ,ASTVERNM
+		    ,USEYN
+		    ,SORTBY
+		    ,INPUTID
+		    ,INPUTDT
+		    ,UPDATEID
+		    ,UPDATEDT
+		FROM TBLASSETVERSION
+		WHERE USEYN='Y'
+		ORDER BY TO_NUMBER(SORTBY)     
+		
+ 	</select>
+ 	
+ 	<select id="selectAssetVersionDetail" parameterType="ncsys.com.isms.asset.service.model.AssetVersion" 
+ 		resultType="ncsys.com.isms.asset.service.model.AssetVersion">
+	 	SELECT 
+		     ASTVERID
+		    ,ASTVERNM
+		    ,USEYN
+		    ,SORTBY
+		    ,INPUTID
+		    ,INPUTDT
+		    ,UPDATEID
+		    ,UPDATEDT
+		FROM TBLASSETVERSION
+		WHERE ASTVERID = #{astverid}
+ 	</select>
+ 	
+ 	<insert id="insertAssetVersion" parameterType="ncsys.com.isms.asset.service.model.AssetVersion" >
+		<selectKey resultType="string" keyProperty="astverid" order="BEFORE">
+	        SELECT SQ_ASSETVERSION.NEXTVAL FROM DUAL        
+	    </selectKey>		
+		INSERT INTO TBLASSETVERSION 
+            (ASTVERID
+		    ,ASTVERNM
+		    ,SORTBY
+		    ,INPUTID
+		    ,INPUTDT
+		    ,UPDATEID
+		    ,UPDATEDT
+		    ) 
+        VALUES (
+             #{astverid}
+            ,#{astvernm}
+            ,#{sortby}
+            ,#{userId}
+            ,SYSDATE
+            ,#{userId}
+            ,SYSDATE
+            )
+ 	</insert>
+  	<update id="updateAssetVersion" parameterType="ncsys.com.isms.asset.service.model.AssetVersion" >
+		UPDATE TBLASSETVERSION SET 
+            ASTVERNM = #{astvernm},
+            SORTBY   = #{sortby}, 
+            UPDATEID = #{userId},
+            UPDATEDT = SYSDATE
+        WHERE 
+        ASTVERID = #{astverid}     
+ 	</update>
+  	
+  	<update id="deleteAssetVersion" parameterType="ncsys.com.isms.asset.service.model.AssetVersion" >
+		UPDATE TBLASSETVERSION SET 
+            USEYN   = 'N',
+            UPDATEID = #{userId},
+            UPDATEDT = SYSDATE
+        WHERE 
+        ASTVERID = #{astverid}   
+ 	</update>
+ 	
+ 	
+	<select id="selectAssetVersionByName" parameterType="ncsys.com.isms.asset.service.model.AssetVersion" 
+ 		resultType="ncsys.com.isms.asset.service.model.AssetVersion">
+	 	SELECT 
+		     ASTVERID
+		    ,ASTVERNM
+		    ,USEYN
+		    ,SORTBY
+		    ,INPUTID
+		    ,INPUTDT
+		    ,UPDATEID
+		    ,UPDATEDT
+		FROM TBLASSETVERSION
+		WHERE ASTVERNM = #{astvernm}
+ 	</select> 
+ 	 
+ 	
+ 	
+ 	<!-- Asset Group  -->
+ 	<select id="selectAssetKind" resultType="ncsys.com.isms.asset.service.model.AssetKind">
+	    
+		SELECT CODE ASTGRPKIND,CODE_NM ASTGRPKINDNM
+		FROM COMTCCMMNDETAILCODE WHERE CODE_ID='COM078'
+		ORDER BY CODE     
+		
+ 	</select>
+ 	
+ 	<select id="selectAssetGrpCntList" parameterType="ncsys.com.isms.asset.service.model.AssetGrpCnt" 
+ 		resultType="ncsys.com.isms.asset.service.model.AssetGrpCnt">
+	    SELECT ROWNUM ROWIDX,
+        	A.*
+		FROM (  
+			SELECT 
+			     ASTGRPID 
+			    ,ASTGRPNM 
+			    ,ASTGRPSORTBY
+			    ,COUNT(ASSETID) ASSETCNT
+			    ,SUM(CERTI) CERTICNT
+			    ,SUM(WKTST) WKTSTCNT
+			FROM (
+			    SELECT 
+			         ASTGRPID
+			        ,(SELECT ASTGRPNM FROM TBLASSETGROUP G WHERE G.ASTGRPID=A.ASTGRPID) ASTGRPNM
+			        ,(SELECT SORTBY FROM TBLASSETGROUP G WHERE G.ASTGRPID=A.ASTGRPID) ASTGRPSORTBY    
+			        ,ASSETID     
+			        ,CERTIYN 
+			        ,DECODE(CERTIYN,'Y',1,0) CERTI       
+			        ,WKTSTYN
+			        ,DECODE(WKTSTYN,'Y',1,0) WKTST     
+			        ,SORTBY      
+			    FROM TBLASSET A
+			    WHERE ASTVERID= #{astverid}
+			) GROUP BY ASTGRPID, ASTGRPNM, ASTGRPSORTBY   
+			ORDER BY TO_NUMBER(ASTGRPSORTBY)    
+		) A
+		
+ 	</select>
+ 	
+ 	<select id="selectAssetGroupList" parameterType="ncsys.com.isms.asset.service.model.AssetGroupList" 
+ 		resultType="ncsys.com.isms.asset.service.model.AssetGroupList">
+	    SELECT ROWNUM ROWIDX,
+        	A.*
+		FROM ( 
+			SELECT 
+			     ASTGRPID
+			    ,ASTGRPKIND
+			    ,(SELECT CODE_NM FROM COMTCCMMNDETAILCODE C WHERE C.CODE_ID='COM078' AND C.CODE=ASTGRPKIND) ASTGRPKINDNM
+			    ,ASTGRPNM
+			    ,ASTGRPDFN
+			    ,COUNT(ASTGRPID) OVER (PARTITION BY ASTGRPKIND) CNT
+                ,ROW_NUMBER() OVER (PARTITION BY ASTGRPKIND ORDER BY ASTGRPKIND, TO_NUMBER(SORTBY)) NUM
+			    ,USEYN
+			    ,DELYN
+			    ,SORTBY
+			    ,INPUTID
+			    ,TO_CHAR(INPUTDT,'yyyy/mm/dd') INPUTDT
+			    ,UPDATEID
+			    ,TO_CHAR(UPDATEDT,'yyyy/mm/dd') UPDATEDT
+			FROM TBLASSETGROUP
+			WHERE DELYN = 'N'
+			ORDER BY ASTGRPKIND, TO_NUMBER(SORTBY)    
+		) A
+ 	</select>
+ 	
+ 	<select id="selectAssetGroupDetail" parameterType="ncsys.com.isms.asset.service.model.AssetGroup" 
+ 		resultType="ncsys.com.isms.asset.service.model.AssetGroup">
+		SELECT 
+		     ASTGRPID
+		    ,ASTGRPKIND
+		    ,(SELECT CODE_NM FROM COMTCCMMNDETAILCODE C WHERE C.CODE_ID='COM078' AND C.CODE=ASTGRPKIND) ASTGRPKINDNM
+		    ,ASTGRPNM
+		    ,ASTGRPDFN
+		    ,USEYN
+		    ,DELYN
+		    ,SORTBY
+		    ,INPUTID
+		    ,INPUTDT
+		    ,UPDATEID
+		    ,UPDATEDT
+		FROM TBLASSETGROUP
+		WHERE ASTGRPID = #{astgrpid}
+ 	</select>
+ 	
+ 	<insert id="insertAssetGroup" parameterType="ncsys.com.isms.asset.service.model.AssetGroup" >
+		INSERT INTO TBLASSETGROUP 
+            (
+             ASTGRPID
+		    ,ASTGRPKIND
+		    ,ASTGRPNM
+		    ,ASTGRPDFN
+		    ,SORTBY
+		    ,INPUTID
+		    ,INPUTDT
+		    ,UPDATEID
+		    ,UPDATEDT
+		    ) 
+        VALUES (
+            SQ_ASSETGROUP.NEXTVAL
+            ,#{astgrpkind}
+            ,#{astgrpnm}
+            ,#{astgrpdfn}
+            ,#{sortby}
+            ,#{userId}
+            ,SYSDATE
+            ,#{userId}
+            ,SYSDATE
+            )
+ 	</insert>
+  	<update id="updateAssetGroup" parameterType="ncsys.com.isms.asset.service.model.AssetGroup" >
+		UPDATE TBLASSETGROUP SET 
+             ASTGRPKIND = #{astgrpkind}
+		    ,ASTGRPNM   = #{astgrpnm}
+		    ,ASTGRPDFN  = #{astgrpdfn}
+            ,SORTBY     = #{sortby}
+            ,USEYN      = #{useyn} 
+            ,UPDATEID   = #{userId}
+            ,UPDATEDT   = SYSDATE
+        WHERE 
+        ASTGRPID = #{astgrpid}     
+ 	</update>
+  	
+  	<update id="deleteAssetGroup" parameterType="ncsys.com.isms.asset.service.model.AssetGroup" >
+		UPDATE TBLASSETGROUP SET 
+            DELYN   = 'Y',
+            UPDATEID = #{userId},
+            UPDATEDT = SYSDATE
+        WHERE 
+        ASTGRPID = #{astgrpid}    
+ 	</update>
+ 	
+	<select id="selectAssetGroupByName" parameterType="ncsys.com.isms.asset.service.model.AssetGrp" 
+ 		resultType="ncsys.com.isms.asset.service.model.AssetGroup">
+		SELECT 
+		     ASTGRPID
+		    ,ASTGRPKIND
+		    ,(SELECT CODE_NM FROM COMTCCMMNDETAILCODE C WHERE C.CODE_ID='COM078' AND C.CODE=ASTGRPKIND) ASTGRPKINDNM
+		    ,ASTGRPNM
+		    ,ASTGRPDFN
+		    ,USEYN
+		    ,DELYN
+		    ,SORTBY
+		    ,INPUTID
+		    ,INPUTDT
+		    ,UPDATEID
+		    ,UPDATEDT
+		FROM TBLASSETGROUP
+		WHERE ASTGRPNM = #{astgrpnm}
+ 	</select>
+ 	
+ 	
+ 	
+ 	
+ 	<!-- Asset -->
+ 	
+ 	<select id="selectAssetList" parameterType="ncsys.com.isms.asset.service.model.Asset" 
+ 		resultType="ncsys.com.isms.asset.service.model.Asset">
+		SELECT
+		     ROWNUM ROWIDX
+		    ,ASTVERID
+		    ,ASTVERNM     
+		    ,ASTGRPID
+		    ,ASTGRPNM    
+		    ,ASSETID     
+		    ,MGNNO       
+		    ,CATE01      
+		    ,CATE02      
+		    ,ASSETNM     
+		    ,ASSETDFN    
+		    ,IMPTC       
+		    ,IMPTI       
+		    ,IMPTA  
+		    ,CERTIYN      
+		    ,WKTSTYN     
+		    ,IPINFO      
+		    ,EA          
+		    ,POSITION    
+		    ,MODELNM     
+		    ,ASTNO       
+		    ,OWNERID     
+		    ,MGNID       
+		    ,OPERYN      
+		    ,INTRODEPT   
+		    ,INTROCMPNY  
+		    ,INTRODT     
+		    ,ASCMPNY     
+		    ,SORTBY  
+		FROM (    
+			SELECT 
+			     ROWNUM ROWIDX
+			    ,ASTVERID
+			    ,(SELECT ASTVERNM FROM TBLASSETVERSION V WHERE V.ASTVERID=A.ASTVERID) ASTVERNM     
+	    		,ASTGRPID
+	    		,(SELECT ASTGRPNM FROM TBLASSETGROUP G WHERE G.ASTGRPID=A.ASTGRPID) ASTGRPNM 
+	    		,(SELECT SORTBY FROM TBLASSETGROUP G WHERE G.ASTGRPID=A.ASTGRPID) ASTGRPSORTBY    
+			    ,ASSETID     
+			    ,MGNNO       
+			    ,CATE01      
+			    ,CATE02      
+			    ,ASSETNM     
+			    ,ASSETDFN    
+			    ,IMPTC       
+			    ,IMPTI       
+			    ,IMPTA  
+			    ,CERTIYN     
+			    ,WKTSTYN     
+			    ,IPINFO      
+			    ,EA          
+			    ,POSITION    
+			    ,MODELNM     
+			    ,ASTNO       
+			    ,OWNERID     
+			    ,MGNID       
+			    ,OPERYN      
+			    ,INTRODEPT   
+			    ,INTROCMPNY  
+			    ,TO_CHAR(INTRODT,'YYYY/MM/DD') INTRODT     
+			    ,ASCMPNY     
+			    ,SORTBY      
+			FROM TBLASSET A
+			WHERE A.ASTVERID = #{astverid}
+			<if test="astgrpid !=null and astgrpid != 0">
+	        	AND A.ASTGRPID = #{astgrpid, jdbcType=NUMERIC}
+	        </if>
+			ORDER BY TO_NUMBER(ASTGRPSORTBY), TO_NUMBER(SORTBY)
+		) 
+		
+ 	</select>
+ 	
+ 	<select id="selectAssetDetail" parameterType="ncsys.com.isms.asset.service.model.Asset" 
+ 		resultType="ncsys.com.isms.asset.service.model.Asset">
+		SELECT 
+		     ASTVERID
+		    ,(SELECT ASTVERNM FROM TBLASSETVERSION V WHERE V.ASTVERID=A.ASTVERID) ASTVERNM     
+    		,ASTGRPID
+    		,(SELECT ASTGRPNM FROM TBLASSETGROUP G WHERE G.ASTGRPID=A.ASTGRPID) ASTGRPNM    
+		    ,ASSETID     
+		    ,MGNNO       
+		    ,CATE01      
+		    ,CATE02      
+		    ,ASSETNM     
+		    ,ASSETDFN    
+		    ,IMPTC       
+		    ,IMPTI       
+		    ,IMPTA
+		    ,CERTIYN       
+		    ,WKTSTYN     
+		    ,IPINFO      
+		    ,EA          
+		    ,POSITION    
+		    ,MODELNM     
+		    ,ASTNO       
+		    ,OWNERID     
+		    ,MGNID       
+		    ,OPERYN      
+		    ,INTRODEPT   
+		    ,INTROCMPNY  
+		    ,TO_CHAR(INTRODT,'YYYY/MM/DD') INTRODT    
+		    ,ASCMPNY     
+		    ,SORTBY      
+		FROM TBLASSET A
+		WHERE ASSETID = #{assetid}
+ 	</select>
+ 	
+ 	<insert id="insertAsset" parameterType="ncsys.com.isms.asset.service.model.Asset" >
+		INSERT INTO TBLASSET 
+            (
+		     ASSETID 
+		    ,ASTVERID
+		    ,ASTGRPID
+		    ,MGNNO       
+		    ,CATE01      
+		    ,CATE02      
+		    ,ASSETNM     
+		    ,ASSETDFN    
+		    ,IMPTC       
+		    ,IMPTI       
+		    ,IMPTA   
+		    ,CERTIYN    
+		    ,WKTSTYN     
+		    ,IPINFO      
+		    ,EA          
+		    ,POSITION    
+		    ,MODELNM     
+		    ,ASTNO       
+		    ,OWNERID     
+		    ,MGNID       
+		    ,OPERYN      
+		    ,INTRODEPT   
+		    ,INTROCMPNY  
+		    ,INTRODT     
+		    ,ASCMPNY     
+		    ,SORTBY
+		    ,INPUTID
+		    ,INPUTDT
+		    ,UPDATEID
+		    ,UPDATEDT
+		    ) 
+        VALUES (
+             SQ_ASSET.NEXTVAL
+            ,#{astverid}
+			,#{astgrpid}
+			,#{mgnno, jdbcType=VARCHAR}
+			,#{cate01, jdbcType=VARCHAR}
+			,#{cate02, jdbcType=VARCHAR}
+			,#{assetnm, jdbcType=VARCHAR}
+			,#{assetdfn, jdbcType=VARCHAR}
+			,#{imptc, jdbcType=VARCHAR}
+			,#{impti, jdbcType=VARCHAR}
+			,#{impta, jdbcType=VARCHAR}
+			,#{certiyn, jdbcType=VARCHAR}
+			,#{wktstyn, jdbcType=VARCHAR}
+			,#{ipinfo, jdbcType=VARCHAR}
+			,#{ea, jdbcType=VARCHAR}
+			,#{position, jdbcType=VARCHAR}
+			,#{modelnm, jdbcType=VARCHAR}
+			,#{astno, jdbcType=VARCHAR}
+			,#{ownerid, jdbcType=VARCHAR}
+			,#{mgnid, jdbcType=VARCHAR}
+			,#{operyn, jdbcType=VARCHAR}
+			,#{introdept, jdbcType=VARCHAR}
+			,#{introcmpny, jdbcType=VARCHAR}
+			,#{introdt, jdbcType=VARCHAR}
+			,#{ascmpny, jdbcType=VARCHAR}
+            ,#{sortby, jdbcType=VARCHAR}
+            ,#{userId, jdbcType=VARCHAR}
+            ,SYSDATE
+            ,#{userId, jdbcType=VARCHAR}
+            ,SYSDATE
+            )
+ 	</insert>
+  	<update id="updateAsset" parameterType="ncsys.com.isms.asset.service.model.Asset" >
+		UPDATE TBLASSET SET 
+             ASTVERID = #{astverid}
+		    ,ASTGRPID = #{astgrpid}
+		    ,MGNNO    = #{mgnno, jdbcType=VARCHAR}   
+		    ,CATE01   = #{cate01, jdbcType=VARCHAR}   
+		    ,CATE02   = #{cate02, jdbcType=VARCHAR}   
+		    ,ASSETNM  = #{assetnm, jdbcType=VARCHAR}   
+		    ,ASSETDFN = #{assetdfn, jdbcType=VARCHAR}   
+		    ,IMPTC    = #{imptc, jdbcType=VARCHAR}   
+		    ,IMPTI    = #{impti, jdbcType=VARCHAR}   
+		    ,IMPTA    = #{impta, jdbcType=VARCHAR}   
+		    ,CERTIYN  = #{certiyn, jdbcType=VARCHAR}
+		    ,WKTSTYN  = #{wktstyn, jdbcType=VARCHAR}   
+		    ,IPINFO   = #{ipinfo, jdbcType=VARCHAR}   
+		    ,EA       = #{ea, jdbcType=VARCHAR}   
+		    ,POSITION = #{position, jdbcType=VARCHAR}   
+		    ,MODELNM  = #{modelnm, jdbcType=VARCHAR}   
+		    ,ASTNO    = #{astno, jdbcType=VARCHAR}   
+		    ,OWNERID  = #{ownerid, jdbcType=VARCHAR}   
+		    ,MGNID    = #{mgnid, jdbcType=VARCHAR}   
+		    ,OPERYN   = #{operyn, jdbcType=VARCHAR}   
+		    ,INTRODEPT= #{introdept, jdbcType=VARCHAR}   
+		    ,INTROCMPNY= #{introcmpny, jdbcType=VARCHAR}  
+		    ,INTRODT  = #{introdt, jdbcType=VARCHAR}   
+		    ,ASCMPNY  = #{ascmpny, jdbcType=VARCHAR}
+            ,SORTBY   = #{sortby, jdbcType=VARCHAR} 
+            ,UPDATEID = #{userId, jdbcType=VARCHAR}
+            ,UPDATEDT = SYSDATE
+        WHERE 
+        ASSETID = #{assetid}     
+ 	</update>
+  	
+  	<update id="deleteAsset" parameterType="ncsys.com.isms.asset.service.model.Asset" >
+		DELETE FROM TBLASSET WHERE
+        ASSETID = #{assetid}    
+ 	</update>
+ 	
+ 	
+ 	<select id="selectAssetByName" parameterType="ncsys.com.isms.asset.service.model.Asset" 
+ 		resultType="ncsys.com.isms.asset.service.model.Asset">
+		SELECT 
+		     ASTVERID
+		    ,(SELECT ASTVERNM FROM TBLASSETVERSION V WHERE V.ASTVERID=A.ASTVERID) ASTVERNM     
+    		,ASTGRPID
+    		,(SELECT ASTGRPNM FROM TBLASSETGROUP G WHERE G.ASTGRPID=A.ASTGRPID) ASTGRPNM    
+		    ,ASSETID     
+		    ,MGNNO       
+		    ,CATE01      
+		    ,CATE02      
+		    ,ASSETNM     
+		    ,ASSETDFN    
+		    ,IMPTC       
+		    ,IMPTI       
+		    ,IMPTA
+		    ,CERTIYN       
+		    ,WKTSTYN     
+		    ,IPINFO      
+		    ,EA          
+		    ,POSITION    
+		    ,MODELNM     
+		    ,ASTNO       
+		    ,OWNERID     
+		    ,MGNID       
+		    ,OPERYN      
+		    ,INTRODEPT   
+		    ,INTROCMPNY  
+		    ,TO_CHAR(INTRODT,'YYYY/MM/DD') INTRODT    
+		    ,ASCMPNY     
+		    ,SORTBY      
+		FROM TBLASSET A
+		WHERE ASTVERID = #{astverid}
+		AND ASTGRPID = #{astgrpid}
+		AND MGNNO = #{mgnno}
+ 	</select> 	
+</mapper>

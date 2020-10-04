@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="ncsys.com.portal.service.mapper.PlannedScheduleMapper">
+ 	
+ 	<select id="selectPlannedScheduleTable" 
+ 		resultType="ncsys.com.portal.service.model.PlannedSchedule">
+	    
+		SELECT PLANID,PLANDT, REMAIN, REMAINTYPE,PLANTITLE,PLANCONTENT,PERIOD,COMPLETEYN,
+		    COUNT(REMAINTYPE) OVER (PARTITION BY REMAINTYPE) PCNT,
+		    ROW_NUMBER() OVER (PARTITION BY REMAINTYPE ORDER BY PLANDT) PRNM,
+		    INPUTID,INPUTDT,UPDATEID,UPDATEDT
+		FROM
+		(
+		    SELECT 
+		         PLANID
+		        ,TO_CHAR(PLANDT,'YYYY-MM-DD') PLANDT
+		        ,TO_DATE(PLANDT,'YYYY-MM-DD')-TO_DATE(SYSDATE,'YYYY-MM-DD') REMAIN
+		        ,CASE WHEN 0 > TO_DATE(PLANDT,'YYYY-MM-DD')-TO_DATE(SYSDATE,'YYYY-MM-DD') THEN 'INCOMPLETE'
+		         WHEN 10 > TO_DATE(PLANDT,'YYYY-MM-DD')-TO_DATE(SYSDATE,'YYYY-MM-DD') THEN 'LIMIT'
+		         ELSE 'SCHEDULE' END REMAINTYPE
+		        ,PLANTITLE
+		        ,PLANCONTENT
+		        ,PERIOD
+		        ,COMPLETEYN
+		        ,INPUTID
+		        ,INPUTDT
+		        ,UPDATEID
+		        ,UPDATEDT
+		    FROM TBLPLANNEDSCHEDULE
+		    WHERE COMPLETEYN='N'
+		          AND 181 > TO_DATE(PLANDT,'YYYY-MM-DD')-TO_DATE(SYSDATE,'YYYY-MM-DD')
+		    UNION ALL
+		    SELECT 
+		         PLANID
+		        ,TO_CHAR(PLANDT,'YYYY-MM-DD') PLANDT
+		        ,TO_DATE(PLANDT,'YYYY-MM-DD')-TO_DATE(SYSDATE,'YYYY-MM-DD') REMAIN
+		        ,'COMPLETE' REMAINTYPE
+		        ,PLANTITLE
+		        ,PLANCONTENT
+		        ,PERIOD
+		        ,COMPLETEYN
+		        ,INPUTID
+		        ,INPUTDT
+		        ,UPDATEID
+		        ,UPDATEDT
+		    FROM TBLPLANNEDSCHEDULE
+		    WHERE COMPLETEYN='Y'
+		          AND 91 > ABS(TO_DATE(PLANDT,'YYYY-MM-DD')-TO_DATE(SYSDATE,'YYYY-MM-DD'))
+		)
+		ORDER BY COMPLETEYN, PLANDT
+		
+ 	</select>
+ 	
+ 	<select id="selectPlannedScheduleList" parameterType="ncsys.com.portal.service.model.PlannedSchedule" 
+ 		resultType="ncsys.com.portal.service.model.PlannedSchedule">
+ 	
+		SELECT ROWNUM ROWIDX, PLANID,PLANDT,
+		       REMAIN, REMAINTYPE,
+		       PLANTITLE, PLANCONTENT,
+		       PERIOD, COMPLETEYN,INPUTID, INPUTDT, UPDATEID, UPDATEDT
+		FROM (       
+		        SELECT 
+		             PLANID
+		            ,TO_CHAR(PLANDT,'YYYY-MM-DD') PLANDT
+		            ,TO_DATE(PLANDT,'YYYY-MM-DD')-TO_DATE(SYSDATE,'YYYY-MM-DD') REMAIN
+		            ,CASE WHEN COMPLETEYN='N' THEN
+		                CASE WHEN 0 > TO_DATE(PLANDT,'YYYY-MM-DD')-TO_DATE(SYSDATE,'YYYY-MM-DD') THEN 'INCOMPLETE'
+		                WHEN 10 > TO_DATE(PLANDT,'YYYY-MM-DD')-TO_DATE(SYSDATE,'YYYY-MM-DD') THEN 'LIMIT'
+		                ELSE 'SCHEDULE' END 
+		             ELSE 'COMPLETE' END REMAINTYPE
+		            ,PLANTITLE
+		            ,PLANCONTENT
+		            ,PERIOD
+		            ,COMPLETEYN
+		            ,INPUTID
+		            ,INPUTDT
+		            ,UPDATEID
+		            ,UPDATEDT
+		        FROM TBLPLANNEDSCHEDULE
+		        ORDER BY PLANDT DESC 
+		)
+	    
+ 	</select>
+ 	
+ 	<select id="selectPlannedScheduleDetail" parameterType="ncsys.com.portal.service.model.PlannedSchedule" 
+ 		resultType="ncsys.com.portal.service.model.PlannedSchedule">
+ 	
+	    SELECT 
+	         PLANID
+	        ,TO_CHAR(PLANDT,'YYYY-MM-DD') PLANDT
+	        ,TO_DATE(PLANDT,'YYYY-MM-DD')-TO_DATE(SYSDATE,'YYYY-MM-DD') REMAIN
+	        ,CASE WHEN COMPLETEYN='N' THEN
+	            CASE WHEN 0 > TO_DATE(PLANDT,'YYYY-MM-DD')-TO_DATE(SYSDATE,'YYYY-MM-DD') THEN 'INCOMPLETE'
+	            WHEN 10 > TO_DATE(PLANDT,'YYYY-MM-DD')-TO_DATE(SYSDATE,'YYYY-MM-DD') THEN 'LIMIT'
+	            ELSE 'SCHEDULE' END 
+	         ELSE 'COMPLETE' END REMAINTYPE
+	        ,PLANTITLE
+	        ,PLANCONTENT
+	        ,PERIOD
+	        ,COMPLETEYN
+	        ,INPUTID
+	        ,INPUTDT
+	        ,UPDATEID
+	        ,UPDATEDT
+	    FROM TBLPLANNEDSCHEDULE
+	    WHERE PLANID=#{planid}
+	    ORDER BY PLANDT DESC 	
+	    
+ 	</select>
+ 	
+ 	
+ 	<insert id="insertPlannedSchedule" parameterType="ncsys.com.portal.service.model.PlannedSchedule" >
+		INSERT INTO TBLPLANNEDSCHEDULE
+		(
+		     PLANID
+		    ,PLANDT
+		    ,PLANTITLE
+		    ,PLANCONTENT
+		    ,PERIOD
+		    ,COMPLETEYN
+		    ,INPUTID
+		    ,INPUTDT
+		    ,UPDATEID
+		    ,UPDATEDT
+		)
+		VALUES 
+		(
+			 #{planid}
+			,#{plandt}
+			,#{plantitle}
+			,#{plancontent}
+			,#{period}
+			,#{completeyn}
+			,#{userId}
+			,sysdate
+			,#{userId}
+			,sysdate
+		) 	
+ 	</insert>
+ 	
+ 	
+ 	<update id="updatePlannedSchedule" parameterType="ncsys.com.portal.service.model.PlannedSchedule">
+
+		UPDATE TBLPLANNEDSCHEDULE SET
+		     PLANDT = #{plandt}
+		    ,PLANTITLE = #{plantitle}
+		    ,PLANCONTENT = #{plancontent}
+		    ,PERIOD = #{period}
+		    ,COMPLETEYN = #{completeyn}
+		    ,UPDATEID = #{userId}
+		    ,UPDATEDT = sysdate
+		WHERE PLANID=#{planid}  	
+ 	
+ 	</update>
+ 	
+ 	<delete id="deletePlannedSchedule" parameterType="ncsys.com.portal.service.model.PlannedSchedule">
+ 		DELETE FROM TBLPLANNEDSCHEDULE WHERE PLANID=#{planid}
+ 	</delete>
+ 	
+ 	
+</mapper>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="ncsys.com.portal.service.mapper.PortalMapper">
+ 	
+ 	<select id="selectLeftMenuList" parameterType="egovframework.com.cmm.LoginVO" 
+ 		resultType="ncsys.com.portal.service.model.LeftMenu">
+	    
+		SELECT 
+		      B.MENU_NO           AS "menuNo"
+		    , B.MENU_ORDR         AS "menuOrdr"
+		    , B.MENU_NM           AS "menuNm"
+		    , B.UPPER_MENU_NO     AS "upperMenuId"
+		    , B.MENU_DC           AS "menuDc"
+		    , B.RELATE_IMAGE_PATH AS "relateImagePath"
+		    , B.RELATE_IMAGE_NM   AS "relateImageNm"
+		    , B.PROGRM_FILE_NM    AS "progrmFileNm"
+		    , level
+		    , (SELECT C.URL FROM COMTNPROGRMLIST C WHERE B.PROGRM_FILE_NM = C.PROGRM_FILE_NM) AS "urlPath"
+        FROM 
+        (SELECT * FROM COMTNMENUCREATDTLS D WHERE D.AUTHOR_CODE = 
+            (SELECT C.AUTHOR_CODE from COMTNEMPLYRSCRTYESTBS C WHERE  C.SCRTY_DTRMN_TRGET_ID = 
+                (SELECT GROUP_ID FROM COMVNUSERMASTER WHERE USER_ID=#{id} )
+            )
+        ) A, 
+        COMTNMENUINFO B 
+        WHERE A.MENU_NO  = B.MENU_NO    
+        START WITH B.MENU_NO='1000000'
+        CONNECT BY PRIOR B.MENU_NO=B.UPPER_MENU_NO
+		
+ 	</select>
+ 	
+ 	
+ 	
+ 	
+ 	
+</mapper>

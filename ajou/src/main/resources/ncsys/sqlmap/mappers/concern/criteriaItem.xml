@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="ncsys.com.isms.concern.service.mapper.CriteriaItemMapper">
+ 	
+ 	<!-- criteria version  list  -->
+ 	<select id="selectCriteriaVersion" parameterType="ncsys.com.isms.concern.service.model.CriteriaVersion"
+ 	 resultType="ncsys.com.isms.concern.service.model.CriteriaVersion">
+		SELECT 
+		     CTRVERID
+		    ,CTRVERNM
+		    ,SORTBY
+		    ,INPUTID
+		    ,INPUTDT
+		    ,UPDATEID
+		    ,UPDATEDT
+		FROM TBLCRITERIAVERSION
+		WHERE DELYN='N'
+		ORDER BY TO_NUMBER(SORTBY)
+ 	</select>
+ 	
+ 	<insert id="insertCriteriaVersion" parameterType="ncsys.com.isms.concern.service.model.CriteriaVersion">
+ 		<selectKey resultType="string" keyProperty="ctrverid" order="BEFORE">
+	        SELECT SQ_CTAVERSION.NEXTVAL FROM DUAL        
+	    </selectKey>
+		INSERT INTO TBLCRITERIAVERSION 
+		(
+		     CTRVERID
+		    ,CTRVERNM
+		    ,SORTBY
+		    ,INPUTID
+		    ,INPUTDT
+		    ,UPDATEID
+		    ,UPDATEDT
+		)
+		VALUES
+		(
+		     #{ctrverid}
+		    ,#{ctrvernm, jdbcType=VARCHAR}
+		    ,#{sortby}
+		    ,#{userId, jdbcType=VARCHAR}
+		    ,sysdate
+		    ,#{userId, jdbcType=VARCHAR}
+		    ,sysdate
+		)
+		
+ 	</insert>
+ 	 
+ 	<update id="updateCriteriaVersion" parameterType="ncsys.com.isms.concern.service.model.CriteriaVersion">
+ 	
+	 	UPDATE TBLCRITERIAVERSION SET
+		     CTRVERNM = #{ctrvernm, jdbcType=VARCHAR}
+		    ,SORTBY = #{sortby, jdbcType=VARCHAR}
+		    ,UPDATEID = #{userId, jdbcType=VARCHAR}
+		    ,UPDATEDT = sysdate
+		WHERE CTRVERID = #{ctrverid}
+		
+ 	</update>
+ 	
+ 	<update id="deleteCriteriaVersion" parameterType="ncsys.com.isms.concern.service.model.CriteriaVersion">
+	 	UPDATE TBLCRITERIAVERSION SET
+		     DELYN = 'Y'
+		    ,UPDATEID = #{userId, jdbcType=VARCHAR}
+		    ,UPDATEDT = sysdate
+		WHERE CTRVERID = #{ctrverid} 	
+ 	</update>
+ 	
+ 	
+ 	<select id="selectCriteriaVersionByName" parameterType="ncsys.com.isms.concern.service.model.CriteriaVersion"
+ 	 resultType="ncsys.com.isms.concern.service.model.CriteriaVersion">
+		SELECT 
+		     CTRVERID
+		    ,CTRVERNM
+		    ,SORTBY
+		    ,INPUTID
+		    ,INPUTDT
+		    ,UPDATEID
+		    ,UPDATEDT
+		FROM TBLCRITERIAVERSION
+		WHERE DELYN='N'
+		AND CTRVERNM = #{ctrvernm}
+ 	</select>
+ 	
+ 	
+ 	
+ 	<!-- criteria item list  -->
+ 	<select id="selectCriteriaItem" parameterType="ncsys.com.isms.concern.service.model.CriteriaItem"
+ 	 resultType="ncsys.com.isms.concern.service.model.CriteriaItem">
+		SELECT ROWNUM ROWIDX
+		    , I.*
+		FROM ( 
+			SELECT 
+			     CTRVERID
+			    ,CTRITEMID
+			    ,CURRENTSTATE
+			    ,GUIDELINE
+			    ,ARTICLE
+			    ,CTRCNT
+			    ,CTRCCN
+			    ,LEGAL
+			    ,PROTECT
+			    ,ACTIONPLAN
+			    ,RMK
+			    ,SORTBY
+			    ,INPUTID
+			    ,INPUTDT
+			    ,UPDATEID
+			    ,UPDATEDT
+			FROM TBLCRITERIAITEM
+			    WHERE CTRVERID= #{ctrverid}
+			ORDER BY SORTBY
+		) I 
+ 	</select>
+
+ 	<select id="selectCriteriaItemDetail" parameterType="ncsys.com.isms.concern.service.model.CriteriaItem"
+ 	 resultType="ncsys.com.isms.concern.service.model.CriteriaItem">
+
+			SELECT 
+			     CTRVERID
+			    ,CTRITEMID
+			    ,CURRENTSTATE
+			    ,GUIDELINE
+			    ,ARTICLE
+			    ,CTRCNT
+			    ,CTRCCN
+			    ,LEGAL
+			    ,PROTECT
+			    ,ACTIONPLAN
+			    ,RMK
+			    ,SORTBY
+			    ,INPUTID
+			    ,INPUTDT
+			    ,UPDATEID
+			    ,UPDATEDT
+			FROM TBLCRITERIAITEM
+			    WHERE CTRITEMID= #{ctritemid}
+			    
+ 	</select>
+ 	
+ 	<insert id="insertCriteriaItem" parameterType="ncsys.com.isms.concern.service.model.CriteriaItem">
+ 	
+		INSERT INTO TBLCRITERIAITEM 
+		(
+		     CTRITEMID
+		    ,CTRVERID
+		    ,CURRENTSTATE
+		    ,GUIDELINE
+		    ,ARTICLE
+		    ,CTRCNT
+		    ,CTRCCN
+		    ,LEGAL
+		    ,PROTECT
+		    ,ACTIONPLAN
+		    ,RMK
+		    ,SORTBY
+		    ,INPUTID
+		    ,INPUTDT
+		    ,UPDATEID
+		    ,UPDATEDT
+		)
+		VALUES
+		(
+		     SQ_CTAITEM.NEXTVAL
+		    ,#{ctrverid}
+			,#{currentstate, jdbcType=VARCHAR}
+			,#{guideline, jdbcType=VARCHAR}
+			,#{article, jdbcType=VARCHAR}
+			,#{ctrcnt, jdbcType=VARCHAR}
+			,#{ctrccn, jdbcType=VARCHAR}
+			,#{legal, jdbcType=VARCHAR}
+			,#{protect, jdbcType=VARCHAR}
+			,#{actionplan, jdbcType=VARCHAR}
+			,#{rmk, jdbcType=VARCHAR}
+			,#{sortby}
+			,#{userId, jdbcType=VARCHAR}
+			,sysdate
+			,#{userId, jdbcType=VARCHAR}
+			,sysdate
+		)
+		
+ 	</insert>
+ 	 
+ 	<update id="updateCriteriaItem" parameterType="ncsys.com.isms.concern.service.model.CriteriaItem">
+ 	
+	 	UPDATE TBLCRITERIAITEM SET
+		     CURRENTSTATE = #{currentstate}
+		    ,GUIDELINE= #{guideline}
+		    ,ARTICLE= #{article}
+		    ,CTRCNT= #{ctrcnt}
+		    ,CTRCCN= #{ctrccn}
+		    ,LEGAL= #{legal}
+		    ,PROTECT= #{protect}
+		    ,ACTIONPLAN= #{actionplan}
+		    ,RMK= #{rmk}
+		    ,SORTBY= #{sortby}
+		    ,UPDATEID = #{userId}
+		    ,UPDATEDT= sysdate
+		WHERE CTRITEMID = #{ctritemid}		    
+		
+ 	</update>
+ 	
+ 	<delete id="deleteCriteriaItem" parameterType="ncsys.com.isms.concern.service.model.CriteriaItem">
+	 	
+	 	DELETE FROM TBLCRITERIAITEM
+		WHERE CTRITEMID = #{ctritemid}		    
+		 	
+ 	</delete>
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+</mapper>

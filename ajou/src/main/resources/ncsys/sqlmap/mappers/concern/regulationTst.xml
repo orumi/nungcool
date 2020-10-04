@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="ncsys.com.isms.concern.service.mapper.RegulationTstMapper">
+ 	
+ 	<!-- Asset Version  -->
+ 	<select id="selectRegulationTst" parameterType="ncsys.com.isms.concern.service.model.RegulationTst"
+ 	 resultType="ncsys.com.isms.concern.service.model.RegulationTstList">
+			SELECT ROWNUM ROWIDX, VERID, RGLDTLID, 
+			       FLDID, FLDNM, FSORT,
+			       FCNT,
+			       FNUM,  
+			       RGLID, RGLNM, RSORT,
+			       RCNT,
+			       RNUM,
+			       DSORT, 
+			       RGLDTLNM,
+			       RDTLID,
+			       WEEKPOINT,
+			       CONCERNPOINT,
+			       CONCERNLEVEL,
+			       PLANYN,
+			       PLANDETAIL 
+			FROM 
+			(       
+			    SELECT V.VERID, RGLDTLID, 
+			           D.FLDID,F.FLDNM,F.SORTBY FSORT,
+			           COUNT(D.FLDID) OVER (PARTITION BY D.FLDID) FCNT,
+			           ROW_NUMBER() OVER (PARTITION BY D.FLDID ORDER BY F.SORTBY,R.SORTBY,D.SORTBY) FNUM,  
+			           D.RGLID, R.RGLNM, R.SORTBY RSORT,
+			           COUNT(D.RGLID) OVER (PARTITION BY D.FLDID, D.RGLID) RCNT,
+			           ROW_NUMBER() OVER (PARTITION BY D.FLDID, D.RGLID ORDER BY F.SORTBY,R.SORTBY,D.SORTBY) RNUM,
+			           D.SORTBY DSORT, 
+			           D.RGLDTLNM, MGRGOAL,
+			              D.ADJUSTYN, D.ADJUSTCNT
+			    FROM TBLREGULATIONDETAIL D, 
+			         TBLVERSION V,
+			         TBLFIELD F,
+			         TBLREGULATION R 
+			    WHERE D.VERID=V.VERID
+			          AND D.VERID = #{verid, jdbcType=NUMERIC}
+			          <if test="fldid !=null and fldid != 0">
+				          AND D.FLDID = #{fldid, jdbcType=NUMERIC}
+				      </if>
+			          AND D.FLDID = F.FLDID
+			          AND D.RGLID = R.RGLID
+			    ORDER BY VERID,FSORT,RSORT,DSORT
+			)D 
+			LEFT JOIN
+			(
+			SELECT 
+			     RGLDTLID RDTLID
+			    ,WEEKPOINT
+			    ,CONCERNPOINT
+			    ,CONCERNLEVEL
+			    ,PLANYN
+			    ,PLANDETAIL
+			FROM TBLREGULATIONCONCERN
+			) C
+			ON D.RGLDTLID = C.RDTLID 
+		
+ 	</select>
+ 	
+ 	<delete id="deleteRegulationTst" parameterType="ncsys.com.isms.concern.service.model.RegulationTst">
+ 	
+ 		DELETE FROM TBLREGULATIONCONCERN WHERE RGLDTLID=#{rgldtlid}
+ 	
+ 	</delete>
+ 	
+ 	<insert id="insertRegulationTst" parameterType="ncsys.com.isms.concern.service.model.RegulationTst">
+ 	
+	 	INSERT INTO TBLREGULATIONCONCERN
+		(
+		     RGLDTLID
+		    ,WEEKPOINT
+		    ,CONCERNPOINT
+		    ,CONCERNLEVEL
+		    ,PLANYN
+		    ,PLANDETAIL
+		    ,INPUTID
+		    ,INPUTDT
+		    ,UPDATEID
+		    ,UPDATEDT
+		)
+		VALUES
+		(
+			 #{rgldtlid}
+			,#{weekpoint, jdbcType=VARCHAR}
+			,#{concernpoint, jdbcType=VARCHAR}
+			,#{concernlevel, jdbcType=VARCHAR}
+			,#{planyn, jdbcType=VARCHAR}
+			,#{plandetail, jdbcType=VARCHAR}
+			,#{userId, jdbcType=VARCHAR}
+			,sysdate
+			,#{userId, jdbcType=VARCHAR}
+			,sysdate
+		)
+ 	</insert>
+ 	 
+ 	<update id="updateRegulationTst" parameterType="ncsys.com.isms.concern.service.model.RegulationTst">
+ 	
+	 	UPDATE TBLREGULATIONCONCERN SET
+		     WEEKPOINT = #{weekpoint, jdbcType=VARCHAR}
+		    ,CONCERNPOINT = #{concernpoint, jdbcType=VARCHAR}
+		    ,CONCERNLEVEL = #{concernlevel, jdbcType=VARCHAR}
+		    ,PLANYN = #{planyn, jdbcType=VARCHAR}
+		    ,PLANDETAIL = #{plandetail, jdbcType=VARCHAR}
+		    ,UPDATEID = #{userId, jdbcType=VARCHAR}
+		    ,UPDATEDT = sysdate
+		WHERE RGLDTLID = #{rgldtlid}
+		
+ 	</update>
+</mapper>

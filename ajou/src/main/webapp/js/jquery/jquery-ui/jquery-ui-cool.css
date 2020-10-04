@@ -1,0 +1,15 @@
+body {
+	font-size: 80.5%;
+	font-family: "Trebuchet MS", "Arial", "Helvetica", "Verdana", "sans-serif";
+	height:100%; overflow:hidden;
+}
+
+
+
+table {
+	font-size: 1em;
+}
+
+.ui-draggable, .ui-droppable {
+	background-position: top;
+}

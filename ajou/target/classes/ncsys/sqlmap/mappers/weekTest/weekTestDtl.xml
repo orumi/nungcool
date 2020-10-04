@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="ncsys.com.isms.weekTest.service.mapper.WeekTestDtlMapper">
+ 	
+ 	<!-- Asset Version  -->
+ 	<select id="selectWeekTestDtlAsset" parameterType="ncsys.com.isms.weekTest.service.model.WeekTestDtlAsset"
+ 	 resultType="ncsys.com.isms.weekTest.service.model.WeekTestDtlAsset">
+		SELECT 
+		    *
+		FROM
+		(
+		    SELECT
+		         ROWNUM ROWIDX
+		        ,ASTVERID
+		        ,ASTVERNM
+		        ,ASTGRPID
+		        ,ASTGRPNM
+		        ,ASTGRPSORTBY
+		        ,ASSETID
+		        ,MGNNO
+		        ,ASSETNM
+		        ,ASSETDFN
+		        ,IMPTC
+		        ,IMPTI
+		        ,IMPTA
+		        ,IMPT
+		        ,IMPGRD
+		        ,WKTSTYN
+		        ,SORTBY
+		    FROM (
+		        SELECT 
+		             ASTVERID
+		            ,(SELECT ASTVERNM FROM TBLASSETVERSION V WHERE V.ASTVERID=A.ASTVERID) ASTVERNM     
+		            ,ASTGRPID
+		            ,(SELECT ASTGRPNM FROM TBLASSETGROUP G WHERE G.ASTGRPID=A.ASTGRPID) ASTGRPNM
+		            ,(SELECT SORTBY FROM TBLASSETGROUP G WHERE G.ASTGRPID=A.ASTGRPID) ASTGRPSORTBY    
+		            ,ASSETID     
+		            ,MGNNO           
+		            ,ASSETNM     
+		            ,ASSETDFN    
+		            ,IMPTC       
+		            ,IMPTI       
+		            ,IMPTA 
+		            ,(IMPTC+IMPTI+IMPTA) IMPT
+		            ,CASE WHEN (IMPTC+IMPTI+IMPTA)>6 THEN '1등급'
+		                  WHEN (IMPTC+IMPTI+IMPTA)>4 THEN '2등급'
+		                  ELSE '3등급'
+		             END IMPGRD           
+		            ,WKTSTYN         
+		            ,SORTBY      
+		        FROM TBLASSET A
+		        WHERE 
+		            WKTSTYN = 'Y'
+		            AND ASTVERID = #{astverid}
+		            AND ASTGRPID = #{astgrpid}
+		        ORDER BY SORTBY
+		    ) X
+		) X
+		LEFT JOIN
+		(        
+		    SELECT 
+		         ASSETID ASTID
+		        ,ROUND(AVG(TSTAVG),2) TSTAVG
+		    FROM
+		    (            
+		        SELECT 
+		             ASTGRPID
+		            ,ASSETID
+		            ,WKTSTFIELDID
+		            ,SUM(TTSTRST) TTSTSCR
+		            ,SUM(TSTRESULT) RST
+		            ,SUM(SCNT) TCNT
+		            ,CASE WHEN SUM(TTSTRST)!=0 THEN 
+		                ROUND(SUM(TSTRESULT)/SUM(TTSTRST)*100,2) 
+		             ELSE 0 END   TSTAVG
+		        FROM
+		        (            
+		            SELECT 
+		                 I.ASTGRPID
+		                ,I.WKTSTFIELDID
+		                ,I.TSTITEMCD
+		                ,I.TSTITEMNM
+		                ,I.IMPORTANCE
+		                ,I.TSTSCR
+		                ,D.ASSETID
+		                ,D.TSTRST
+		                ,D.SETTINGENV
+		                ,D.TSTRSTSCR
+		                ,CASE WHEN D.TSTRSTSCR='N' THEN 0
+		                     ELSE TO_NUMBER(D.TSTRSTSCR)*TO_NUMBER(I.TSTSCR)
+		                 END TSTRESULT
+		                 ,CASE WHEN D.TSTRSTSCR='N' THEN 0
+		                     ELSE TO_NUMBER(I.TSTSCR)
+		                 END TTSTRST
+		                 ,DECODE(TSTRSTSCR,'N',0,1) SCNT    
+		            FROM 
+		             TBLWEEKTESTITEM I
+		            ,TBLWEEKTESTDETAIL D 
+		            WHERE 
+		                I.TSTITEMCD=D.TSTITEMCD
+		                AND D.ASTVERID=#{astverid} 
+		                AND D.ASTGRPID=#{astgrpid} 
+		        ) GROUP BY  
+		             ASTGRPID
+		            ,WKTSTFIELDID
+		            ,ASSETID 
+		    ) GROUP BY ASTGRPID,ASSETID 
+		) D
+		ON X.ASSETID=D.ASTID
+		
+ 	</select>
+ 	
+ 	<select id="selectWeekTestDtlDetail" parameterType="ncsys.com.isms.weekTest.service.model.WeekTestDtlDetail" 
+ 		resultType="ncsys.com.isms.weekTest.service.model.WeekTestDtlDetail">
+			
+			SELECT 
+                 ASTGRPID
+                ,ASTGRPNM
+                ,WKTSTFIELDID
+                ,WKTSTFIELDNM
+                ,ORDERBY
+                ,TSTITEMCD
+                ,TSTITEMNM
+                ,IMPORTANCE
+                ,TSTSCR
+                ,USEYN
+                ,DELYN
+                ,SORTBY
+                ,ASTVERID
+                ,GRPID
+                ,ASSETID
+                ,ITEMCD
+                ,TSTRST
+                ,SETTINGENV
+                ,TSTRSTSCR
+                ,CASE WHEN TSTRSTSCR='N' THEN 'N/A'
+                 ELSE TO_CHAR(TO_NUMBER(TSTRSTSCR)*TO_NUMBER(TSTSCR))
+                 END TSTRESULT 
+			FROM
+			(
+			SELECT 
+			     ASTGRPID
+			    ,(SELECT ASTGRPNM FROM TBLASSETGROUP G WHERE G.ASTGRPID=I.ASTGRPID) ASTGRPNM 
+			    ,WKTSTFIELDID
+			    ,(SELECT CODE_NM FROM COMTCCMMNDETAILCODE C WHERE C.CODE_ID='COM079' AND C.CODE=I.WKTSTFIELDID) WKTSTFIELDNM
+			    ,(SELECT CODE FROM COMTCCMMNDETAILCODE C WHERE C.CODE_ID='COM079' AND C.CODE=I.WKTSTFIELDID) ORDERBY
+			    ,TSTITEMCD
+			    ,TSTITEMNM
+			    ,IMPORTANCE
+			    ,TSTSCR
+			    ,USEYN
+			    ,DELYN
+			    ,SORTBY
+			FROM TBLWEEKTESTITEM I
+			WHERE ASTGRPID= #{astgrpid}
+			ORDER BY TO_NUMBER(ORDERBY), SORTBY
+			) I
+			LEFT JOIN
+			(
+			    SELECT 
+			         ASTVERID 
+			        ,ASTGRPID GRPID
+			        ,ASSETID
+			        ,TSTITEMCD ITEMCD
+			        ,TSTRST
+			        ,TSTRSTSCR
+			        ,SETTINGENV
+			    FROM 
+			    TBLWEEKTESTDETAIL
+			    WHERE ASTVERID=#{astverid} AND ASTGRPID=#{astgrpid} AND ASSETID=#{assetid}
+			) D
+			ON I.TSTITEMCD=D.ITEMCD
+			
+ 	</select>
+ 	
+ 	<delete id="deleteWeekTestDtl" parameterType="ncsys.com.isms.weekTest.service.model.WeekTestDtlDetail">
+ 	
+ 		DELETE FROM TBLWEEKTESTDETAIL WHERE ASTVERID=#{astverid} AND ASTGRPID=#{astgrpid} AND ASSETID=#{assetid}
+ 	
+ 	</delete>
+ 	
+ 	<insert id="insertWeekTestDtl" parameterType="ncsys.com.isms.weekTest.service.model.WeekTestDtlDetail">
+ 	
+	 	INSERT INTO TBLWEEKTESTDETAIL
+		(
+		     ASTVERID
+		    ,ASTGRPID
+		    ,ASSETID
+		    ,TSTITEMCD
+		    ,TSTRST
+		    ,TSTRSTSCR
+		    ,SETTINGENV
+		    ,INPUTID
+		    ,INPUTDT
+		    ,UPDATEID
+		    ,UPDATEDT
+		)
+		VALUES
+		(
+			 #{astverid}
+			,#{astgrpid}
+			,#{assetid}
+			,#{tstitemcd, jdbcType=VARCHAR}
+			,#{tstrst, jdbcType=VARCHAR}
+			,#{tstrstscr, jdbcType=VARCHAR}
+			,#{settingenv, jdbcType=VARCHAR}
+			,#{userId, jdbcType=VARCHAR}
+			,sysdate
+			,#{userId, jdbcType=VARCHAR}
+			,sysdate
+		)
+ 	</insert>
+ 	
+ 	<update id="updateWeekTestDtl" parameterType="ncsys.com.isms.weekTest.service.model.WeekTestDtlDetail">
+ 		UPDATE TBLWEEKTESTDETAIL SET 
+ 			 TSTRST    =#{tstrst}
+ 			,TSTRSTSCR =#{tstrstscr}
+ 			,SETTINGENV=#{settingenv}
+ 			,UPDATEID  =#{userId}
+ 			,UPDATEDT  =sysdate
+ 		WHERE 	
+ 			ASTVERID   =#{astverid}
+		    AND ASTGRPID=#{astgrpid}
+		    AND ASSETID =#{assetid}
+		    AND TSTITEMCD=#{tstitemcd}
+ 	</update>
+ 	
+ 	
+ 	
+ 	 
+ 	<select id="selectWeekTestDetail" parameterType="ncsys.com.isms.weekTest.service.model.WeekTestDtlDetail"
+ 		resultType="ncsys.com.isms.weekTest.service.model.WeekTestDtlDetail">
+				SELECT 
+			         ASTVERID 
+			        ,ASTGRPID GRPID
+			        ,ASSETID
+			        ,TSTITEMCD ITEMCD
+			        ,TSTRST
+			        ,TSTRSTSCR
+			        ,SETTINGENV
+			    FROM 
+			    TBLWEEKTESTDETAIL
+			    WHERE ASTVERID=#{astverid} AND ASTGRPID=#{astgrpid} AND ASSETID=#{assetid}
+			    AND TSTITEMCD=#{tstitemcd}
+ 	</select> 
+ 	 
+</mapper>
