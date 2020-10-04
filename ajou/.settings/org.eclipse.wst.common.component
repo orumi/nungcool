@@ -6,7 +6,7 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/test/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/test/resources"/>
-        <property name="context-root" value="isms"/>
+        <property name="context-root" value="ajou"/>
         <property name="java-output-path" value="/isms/target/classes"/>
     </wb-module>
 </project-modules>
